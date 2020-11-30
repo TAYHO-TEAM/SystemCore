@@ -13,6 +13,7 @@
             ExpiresIn = expiresIn;
         }
         public string UserName { get; set; }
+        public string Title { get; set; } 
         public byte[] AvatarImg { get; set; }
     }
 

@@ -123,6 +123,7 @@ namespace Acc.Cmd.Infrastructure.Services
                 StaffTayHo existingStaffTaHo = await _staffTayHoRepository.SingleOrDefaultAsync(x => x.AccountName == existingAccount.AccountName).ConfigureAwait(false);
                 if (existingStaffTaHo != null)
                 {
+                    tokenResult.Title = existingStaffTaHo.Title;
                     tokenResult.AvatarImg = existingStaffTaHo.AvatarImg;
                     tokenResult.UserName = existingStaffTaHo.UserName;
                 }     

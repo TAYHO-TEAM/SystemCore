@@ -7,6 +7,7 @@ namespace Acc.Cmd.Domain.DomainObjects
     {
         #region Fields
         private string _userName;
+        private string _title;
         private string _accountName;
         private byte[] _avatarImg;
         #endregion Fields
@@ -18,15 +19,17 @@ namespace Acc.Cmd.Domain.DomainObjects
 
         public StaffTayHo(string UserName,
                         string AccountName,
-                        byte[] AvatarImg) : this()
+                        byte[] AvatarImg, string Title) : this()
         {
             _userName = UserName;
             _accountName = AccountName;
             _avatarImg = AvatarImg;
+            _title = Title;
         }
         #endregion Constructors
         #region Properties
         [MaxLength(200, ErrorMessage = nameof(ErrorCodeInsert.IErr200))] public string UserName { get => _userName; }
+        public string Title { get => _title; }
         [MaxLength(50, ErrorMessage = nameof(ErrorCodeInsert.IErr64))] public string AccountName { get => _accountName; }
         public byte[] AvatarImg { get => _avatarImg; }
         #endregion Properties
