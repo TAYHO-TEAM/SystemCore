@@ -20,6 +20,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<DocumentType> DocumentType { get; set; }
         public DbSet<Assignments> Assignments { get; set; }
         public DbSet<Reply> Reply { get; set; }
+        public DbSet<NS_GiaiDoan> NS_GiaiDoan { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -51,7 +51,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetProjectId(int? ProjectId) { _projectId = ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetCode(string Code) { _code = !string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetRequestFromId(int? RequestFromId) { _requestFromId = RequestFromId.HasValue ? _requestFromId : RequestFromId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetStageId(int? StageId) { _stageId = StageId.HasValue ? _stageId : StageId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetPriority(byte? Priority) { _priority = Priority.HasValue ? _priority : Priority; if (!IsValid()) throw new DomainException(_errorMessages); }

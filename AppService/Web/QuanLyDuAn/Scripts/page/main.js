@@ -43,7 +43,7 @@ function loadMenu() {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
                 $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
-                $(this).children(".nav-link").toggleClass('active', window.location.pathname.includes($(this).find('a').attr('href')));
+                $(this).children(".nav-link").toggleClass('active', window.location.pathname==($(this).find('a').attr('href')));
             });
         });
 }
