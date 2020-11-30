@@ -1,0 +1,40 @@
+﻿using System.Web;
+using System.Web.Optimization;
+
+namespace QuanLyDuAn
+{
+    public class BundleConfig
+    {
+        // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
+        public static void RegisterBundles(BundleCollection bundles)
+        {
+            var scriptBundle = new ScriptBundle("~/ScriptsBundle");
+            var styleBundle = new StyleBundle("~/StyleBundle");
+
+            styleBundle
+             .Include("~/Content/plugins/fontawesome-free/css/all.min.css") 
+             .Include("~/Content/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css")
+             .Include("~/Content/plugins/themify-icons/themify-icons.css")
+             .Include("~/Content/css/adminlte.css")
+             .Include("~/Content/plugins/overlayScrollbars/css/OverlayScrollbars.min.css");
+            bundles.Add(styleBundle);
+
+
+            scriptBundle
+                .Include("~/Content/plugins/jquery/jquery.js")
+                .Include("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js")
+                .Include("~/Content/plugins/jquery-ui/jquery-ui.min.js")
+                .Include("~/Content/plugins/moment/moment.min.js")
+                .Include("~/Content/plugins/moment/moment-with-locales.min.js")
+                .Include("~/Content/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js")
+                .Include("~/Content/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js")
+                .Include("~/Content/js/adminlte.js")
+                //.Include("~/Content/js/pages/dashboard.js")
+                //.Include("~/Content/js/demo.js")
+                ;
+            bundles.Add(scriptBundle);
+
+            //BundleTable.EnableOptimizations = true;
+        }
+    }
+}

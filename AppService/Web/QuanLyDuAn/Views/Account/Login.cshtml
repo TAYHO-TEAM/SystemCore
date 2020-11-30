@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+    var version = System.Configuration.ConfigurationManager.AppSettings["webpages:Version"];
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Đăng nhập - Tây Hồ Center</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @Styles.Render("~/StyleBundle?v=" + version)
+    @Styles.Render("~/StyleBundleDx?v=" + version)
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    @Scripts.Render("~/ScriptsBundle?v=" + version)
+    @Scripts.Render("~/ScriptsBundleDx?v="+version)
+</head>
+<body class="hold-transition login-page">
+    <div id="loading-panel"></div>
+    <div class="login-box">
+        <div class="login-logo">
+           <img src="~/Content/img/logo-white-full.png" style="width: 200px; height: auto;"/>
+        </div>
+        <div class="card elevation-4">
+            <div class="card-header">
+                <div class="login-logo">
+                    Quản lý <strong class="text-tayho"><em>Dự án</em></strong>
+                </div>
+            </div>
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Vui lòng nhập <em class="text-tayho">thông tin của bạn</em> để có thể  đăng nhập sử dụng hệ thống.</p>
+                <form id="loginForm" action="#" method="post"></form>
+                <p class="mt-2 mb-0 small">
+                    <a href=" ">Hỗ trợ đăng nhập tài khoản?</a>
+                </p>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <a href="https://apps.apple.com/vn/app/t%C3%A2yh%E1%BB%93-center/id1482353409?l=vi&fbclid=IwAR1XRqFqXrWIYH66-L1qAilIyzhGeCHWFLD7mxqVYe2dBlSoqLwikPjeG5k" target="_blank">
+                            <img src="~/Content/img/app-store.png" style="width: 80%; height: auto;" />
+                        </a>
+                    </div>
+                    <div class="col-6 text-center">
+                        <a href="https://play.google.com/store/apps/details?id=tayhojsc.flutter_qlcv&hl=vi" target="_blank">
+                            <img src="~/Content/img/play-store.png" style="width: 80%; height: auto;" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-footer">
+        <div class="row">
+            <div class="col-6 text-left">
+                Hệ thống - Tây Hồ
+            </div>
+            <div class="col-6 text-right">
+                Version: @version
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/dungchung.js?v=@version"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-messaging.js"></script>
+    <script src="~/Scripts/page/account.js?v=@version"></script>
+</body>
+</html>

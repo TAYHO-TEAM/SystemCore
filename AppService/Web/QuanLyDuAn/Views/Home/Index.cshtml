@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+<div id="container"></div>
+
+@section script{
+    <script>
+        $(function () { 
+            $("#container").dxDataGrid({
+                height: heightScreen,
+                dataSource: new DevExpress.data.DataSource({
+                    store: DevExpress.data.AspNet.createStore({
+                        key: "id",
+                        loadUrl: "https://jsonplaceholder.typicode.com/photos",
+                    }),
+                }), 
+                columns: [
+                    {
+                        dataField: "url"
+                    },
+                    {
+                        dataField: "thumbnailUrl"
+                    },
+                    {
+                        dataField: "title", caption: "Tiêu đề"
+                    },
+                ]
+            }); 
+        });
+    </script>
+}
