@@ -37,7 +37,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newRequestDetail.SetCreateAccount(0);
             newRequestDetail.Status = request.Status.HasValue ? request.Status : newRequestDetail.Status;
             newRequestDetail.IsActive = request.IsActive.HasValue ? request.IsActive : newRequestDetail.IsActive;
-            newRequestDetail.IsVisible = request.IsActive.HasValue ? request.IsVisible : newRequestDetail.IsVisible;
+            newRequestDetail.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequestDetail.IsVisible;
             await _RequestDetailRepository.AddAsync(newRequestDetail).ConfigureAwait(false);
             await _RequestDetailRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateRequestDetailCommandResponse>(newRequestDetail);

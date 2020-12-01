@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingRequest.IsActive = request.IsActive.HasValue ? request.IsActive : existingRequest.IsActive;
-            existingRequest.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingRequest.IsVisible;
+            existingRequest.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingRequest.IsVisible;
             existingRequest.Status = request.Status.HasValue ? request.Status : existingRequest.Status;
             existingRequest.SetCode(request.Code);
             existingRequest.SetNoAttachment(request.NoAttachment);

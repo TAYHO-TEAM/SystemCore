@@ -2409,6 +2409,7 @@
     <Content Include="Areas\NganSach\Views\web.config" />
     <Content Include="Areas\NganSach\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\NganSach\Views\Home\GiaiDoan.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

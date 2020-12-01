@@ -13,9 +13,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     {
         public DeleteNS_GiaiDoanCommandResponse(List<NS_GiaiDoanCommandResponseDTO> NS_GiaiDoan)
         {
-            NS_GiaiDoan = NS_GiaiDoan;
+            _NS_GiaiDoan = NS_GiaiDoan;
         }
 
-        public List<NS_GiaiDoanCommandResponseDTO> NS_GiaiDoan { get; }
+        public List<NS_GiaiDoanCommandResponseDTO> _NS_GiaiDoan { get; }
     }
 }

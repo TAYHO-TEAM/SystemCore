@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newDocumentType.SetCreateAccount(0);
             newDocumentType.Status = request.Status.HasValue ? request.Status : newDocumentType.Status;
             newDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentType.IsActive;
-            newDocumentType.IsVisible = request.IsActive.HasValue ? request.IsVisible : newDocumentType.IsVisible;
+            newDocumentType.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentType.IsVisible;
             await _DocumentTypeRepository.AddAsync(newDocumentType).ConfigureAwait(false);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateDocumentTypeCommandResponse>(newDocumentType);

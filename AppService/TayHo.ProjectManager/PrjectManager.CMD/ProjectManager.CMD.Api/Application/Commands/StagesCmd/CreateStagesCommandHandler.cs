@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newStages.SetCreateAccount(0);
             newStages.Status = request.Status.HasValue ? request.Status : newStages.Status;
             newStages.IsActive = request.IsActive.HasValue ? request.IsActive : newStages.IsActive;
-            newStages.IsVisible = request.IsActive.HasValue ? request.IsVisible : newStages.IsVisible;
+            newStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newStages.IsVisible;
             await _StagesRepository.AddAsync(newStages).ConfigureAwait(false);
             await _StagesRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateStagesCommandResponse>(newStages);

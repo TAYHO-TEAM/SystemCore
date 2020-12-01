@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : existingFilesAttachment.IsActive;
-            existingFilesAttachment.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingFilesAttachment.IsVisible;
+            existingFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingFilesAttachment.IsVisible;
             existingFilesAttachment.Status = request.Status.HasValue ? request.Status : existingFilesAttachment.Status;
             existingFilesAttachment.SetOwnerById(request.OwnerById);
             existingFilesAttachment.SetOwnerByTable(request.OwnerByTable);

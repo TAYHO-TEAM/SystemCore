@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingAssignments.IsActive = request.IsActive.HasValue ? request.IsActive : existingAssignments.IsActive;
-            existingAssignments.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingAssignments.IsVisible;
+            existingAssignments.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingAssignments.IsVisible;
             existingAssignments.Status = request.Status.HasValue ? request.Status : existingAssignments.Status;
             existingAssignments.SetRequestId(request.RequestId);
             existingAssignments.SetRequestDetailId(request.RequestDetailId);

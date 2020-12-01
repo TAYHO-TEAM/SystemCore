@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingStage.IsActive = request.IsActive.HasValue ? request.IsActive : existingStage.IsActive;
-            existingStage.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingStage.IsVisible;
+            existingStage.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingStage.IsVisible;
             existingStage.Status = request.Status.HasValue ? request.Status : existingStage.Status;
             existingStage.SetCode(request.Code);
             existingStage.SetDescription(request.Descriptions);

@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingReply.IsActive = request.IsActive.HasValue ? request.IsActive : existingReply.IsActive;
-            existingReply.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingReply.IsVisible;
+            existingReply.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingReply.IsVisible;
             existingReply.Status = request.Status.HasValue ? request.Status : existingReply.Status;
             existingReply.SetRequestDetailId(request.RequestDetailId);
             existingReply.SetTitle(request.Title);

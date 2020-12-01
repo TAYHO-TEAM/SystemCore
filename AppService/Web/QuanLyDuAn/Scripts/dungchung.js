@@ -1,6 +1,6 @@
 ﻿//Tinh chiều cao - chiều cao header
-const heightScreen = $(window).height() - $('.main-header').height() - 90;
-
+var heightScreen = $(document).height() - $('.main-header').height() - 90;
+var widthScreen = $(document).width();
 //Thông số api
 const api_version = 1; 
 const URL_API_ACC_CMD = "https://api-account.tayho.com.vn/api/cmd/v" + api_version;
@@ -25,3 +25,25 @@ const listSexs = [
     {value: 1, text:"Nam"},
     {value: 2, text:"Khác"},
 ];
+
+var textDataGrid =
+{
+	addRow: "Thêm",
+	addRowToNode: "Thêm",
+	cancelAllChanges: "Hủy thay đổi",
+	cancelRowChanges: "Hủy bỏ",
+	confirmDeleteMessage: "Bạn có muốn xóa thông tin này?",
+	//confirmDeleteTitle: "XÁC NHẬN THÔNG TIN",
+	deleteRow: "Xóa",
+	editRow: "Sửa",
+	saveAllChanges: "Lưu thay đổi",
+	saveRowChanges: "Lưu",
+	undeleteRow: "Hủy xóa",
+	validationCancelChanges: "Hủy bỏ thay đổi"
+};
+
+var textFilter = {
+	clearFilter: "Xóa",
+	createFilter: "Tạo bộ lọc",
+	filterEnabledHint: "Bật bộ lọc"
+}
