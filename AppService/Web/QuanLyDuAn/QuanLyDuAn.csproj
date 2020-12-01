@@ -180,6 +180,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\NganSach\Controllers\HomeController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
+    <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -2305,6 +2306,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\ThongTin\Controllers\" />
+    <Folder Include="Areas\ThongTin\Data\" />
+    <Folder Include="Areas\ThongTin\Views\Shared\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -2410,6 +2414,7 @@
     <Content Include="Areas\NganSach\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\NganSach\Views\Home\GiaiDoan.cshtml" />
+    <Content Include="Areas\ThongTin\Views\web.config" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
