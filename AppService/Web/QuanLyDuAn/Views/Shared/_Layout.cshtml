@@ -13,9 +13,8 @@
     @RenderSection("style", required: false)
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-    @Scripts.Render("~/ScriptsBundle?v=" + version)
+    @Scripts.Render("~/ScriptsBundle?v="+version)
     @Scripts.Render("~/ScriptsBundleDx?v=" + version)
-
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div id="loading-panel"></div>
@@ -100,11 +99,11 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="~/Content/img/avatar.png" class="img-circle elevation-2 img-lg" alt="">
+                        <img src="~/Content/img/avatar.png" class="img-circle elevation-2 img-lg" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="javascript:void(0)" class="d-block">Quản trị viên</a>
-                        <span class="d-block small text-muted">Thông tin chức danh</span> 
+                        <a href="#" class="d-block">Quản trị viên</a>
+                        <span class="d-block small text-muted">Thông tin chức danh</span>
                     </div>
                 </div>
 
@@ -164,6 +163,6 @@
 
     <script src="~/Scripts/dungchung.js?v=@version"></script>
     <script src="~/Scripts/page/main.js?v=@version"></script>
-    @RenderSection("script", required: false)
+    @RenderSection("script", required: false) 
 </body>
 </html>

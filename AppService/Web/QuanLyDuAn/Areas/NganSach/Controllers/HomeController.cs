@@ -13,10 +13,5 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
-
-        public ActionResult GiaiDoan()
-        {
-            return View();
-        }
     }
 }
