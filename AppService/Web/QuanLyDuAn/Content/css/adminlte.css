@@ -11821,10 +11821,11 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
   padding-left: 0.3rem;
 }
 
-.user-panel img {
-  height: auto;
-  width: 3rem;
-}
+    .user-panel img {
+        object-fit: cover !important;
+        height: 3rem;
+        width: 3rem;
+    }
 
 .user-panel .info {
   display: inline-block;

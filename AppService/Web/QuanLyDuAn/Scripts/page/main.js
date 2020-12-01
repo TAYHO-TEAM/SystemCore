@@ -1,7 +1,20 @@
-﻿$(function () {
-    checkLogin();
-    loadMenu();
+﻿let checkLogin = () => (isNullOrEmpty(sessionStorage.getItem("userCurrent")) && isNullOrEmpty(sessionStorage.getItem("userCurrentInfo")));
+
+$(function () {
+    if (checkLogin()) {
+        loadUser();
+        loadMenu();
+    }
+    else logout(window.location.pathname);
 });
+
+let loadUser = () => { 
+    var UserCurrentInfo = JSON.parse(sessionStorage.getItem("userCurrentInfo"));
+    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
+    $('.user-panel div.info a').html(UserCurrentInfo.userName);
+    $('.user-panel div.info span').html(UserCurrentInfo.title);
+
+}
 
 function logout(url) {
     if (url == null || url.length == 0) url = "Home";
@@ -9,12 +22,6 @@ function logout(url) {
     window.location = "/Account/Login?url=" + url;
 }
 
-function checkLogin() {
-    var url = window.location.pathname;
-    if (!isNullOrEmpty(sessionStorage.getItem("userCurrent"))) {
-        logout(url);
-    }
-}
 function loadMenu() {
     var rs = "", url = URL_API_PM_READ + "/Actions";
     var container = $(".list-menu-left");
@@ -43,17 +50,17 @@ function loadMenu() {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
                 $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
-                $(this).children(".nav-link").toggleClass('active', window.location.pathname==($(this).find('a').attr('href')));
+                $(this).children(".nav-link").toggleClass('active', window.location.pathname == ($(this).find('a').attr('href')));
             });
         });
 }
-function menuItem(item, list) {
+let menuItem = (item, list) => {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
         <a class='nav-link' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
-        </a>";    
+        </a>";
     if (listChild != null && listChild.length > 0) {
         rs += "<ul class='nav nav-treeview ml-2'>";
         listChild.forEach(x => rs += menuItem(x, list));
@@ -63,7 +70,6 @@ function menuItem(item, list) {
 
     return rs;
 }
-
 
 var loadingPanel = $("#loading-panel").dxLoadPanel({
     shadingColor: "rgba(0,0,0,0.3)",
@@ -93,7 +99,7 @@ let ajax_load = (url, values) => {
         params = {
             'PageSize': values["take"],
             'PageNumber': values["skip"]
-        }; 
+        };
     $.ajax({
         headers: {
             'Accept': 'application/json',
@@ -117,7 +123,7 @@ let ajax_load = (url, values) => {
     });
     return deferred.promise();
 }
-let ajax_insert = (url, values) => { 
+let ajax_insert = (url, values) => {
     var deferred = $.Deferred();
     $.ajax({
         headers: {
