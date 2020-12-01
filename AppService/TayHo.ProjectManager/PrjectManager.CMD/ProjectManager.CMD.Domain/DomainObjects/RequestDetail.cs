@@ -69,11 +69,11 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public void SetRequestId(int? RequestId) { _requestId = RequestId.HasValue ? _requestId : RequestId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetProblemCategoryId(int? ProblemCategoryId) { _problemCategoryId = ProblemCategoryId.HasValue ? _problemCategoryId : ProblemCategoryId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetReplyByID(int? ReplyByID) { _replyByID = ReplyByID.HasValue ? _replyByID : ReplyByID; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTitle(string Title) { _title = string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDescriptions(string Descriptions) { _descriptions = string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetNote(string Note) { _note = string.IsNullOrEmpty(Note) ? _note : Note; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTitle(string Title) { _title = !string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDescriptions(string Descriptions) { _descriptions = !string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetNote(string Note) { _note = !string.IsNullOrEmpty(Note) ? _note : Note; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDurationDate(int? DurationDate) { _durationDate = DurationDate.HasValue ? _durationDate : DurationDate; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetStatusText(string StatusText) { _statusText = string.IsNullOrEmpty(StatusText) ? _statusText : StatusText; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetStatusText(string StatusText) { _statusText = !string.IsNullOrEmpty(StatusText) ? _statusText : StatusText; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetFromDate(DateTime? FromDate) { _fromDate = FromDate.HasValue ? _fromDate : FromDate; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetToDate(DateTime? ToDate) { _toDate = ToDate.HasValue ? _toDate : ToDate; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNoAttachment(byte? NoAttachment) { _noAttachment = NoAttachment.HasValue ? _noAttachment : NoAttachment; if (!IsValid()) throw new DomainException(_errorMessages); }
