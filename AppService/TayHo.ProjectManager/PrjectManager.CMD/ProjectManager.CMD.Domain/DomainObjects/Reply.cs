@@ -40,9 +40,9 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetRequestDetailId(int? RequestDetailId) { _requestDetailId = RequestDetailId.HasValue ? _requestDetailId : RequestDetailId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTitle(string Title) { _title = string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTitle(string Title) { _title = !string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNoAttachment(byte? NoAttachment) { _noAttachment = NoAttachment.HasValue ? _noAttachment : NoAttachment; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetContent(string Content) { _content = string.IsNullOrEmpty(Content) ? _content : Content; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetContent(string Content) { _content = !string.IsNullOrEmpty(Content) ? _content : Content; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

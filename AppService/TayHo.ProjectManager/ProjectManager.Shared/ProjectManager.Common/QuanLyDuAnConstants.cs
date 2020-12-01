@@ -15,7 +15,6 @@ namespace ProjectManager.Common
         public const string UserInfo_TABLENAME = "UserInfo";
         public const string ContractorInfo_TABLENAME = "ContractorInfo";
 
-        public const string NS_GiaiDoan_TABLENAME = "NS_GiaiDoan";
 
 
         public const string Stages_TABLENAME = "Stages";
