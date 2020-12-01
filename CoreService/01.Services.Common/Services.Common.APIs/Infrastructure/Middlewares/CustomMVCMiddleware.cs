@@ -16,7 +16,7 @@ namespace Services.Common.APIs.Infrastructure
             app.UseCustomLocalization(configuration);
             app.UseCustomHealthChecks();
             app.UseMiddleware<CustomJwtMiddleware>();
-            app.UseMiddleware<CustomUserBlackListMiddleware>();
+            //app.UseMiddleware<CustomUserBlackListMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

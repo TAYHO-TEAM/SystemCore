@@ -2,7 +2,9 @@
 using Acc.Cmd.Domain.Repositories;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Services.Common.DomainObjects;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 

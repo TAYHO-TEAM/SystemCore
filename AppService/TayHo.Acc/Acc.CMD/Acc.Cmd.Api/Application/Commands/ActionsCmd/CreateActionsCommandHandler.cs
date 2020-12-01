@@ -1,8 +1,10 @@
-﻿using Acc.Cmd.Domain.DomainObjects;
+﻿using Acc.Cmd.Domain;
+using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
 using AutoMapper;
 using MediatR;
 using Services.Common.DomainObjects;
+using Services.Common.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +24,20 @@ namespace  Acc.Cmd.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateActionsCommandResponse>> Handle(CreateActionsCommand request, CancellationToken cancellationToken)
         {
+
             var methodResult = new MethodResult<CreateActionsCommandResponse>();
+            var parentAction = await _actionsRepository.SingleOrDefaultAsync(x => x.Id == request.ParentId && x.IsDelete == false).ConfigureAwait(false);
+            if (parentAction == null)
+            {
+                methodResult.AddErrorMessage(nameof(ErrorCodeInsert.IErrN3), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.ParentId),request.ParentId)
+                });
+            }
+            else
+            {
+                request.Level =( parentAction.Level.HasValue ? ((int)parentAction.Level + 1) : 0);
+            }                
             var newActions = new Actions(request.ParentId,
                                         request.Title,
                                         request.Descriptions,

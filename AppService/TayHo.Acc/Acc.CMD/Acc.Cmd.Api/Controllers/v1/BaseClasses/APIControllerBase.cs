@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.Common;
 using System;
+using System.Security.Claims;
 
 namespace Acc.Cmd.Api.Controllers.v1.BaseClasses
 {
@@ -12,7 +13,7 @@ namespace Acc.Cmd.Api.Controllers.v1.BaseClasses
     public class APIControllerBase : ControllerBase
     {
         protected readonly IMediator _mediator;
-
+        public ClaimsPrincipal User { get; }
         public APIControllerBase(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

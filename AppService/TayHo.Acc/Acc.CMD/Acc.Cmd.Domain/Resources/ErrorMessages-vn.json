@@ -27,6 +27,7 @@
   "IErrN0": "Dự liệu không phải kiểu số!",
   "IErrN1": "Dự liệu không được chứa kỹ tự số!",
   "IErrN2": "Dự liệu không được chứa ký tự đặc biệt!",
+  "IErrN3": "Dự liệu không tồn tại dữ liệu cha!",
   // Update Error 
   "UErr01": "Dữ liệu không tông tại!",
   // Delete Error

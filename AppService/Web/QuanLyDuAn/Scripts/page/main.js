@@ -95,10 +95,11 @@ function getParamInUrl(name, url) {
 }
 
 let ajax_load = (url, values) => {
+    console.log(values);
     var deferred = $.Deferred(),
         params = {
             'PageSize': values["take"],
-            'PageNumber': values["skip"]
+            'PageNumber': values["skip"] +1
         };
     $.ajax({
         headers: {
