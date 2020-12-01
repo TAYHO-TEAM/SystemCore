@@ -34,7 +34,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newRequests.SetCreateAccount(0);
             newRequests.Status = request.Status.HasValue ? request.Status : newRequests.Status;
             newRequests.IsActive = request.IsActive.HasValue ? request.IsActive : newRequests.IsActive;
-            newRequests.IsVisible = request.IsActive.HasValue ? request.IsVisible : newRequests.IsVisible;
+            newRequests.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequests.IsVisible;
             await _RequestsRepository.AddAsync(newRequests).ConfigureAwait(false);
             await _RequestsRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateRequestsCommandResponse>(newRequests);

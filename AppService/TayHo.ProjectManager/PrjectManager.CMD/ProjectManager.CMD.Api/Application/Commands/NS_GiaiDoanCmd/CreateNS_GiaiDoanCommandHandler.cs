@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newNS_GiaiDoan.SetCreateAccount(0);
             newNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : newNS_GiaiDoan.Status;
             newNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_GiaiDoan.IsActive;
-            newNS_GiaiDoan.IsVisible = request.IsActive.HasValue ? request.IsVisible : newNS_GiaiDoan.IsVisible;
+            newNS_GiaiDoan.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_GiaiDoan.IsVisible;
             await _NS_GiaiDoanRepository.AddAsync(newNS_GiaiDoan).ConfigureAwait(false);
             await _NS_GiaiDoanRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateNS_GiaiDoanCommandResponse>(newNS_GiaiDoan);

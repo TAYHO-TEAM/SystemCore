@@ -29,7 +29,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newAssignments.SetCreateAccount(0);
             newAssignments.Status = request.Status.HasValue ? request.Status : newAssignments.Status;
             newAssignments.IsActive = request.IsActive.HasValue ? request.IsActive : newAssignments.IsActive;
-            newAssignments.IsVisible = request.IsActive.HasValue ? request.IsVisible : newAssignments.IsVisible;
+            newAssignments.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newAssignments.IsVisible;
             await _AssignmentsRepository.AddAsync(newAssignments).ConfigureAwait(false);
             await _AssignmentsRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateAssignmentsCommandResponse>(newAssignments);

@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_GiaiDoan.IsActive;
-            existingNS_GiaiDoan.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingNS_GiaiDoan.IsVisible;
+            existingNS_GiaiDoan.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_GiaiDoan.IsVisible;
             existingNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : existingNS_GiaiDoan.Status;
             existingNS_GiaiDoan.SetTenGiaiDoan(request.TenGiaiDoan);
             existingNS_GiaiDoan.SetDienGiai(request.DienGiai);

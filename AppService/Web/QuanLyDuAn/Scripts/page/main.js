@@ -8,7 +8,7 @@ $(function () {
     else logout(window.location.pathname);
 });
 
-let loadUser = () => { 
+let loadUser = () => {
     var UserCurrentInfo = JSON.parse(sessionStorage.getItem("userCurrentInfo"));
     $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
     $('.user-panel div.info a').html(UserCurrentInfo.userName);
@@ -96,11 +96,16 @@ function getParamInUrl(name, url) {
 
 let ajax_load = (url, values) => {
     console.log(values);
-    var deferred = $.Deferred(),
-        params = {
-            'PageSize': values["take"],
-            'PageNumber': values["skip"] +1
-        };
+    var deferred = $.Deferred(), params = {};
+    params = {
+        'PageSize': isNullOrEmpty(values.take) ? values.take:0,
+        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+    };
+    if (values.sort !== null && values.sort.length > 0) {
+        params['SortCol'] = values.sort[0].selector;
+        params['SortADSC'] = values.sort[0].desc;
+    }
+
     $.ajax({
         headers: {
             'Accept': 'application/json',
@@ -140,6 +145,51 @@ let ajax_insert = (url, values) => {
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr.responseJSON);
             deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
+        },
+        timeout: 5000
+    });
+    return deferred.promise();
+}
+
+let ajax_update = (url, key, values) => {
+    var keyObj = JSON.parse('{"id":' + key + '}');
+    var deferred = $.Deferred();
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        url: url, dataType: "json", type: "PUT",
+        data: JSON.stringify($.extend(keyObj, values)),
+        success: function (data) {
+            deferred.resolve();
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.log(xhr.responseJSON);
+            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+        },
+        timeout: 5000
+    });
+    return deferred.promise();
+}
+
+let ajax_delete = (url, key) => {
+    var deferred = $.Deferred();
+    $.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        url: url, dataType: "json", type: "DELETE",
+        data: JSON.stringify({ "ids": [key]}),
+        success: function (data) {
+            deferred.resolve();
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.log(xhr.responseJSON);
+            deferred.reject("Có lỗi xảy ra trong quá trình xóa dữ liệu. Mở Console để xem chi tiết.");
         },
         timeout: 5000
     });

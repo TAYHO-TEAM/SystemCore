@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newFilesAttachment.SetCreateAccount(0);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
-            newFilesAttachment.IsVisible = request.IsActive.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+            newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
             await _FilesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateFilesAttachmentCommandResponse>(newFilesAttachment);

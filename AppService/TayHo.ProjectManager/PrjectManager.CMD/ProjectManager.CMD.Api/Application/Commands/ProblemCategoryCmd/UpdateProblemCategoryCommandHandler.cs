@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingProblemCategory.IsActive = request.IsActive.HasValue ? request.IsActive : existingProblemCategory.IsActive;
-            existingProblemCategory.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingProblemCategory.IsVisible;
+            existingProblemCategory.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingProblemCategory.IsVisible;
             existingProblemCategory.Status = request.Status.HasValue ? request.Status : existingProblemCategory.Status;
             existingProblemCategory.SetTitle(request.Title);
             existingProblemCategory.SetDescriptions(request.Descriptions);

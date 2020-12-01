@@ -30,7 +30,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newReply.SetCreateAccount(0);
             newReply.Status = request.Status.HasValue ? request.Status : newReply.Status;
             newReply.IsActive = request.IsActive.HasValue ? request.IsActive : newReply.IsActive;
-            newReply.IsVisible = request.IsActive.HasValue ? request.IsVisible : newReply.IsVisible;
+            newReply.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newReply.IsVisible;
             await _ReplyRepository.AddAsync(newReply).ConfigureAwait(false);
             await _ReplyRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateReplyCommandResponse>(newReply);

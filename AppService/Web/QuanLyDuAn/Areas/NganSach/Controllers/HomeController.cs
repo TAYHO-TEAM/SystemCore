@@ -8,12 +8,10 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: NganSach/Home
         public ActionResult Index()
         {
             return View();
         }
-
         public ActionResult GiaiDoan()
         {
             return View();

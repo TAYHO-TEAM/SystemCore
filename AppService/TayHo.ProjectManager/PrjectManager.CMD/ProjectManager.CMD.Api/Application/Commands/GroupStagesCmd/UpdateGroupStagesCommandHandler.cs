@@ -35,7 +35,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupStages.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupStages.IsActive;
-            existingGroupStages.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupStages.IsVisible;
+            existingGroupStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingGroupStages.IsVisible;
             existingGroupStages.Status = request.Status.HasValue ? request.Status : existingGroupStages.Status;
             existingGroupStages.SetGroupId(request.GroupId);
             existingGroupStages.SetStageId(request.StageId);

@@ -1,135 +1,59 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Quản lý giai đoạn";
+    ViewBag.Title = "Ngân sách - giai đoạn";
 }
 
 @section style{   }
 
-<div id="container" class="elevation-2"></div>
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
 
 @section script{
     <script>
+        const ACTION = "/NS_GiaiDoan";
+        var WIDTH_CONTAINER = $("#container").width();
+
+        let customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        });
+
         $(function () {
-            let customStore = new DevExpress.data.CustomStore({
-                key: "id",
-                load: function (loadOptions) {
-                    var deferred = $.Deferred(),
-                        params = {
-                            'PageSize': loadOptions["take"],
-                            'PageNumber': loadOptions["skip"]
-                        };
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_READ + "/UserInfo",
-                        dataType: "json",
-                        data: params,
-                        success: function (data) {
-                            deferred.resolve(
-                                data.result.items,
-                                {
-                                    totalCount: data.result.pagingInfo.totalItems,
-                                }
-                            );
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách tài khoản. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                insert: function (values) {
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    var deferred = $.Deferred();
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD+'/UserInfo',
-                        dataType: "json", type: "POST",
-                        data: JSON.stringify(values),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                update: function (key, values) {
-                    var keyObj = JSON.parse('{"id":'+key+'}');
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    var deferred = $.Deferred();
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD + '/UserInfo',
-                        dataType: "json",
-                        type: "PUT",
-                        data: JSON.stringify($.extend(keyObj, values)),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                remove: function (key) {
-                    var deferred = $.Deferred();
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD + "/UserInfo",
-                        dataType: "json",
-                        type: "DELETE",
-                        data: JSON.stringify({
-                            "ids": [key]
-                        }),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách tài khoản. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                }
-            });
             loadData(customStore);
         });
 
-        function loadData(dataSource) {
+        let loadData = (dataSource) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: dataSource, 
+                remoteOperations: {
+                    paging: true,
+                    sorting: true, 
+                },
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 remoteOperations: true,
                 columns: [
                     {
-                        dataField: "firstName", caption:"Họ và tên",
-                        dataType: "string",
+                        caption: "STT",
+                        width: 80, alignment: "center",
+                        allowEditting: false,
+                        cellTemplate: (container, options) => container.append(options.rowIndex + 1), 
+                    },
+                    {
+                        dataField: "tenGiaiDoan", caption:"Tên giai đoạn",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200: "100%" ,
+                        editorOptions: {
+                            placeholder: "Nhập tên giai đoạn...",
+                            showClearButton: true
+                        },
                         validationRules: [
                             {
                                 type: "required",
@@ -138,34 +62,76 @@
                         ]
                     },
                     {
-                        dataField: "lastName", caption:"Tên",
-                        dataType: "string",
-                    },
-                    {
-                        dataField: "sex", caption:"Giới tính",
-                        dataType: "number",
-                        lookup: {
-                            dataSource: listSexs,
-                            valueExpr: "value",
-                            displayExpr: "text"
+                        dataField: "dienGiai", caption:"Diễn giải",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Nhập nội dung diễn giải...",
+                            showClearButton: true
                         },
                     },
                     {
-                        dataField: "dateOfBirth", caption: "Ngày sinh",
-                        dataType: "date", format: "dd/MM/yyyy",
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch",
+                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
                     },
+
                     {
-                        dataField: "country", caption: "Nước",
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch",
+                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
                     },
-                    {
-                        dataField: "city", caption: "Thành phố",
-                    },
-                    {
-                        dataField: "district", caption: "Quận huyện",
-                    },
-                    {
-                        dataField: "address", caption: "Địa chỉ",
-                    }
+                    //{
+                    //    dataField: "createBy", caption: "Khởi tạo",
+                    //    width: 250, aligment: "left",
+                    //    allowEditting: false,
+                    //    cellTemplate: (container, options) => container.append(options.value, " đã tạo cách đây ", moment(options.data.createDate).locale("vi").fromNow())
+                    //},
+                    //{
+                    //    dataField: "modifyBy", caption: "Cập nhật",
+                    //    width: 250, alignment: "left",
+                    //    allowEditting: false,
+                    //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
+                    //}, 
+                ],
+                paging: {
+                    enabled: true,
+                    pageSize:20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                    infoText: "Trang {0} của {1} ({2} dòng)",
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    placeholder: "Tìm nhanh...",
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
+                editing: { 
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    mode: "cell",
+                    useIcons: false, confirmDelete: true, texts: textDataGrid,
+                }, 
+                onToolbarPreparing: function (e) {
+					var container = e.component;
+					e.toolbarOptions.items.unshift(
+						{
+							location: "before", widget: "dxButton",
+							options: {
+								text: "Thêm mới", stylingMode: "filled", type:"default",
+                                onClick: () => container.addRow()
+							}
+						},
+						{
+							location: "after", widget: "dxButton",
+							options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+							}
                 ],
 
                 editing: {
@@ -173,7 +139,9 @@
                     allowUpdating: true,
                     allowDeleting: true,
                     mode: "popup"
-                }
+						}
+					);
+				}, 
             });
         }
     </script>

@@ -29,7 +29,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newProblemCategory.SetCreateAccount(0);
             newProblemCategory.Status = request.Status.HasValue ? request.Status : newProblemCategory.Status;
             newProblemCategory.IsActive = request.IsActive.HasValue ? request.IsActive : newProblemCategory.IsActive;
-            newProblemCategory.IsVisible = request.IsActive.HasValue ? request.IsVisible : newProblemCategory.IsVisible;
+            newProblemCategory.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newProblemCategory.IsVisible;
             await _ProblemCategoryRepository.AddAsync(newProblemCategory).ConfigureAwait(false);
             await _ProblemCategoryRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateProblemCategoryCommandResponse>(newProblemCategory);
