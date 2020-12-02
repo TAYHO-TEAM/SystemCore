@@ -180,7 +180,9 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountConfigController.cs" />
     <Compile Include="Areas\Admin\Controllers\ActionsConfigController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\GiaiDoanController.cs" />
     <Compile Include="Areas\NganSach\Controllers\HomeController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\NhomChiPhiController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -2414,9 +2416,10 @@
     <Content Include="Areas\NganSach\Views\web.config" />
     <Content Include="Areas\NganSach\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\NganSach\Views\Home\GiaiDoan.cshtml" />
     <Content Include="Areas\Admin\Views\AccountConfig\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ActionsConfig\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\NhomChiPhi\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\GiaiDoan\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

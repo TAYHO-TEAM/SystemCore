@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Ngân sách - giai đoạn";
+    ViewBag.Title = "Các giai đoạn";
 }
 
 @section style{   }
@@ -32,10 +32,10 @@
         let loadData = (dataSource) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: dataSource, 
+                dataSource: dataSource,
                 remoteOperations: {
                     paging: true,
-                    sorting: true, 
+                    sorting: true,
                 },
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
@@ -45,11 +45,11 @@
                         caption: "STT",
                         width: 80, alignment: "center",
                         allowEditting: false,
-                        cellTemplate: (container, options) => container.append(options.rowIndex + 1), 
+                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
                     },
                     {
-                        dataField: "tenGiaiDoan", caption:"Tên giai đoạn",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200: "100%" ,
+                        dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
                             placeholder: "Nhập tên giai đoạn...",
                             showClearButton: true
@@ -62,7 +62,7 @@
                         ]
                     },
                     {
-                        dataField: "dienGiai", caption:"Diễn giải",
+                        dataField: "dienGiai", caption: "Diễn giải",
                         dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
                             placeholder: "Nhập nội dung diễn giải...",
@@ -91,11 +91,11 @@
                     //    width: 250, alignment: "left",
                     //    allowEditting: false,
                     //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
-                    //}, 
+                    //},
                 ],
                 paging: {
                     enabled: true,
-                    pageSize:20
+                    pageSize: 20
                 },
                 pager: {
                     showPageSizeSelector: true,
@@ -110,38 +110,30 @@
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
-                editing: { 
+                editing: {
                     allowUpdating: true,
                     allowDeleting: true,
                     mode: "cell",
                     useIcons: false, confirmDelete: true, texts: textDataGrid,
-                }, 
+                },
                 onToolbarPreparing: function (e) {
-					var container = e.component;
-					e.toolbarOptions.items.unshift(
-						{
-							location: "before", widget: "dxButton",
-							options: {
-								text: "Thêm mới", stylingMode: "filled", type:"default",
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "before", widget: "dxButton",
+                            options: {
+                                text: "Thêm mới", stylingMode: "filled", type: "default",
                                 onClick: () => container.addRow()
-							}
-						},
-						{
-							location: "after", widget: "dxButton",
-							options: {
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
                                 icon: "refresh", tylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
-							}
-                ],
-
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "popup"
-						}
-					);
-				}, 
+                            }
+                        })
+                },
             });
         }
     </script>

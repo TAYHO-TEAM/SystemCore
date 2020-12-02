@@ -115,8 +115,8 @@
         }).done(function (data) {
             loadingPanel.hide();
             if (data.isOk) {
-                sessionStorage.setItem("userCurrent", form.option("formData").userName);
-                sessionStorage.setItem("userCurrentInfo", JSON.stringify(data.result));
+                localStorage.setItem("userCurrent", form.option("formData").userName);
+                localStorage.setItem("userCurrentInfo", JSON.stringify(data.result));
                 window.location = getParamInUrl("url", window.location.href);
             }
         }).fail(function (jqXHR, textStatus) {

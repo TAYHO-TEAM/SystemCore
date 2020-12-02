@@ -1,4 +1,6 @@
-﻿let checkLogin = () => (isNullOrEmpty(sessionStorage.getItem("userCurrent")) && isNullOrEmpty(sessionStorage.getItem("userCurrentInfo")));
+﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
+var UserCurrent = localStorage.getItem("userCurrent");
+var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
 
 $(function () {
     if (checkLogin()) {
@@ -9,16 +11,14 @@ $(function () {
 });
 
 let loadUser = () => {
-    var UserCurrentInfo = JSON.parse(sessionStorage.getItem("userCurrentInfo"));
     $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
     $('.user-panel div.info a').html(UserCurrentInfo.userName);
     $('.user-panel div.info span').html(UserCurrentInfo.title);
-
 }
 
 function logout(url) {
-    if (url == null || url.length == 0) url = "Home";
-    sessionStorage.clear();
+    if (url == null || url.length == 0 || url=="/") url = "Home";
+    localStorage.clear();
     window.location = "/Account/Login?url=" + url;
 }
 
@@ -110,7 +110,8 @@ let ajax_load = (url, values) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
         },
         url: url, dataType: "json", data: params,
         success: function (data) {

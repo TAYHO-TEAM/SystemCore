@@ -21,6 +21,12 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<Assignments> Assignments { get; set; }
         public DbSet<Reply> Reply { get; set; }
         public DbSet<NS_GiaiDoan> NS_GiaiDoan { get; set; }
+        public DbSet<NS_HangMuc> NS_HangMuc { get; set; }
+        public DbSet<NS_HopDong> NS_HopDong { get; set; }
+        public DbSet<NS_LoaiThau> NS_LoaiThau { get; set; }
+        public DbSet<NS_NganSach> NS_NganSach { get; set; }
+        public DbSet<NS_NganSachDetail> NS_NganSachDetail { get; set; }
+        public DbSet<NS_NhomChiPhi> NS_NhomChiPhi { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

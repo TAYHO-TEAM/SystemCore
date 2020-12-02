@@ -1,0 +1,141 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Nhóm chi phí";
+}
+
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        const ACTION = "/NS_NhomChiPhi";
+        var WIDTH_CONTAINER = $("#container").width();
+
+        let customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        });
+
+        $(function () {
+            loadData(customStore);
+        });
+
+        let loadData = (dataSource) => {
+            $("#container").dxDataGrid({
+                height: heightScreen,
+                dataSource: dataSource,
+                remoteOperations: {
+                    paging: true,
+                    sorting: true,
+                },
+                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                remoteOperations: true,
+                columns: [
+                    {
+                        caption: "STT",
+                        width: 80, alignment: "center",
+                        allowEditting: false,
+                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
+                    },
+                    {
+                        dataField: "tenNhomChiPhi", caption: "Tên nhóm",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Nhập tên giai đoạn...",
+                            showClearButton: true
+                        },
+                        validationRules: [
+                            {
+                                type: "required",
+                                message: "Bắt buộc nhập thông tin"
+                            }
+                        ]
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Nhập nội dung diễn giải...",
+                            showClearButton: true
+                        },
+                    },
+                    {
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch",
+                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
+                    },
+
+                    {
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch",
+                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
+                    },
+                    //{
+                    //    dataField: "createBy", caption: "Khởi tạo",
+                    //    width: 250, aligment: "left",
+                    //    allowEditting: false,
+                    //    cellTemplate: (container, options) => container.append(options.value, " đã tạo cách đây ", moment(options.data.createDate).locale("vi").fromNow())
+                    //},
+                    //{
+                    //    dataField: "modifyBy", caption: "Cập nhật",
+                    //    width: 250, alignment: "left",
+                    //    allowEditting: false,
+                    //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
+                    //},
+                ],
+                paging: { enabled: true, pageSize: 20 },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                    infoText: "Trang {0} của {1} ({2} dòng)",
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    placeholder: "Tìm nhanh...",
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
+                editing: {
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    mode: "cell",
+                    useIcons: false, confirmDelete: true, texts: textDataGrid,
+                },
+                onToolbarPreparing: function (e) {
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "before", widget: "dxButton",
+                            options: {
+                                text: "Thêm mới", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+                            }
+                        })
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                }
+            });
+        }
+    </script>
+}
