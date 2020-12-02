@@ -7,9 +7,9 @@ namespace Services.Common.DomainObjects
 {
     public abstract class EntityDO : EntityBase, IAggregateRoot
     {
-        public bool? IsDelete { get; set; }
-        public bool? IsActive { get; set; }
-        public bool? IsVisible { get; set; }
+        public virtual bool? IsDelete { get; set; }
+        public virtual bool? IsActive { get; set; }
+        public virtual bool? IsVisible { get; set; }
         public virtual int? CreateBy { get; set; }
         public virtual DateTime CreateDateUTC { get; set; }
         public virtual DateTime CreateDate { get; set; }
@@ -23,6 +23,10 @@ namespace Services.Common.DomainObjects
             CreateDateUTC = DateTime.UtcNow;
             CreateDate = DateTime.Now;
             IsDelete = false;
+        }
+        public virtual void SetCreate(int? createby)
+        {
+            CreateBy = createby.HasValue? createby : CreateBy;
         }
         public virtual void SetUpdate(int? modifyBy, byte? status)
         {

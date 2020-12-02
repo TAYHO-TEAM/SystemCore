@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteFunctionsCommandHandler : FunctionsCommandHandler, IRequestHandler<DeleteFunctionsCommand, MethodResult<DeleteFunctionsCommandResponse>>
     {
-        public DeleteFunctionsCommandHandler(IMapper mapper, IFunctionsRepository FunctionsRepository) : base(mapper, FunctionsRepository)
+        public DeleteFunctionsCommandHandler(IMapper mapper, IFunctionsRepository FunctionsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, FunctionsRepository)
         {
         }
 
@@ -45,7 +45,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingFunctions.UpdateDate = now;
                 existingFunctions.UpdateDateUTC = utc;
                 existingFunctions.IsDelete = true;
-                
+                existingFunctions.SetUpdate(_user, null);
+
             }
             _FunctionsRepository.UpdateRange(existingFunctionss);
             await _FunctionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

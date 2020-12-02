@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteContractorInfoCommandHandler : ContractorInfoCommandHandler, IRequestHandler<DeleteContractorInfoCommand, MethodResult<DeleteContractorInfoCommandResponse>>
     {
-        public DeleteContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository) : base(mapper, ContractorInfoRepository)
+        public DeleteContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, ContractorInfoRepository)
         {
         }
 
@@ -45,7 +45,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingContractorInfo.UpdateDate = now;
                 existingContractorInfo.UpdateDateUTC = utc;
                 existingContractorInfo.IsDelete = true;
-               
+                existingContractorInfo.SetUpdate(_user, null);
+
             }
             _ContractorInfoRepository.UpdateRange(existingContractorInfos);
             await _ContractorInfoRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

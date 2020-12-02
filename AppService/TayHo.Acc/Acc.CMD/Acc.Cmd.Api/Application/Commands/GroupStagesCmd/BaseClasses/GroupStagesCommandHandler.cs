@@ -1,14 +1,14 @@
 ﻿using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper; using Microsoft.AspNetCore.Http;
 
 namespace Acc.Cmd.Api.Application.Commands
 {
-    public class GroupStagesCommandHandler
+    public class GroupStagesCommandHandler : BaseCommandHandler
     {
-        protected readonly IMapper _mapper;
+        protected readonly IMapper _mapper; protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IGroupStagesRepository _GroupStagesRepository;
 
-        public GroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository)
+        public GroupStagesCommandHandler(IMapper mapper,  IHttpContextAccessor httpContextAccessor, IGroupStagesRepository GroupStagesRepository) : base (httpContextAccessor)
         {
             _mapper = mapper;
             _GroupStagesRepository = GroupStagesRepository;

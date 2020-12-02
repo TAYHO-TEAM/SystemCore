@@ -1,9 +1,10 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
+using Services.Common.Security;
 using Services.Common.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateActionsCommandHandler : ActionsCommandHandler, IRequestHandler<CreateActionsCommand, MethodResult<CreateActionsCommandResponse>>
     {
-        public CreateActionsCommandHandler(IMapper mapper, IActionsRepository ActionsRepository) : base(mapper, ActionsRepository)
+        public CreateActionsCommandHandler(IMapper mapper, IActionsRepository ActionsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, ActionsRepository)
         {
         }
 
@@ -24,7 +25,6 @@ namespace  Acc.Cmd.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateActionsCommandResponse>> Handle(CreateActionsCommand request, CancellationToken cancellationToken)
         {
-
             var methodResult = new MethodResult<CreateActionsCommandResponse>();
             var parentAction = await _actionsRepository.SingleOrDefaultAsync(x => x.Id == request.ParentId && x.IsDelete == false).ConfigureAwait(false);
             if (parentAction == null)
@@ -45,6 +45,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                                         request.Url,
                                         request.CategoryId,
                                         request.Level);
+            newActions.SetCreate(_user);
             newActions.Status = request.Status.HasValue ? request.Status : newActions.Status;
             newActions.IsActive = request.IsActive.HasValue ? request.IsActive : newActions.IsActive;
             newActions.IsVisible = request.IsActive.HasValue ? request.IsVisible : newActions.IsVisible;

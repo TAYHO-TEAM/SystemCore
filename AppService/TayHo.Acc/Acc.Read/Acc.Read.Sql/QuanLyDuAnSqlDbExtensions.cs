@@ -37,6 +37,7 @@ namespace Acc.Read.Sql
             services.AddScoped<IDOBaseRepository<GroupActionDTO>, DOBaseRepository<GroupActionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupFunctionDTO>, DOBaseRepository<GroupFunctionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupPermistionDTO>, DOBaseRepository<GroupPermistionDTO>>();
+            services.AddScoped<IDOBaseRepository<GroupActionPermistionDTO>, DOBaseRepository<GroupActionPermistionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupsDTO>, DOBaseRepository<GroupsDTO>>();
             services.AddScoped<IDOBaseRepository<LogEventDTO>, DOBaseRepository<LogEventDTO>>();
             services.AddScoped<IDOBaseRepository<PermistionsDTO>, DOBaseRepository<PermistionsDTO>>();

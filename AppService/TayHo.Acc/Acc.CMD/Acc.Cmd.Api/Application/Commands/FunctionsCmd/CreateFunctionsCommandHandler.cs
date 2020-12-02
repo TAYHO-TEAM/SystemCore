@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateFunctionsCommandHandler : FunctionsCommandHandler, IRequestHandler<CreateFunctionsCommand, MethodResult<CreateFunctionsCommandResponse>>
     {
-        public CreateFunctionsCommandHandler(IMapper mapper, IFunctionsRepository FunctionsRepository) : base(mapper, FunctionsRepository)
+        public CreateFunctionsCommandHandler(IMapper mapper, IFunctionsRepository FunctionsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, FunctionsRepository)
         {
         }
 
@@ -31,6 +31,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                                                 request.Url,
                                                 request.CategoryId,
                                                 request.Level);
+            newFunctions.SetCreate(_user);
             newFunctions.Status = request.Status.HasValue ? request.Status : newFunctions.Status;
             newFunctions.IsActive = request.IsActive.HasValue ? request.IsActive : newFunctions.IsActive;
             newFunctions.IsVisible = request.IsActive.HasValue ? request.IsVisible : newFunctions.IsVisible;

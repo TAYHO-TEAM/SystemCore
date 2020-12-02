@@ -23,6 +23,7 @@ namespace Acc.Cmd.Infrastructure
         public DbSet<GroupAction> GroupAction { get; set; }
         public DbSet<GroupFunction> GroupFunction { get; set; }
         public DbSet<GroupPermistion> GroupPermistion { get; set; }
+        public DbSet<GroupActionPermistion> GroupActionPermistion { get; set; }
         public DbSet<Groups> Groups { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
         public DbSet<Permistions> Permistions { get; set; }

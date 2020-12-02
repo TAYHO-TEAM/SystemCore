@@ -5,12 +5,13 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateGroupActionCommandHandler : GroupActionCommandHandler, IRequestHandler<CreateGroupActionCommand, MethodResult<CreateGroupActionCommandResponse>>
     {
-        public CreateGroupActionCommandHandler(IMapper mapper, IGroupActionRepository GroupActionRepository) : base(mapper, GroupActionRepository)
+        public CreateGroupActionCommandHandler(IMapper mapper, IGroupActionRepository GroupActionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupActionRepository)
         {
         }
 
@@ -25,6 +26,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             var methodResult = new MethodResult<CreateGroupActionCommandResponse>();
             var newGroupAction = new GroupAction(request.ActionId,
                                                     request.GroupId);
+            newGroupAction.SetCreate(_user);
             newGroupAction.Status = request.Status.HasValue ? request.Status : newGroupAction.Status;
             newGroupAction.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupAction.IsActive;
             newGroupAction.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupAction.IsVisible;

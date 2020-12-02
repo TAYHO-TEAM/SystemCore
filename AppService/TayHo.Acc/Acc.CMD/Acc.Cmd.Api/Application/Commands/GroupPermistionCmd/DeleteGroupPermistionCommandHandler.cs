@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteGroupPermistionCommandHandler : GroupPermistionCommandHandler, IRequestHandler<DeleteGroupPermistionCommand, MethodResult<DeleteGroupPermistionCommandResponse>>
     {
-        public DeleteGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository GroupPermistionRepository) : base(mapper, GroupPermistionRepository)
+        public DeleteGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository GroupPermistionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupPermistionRepository)
         {
         }
 
@@ -45,7 +45,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingGroupPermistion.UpdateDate = now;
                 existingGroupPermistion.UpdateDateUTC = utc;
                 existingGroupPermistion.IsDelete = true;
-                
+                existingGroupPermistion.SetUpdate(_user, null);
+
             }
             _GroupPermistionRepository.UpdateRange(existingGroupPermistions);
             await _GroupPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

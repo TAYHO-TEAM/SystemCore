@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateCategorysCommandHandler : CategorysCommandHandler, IRequestHandler<CreateCategorysCommand, MethodResult<CreateCategorysCommandResponse>>
     {
-        public CreateCategorysCommandHandler(IMapper mapper, ICategorysRepository CategorysRepository) : base(mapper, CategorysRepository)
+        public CreateCategorysCommandHandler(IMapper mapper, ICategorysRepository CategorysRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, CategorysRepository)
         {
         }
 
@@ -28,6 +28,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newCategorys.Status = request.Status.HasValue ? request.Status : newCategorys.Status;
             newCategorys.IsActive = request.IsActive.HasValue ? request.IsActive : newCategorys.IsActive;
             newCategorys.IsVisible = request.IsActive.HasValue ? request.IsVisible : newCategorys.IsVisible;
+            newCategorys.SetCreate(_user);
             await _CategorysRepository.AddAsync(newCategorys).ConfigureAwait(false);
             await _CategorysRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateCategorysCommandResponse>(newCategorys);

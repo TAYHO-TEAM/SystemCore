@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupFunctionCommandHandler : GroupFunctionCommandHandler,IRequestHandler<UpdateGroupFunctionCommand, MethodResult<UpdateGroupFunctionCommandResponse>>
     {
-        public UpdateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository FunctionRepository) : base(mapper, FunctionRepository)
+        public UpdateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository FunctionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, FunctionRepository)
         {
         }
 
@@ -41,7 +41,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingGroupFunction.SetFunctionId(request.FunctionId);
             existingGroupFunction.SetGroupId(request.GroupId);
 
-            existingGroupFunction.SetUpdate(0,0);
+            existingGroupFunction.SetUpdate(_user,null);
             _GroupFunctionRepository.Update(existingGroupFunction);
             await _GroupFunctionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupFunctionCommandResponse>(existingGroupFunction);

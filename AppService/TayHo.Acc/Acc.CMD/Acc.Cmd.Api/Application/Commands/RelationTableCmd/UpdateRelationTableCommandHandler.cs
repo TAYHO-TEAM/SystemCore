@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateRelationTableCommandHandler : RelationTableCommandHandler,IRequestHandler<UpdateRelationTableCommand, MethodResult<UpdateRelationTableCommandResponse>>
     {
-        public UpdateRelationTableCommandHandler(IMapper mapper, IRelationTableRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateRelationTableCommandHandler(IMapper mapper, IRelationTableRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -43,7 +43,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingRelationTable.SetForeignTable(request.ForeignTable);
             existingRelationTable.SetForeignKey(request.ForeignKey);
 
-            existingRelationTable.SetUpdate(0,0);
+            existingRelationTable.SetUpdate(_user,null);
             _RelationTableRepository.Update(existingRelationTable);
             await _RelationTableRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateRelationTableCommandResponse>(existingRelationTable);

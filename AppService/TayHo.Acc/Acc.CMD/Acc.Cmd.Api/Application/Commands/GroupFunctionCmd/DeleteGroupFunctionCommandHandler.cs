@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteGroupFunctionCommandHandler : GroupFunctionCommandHandler, IRequestHandler<DeleteGroupFunctionCommand, MethodResult<DeleteGroupFunctionCommandResponse>>
     {
-        public DeleteGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository GroupFunctionRepository) : base(mapper, GroupFunctionRepository)
+        public DeleteGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository GroupFunctionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupFunctionRepository)
         {
         }
 
@@ -45,7 +45,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingGroupFunction.UpdateDate = now;
                 existingGroupFunction.UpdateDateUTC = utc;
                 existingGroupFunction.IsDelete = true;
-                
+                existingGroupFunction.SetUpdate(_user, null);
+
             }
             _GroupFunctionRepository.UpdateRange(existingGroupFunctions);
             await _GroupFunctionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

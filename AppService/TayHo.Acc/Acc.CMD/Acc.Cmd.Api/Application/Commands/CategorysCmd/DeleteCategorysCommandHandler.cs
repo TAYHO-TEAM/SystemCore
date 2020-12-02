@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteCategorysCommandHandler : CategorysCommandHandler, IRequestHandler<DeleteCategorysCommand, MethodResult<DeleteCategorysCommandResponse>>
     {
-        public DeleteCategorysCommandHandler(IMapper mapper, ICategorysRepository CategorysRepository) : base(mapper, CategorysRepository)
+        public DeleteCategorysCommandHandler(IMapper mapper, ICategorysRepository CategorysRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, CategorysRepository)
         {
         }
 
@@ -45,7 +45,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingCategorys.UpdateDate = now;
                 existingCategorys.UpdateDateUTC = utc;
                 existingCategorys.IsDelete = true;
-                
+                existingCategorys.SetUpdate(_user, null);
+
             }
             _CategorysRepository.UpdateRange(existingCategoryss);
             await _CategorysRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
