@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteUserInfoCommandHandler : UserInfoCommandHandler, IRequestHandler<DeleteUserInfoCommand, MethodResult<DeleteUserInfoCommandResponse>>
     {
-        public DeleteUserInfoCommandHandler(IMapper mapper, IUserInfoRepository UserInfoRepository) : base(mapper, UserInfoRepository)
+        public DeleteUserInfoCommandHandler(IMapper mapper, IUserInfoRepository UserInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, UserInfoRepository)
         {
         }
 
@@ -46,6 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingUserInfo.UpdateDate = now;
                 existingUserInfo.UpdateDateUTC = utc;
                 existingUserInfo.IsDelete = true;
+                existingUserInfo.SetUpdate(_user, null);
             }
             _UserInfoRepository.UpdateRange(existingUserInfos);
             await _UserInfoRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

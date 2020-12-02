@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupPermistionCommandHandler : GroupPermistionCommandHandler,IRequestHandler<UpdateGroupPermistionCommand, MethodResult<UpdateGroupPermistionCommandResponse>>
     {
-        public UpdateGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository PermistionRepository) : base(mapper, PermistionRepository)
+        public UpdateGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository PermistionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, PermistionRepository)
         {
         }
 
@@ -41,7 +41,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingGroupPermistion.SetPermistionId(request.PermistionId);
             existingGroupPermistion.SetGroupId(request.GroupId);
 
-            existingGroupPermistion.SetUpdate(0,0);
+            existingGroupPermistion.SetUpdate(_user,null);
             _GroupPermistionRepository.Update(existingGroupPermistion);
             await _GroupPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupPermistionCommandResponse>(existingGroupPermistion);

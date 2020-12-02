@@ -5,12 +5,13 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateGroupStagesCommandHandler : GroupStagesCommandHandler, IRequestHandler<CreateGroupStagesCommand, MethodResult<CreateGroupStagesCommandResponse>>
     {
-        public CreateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository) : base(mapper, GroupStagesRepository)
+        public CreateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupStagesRepository)
         {
         }
 
@@ -25,6 +26,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             var methodResult = new MethodResult<CreateGroupStagesCommandResponse>();
             var newGroupStages = new GroupStages(request.StagesId,
                                                     request.GroupId);
+            newGroupStages.SetCreate(_user);
             newGroupStages.Status = request.Status.HasValue ? request.Status : newGroupStages.Status;
             newGroupStages.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupStages.IsActive;
             newGroupStages.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupStages.IsVisible;

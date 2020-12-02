@@ -20,6 +20,7 @@ namespace Acc.Common
         public const string RelationTable_TABLENAME = "RelationTable";
         public const string GroupFunction_TABLENAME = "GroupFunction";
         public const string StaffTayHo_TABLENAME = "StaffTayHo";
+        public const string GroupActionPermistion_TABLENAME = "GroupActionPermistion";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";

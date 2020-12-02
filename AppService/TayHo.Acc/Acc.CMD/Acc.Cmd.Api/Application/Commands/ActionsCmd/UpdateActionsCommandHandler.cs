@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateActionsCommandHandler : ActionsCommandHandler,IRequestHandler<UpdateActionsCommand, MethodResult<UpdateActionsCommandResponse>>
     {
-        public UpdateActionsCommandHandler(IMapper mapper, IActionsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateActionsCommandHandler(IMapper mapper, IActionsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -45,7 +45,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingActions.SetUrl(request.Url);
             existingActions.SetCategoryId(request.CategoryId);
             existingActions.SetLevel(request.Level);
-            existingActions.SetUpdate(0,0);
+            existingActions.SetUpdate(_user,null);
             _actionsRepository.Update(existingActions);
             await _actionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateActionsCommandResponse>(existingActions);

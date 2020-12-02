@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupAccountCommandHandler : GroupAccountCommandHandler,IRequestHandler<UpdateGroupAccountCommand, MethodResult<UpdateGroupAccountCommandResponse>>
     {
-        public UpdateGroupAccountCommandHandler(IMapper mapper, IGroupAccountRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateGroupAccountCommandHandler(IMapper mapper, IGroupAccountRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -41,7 +42,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingGroupAccount.SetAccountId(request.AccountId);
             existingGroupAccount.SetGroupId(request.GroupId);
 
-            existingGroupAccount.SetUpdate(0,0);
+            existingGroupAccount.SetUpdate(_user,null);
             _GroupAccountRepository.Update(existingGroupAccount);
             await _GroupAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupAccountCommandResponse>(existingGroupAccount);

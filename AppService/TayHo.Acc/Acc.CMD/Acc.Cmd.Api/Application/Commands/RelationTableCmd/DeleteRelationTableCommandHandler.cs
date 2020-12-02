@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +15,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteRelationTableCommandHandler : RelationTableCommandHandler, IRequestHandler<DeleteRelationTableCommand, MethodResult<DeleteRelationTableCommandResponse>>
     {
-        public DeleteRelationTableCommandHandler(IMapper mapper, IRelationTableRepository RelationTableRepository) : base(mapper, RelationTableRepository)
+        public DeleteRelationTableCommandHandler(IMapper mapper, IRelationTableRepository RelationTableRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, RelationTableRepository)
         {
         }
 
@@ -45,6 +45,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingRelationTable.UpdateDate = now;
                 existingRelationTable.UpdateDateUTC = utc;
                 existingRelationTable.IsDelete = true;
+                existingRelationTable.SetUpdate(_user, null);
             }
             _RelationTableRepository.UpdateRange(existingRelationTables);
             await _RelationTableRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateGroupAccountCommandHandler : GroupAccountCommandHandler, IRequestHandler<CreateGroupAccountCommand, MethodResult<CreateGroupAccountCommandResponse>>
     {
-        public CreateGroupAccountCommandHandler(IMapper mapper, IGroupAccountRepository GroupAccountRepository) : base(mapper, GroupAccountRepository)
+        public CreateGroupAccountCommandHandler(IMapper mapper, IGroupAccountRepository GroupAccountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupAccountRepository)
         {
         }
 
@@ -25,6 +25,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             var methodResult = new MethodResult<CreateGroupAccountCommandResponse>();
             var newGroupAccount = new GroupAccount(request.AccountId,
                                                     request.GroupId);
+            newGroupAccount.SetCreate(_user);
             newGroupAccount.Status = request.Status.HasValue ? request.Status : newGroupAccount.Status;
             newGroupAccount.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupAccount.IsActive;
             newGroupAccount.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupAccount.IsVisible;

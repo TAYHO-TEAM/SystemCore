@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateDocumentTypeCommandHandler : DocumentTypeCommandHandler,IRequestHandler<UpdateDocumentTypeCommand, MethodResult<UpdateDocumentTypeCommandResponse>>
     {
-        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -41,7 +42,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingDocumentType.SetCode(request.Code);
             existingDocumentType.SetTitle(request.Title);
             existingDocumentType.SetDescription(request.Descriptions);
-            existingDocumentType.SetUpdate(0,0);
+            existingDocumentType.SetUpdate(_user,null);
             _DocumentTypeRepository.Update(existingDocumentType);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateDocumentTypeCommandResponse>(existingDocumentType);

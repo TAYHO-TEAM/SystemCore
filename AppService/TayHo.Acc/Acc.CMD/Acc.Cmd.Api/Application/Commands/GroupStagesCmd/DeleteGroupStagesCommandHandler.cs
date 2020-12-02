@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteGroupStagesCommandHandler : GroupStagesCommandHandler, IRequestHandler<DeleteGroupStagesCommand, MethodResult<DeleteGroupStagesCommandResponse>>
     {
-        public DeleteGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository) : base(mapper, GroupStagesRepository)
+        public DeleteGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupStagesRepository)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingGroupStages.UpdateDate = now;
                 existingGroupStages.UpdateDateUTC = utc;
                 existingGroupStages.IsDelete = true;
-              
+                existingGroupStages.SetUpdate(_user, null);
             }
             _GroupStagesRepository.UpdateRange(existingGroupStagess);
             await _GroupStagesRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -21,14 +21,11 @@ namespace Acc.Cmd.Api.Controllers.V1
         private const string Logout = nameof(Logout);
         private const string RefreshToken = "Refresh-Token";
         private readonly IAccountService _accountService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region login
-        public AccountController(IMediator mediator, IAccountService accountService, IHttpContextAccessor httpContextAccessor) : base(mediator)
+        public AccountController(IMediator mediator, IAccountService accountService) : base(mediator)
         {
             _accountService = accountService;
-            _httpContextAccessor = httpContextAccessor;
-            //var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimsTypeName.ACCOUNT_ID).Value;
         }
         ///// <summary>
         /////  Logging Account.
@@ -56,7 +53,6 @@ namespace Acc.Cmd.Api.Controllers.V1
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestViewModel command)
         {
             var methodResult = new MethodResult<TokenAccountResult>();
-            var username = _httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID].ToString();
             methodResult.Result = await _accountService.LoginAsync(command.UserName, command.Password).ConfigureAwait(false);
             return Ok(methodResult);
         }

@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteProjectsCommandHandler : ProjectsCommandHandler, IRequestHandler<DeleteProjectsCommand, MethodResult<DeleteProjectsCommandResponse>>
     {
-        public DeleteProjectsCommandHandler(IMapper mapper, IProjectsRepository ProjectsRepository) : base(mapper, ProjectsRepository)
+        public DeleteProjectsCommandHandler(IMapper mapper, IProjectsRepository ProjectsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, ProjectsRepository)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingProject.UpdateDate = now;
                 existingProject.UpdateDateUTC = utc;
                 existingProject.IsDelete = true;
-               
+                existingProject.SetUpdate(_user, null);
             }
             _ProjectsRepository.UpdateRange(existingProjects);
             await _ProjectsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

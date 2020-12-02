@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateContractorInfoCommandHandler : ContractorInfoCommandHandler, IRequestHandler<CreateContractorInfoCommand, MethodResult<CreateContractorInfoCommandResponse>>
     {
-        public CreateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository) : base(mapper, ContractorInfoRepository)
+        public CreateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, ContractorInfoRepository)
         {
         }
 
@@ -35,6 +35,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                                                         request.Address,
                                                         request.Phone,
                                                         request.Email);
+            newContractorInfo.SetCreate(_user);
             newContractorInfo.Status = request.Status.HasValue ? request.Status : newContractorInfo.Status;
             newContractorInfo.IsActive = request.IsActive.HasValue ? request.IsActive : newContractorInfo.IsActive;
             newContractorInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : newContractorInfo.IsVisible;

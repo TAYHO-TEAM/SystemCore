@@ -2,6 +2,7 @@
 using Acc.Cmd.Domain.Repositories;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
 using Services.Common.Utilities;
@@ -15,7 +16,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteGroupsCommandHandler : GroupsCommandHandler, IRequestHandler<DeleteGroupsCommand, MethodResult<DeleteGroupsCommandResponse>>
     {
-        public DeleteGroupsCommandHandler(IMapper mapper, IGroupsRepository GroupsRepository) : base(mapper, GroupsRepository)
+        public DeleteGroupsCommandHandler(IMapper mapper, IGroupsRepository GroupsRepository ,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupsRepository)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingGroups.UpdateDate = now;
                 existingGroups.UpdateDateUTC = utc;
                 existingGroups.IsDelete = true;
-               
+                existingGroups.SetUpdate(_user,null);
             }
             _GroupsRepository.UpdateRange(existingGroupss);
             await _GroupsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

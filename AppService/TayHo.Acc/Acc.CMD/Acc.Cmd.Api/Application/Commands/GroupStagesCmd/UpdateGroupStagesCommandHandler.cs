@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupStagesCommandHandler : GroupStagesCommandHandler,IRequestHandler<UpdateGroupStagesCommand, MethodResult<UpdateGroupStagesCommandResponse>>
     {
-        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository StagesRepository) : base(mapper, StagesRepository)
+        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository StagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, StagesRepository)
         {
         }
 
@@ -41,7 +42,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingGroupStages.SetStagesId(request.StagesId);
             existingGroupStages.SetGroupId(request.GroupId);
 
-            existingGroupStages.SetUpdate(0,0);
+            existingGroupStages.SetUpdate(_user,null);
             _GroupStagesRepository.Update(existingGroupStages);
             await _GroupStagesRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupStagesCommandResponse>(existingGroupStages);
