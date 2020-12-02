@@ -1,27 +1,20 @@
-﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
-var UserCurrent = localStorage.getItem("userCurrent");
-var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
-
-$(function () {
-    if (checkLogin()) {
-        loadUser();
-        loadMenu();
-    }
-    else logout(window.location.pathname);
+﻿$(function () {
+    checkLogin();
+    loadMenu();
 });
 
-let loadUser = () => {
-    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
-    $('.user-panel div.info a').html(UserCurrentInfo.userName);
-    $('.user-panel div.info span').html(UserCurrentInfo.title);
-}
-
 function logout(url) {
-    if (url == null || url.length == 0 || url=="/") url = "Home";
-    localStorage.clear();
+    if (url == null || url.length == 0) url = "Home";
+    sessionStorage.clear();
     window.location = "/Account/Login?url=" + url;
 }
 
+function checkLogin() {
+    var url = window.location.pathname;
+    if (!isNullOrEmpty(sessionStorage.getItem("userCurrent"))) {
+        logout(url);
+    }
+}
 function loadMenu() {
     var rs = "", url = URL_API_PM_READ + "/Actions";
     var container = $(".list-menu-left");
@@ -54,13 +47,13 @@ function loadMenu() {
             });
         });
 }
-let menuItem = (item, list) => {
+function menuItem(item, list) {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
         <a class='nav-link' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
-        </a>";
+        </a>";    
     if (listChild != null && listChild.length > 0) {
         rs += "<ul class='nav nav-treeview ml-2'>";
         listChild.forEach(x => rs += menuItem(x, list));
@@ -70,6 +63,7 @@ let menuItem = (item, list) => {
 
     return rs;
 }
+
 
 var loadingPanel = $("#loading-panel").dxLoadPanel({
     shadingColor: "rgba(0,0,0,0.3)",
@@ -95,23 +89,16 @@ function getParamInUrl(name, url) {
 }
 
 let ajax_load = (url, values) => {
-    console.log(values);
-    var deferred = $.Deferred(), params = {};
-    params = {
-        'PageSize': isNullOrEmpty(values.take) ? values.take:0,
-        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-    };
-    if (values.sort !== null && values.sort.length > 0) {
-        params['SortCol'] = values.sort[0].selector;
-        params['SortADSC'] = values.sort[0].desc;
-    }
-
+    var deferred = $.Deferred(),
+        params = {
+            'PageSize': values["take"],
+            'PageNumber': values["skip"]
+        }; 
     $.ajax({
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
+            'Access-Control-Allow-Origin': '*'
         },
         url: url, dataType: "json", data: params,
         success: function (data) {
@@ -130,7 +117,7 @@ let ajax_load = (url, values) => {
     });
     return deferred.promise();
 }
-let ajax_insert = (url, values) => {
+let ajax_insert = (url, values) => { 
     var deferred = $.Deferred();
     $.ajax({
         headers: {
@@ -146,51 +133,6 @@ let ajax_insert = (url, values) => {
         error: function (xhr, textStatus, errorThrown) {
             console.log(xhr.responseJSON);
             deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
-        },
-        timeout: 5000
-    });
-    return deferred.promise();
-}
-
-let ajax_update = (url, key, values) => {
-    var keyObj = JSON.parse('{"id":' + key + '}');
-    var deferred = $.Deferred();
-    $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        url: url, dataType: "json", type: "PUT",
-        data: JSON.stringify($.extend(keyObj, values)),
-        success: function (data) {
-            deferred.resolve();
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
-            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
-        },
-        timeout: 5000
-    });
-    return deferred.promise();
-}
-
-let ajax_delete = (url, key) => {
-    var deferred = $.Deferred();
-    $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        url: url, dataType: "json", type: "DELETE",
-        data: JSON.stringify({ "ids": [key]}),
-        success: function (data) {
-            deferred.resolve();
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
-            deferred.reject("Có lỗi xảy ra trong quá trình xóa dữ liệu. Mở Console để xem chi tiết.");
         },
         timeout: 5000
     });
