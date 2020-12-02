@@ -58,10 +58,10 @@ namespace Acc.Cmd.Domain.DomainObjects
         #region Behaviours
         public void SetActionId(int? ActionId) { _actionId = ActionId.HasValue ? _actionId : ActionId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetParentId(int? ParentId) { _parentId = ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTitle(string Title) { _title = !string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDescriptions(string Descriptions) { _descriptions = !string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetIcon(string Icon) { _icon = !string.IsNullOrEmpty(Icon) ? _icon : Icon; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetUrl(string Url) { _url = !string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTitle(string Title) { _title = string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDescriptions(string Descriptions) { _descriptions = string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetIcon(string Icon) { _icon = string.IsNullOrEmpty(Icon) ? _icon : Icon; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetUrl(string Url) { _url = string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetCategoryId(int? CategoryId) { _categoryId = CategoryId.HasValue ? _categoryId : CategoryId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetLevel(int? Level) { _level = Level.HasValue ? _level : Level; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()

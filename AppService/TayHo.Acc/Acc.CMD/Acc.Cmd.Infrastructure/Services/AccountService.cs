@@ -103,6 +103,7 @@ namespace Acc.Cmd.Infrastructure.Services
                 errorResults.Add(new ErrorResult
                 {
                     ErrorCode = nameof(ErrorCodeLogin.LErr001),
+                   
                     ErrorMessage = AccExtensions.GetErrorMessage( nameof(ErrorCodeLogin.LErr001)),
                     ErrorValues = new List<string> { ErrorHelpers.GenerateErrorResult(nameof(userName), userName) }
                 });

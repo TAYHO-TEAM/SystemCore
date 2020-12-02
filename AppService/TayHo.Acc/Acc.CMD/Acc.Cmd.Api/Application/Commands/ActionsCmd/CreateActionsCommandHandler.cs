@@ -44,7 +44,8 @@ namespace  Acc.Cmd.Api.Application.Commands
                                         request.Icon,
                                         request.Url,
                                         request.CategoryId,
-                                        request.Level);
+                                        request.Level,
+                                        request.Priority);
             newActions.SetCreate(_user);
             newActions.Status = request.Status.HasValue ? request.Status : newActions.Status;
             newActions.IsActive = request.IsActive.HasValue ? request.IsActive : newActions.IsActive;

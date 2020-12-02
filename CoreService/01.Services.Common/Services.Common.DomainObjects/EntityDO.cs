@@ -11,9 +11,9 @@ namespace Services.Common.DomainObjects
         public virtual bool? IsActive { get; set; }
         public virtual bool? IsVisible { get; set; }
         public virtual int? CreateBy { get; set; }
-        public virtual DateTime CreateDateUTC { get; set; }
-        public virtual DateTime CreateDate { get; set; }
-        public virtual bool IsModify { get; set; }
+        public virtual DateTime? CreateDateUTC { get; set; }
+        public virtual DateTime? CreateDate { get; set; }
+        public virtual bool? IsModify { get; set; }
         public virtual int? ModifyBy { get; set; }
         public virtual DateTime? UpdateDateUTC { get; set; }
         public virtual DateTime? UpdateDate { get; set; }

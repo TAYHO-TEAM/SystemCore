@@ -12,7 +12,7 @@ namespace Services.Common.DomainObjects
     public abstract class Entity : EntityBase, IAggregateRoot
     {
         public virtual int? CreatedById { get; set; }
-        public virtual bool IsDelete { get; set; }
+        public virtual bool? IsDelete { get; set; }
         public virtual int? DeletedById { get; set; }
         public virtual int? UpdatedById { get; set; }
         public virtual DateTime CreationDate { get; set; }

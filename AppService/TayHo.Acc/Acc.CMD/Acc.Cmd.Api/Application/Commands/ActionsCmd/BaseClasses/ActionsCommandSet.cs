@@ -11,5 +11,6 @@ namespace Acc.Cmd.Api.Application.Commands
         public string Url { get; set; }
         public int CategoryId { get; set; }
         public int Level { get; set; }
+        public byte Priority { get; set; }
     }
 }
