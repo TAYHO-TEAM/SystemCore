@@ -15,6 +15,12 @@ namespace QuanLyDuAn.Areas.NganSach
         public override void RegisterArea(AreaRegistrationContext context) 
         { 
             context.MapRoute(
+                "NganSach_HangMuc",
+                "NganSach/CauHinh/HangMuc/{action}/{id}",
+                new { controller= "HangMuc", action = "Index", id = UrlParameter.Optional },
+                namespaces: new[] { "QuanLyDuAn.Areas.NganSach.Controllers" }
+            );
+            context.MapRoute(
                 "NganSach_GiaiDoan",
                 "NganSach/CauHinh/GiaiDoan/{action}/{id}",
                 new { controller= "GiaiDoan", action = "Index", id = UrlParameter.Optional },

@@ -2,10 +2,10 @@
 {
     public class NS_HangMucCommandSet : BaseCommandClasses
     {
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
         public string TenHangMuc { get; set; }
         public string KyHieu { get; set; }
-        public int NhomChiPhiId { get; set; }
-        public int ProjectId { get; set; }
+        public int? NhomChiPhiId { get; set; }
+        public int? ProjectId { get; set; }
     }
 }

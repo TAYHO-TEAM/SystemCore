@@ -53,7 +53,7 @@ namespace Acc.Cmd.Infrastructure.Services
         {
             if (_httpContextAccessor.HttpContext.Items.Any(x => (string)x.Key == ClaimsTypeName.ACCOUNT_ID))
             {
-                int userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
+                int? userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
                 Accounts existingAccount = await _accountRepository.SingleOrDefaultAsync(x => x.Id == userId).ConfigureAwait(false);
         
                 if (existingAccount != null)
@@ -136,7 +136,7 @@ namespace Acc.Cmd.Infrastructure.Services
             if (_httpContextAccessor.HttpContext.Items.Any(x => (string)x.Key == ClaimsTypeName.ACCOUNT_ID) && !string.IsNullOrEmpty(refreshToken))
             {
                 List<ErrorResult> errorResults = new List<ErrorResult>();
-                int userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
+                int? userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
                 Accounts existingAccount = await _accountRepository.SingleOrDefaultAsync(x => x.Id == userId && x.IsDelete == false).ConfigureAwait(false);
                 if (existingAccount == null)
                 {

@@ -3,10 +3,10 @@ var heightScreen = $(document).height() - $('.main-header').height() - 90;
 var widthScreen = $(document).width();
 //Thông số api
 const api_version = 1; 
-const URL_API_ACC_CMD = "https://api-account.tayho.com.vn/api/cmd/v" + api_version;
-const URL_API_ACC_READ = "http://192.168.1.26:8083/api/read/v" + api_version; 
-const URL_API_PM_CMD = "http://192.168.1.26:8081/api/cmd/v" + api_version;
-const URL_API_PM_READ = "http://192.168.1.26:8082/api/read/v" + api_version;
+const URL_API_ACC_CMD = "https://api-acc-cmd.tayho.com.vn/api/cmd/v" + api_version;
+const URL_API_ACC_READ = "https://api-acc-read.tayho.com.vn/api/read/v" + api_version; 
+const URL_API_PM_CMD = "https://api-pm-cmd.tayho.com.vn/api/cmd/v" + api_version;
+const URL_API_PM_READ = "https://api-pm-read.tayho.com.vn/api/read/v" + api_version;
 
 //Thông số firebase
 var firebaseConfig = {
@@ -33,7 +33,7 @@ var textDataGrid =
 	cancelAllChanges: "Hủy thay đổi",
 	cancelRowChanges: "Hủy bỏ",
 	confirmDeleteMessage: "Bạn có muốn xóa thông tin này?",
-	//confirmDeleteTitle: "XÁC NHẬN THÔNG TIN",
+	confirmDeleteTitle: "XÁC NHẬN THÔNG TIN",
 	deleteRow: "Xóa",
 	editRow: "Sửa",
 	saveAllChanges: "Lưu thay đổi",

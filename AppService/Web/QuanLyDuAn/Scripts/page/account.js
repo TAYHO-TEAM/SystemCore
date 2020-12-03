@@ -107,7 +107,7 @@
     $("#loginForm").on("submit", function (e) {
         e.preventDefault();
         loadingPanel.show();
-        $.ajax({
+        $.ajax({ 
             type: 'POST',
             url: URL_API_ACC_CMD + "/Account/Login",
             contentType: 'application/json',

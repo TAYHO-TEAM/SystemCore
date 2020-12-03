@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Các giai đoạn";
+    ViewBag.Title = "Các hạng mục";
 }
 
 @section style{   }
@@ -14,7 +14,10 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_GiaiDoan";
+        const ACTION = "/NS_HangMuc";
+        const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
+        const ACTION_PROJECT = "/Projects";
+
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
@@ -25,49 +28,59 @@
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
 
+        let customStore_NhomChiPhi = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw", 
+            load: (values) => ajax_load(URL_API_PM_READ + ACTION_NHOMCHIPHI, values),
+            byKey: (key) => { return key; }
+        }); 
+
+        let customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw", 
+            load: (values) => ajax_load(URL_API_PM_READ + ACTION_PROJECT, values),
+            byKey: (key) => { return key; }
+        });
+
         $(function () {
             loadData(customStore);
         });
 
         let loadData = (dataSource) => {
-            $("#container").dxDataGrid({
+            $("#container").dxTreeList({
                 height: heightScreen,
                 dataSource: dataSource,
                 remoteOperations: {
-                    paging: true,
+                    filtering: false,
                     sorting: true,
+                    grouping: false
                 },
+                rootValue: "0", parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                remoteOperations: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true, 
                 columns: [
                     {
-                        caption: "STT",
-                        width: 80, alignment: "center",
-                        allowEditting: false,
-                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
+                        dataField: "tenHangMuc", caption: "Tên hạng mục",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
                     },
                     {
-                        dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                        editorOptions: {
-                            placeholder: "Nhập tên giai đoạn...",
-                            showClearButton: true
-                        },
-                        validationRules: [
-                            {
-                                type: "required",
-                                message: "Bắt buộc nhập thông tin"
-                            }
-                        ]
+                        dataField: "kyHieu", caption: "Ký Hiệu",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 150 : "100%", 
                     },
                     {
-                        dataField: "dienGiai", caption: "Diễn giải",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                        editorOptions: {
-                            placeholder: "Nhập nội dung diễn giải...",
-                            showClearButton: true
+                        dataField: "nhomChiPhiId", caption: "Nhóm chi phí",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
+                        lookup: {
+                            dataSource: customStore_NhomChiPhi,
+                            valueExpr: "id",
+                            displayExpr: "tenNhomChiPhi",
                         },
+                    },
+                    {
+                        dataField: "projectId", caption: "Dự án",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
+                        lookup: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                        }, 
                     },
                     {
                         dataField: "isActive", width: 100,
@@ -110,10 +123,10 @@
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
-                editing: {
+                editing: { 
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
+                    mode: "batch",
                     useIcons: false, confirmDelete: true, texts: textDataGrid,
                 },
                 onToolbarPreparing: function (e) {

@@ -181,6 +181,7 @@
     <Compile Include="Areas\Admin\Controllers\AccountConfigController.cs" />
     <Compile Include="Areas\Admin\Controllers\ActionsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\GiaiDoanController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\HangMucController.cs" />
     <Compile Include="Areas\NganSach\Controllers\HomeController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NhomChiPhiController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
@@ -2420,6 +2421,7 @@
     <Content Include="Areas\Admin\Views\ActionsConfig\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomChiPhi\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\GiaiDoan\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\HangMuc\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

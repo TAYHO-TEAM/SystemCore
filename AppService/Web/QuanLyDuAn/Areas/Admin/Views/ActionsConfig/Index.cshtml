@@ -4,118 +4,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
 <div id="container" class="elevation-2"></div>
 
 @section script{
     <script>
-        var actionname = "/Actions";
+        var ACTION = "/Actions";
         $(function () {
             var customStore = new DevExpress.data.CustomStore({
                 key: "id",
-                load: function (loadOptions) {
-                    var deferred = $.Deferred(),
-                        params = {
-                            'PageSize': loadOptions["take"],
-                            'PageNumber': loadOptions["skip"]
-                        };
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_READ + actionname,
-                        dataType: "json",
-                        data: params,
-                        success: function (data) {
-                            deferred.resolve(
-                                data.result.items,
-                                {
-                                    totalCount: data.result.pagingInfo.totalItems,
-                                }
-                            );
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách tài khoản. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                insert: function (values) {
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    var deferred = $.Deferred();
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD + actionname,
-                        dataType: "json", type: "POST",
-                        data: JSON.stringify(values),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                update: function (key, values) {
-                    var keyObj = JSON.parse('{"id":'+key+'}');
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    var deferred = $.Deferred();
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD + '/UserInfo',
-                        dataType: "json",
-                        type: "PUT",
-                        data: JSON.stringify($.extend(keyObj, values)),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                remove: function (key) {
-                    var deferred = $.Deferred();
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD + actionname,
-                        dataType: "json",
-                        type: "DELETE",
-                        data: JSON.stringify({
-                            "ids": [key]
-                        }),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách tài khoản. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                }
+                load: (values) => ajax_load(URL_API_ACC_READ + ACTION, values),
+                insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+                update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+                remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key), 
             });
             loadData(customStore);
         });
@@ -124,11 +24,14 @@
             $("#container").dxTreeList({
                 height: heightScreen,
                 dataSource: dataSource,
-                rootValue: 0,
-                parentIdExpr: "parentId",
+                remoteOperations: {
+                    filtering: false,
+                    sorting: true,
+                    grouping: false
+                },
+                rootValue: "0", parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                remoteOperations: false,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,                 
                 columns: [
                     {
                         dataField: "title",
@@ -151,132 +54,25 @@
                         caption: "url",
                     },
                     {
-                        dataField: "categoryId",
-                        dataType: "number",
-                        caption: "Category ",
+                        dataField: "categoryId", 
                         
                     },
                     {
-                        dataField: "isDelete",
-                        dataType: "boolen",
-                        caption: "Xoá ",
-                        allowEditing : false,
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch",
                     },
                     {
-                        dataField: "isActive",
-                        dataType: "boolen",
-                        caption: "Kích hoạt ",
-                        allowEditing: false,
-                    },
-                    {
-                        dataField: "isVisible",
-                        dataType: "boolen",
-                        caption: "Hiện ",
-                        allowEditing: false,
-                    },
-                    {
-                        dataField: "createBy",
-                        dataType: "boolen",
-                        caption: "Người tạo ",
-                        allowEditing: false,
-                    },
-                    {
-                        dataField: "modifyBy",
-                        dataType: "boolen",
-                        caption: "Người thay đổi cuối ",
-                        allowEditing: false,
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch",
                     },
                 ],
-                //    {
-                //        dataField: "firstName", caption:"Họ và tên",
-                //        dataType: "string",
-                //        validationRules: [
-                //            {
-                //                type: "required",
-                //                message: "Bắt buộc nhập thông tin"
-                //            }
-                //        ]
-                //    },
-                //    {
-                //        dataField: "lastName", caption:"Tên",
-                //        dataType: "string",
-                //    },
-                //    {
-                //        dataField: "sex", caption:"Giới tính",
-                //        dataType: "number",
-                //        lookup: {
-                //            dataSource: listSexs,
-                //            valueExpr: "value",
-                //            displayExpr: "text"
-                //        },
-                //    },
-                //    {
-                //        dataField: "dateOfBirth", caption: "Ngày sinh",
-                //        dataType: "date", format: "dd/MM/yyyy",
-                //    },
-                //    {
-                //        dataField: "country", caption: "Nước",
-                //    },
-                //    {
-                //        dataField: "city", caption: "Thành phố",
-                //    },
-                //    {
-                //        dataField: "district", caption: "Quận huyện",
-                //    },
-                //    {
-                //        dataField: "address", caption: "Địa chỉ",
-                //    }
-                //],                //columns: [
-                //    {
-                //        dataField: "firstName", caption:"Họ và tên",
-                //        dataType: "string",
-                //        validationRules: [
-                //            {
-                //                type: "required",
-                //                message: "Bắt buộc nhập thông tin"
-                //            }
-                //        ]
-                //    },
-                //    {
-                //        dataField: "lastName", caption:"Tên",
-                //        dataType: "string",
-                //    },
-                //    {
-                //        dataField: "sex", caption:"Giới tính",
-                //        dataType: "number",
-                //        lookup: {
-                //            dataSource: listSexs,
-                //            valueExpr: "value",
-                //            displayExpr: "text"
-                //        },
-                //    },
-                //    {
-                //        dataField: "dateOfBirth", caption: "Ngày sinh",
-                //        dataType: "date", format: "dd/MM/yyyy",
-                //    },
-                //    {
-                //        dataField: "country", caption: "Nước",
-                //    },
-                //    {
-                //        dataField: "city", caption: "Thành phố",
-                //    },
-                //    {
-                //        dataField: "district", caption: "Quận huyện",
-                //    },
-                //    {
-                //        dataField: "address", caption: "Địa chỉ",
-                //    }
-                //],
-
+                 
                 editing: {
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "popup"
-                }
-                //onInitNewRow: (e) => {
-                //    e.data.parentId = 0;
-                //}
+                    mode: "batch"
+                } 
             });
         }
     </script>

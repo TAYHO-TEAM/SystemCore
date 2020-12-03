@@ -17,18 +17,18 @@ let loadUser = () => {
 }
 
 function logout(url) {
-    if (url == null || url.length == 0 || url=="/") url = "Home";
+    if (url == null || url.length == 0 || url=="/") url = "/Home";
     localStorage.clear();
     window.location = "/Account/Login?url=" + url;
 }
 
 function loadMenu() {
-    var rs = "", url = URL_API_PM_READ + "/Actions";
+    var rs = "", url = URL_API_ACC_READ + "/Actions";
     var container = $(".list-menu-left");
     var params = {
         PageSize: 0,
         PageNumber: 0,
-        SortCol: "level",
+        SortCol: "priority",
         SortADSC: 1
     };
 
@@ -101,7 +101,7 @@ let ajax_load = (url, values) => {
         'PageSize': isNullOrEmpty(values.take) ? values.take:0,
         'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
     };
-    if (values.sort !== null && values.sort.length > 0) {
+    if (values.sort != null && values.sort.length > 0) {
         params['SortCol'] = values.sort[0].selector;
         params['SortADSC'] = values.sort[0].desc;
     }
@@ -110,8 +110,8 @@ let ajax_load = (url, values) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
+            'Access-Control-Allow-Origin': '*',  
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken, 
         },
         url: url, dataType: "json", data: params,
         success: function (data) {
@@ -136,7 +136,8 @@ let ajax_insert = (url, values) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
         },
         url: url, dataType: "json", type: "POST",
         data: JSON.stringify(values),
@@ -159,7 +160,8 @@ let ajax_update = (url, key, values) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
         },
         url: url, dataType: "json", type: "PUT",
         data: JSON.stringify($.extend(keyObj, values)),
@@ -181,7 +183,8 @@ let ajax_delete = (url, key) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
         },
         url: url, dataType: "json", type: "DELETE",
         data: JSON.stringify({ "ids": [key]}),
