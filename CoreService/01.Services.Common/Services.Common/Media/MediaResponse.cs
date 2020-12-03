@@ -12,4 +12,20 @@
         public string Path { get; }
         public long Size { get; }
     }
+    public class FileResponse
+    {
+        public FileResponse()
+        {
+
+        }
+        public FileResponse(string fileType, byte[] archiveData, string archiveName)
+        {
+            FileType = fileType;
+            ArchiveData = archiveData;
+            ArchiveName = archiveName;
+        }
+        public string FileType { get; }
+        public byte[] ArchiveData { get; }
+        public string ArchiveName { get; }
+    }
 }

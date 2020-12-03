@@ -36,6 +36,7 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
             services
+                //.AddCustomConfiguration(configuration)
                 .AddOptionsBuilder(configuration)
                 .AddHttpContextAccessor()
                 .AddCustomApiVersion(apiVersionOptions)
@@ -45,8 +46,8 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
                 .AddMediatR(executingAssembly, entryAssembly)
                 .AddAutoMapper(executingAssembly, entryAssembly)
                 .AddRedisCache()
-                .AddCustomJwtAuthentication()
-                .AddCustomHealthCheck();
+                .AddCustomJwtAuthentication();
+                //.AddCustomHealthCheck();
 
             return services;
         }
@@ -226,6 +227,7 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
 
         public static IServiceCollection AddOptionsBuilder(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<MediaOptions>(configuration.GetSection("MediaConfig"));
             services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
             services.Configure<SQLServerOptions>(configuration.GetSection("SQLServerOptions"));
             services.Configure<RedisServerOptions>(configuration.GetSection("RedisServerOptions"));
@@ -271,6 +273,12 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
 
             #endregion Add HealthCheck provider
 
+            return services;
+        }
+        private static IServiceCollection AddCustomConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
+            services.AddSingleton<IConfigurationReader, ConfigurationReader>();
             return services;
         }
     }

@@ -17,6 +17,7 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterGeneric(typeof(RequestPerformanceBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
             builder.RegisterType<AccountService>().As<IAccountService>().InstancePerLifetimeScope();
             builder.RegisterType<TokenManager>().As<ITokenManager>().InstancePerLifetimeScope();
+            builder.RegisterType<MediaService>().As<IMediaService>().InstancePerLifetimeScope();
             //builder.RegisterType<UserBlackListCacheManager>().As<IUserBlackListCacheManager>().InstancePerLifetimeScope();
             // register repositories
             builder.RegisterType<AccountsRepository>().As<IAccountsRepository>().InstancePerLifetimeScope();

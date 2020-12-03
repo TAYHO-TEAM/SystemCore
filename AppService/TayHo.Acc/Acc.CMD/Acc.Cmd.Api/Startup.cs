@@ -47,8 +47,12 @@ namespace Acc.Cmd.Api
             });
 
             #endregion Custom Swagger
+            #region Http
 
-      
+            services.AddHttpClient();
+
+            #endregion http
+
         }
 
         public override void ConfigureContainer(ContainerBuilder builder)
