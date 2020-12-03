@@ -1,20 +1,27 @@
-﻿$(function () {
-    checkLogin();
-    loadMenu();
+﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
+var UserCurrent = localStorage.getItem("userCurrent");
+var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
+
+$(function () {
+    if (checkLogin()) {
+        loadUser();
+        loadMenu();
+    }
+    else logout(window.location.pathname);
 });
 
+let loadUser = () => {
+    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
+    $('.user-panel div.info a').html(UserCurrentInfo.userName);
+    $('.user-panel div.info span').html(UserCurrentInfo.title);
+}
+
 function logout(url) {
-    if (url == null || url.length == 0 || url=="/") url = "/Home";
+    if (url == null || url.length == 0 || url == "/") url = "/Home";
     localStorage.clear();
     window.location = "/Account/Login?url=" + url;
 }
 
-function checkLogin() {
-    var url = window.location.pathname;
-    if (!isNullOrEmpty(sessionStorage.getItem("userCurrent"))) {
-        logout(url);
-    }
-}
 function loadMenu() {
     var rs = "", url = URL_API_ACC_READ + "/Actions";
     var container = $(".list-menu-left");
@@ -43,17 +50,17 @@ function loadMenu() {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
                 $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
-                $(this).children(".nav-link").toggleClass('active', window.location.pathname.includes($(this).find('a').attr('href')));
+                $(this).children(".nav-link").toggleClass('active', window.location.pathname == ($(this).find('a').attr('href')));
             });
         });
 }
-function menuItem(item, list) {
+let menuItem = (item, list) => {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
         <a class='nav-link' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
-        </a>";    
+        </a>";
     if (listChild != null && listChild.length > 0) {
         rs += "<ul class='nav nav-treeview ml-2'>";
         listChild.forEach(x => rs += menuItem(x, list));
@@ -63,7 +70,6 @@ function menuItem(item, list) {
 
     return rs;
 }
-
 
 var loadingPanel = $("#loading-panel").dxLoadPanel({
     shadingColor: "rgba(0,0,0,0.3)",
@@ -92,7 +98,7 @@ let ajax_load = (url, values) => {
     console.log(values);
     var deferred = $.Deferred(), params = {};
     params = {
-        'PageSize': isNullOrEmpty(values.take) ? values.take:0,
+        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
         'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
     };
     if (values.sort != null && values.sort.length > 0) {
@@ -104,8 +110,8 @@ let ajax_load = (url, values) => {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',  
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken, 
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken,
         },
         url: url, dataType: "json", data: params,
         success: function (data) {
@@ -124,7 +130,7 @@ let ajax_load = (url, values) => {
     });
     return deferred.promise();
 }
-let ajax_insert = (url, values) => { 
+let ajax_insert = (url, values) => {
     var deferred = $.Deferred();
     $.ajax({
         headers: {
@@ -181,7 +187,7 @@ let ajax_delete = (url, key) => {
             'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
         },
         url: url, dataType: "json", type: "DELETE",
-        data: JSON.stringify({ "ids": [key]}),
+        data: JSON.stringify({ "ids": [key] }),
         success: function (data) {
             deferred.resolve();
         },
