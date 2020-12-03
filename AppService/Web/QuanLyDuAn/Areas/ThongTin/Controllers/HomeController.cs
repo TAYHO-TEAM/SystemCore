@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace QuanLyDuAn.Areas.Admin.Controllers
+namespace QuanLyDuAn.Areas.ThongTin.Controllers
 {
-    public class ActionsConfigController : Controller
+    public class HomeController : Controller
     {
-        // GET: Admin/ActionsConfig
+        // GET: ThongTin/Home
         public ActionResult Index()
         {
             return View();

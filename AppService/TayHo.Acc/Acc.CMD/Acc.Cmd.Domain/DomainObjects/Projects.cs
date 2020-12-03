@@ -52,10 +52,10 @@ namespace Acc.Cmd.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
-        public void SetCode(string Code) { _code = !string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetBarCode(string BarCode) { _barCode = !string.IsNullOrEmpty(BarCode) ? _barCode : BarCode; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTitle(string Title) { _title = !string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDescriptions(string Descriptions) { _descriptions = !string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetBarCode(string BarCode) { _barCode = string.IsNullOrEmpty(BarCode) ? _barCode : BarCode; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTitle(string Title) { _title = string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDescriptions(string Descriptions) { _descriptions = string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetParentId(int? ParentId) { _parentId = ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNodeLevel(int? NodeLevel) { _nodeLevel = NodeLevel.HasValue ? _nodeLevel : NodeLevel; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetOldId(int? OldId) { _oldId = OldId.HasValue ? _oldId : OldId; if (!IsValid()) throw new DomainException(_errorMessages); }

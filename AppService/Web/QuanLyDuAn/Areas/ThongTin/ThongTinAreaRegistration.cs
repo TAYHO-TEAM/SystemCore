@@ -17,7 +17,7 @@ namespace QuanLyDuAn.Areas.ThongTin
             context.MapRoute(
                 "ThongTin_default",
                 "ThongTin/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { controller ="Home",action = "Index", id = UrlParameter.Optional }
             );
         }
     }

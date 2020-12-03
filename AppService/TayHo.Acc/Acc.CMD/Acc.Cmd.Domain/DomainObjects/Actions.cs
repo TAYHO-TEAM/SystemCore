@@ -17,6 +17,7 @@ namespace Acc.Cmd.Domain.DomainObjects
         private string _url;
         private int? _categoryId;
         private int? _level;
+        private byte? _priority;
         #endregion Fields
         #region Constructors
 
@@ -30,7 +31,8 @@ namespace Acc.Cmd.Domain.DomainObjects
                         string Icon,
                         string Url,
                         int? CategoryId,
-                        int? Level) : this()
+                        int? Level,
+                        byte? Priority) : this()
         {
             _parentId = ParentId;
             _title = Title;
@@ -39,7 +41,7 @@ namespace Acc.Cmd.Domain.DomainObjects
             _url = Url;
             _categoryId = CategoryId;
             _level = Level;
-
+            _priority = Priority;
         }
         #endregion Constructors
         #region Properties
@@ -50,16 +52,18 @@ namespace Acc.Cmd.Domain.DomainObjects
         [MaxLength(1024, ErrorMessage = nameof(ErrorCodeInsert.IErr1024))] public string Url { get => _url; }
         public int? CategoryId { get => _categoryId; }
         public int? Level { get => _level; }
+        public byte? Priority { get => _priority; }
         #endregion Properties
 
         #region Behaviours
         public void SetParentId(int? ParentId) { _parentId = ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTitle(string Title) { _title = !string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDescriptions(string Descriptions) { _descriptions = !string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetIcon(string Icon) { _icon = !string.IsNullOrEmpty(Icon) ? _icon : Icon; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetUrl(string Url) { _url = !string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTitle(string Title) { _title = string.IsNullOrEmpty(Title) ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDescriptions(string Descriptions) { _descriptions = string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetIcon(string Icon) { _icon = string.IsNullOrEmpty(Icon) ? _icon : Icon; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetUrl(string Url) { _url = string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetCategoryId(int? CategoryId) { _categoryId = CategoryId.HasValue ? _categoryId : CategoryId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetLevel(int? Level) { _level = Level.HasValue ? _level : Level; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetPriority(byte? Priority) { _priority = Priority.HasValue ? _priority : Priority; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

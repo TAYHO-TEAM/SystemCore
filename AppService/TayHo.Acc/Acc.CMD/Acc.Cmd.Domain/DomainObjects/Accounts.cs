@@ -68,19 +68,19 @@ namespace Acc.Cmd.Domain.DomainObjects
         public int? UserId { get => _userId; }
         #endregion Properties
            #region Behaviours 
-        public void SetCode(string Code) { _code = !string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetType(byte? Type) { _type = Type.HasValue ? _type : Type; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetAccountName(string AccountName) { _accountName = !string.IsNullOrEmpty(AccountName) ? _accountName : AccountName; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetAccountName(string AccountName) { _accountName = string.IsNullOrEmpty(AccountName) ? _accountName : AccountName; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetPasswordHash(string Password) 
         { 
-            _passwordHash = !string.IsNullOrEmpty(Password) ? _passwordHash : Hash.Create(Password, _salt); if (!IsValid()) throw new DomainException(_errorMessages);
+            _passwordHash = string.IsNullOrEmpty(Password) ? _passwordHash : Hash.Create(Password, _salt); if (!IsValid()) throw new DomainException(_errorMessages);
             ValidatePassword(Password);
         }
-        public void SetSalt(string Salt) { _salt = !string.IsNullOrEmpty(Salt) ? _salt : Salt; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTokenKey(string TokenKey) { _tokenKey = !string.IsNullOrEmpty(TokenKey) ? _tokenKey : TokenKey; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetSalt(string Salt) { _salt = string.IsNullOrEmpty(Salt) ? _salt : Salt; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTokenKey(string TokenKey) { _tokenKey = string.IsNullOrEmpty(TokenKey) ? _tokenKey : TokenKey; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetExpiryTimeUTC(DateTime? ExpiryTimeUTC) { _expiryTimeUTC = ExpiryTimeUTC.HasValue ? _expiryTimeUTC : ExpiryTimeUTC; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetExpiryTime(DateTime? ExpiryTime) { _expiryTime = ExpiryTime.HasValue ? _expiryTime : ExpiryTime; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetRefreshToken(string RefreshToken) { _refreshToken = !string.IsNullOrEmpty(RefreshToken) ? _refreshToken : RefreshToken; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetRefreshToken(string RefreshToken) { _refreshToken = string.IsNullOrEmpty(RefreshToken) ? _refreshToken : RefreshToken; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetUserId(int? UserId) { _userId = UserId.HasValue ? _userId : UserId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void ValidatePassword(string password)
         {

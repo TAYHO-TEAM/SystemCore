@@ -60,14 +60,14 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetOwnerById(int? OwnerById) { _ownerById = OwnerById.HasValue ? _ownerById : OwnerById; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetOwnerByTable(string OwnerByTable) { _ownerByTable = string.IsNullOrEmpty(OwnerByTable) ? _ownerByTable : OwnerByTable; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetFileName(string FileName) { _fileName = string.IsNullOrEmpty(FileName) ? _fileName : FileName; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTail(string Tail) { _tail = string.IsNullOrEmpty(Tail) ? _tail : Tail; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetUrl(string Url) { _url = string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetHost(string Host) { _host = string.IsNullOrEmpty(Host) ? _host : Host; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetType(string Type) { _type = string.IsNullOrEmpty(Type) ? _type : Type; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDirect(string Direct) { _direct = string.IsNullOrEmpty(Direct) ? _direct : Direct; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetOwnerByTable(string OwnerByTable) { _ownerByTable = !string.IsNullOrEmpty(OwnerByTable) ? _ownerByTable : OwnerByTable; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = !string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetFileName(string FileName) { _fileName = !string.IsNullOrEmpty(FileName) ? _fileName : FileName; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTail(string Tail) { _tail = !string.IsNullOrEmpty(Tail) ? _tail : Tail; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetUrl(string Url) { _url = !string.IsNullOrEmpty(Url) ? _url : Url; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetHost(string Host) { _host = !string.IsNullOrEmpty(Host) ? _host : Host; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetType(string Type) { _type = !string.IsNullOrEmpty(Type) ? _type : Type; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDirect(string Direct) { _direct = !string.IsNullOrEmpty(Direct) ? _direct : Direct; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();
