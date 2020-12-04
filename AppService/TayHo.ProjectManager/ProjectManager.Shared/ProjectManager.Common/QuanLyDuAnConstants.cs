@@ -34,5 +34,9 @@ namespace ProjectManager.Common
         public const string Assignments_TABLENAME = "Assignments";
         public const string Projects_TABLENAME = "Projects";
         public const string Reply_TABLENAME = "Reply";
+        public const string RequestRegist_TABLENAME = "RequestRegist";
+        public const string ResponseRegistReply_TABLENAME = "ResponseRegistReply";
+        public const string OperationProcess_TABLENAME = "OperationProcess";
+        public const string StepsProcess_TABLENAME = "StepsProcess";
     }
 }

@@ -34,6 +34,9 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<NS_NganSachDetailRepository>().As<INS_NganSachDetailRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_NganSachRepository>().As<INS_NganSachRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_NhomChiPhiRepository>().As<INS_NhomChiPhiRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<RequestRegistRepository>().As<IRequestRegistRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();
         }
     }
 }
