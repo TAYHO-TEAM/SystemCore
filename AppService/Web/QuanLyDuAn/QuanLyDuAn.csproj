@@ -178,11 +178,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\AccountConfigController.cs" />
     <Compile Include="Areas\Admin\Controllers\ActionsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -2229,6 +2229,7 @@
     <Content Include="Content\plugins\toastr\toastr.css" />
     <Content Include="Content\plugins\toastr\toastr.min.css" />
     <Content Include="Content\plugins\toastr\toastr.min.js" />
+    <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="firebase-messaging-sw.js" />
     <Content Include="Global.asax" />
@@ -2308,9 +2309,7 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\ThongTin\Controllers\" />
     <Folder Include="Areas\ThongTin\Data\" />
-    <Folder Include="Areas\ThongTin\Views\Shared\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -2415,7 +2414,10 @@
     <Content Include="Areas\NganSach\Views\web.config" />
     <Content Include="Areas\NganSach\Views\Default\Index.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\AccountConfig\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\web.config" />
+    <Content Include="Areas\ThongTin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\ThongTin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\ThongTin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ActionsConfig\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\LoaiThau.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\GiaiDoan.cshtml" />

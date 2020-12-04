@@ -16,7 +16,7 @@ $(function () {
 }); 
 
 function logout(url) {
-    if (url == null || url.length == 0 || url=="/") url = "/Home";
+    if (url == null || url.length == 0 || url == "/") url = "/Home";
     localStorage.clear();
     window.location = "/Account/Login?url=" + url;
 }
@@ -107,7 +107,7 @@ let ajax_load = (url, values) => {
     console.log(values);
     var deferred = $.Deferred(), params = {};
     params = {
-        'PageSize': isNullOrEmpty(values.take) ? values.take:0,
+        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
         'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
     };
     if (values.sort != null && values.sort.length > 0) {

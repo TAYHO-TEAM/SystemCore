@@ -16,7 +16,8 @@ namespace Acc.Cmd.Infrastructure.EFConfig
             builder.Property(x => x.Icon).HasField("_icon").HasMaxLength(128).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.Url).HasField("_url").HasMaxLength(1024).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.CategoryId).HasField("_categoryId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.Level).HasField("_level").UsePropertyAccessMode(PropertyAccessMode.Field); 
+            builder.Property(x => x.Level).HasField("_level").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.Priority).HasField("_priority").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

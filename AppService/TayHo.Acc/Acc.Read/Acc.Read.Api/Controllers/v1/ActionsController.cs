@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Acc.Read.Api.Controllers.v1
 {
-    [Authorize]
+   
     public class ActionsController : APIControllerBase
     {
         private readonly IDOBaseRepository<ActionsDTO> _dOBaseRepository;

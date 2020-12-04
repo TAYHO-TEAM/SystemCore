@@ -34,17 +34,24 @@ namespace  Acc.Cmd.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+            var parentActions = await _actionsRepository.SingleOrDefaultAsync(x => x.Id == existingActions.ParentId && x.IsDelete == false).ConfigureAwait(false);
+            if (parentActions == null)
+            {
+              
+            }
+
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingActions.IsActive = request.IsActive.HasValue ? request.IsActive : existingActions.IsActive;
             existingActions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingActions.IsVisible;
             existingActions.Status = request.Status.HasValue ? request.Status : existingActions.Status;
-            existingActions.SetParentId(request.ParentId);
+            existingActions.SetParentId(parentActions== null? 0:parentActions.Id );
             existingActions.SetTitle(request.Title);
             existingActions.SetDescriptions(request.Descriptions);
             existingActions.SetIcon(request.Icon);
             existingActions.SetUrl(request.Url);
             existingActions.SetCategoryId(request.CategoryId);
-            existingActions.SetLevel(request.Level);
+            existingActions.SetLevel((parentActions != null && parentActions.Level.HasValue )? parentActions.Level +1 : 0);
+            existingActions.SetPriority(request.Priority);
             existingActions.SetUpdate(_user,null);
             _actionsRepository.Update(existingActions);
             await _actionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
