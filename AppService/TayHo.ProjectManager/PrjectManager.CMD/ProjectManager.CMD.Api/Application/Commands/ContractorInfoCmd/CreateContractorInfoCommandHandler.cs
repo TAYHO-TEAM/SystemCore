@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateContractorInfoCommandHandler : ContractorInfoCommandHandler, IRequestHandler<CreateContractorInfoCommand, MethodResult<CreateContractorInfoCommandResponse>>
     {
-        public CreateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository) : base(mapper, ContractorInfoRepository)
+        public CreateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ContractorInfoRepository,httpContextAccessor)
         {
         }
 

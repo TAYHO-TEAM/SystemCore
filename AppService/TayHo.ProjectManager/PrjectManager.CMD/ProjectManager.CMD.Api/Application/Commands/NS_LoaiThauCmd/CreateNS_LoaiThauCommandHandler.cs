@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_LoaiThauCommandHandler : NS_LoaiThauCommandHandler, IRequestHandler<CreateNS_LoaiThauCommand, MethodResult<CreateNS_LoaiThauCommandResponse>>
     {
-        public CreateNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository) : base(mapper, NS_LoaiThauRepository)
+        public CreateNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_LoaiThauRepository,httpContextAccessor)
         {
         }
 
@@ -27,7 +28,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.TenGoiThau,
                 request.DienGiai,
                 request.ProjectId);
-            newNS_LoaiThau.SetCreateAccount(0);
+            newNS_LoaiThau.SetCreateAccount(_user);
             newNS_LoaiThau.Status = request.Status.HasValue ? request.Status : newNS_LoaiThau.Status;
             newNS_LoaiThau.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_LoaiThau.IsActive;
             newNS_LoaiThau.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_LoaiThau.IsVisible;

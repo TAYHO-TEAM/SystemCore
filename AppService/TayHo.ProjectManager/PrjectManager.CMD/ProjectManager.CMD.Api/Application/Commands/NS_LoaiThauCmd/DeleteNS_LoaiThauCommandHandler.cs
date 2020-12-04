@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_LoaiThauCommandHandler : NS_LoaiThauCommandHandler, IRequestHandler<DeleteNS_LoaiThauCommand, MethodResult<DeleteNS_LoaiThauCommandResponse>>
     {
-        public DeleteNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository) : base(mapper, NS_LoaiThauRepository)
+        public DeleteNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_LoaiThauRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(0,0);
+                existingAssignment.SetUpdate(_user,0);
             }
             _NS_LoaiThauRepository.UpdateRange(existingNS_LoaiThau);
             await _NS_LoaiThauRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateAssignmentsCommandHandler : AssignmentsCommandHandler, IRequestHandler<CreateAssignmentsCommand, MethodResult<CreateAssignmentsCommandResponse>>
     {
-        public CreateAssignmentsCommandHandler(IMapper mapper, IAssignmentsRepository AssignmentsRepository) : base(mapper, AssignmentsRepository)
+        public CreateAssignmentsCommandHandler(IMapper mapper, IAssignmentsRepository AssignmentsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, AssignmentsRepository,httpContextAccessor)
         {
         }
 
@@ -26,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newAssignments = new Assignments(request.AccountId,
                                                 request.RequestId,
                                                 request.RequestDetailId);
-            newAssignments.SetCreateAccount(0);
+            newAssignments.SetCreateAccount(_user);
             newAssignments.Status = request.Status.HasValue ? request.Status : newAssignments.Status;
             newAssignments.IsActive = request.IsActive.HasValue ? request.IsActive : newAssignments.IsActive;
             newAssignments.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newAssignments.IsVisible;

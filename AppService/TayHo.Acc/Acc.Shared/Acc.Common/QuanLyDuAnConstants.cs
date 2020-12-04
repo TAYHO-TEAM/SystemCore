@@ -21,6 +21,9 @@ namespace Acc.Common
         public const string GroupFunction_TABLENAME = "GroupFunction";
         public const string StaffTayHo_TABLENAME = "StaffTayHo";
         public const string GroupActionPermistion_TABLENAME = "GroupActionPermistion";
+        public const string OperationProcess_TABLENAME = "OperationProcess";
+        public const string GroupStepProcessPermistion_TABLENAME = "GroupStepProcessPermistion";
+        public const string StepsProcess_TABLENAME = "StepsProcess";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";

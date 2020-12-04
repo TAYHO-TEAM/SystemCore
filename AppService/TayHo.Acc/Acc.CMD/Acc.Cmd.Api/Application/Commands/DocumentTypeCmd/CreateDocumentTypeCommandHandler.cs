@@ -26,7 +26,8 @@ namespace  Acc.Cmd.Api.Application.Commands
             var methodResult = new MethodResult<CreateDocumentTypeCommandResponse>();
             var newDocumentType = new DocumentType(request.Code,
                                                     request.Title,
-                                                    request.Descriptions);
+                                                    request.Descriptions,
+                                                    request.OperationProcessId);
             newDocumentType.SetCreate(_user);
             newDocumentType.Status = request.Status.HasValue ? request.Status : newDocumentType.Status;
             newDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentType.IsActive;

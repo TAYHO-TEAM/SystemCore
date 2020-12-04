@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateRequestsCommandHandler : RequestsCommandHandler,IRequestHandler<UpdateRequestsCommand, MethodResult<UpdateRequestsCommandResponse>>
     {
-        public UpdateRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository) : base(mapper, RequestsRepository)
+        public UpdateRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, RequestsRepository,httpContextAccessor)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequest.SetRequestFromId(request.RequestFromId);
             existingRequest.SetSendDateTime(request.SendDateTime);
             existingRequest.SetStageId(request.StageId);
-            existingRequest.SetUpdate(0,0);
+            existingRequest.SetUpdate(_user,0);
             _RequestsRepository.Update(existingRequest);
             await _RequestsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateRequestsCommandResponse>(existingRequest);

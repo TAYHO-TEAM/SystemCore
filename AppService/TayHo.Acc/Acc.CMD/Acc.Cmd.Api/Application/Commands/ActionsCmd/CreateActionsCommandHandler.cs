@@ -1,7 +1,8 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;using Microsoft.AspNetCore.Http;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.Security;

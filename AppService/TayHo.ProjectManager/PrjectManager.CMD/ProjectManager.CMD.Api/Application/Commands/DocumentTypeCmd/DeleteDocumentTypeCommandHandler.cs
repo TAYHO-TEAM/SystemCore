@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteDocumentTypeCommandHandler : DocumentTypeCommandHandler, IRequestHandler<DeleteDocumentTypeCommand, MethodResult<DeleteDocumentTypeCommandResponse>>
     {
-        public DeleteDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository) : base(mapper, DocumentTypeRepository)
+        public DeleteDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, DocumentTypeRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingDocumentType.UpdateDateUTC = utc;
                 existingDocumentType.IsDelete = true;
                 existingDocumentType.ModifyBy = 0;
-                existingDocumentType.SetUpdate(0,0);
+                existingDocumentType.SetUpdate(_user,0);
             }
             _DocumentTypeRepository.UpdateRange(existingDocumentTypes);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_NganSachCommandHandler : NS_NganSachCommandHandler, IRequestHandler<CreateNS_NganSachCommand, MethodResult<CreateNS_NganSachCommandResponse>>
     {
-        public CreateNS_NganSachCommandHandler(IMapper mapper, INS_NganSachRepository NS_NganSachRepository) : base(mapper, NS_NganSachRepository)
+        public CreateNS_NganSachCommandHandler(IMapper mapper, INS_NganSachRepository NS_NganSachRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NganSachRepository,httpContextAccessor)
         {
         }
 
@@ -31,7 +32,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.DienGiai,
                 request.GiaTri,
                 request.isLock);
-            newNS_NganSach.SetCreateAccount(0);
+            newNS_NganSach.SetCreateAccount(_user);
             newNS_NganSach.Status = request.Status.HasValue ? request.Status : newNS_NganSach.Status;
             newNS_NganSach.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NganSach.IsActive;
             newNS_NganSach.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_NganSach.IsVisible;

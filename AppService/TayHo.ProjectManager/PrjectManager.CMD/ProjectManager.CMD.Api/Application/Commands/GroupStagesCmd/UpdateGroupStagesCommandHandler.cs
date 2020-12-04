@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateGroupStagesCommandHandler : GroupStagesCommandHandler, IRequestHandler<UpdateGroupStagesCommand, MethodResult<UpdateGroupStagesCommandResponse>>
     {
-        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository) : base(mapper, GroupStagesRepository)
+        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, GroupStagesRepository,httpContextAccessor)
         {
         }
 

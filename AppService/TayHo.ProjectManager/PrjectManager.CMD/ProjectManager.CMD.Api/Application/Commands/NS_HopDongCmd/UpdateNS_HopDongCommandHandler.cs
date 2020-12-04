@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_HopDongCommandHandler : NS_HopDongCommandHandler,IRequestHandler<UpdateNS_HopDongCommand, MethodResult<UpdateNS_HopDongCommandResponse>>
     {
-        public UpdateNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository) : base(mapper, NS_HopDongRepository)
+        public UpdateNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HopDongRepository,httpContextAccessor)
         {
         }
 
@@ -44,7 +45,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HopDong.SetGiaTri(request.GiaTri);
             existingNS_HopDong.SetNgayKy(request.NgayKy);
             existingNS_HopDong.SetDienGiai(request.DienGiai);
-            existingNS_HopDong.SetUpdate(0,0);
+            existingNS_HopDong.SetUpdate(_user,0);
             _NS_HopDongRepository.Update(existingNS_HopDong);
             await _NS_HopDongRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_HopDongCommandResponse>(existingNS_HopDong);

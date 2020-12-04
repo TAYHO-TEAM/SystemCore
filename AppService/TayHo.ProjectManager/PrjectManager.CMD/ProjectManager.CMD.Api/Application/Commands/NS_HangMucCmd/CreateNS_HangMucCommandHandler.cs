@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_HangMucCommandHandler : NS_HangMucCommandHandler, IRequestHandler<CreateNS_HangMucCommand, MethodResult<CreateNS_HangMucCommandResponse>>
     {
-        public CreateNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository) : base(mapper, NS_HangMucRepository)
+        public CreateNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HangMucRepository,httpContextAccessor)
         {
         }
 
@@ -28,7 +29,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.KyHieu,
                 request.NhomChiPhiId,
                 request.ProjectId);
-            newNS_HangMuc.SetCreateAccount(0);
+            newNS_HangMuc.SetCreateAccount(_user);
             newNS_HangMuc.Status = request.Status.HasValue ? request.Status : newNS_HangMuc.Status;
             newNS_HangMuc.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_HangMuc.IsActive;
             newNS_HangMuc.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_HangMuc.IsVisible;

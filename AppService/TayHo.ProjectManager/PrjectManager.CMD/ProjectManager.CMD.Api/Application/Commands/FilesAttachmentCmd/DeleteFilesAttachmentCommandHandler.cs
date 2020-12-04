@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteFilesAttachmentCommandHandler : FilesAttachmentCommandHandler, IRequestHandler<DeleteFilesAttachmentCommand, MethodResult<DeleteFilesAttachmentCommandResponse>>
     {
-        public DeleteFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository) : base(mapper, FilesAttachmentRepository)
+        public DeleteFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
         {
         }
 

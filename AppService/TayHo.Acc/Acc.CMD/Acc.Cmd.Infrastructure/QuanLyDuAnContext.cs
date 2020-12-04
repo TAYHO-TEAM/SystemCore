@@ -32,7 +32,8 @@ namespace Acc.Cmd.Infrastructure
         public DbSet<RelationTable> RelationTable { get; set; }
         public DbSet<StaffTayHo> StaffTayHo { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
-
+        public DbSet<OperationProcess> OperationProcess { get; set; }
+        public DbSet<StepsProcess> StepsProcess { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

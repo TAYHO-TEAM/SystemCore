@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_NhomChiPhiCommandHandler : NS_NhomChiPhiCommandHandler,IRequestHandler<UpdateNS_NhomChiPhiCommand, MethodResult<UpdateNS_NhomChiPhiCommandResponse>>
     {
-        public UpdateNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository) : base(mapper, NS_NhomChiPhiRepository)
+        public UpdateNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NhomChiPhiRepository,httpContextAccessor)
         {
         }
 
@@ -39,7 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_NhomChiPhi.Status = request.Status.HasValue ? request.Status : existingNS_NhomChiPhi.Status;
             existingNS_NhomChiPhi.SetTenNhomChiPhi(request.TenNhomChiPhi);
             existingNS_NhomChiPhi.SetDienGiai(request.DienGiai);
-            existingNS_NhomChiPhi.SetUpdate(0,0);
+            existingNS_NhomChiPhi.SetUpdate(_user,0);
             _NS_NhomChiPhiRepository.Update(existingNS_NhomChiPhi);
             await _NS_NhomChiPhiRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_NhomChiPhiCommandResponse>(existingNS_NhomChiPhi);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_NhomChiPhiCommandHandler : NS_NhomChiPhiCommandHandler, IRequestHandler<CreateNS_NhomChiPhiCommand, MethodResult<CreateNS_NhomChiPhiCommandResponse>>
     {
-        public CreateNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository) : base(mapper, NS_NhomChiPhiRepository)
+        public CreateNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NhomChiPhiRepository,httpContextAccessor)
         {
         }
 
@@ -24,7 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_NhomChiPhiCommandResponse>();
             var newNS_NhomChiPhi = new NS_NhomChiPhi(request.TenNhomChiPhi, request.DienGiai);
-            newNS_NhomChiPhi.SetCreateAccount(0);
+            newNS_NhomChiPhi.SetCreateAccount(_user);
             newNS_NhomChiPhi.Status = request.Status.HasValue ? request.Status : newNS_NhomChiPhi.Status;
             newNS_NhomChiPhi.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NhomChiPhi.IsActive;
             newNS_NhomChiPhi.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_NhomChiPhi.IsVisible;
