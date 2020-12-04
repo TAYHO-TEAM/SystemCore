@@ -48,9 +48,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingStage.IsDelete = true;
                 existingStage.ModifyBy = 0;
                 existingStage.SetUpdate(_user,0);
-                _StagesRepository.Update(existingStage);
+                
             }
-
+            _StagesRepository.UpdateRange(existingStages);
             await _StagesRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             var StagesResponseDTOs = _mapper.Map<List<StagesCommandResponseDTO>>(existingStages);
             methodResult.Result = new DeleteStagesCommandResponse(StagesResponseDTOs);

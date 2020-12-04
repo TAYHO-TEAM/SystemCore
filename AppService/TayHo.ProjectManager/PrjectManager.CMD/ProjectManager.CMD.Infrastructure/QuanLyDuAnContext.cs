@@ -29,6 +29,8 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<RequestDetail> RequestDetail { get; set; }
         public DbSet<Requests> Requests { get; set; }
         public DbSet<Stages> Stages { get; set; }
+        public DbSet<OperationProcess> OperationProcess { get; set; }
+        public DbSet<StepsProcess> StepsProcess { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
