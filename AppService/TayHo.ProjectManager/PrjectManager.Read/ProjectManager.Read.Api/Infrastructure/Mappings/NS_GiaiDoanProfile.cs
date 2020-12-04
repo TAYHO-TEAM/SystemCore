@@ -8,7 +8,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
     {
         public NS_GiaiDoanProfile()
         {
-            CreateMap<NS_GiaiDoanDTO, NS_GiaiDoanResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            //CreateMap<NS_GiaiDoanDTO, NS_GiaiDoanResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }
