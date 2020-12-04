@@ -2,7 +2,7 @@
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class NS_LoaiThauResponseViewModel : BaseResponseViewModel
+    public class NS_LoaiThauResponseViewModel : BaseResponseChilCountViewModel
     {
         public int ParentId { get; set; }
         public string TenGoiThau { get; set; }

@@ -1,20 +1,19 @@
 ﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
 var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
+var header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Authorization': 'Bearer ' + UserCurrentInfo.accessToken,
+};
+
+DevExpress.localization.locale('vi');
 
 $(function () {
-    if (checkLogin()) {
-        loadUser();
-        loadMenu();
-    }
+    if (checkLogin()) loadMenu();
     else logout(window.location.pathname);
-});
-
-let loadUser = () => {
-    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
-    $('.user-panel div.info a').html(UserCurrentInfo.userName);
-    $('.user-panel div.info span').html(UserCurrentInfo.title);
-}
+}); 
 
 function logout(url) {
     if (url == null || url.length == 0 || url=="/") url = "/Home";
@@ -23,6 +22,11 @@ function logout(url) {
 }
 
 function loadMenu() {
+    //loadInfo
+    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
+    $('.user-panel div.info a').html(UserCurrentInfo.userName);
+    $('.user-panel div.info span').html(UserCurrentInfo.title);
+    //LoadMenu
     var rs = "", url = URL_API_ACC_READ + "/Actions";
     var container = $(".list-menu-left");
     var params = {
@@ -49,6 +53,10 @@ function loadMenu() {
         }).always(function () {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
+
+                console.log(window.location.pathname);
+                console.log($(this).find('a').attr('href'));
+
                 $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
                 $(this).children(".nav-link").toggleClass('active', window.location.pathname == ($(this).find('a').attr('href')));
             });
@@ -95,6 +103,7 @@ function getParamInUrl(name, url) {
 }
 
 let ajax_load = (url, values) => {
+    console.log(url);
     console.log(values);
     var deferred = $.Deferred(), params = {};
     params = {
@@ -107,13 +116,7 @@ let ajax_load = (url, values) => {
     }
 
     $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',  
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken, 
-        },
-        url: url, dataType: "json", data: params,
+        headers: header, url: url, dataType: "json", data: params,
         success: function (data) {
             deferred.resolve(
                 data.result.items,
@@ -133,13 +136,7 @@ let ajax_load = (url, values) => {
 let ajax_insert = (url, values) => {
     var deferred = $.Deferred();
     $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
-        },
-        url: url, dataType: "json", type: "POST",
+        headers: header, url: url, dataType: "json", type: "POST",
         data: JSON.stringify(values),
         success: function (data) {
             deferred.resolve();
@@ -157,13 +154,7 @@ let ajax_update = (url, key, values) => {
     var keyObj = JSON.parse('{"id":' + key + '}');
     var deferred = $.Deferred();
     $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
-        },
-        url: url, dataType: "json", type: "PUT",
+        headers: header, url: url, dataType: "json", type: "PUT",
         data: JSON.stringify($.extend(keyObj, values)),
         success: function (data) {
             deferred.resolve();
@@ -180,13 +171,7 @@ let ajax_update = (url, key, values) => {
 let ajax_delete = (url, key) => {
     var deferred = $.Deferred();
     $.ajax({
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': 'Bearer ' + UserCurrentInfo.accessToken
-        },
-        url: url, dataType: "json", type: "DELETE",
+        headers: header, url: url, dataType: "json", type: "DELETE",
         data: JSON.stringify({ "ids": [key]}),
         success: function (data) {
             deferred.resolve();

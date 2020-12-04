@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Các hạng mục";
+    ViewBag.Title = "Các giai đoạn";
 }
 
 @section style{   }
@@ -14,10 +14,7 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_HangMuc";
-        const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
-        const ACTION_PROJECT = "/Projects";
-
+        const ACTION = "/NS_GiaiDoan";
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
@@ -28,59 +25,50 @@
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
 
-        let customStore_NhomChiPhi = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw", 
-            load: (values) => ajax_load(URL_API_PM_READ + ACTION_NHOMCHIPHI, values),
-            byKey: (key) => { return key; }
-        }); 
-
-        let customStore_Projects = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw", 
-            load: (values) => ajax_load(URL_API_PM_READ + ACTION_PROJECT, values),
-            byKey: (key) => { return key; }
-        });
-
         $(function () {
             loadData(customStore);
         });
 
         let loadData = (dataSource) => {
-            $("#container").dxTreeList({
+            $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
                 remoteOperations: {
-                    filtering: false,
+                    paging: true,
                     sorting: true,
-                    grouping: false
                 },
-                rootValue: "0", parentIdExpr: "parentId", keyExpr: "id",
+                repaintChangesOnly: true,
+                
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true, 
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        dataField: "tenHangMuc", caption: "Tên hạng mục",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
+                        caption: "STT",
+                        width: 80, alignment: "center",
+                        allowEditting: false,
+                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
                     },
                     {
-                        dataField: "kyHieu", caption: "Ký Hiệu",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 150 : "100%", 
-                    },
-                    {
-                        dataField: "nhomChiPhiId", caption: "Nhóm chi phí",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
-                        lookup: {
-                            dataSource: customStore_NhomChiPhi,
-                            valueExpr: "id",
-                            displayExpr: "tenNhomChiPhi",
+                        dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Nhập tên giai đoạn...",
+                            showClearButton: true
                         },
+                        validationRules: [
+                            {
+                                type: "required",
+                                message: "Bắt buộc nhập thông tin"
+                            }
+                        ]
                     },
                     {
-                        dataField: "projectId", caption: "Dự án",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
-                        lookup: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                        }, 
+                        dataField: "dienGiai", caption: "Diễn giải",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Nhập nội dung diễn giải...",
+                            showClearButton: true
+                        },
                     },
                     {
                         dataField: "isActive", width: 100,
@@ -123,26 +111,20 @@
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
-                editing: { 
+                editing: {
+                    allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "batch",
-                    useIcons: false, confirmDelete: true, texts: textDataGrid,
-                },
+                    refreshMode: "reshape", mode: "cell",
+                    useIcons: false, confirmDelete: true,               
+                }, 
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift(
-                        {
-                            location: "before", widget: "dxButton",
-                            options: {
-                                text: "Thêm mới", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
+                    e.toolbarOptions.items.unshift( 
                         {
                             location: "after", widget: "dxButton",
                             options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
+                                icon: "refresh",  
                                 onClick: () => container.refresh()
                             }
                         })

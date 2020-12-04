@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
-    public class HomeController : Controller
+    public class DefaultController : Controller
     {
         public ActionResult Index()
         {

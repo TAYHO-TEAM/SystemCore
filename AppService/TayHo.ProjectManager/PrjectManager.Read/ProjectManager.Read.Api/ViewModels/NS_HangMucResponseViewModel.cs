@@ -2,7 +2,7 @@
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class NS_HangMucResponseViewModel : BaseResponseViewModel
+    public class NS_HangMucResponseViewModel : BaseResponseChilCountViewModel
     {
         public int ParentId { get; set; }
         public string TenHangMuc { get; set; }

@@ -4,6 +4,7 @@ namespace ProjectManager.Read.Api.ViewModels
 {
     public class NS_NganSachResponseViewModel : BaseResponseViewModel
     {
+        public int ProjectId { get; set; }
         public int HangMucId { get; set; }
         public int GoiThauId { get; set; }
         public int GiaiDoanId { get; set; }

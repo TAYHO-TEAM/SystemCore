@@ -1,0 +1,110 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Theo dõi ngân sách";
+}
+
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        var ACTION = "/NS_NganSach";
+        var WIDTH_CONTAINER = $("#container").width();
+
+        let customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        });
+
+        $(function () {
+            loadData(customStore);
+        });
+
+        let loadData = (dataSource) => {
+            $("#container").dxDataGrid({
+                height: heightScreen,
+                dataSource: dataSource,
+                remoteOperations: {
+                    paging: true,
+                    sorting: true,
+                },
+                repaintChangesOnly: true,
+                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                columns: [
+                    {
+                        caption: "STT", width: 80, alignment: "center",
+                        allowEditting: false,
+                        cellTemplate: (c, o) => c.append(o.rowIndex + 1),
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
+                    },                     
+                    {
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch", dataType: "boolean",
+                    },
+                    {
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch", dataType: "boolean",
+                    }, 
+                ],
+                paging: {
+                    enabled: true,
+                    pageSize: 20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true, 
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true, 
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
+                editing: {
+                    allowAdding: true,
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    refreshMode: "repaint", mode: "cell",
+                    useIcons: false, confirmDelete: true,
+                },
+                onToolbarPreparing: function (e) {
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh",
+                                onClick: () => container.refresh()
+                            }
+                        })
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                }
+            });
+        }
+    </script>
+}

@@ -37,6 +37,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_NganSach.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_NganSach.IsActive;
             existingNS_NganSach.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_NganSach.IsVisible;
             existingNS_NganSach.Status = request.Status.HasValue ? request.Status : existingNS_NganSach.Status;
+            existingNS_NganSach.SetProjectId(request.ProjectId);
             existingNS_NganSach.SetHangMucId(request.HangMucId);
             existingNS_NganSach.SetGoiThauId(request.GoiThauId);
             existingNS_NganSach.SetGiaiDoanId(request.GiaiDoanId);

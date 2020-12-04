@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Các giai đoạn";
+    ViewBag.Title = "Thông tin nhà thầu";
 }
 
 @section style{   }
@@ -14,7 +14,7 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_GiaiDoan";
+        const ACTION = "/ContractorInfo";
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
@@ -48,37 +48,25 @@
                         cellTemplate: (container, options) => container.append(options.rowIndex + 1),
                     },
                     {
-                        dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                        editorOptions: {
-                            placeholder: "Nhập tên giai đoạn...",
-                            showClearButton: true
-                        },
-                        validationRules: [
-                            {
-                                type: "required",
-                                message: "Bắt buộc nhập thông tin"
-                            }
-                        ]
+                        dataField: "name", caption: "Tên nhà thầu",
+                        dataType: "string",
                     },
                     {
-                        dataField: "dienGiai", caption: "Diễn giải",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                        editorOptions: {
-                            placeholder: "Nhập nội dung diễn giải...",
-                            showClearButton: true
-                        },
+                        dataField: "code", dataType: "string",
                     },
+                    {
+                        dataField: "descriptions", caption: "Thông tin khác",
+                        dataType: "string",
+                    },
+                    "businessAreas", "country", "city", "district", "address", "phone", "email",
                     {
                         dataField: "isActive", width: 100,
-                        editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
+                        editorType: "dxSwitch", dataType: "boolean"
                     },
 
                     {
                         dataField: "isVisible", width: 100,
-                        editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
+                        editorType: "dxSwitch", dataType:"boolean"
                     },
                     //{
                     //    dataField: "createBy", caption: "Khởi tạo",
@@ -100,21 +88,20 @@
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [10, 20, 40],
-                    showInfo: true,
-                    infoText: "Trang {0} của {1} ({2} dòng)",
+                    showInfo: true, 
                 },
                 searchPanel: {
                     highlightCaseSensitive: true,
-                    highlightSearchText: true,
-                    placeholder: "Tìm nhanh...",
+                    highlightSearchText: true, 
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false, confirmDelete: true, texts: textDataGrid,
+                    mode: "batch",
+                    useIcons: false,
+                    confirmDelete: true 
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;

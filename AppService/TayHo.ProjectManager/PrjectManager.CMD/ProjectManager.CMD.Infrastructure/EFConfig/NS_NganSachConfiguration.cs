@@ -11,6 +11,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         public void Configure(EntityTypeBuilder<NS_NganSach> builder)
         {
             builder.ToTable(QuanLyDuAnConstants.NS_NganSach_TABLENAME);
+            builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.HangMucId).HasField("_hangMucId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GoiThauId).HasField("_goiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GiaiDoanId).HasField("_giaiDoanId").UsePropertyAccessMode(PropertyAccessMode.Field);
