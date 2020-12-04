@@ -26,10 +26,10 @@
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                 };
-                //if (values.sort != null && values.sort.length > 0) {
-                //    params['SortCol'] = values.sort[0].selector;
-                //    params['SortADSC'] = values.sort[0].desc;
-                //}
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
 
                 $.ajax({
                     headers: header,
@@ -69,8 +69,7 @@
                     paging: true,
                     sorting: true,
                 },
-                repaintChangesOnly: true,
-                
+                repaintChangesOnly: true,                
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
@@ -84,47 +83,28 @@
                         dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
                         dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
-                            placeholder: "Nhập tên giai đoạn...",
+                            placeholder: "Vui lòng nhập...",
                             showClearButton: true
                         },
-                        validationRules: [
-                            {
-                                type: "required",
-                                message: "Bắt buộc nhập thông tin"
-                            }
-                        ]
+                        validationRules: [ { type: "required"}]
                     },
                     {
                         dataField: "dienGiai", caption: "Diễn giải",
                         dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
-                            placeholder: "Nhập nội dung diễn giải...",
+                            placeholder: "Vui lòng nhập(nếu có)...",
                             showClearButton: true
                         },
                     },
                     {
                         dataField: "isActive", width: 100,
                         editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
                     },
 
                     {
                         dataField: "isVisible", width: 100,
                         editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
-                    },
-                    //{
-                    //    dataField: "createBy", caption: "Khởi tạo",
-                    //    width: 250, aligment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value, " đã tạo cách đây ", moment(options.data.createDate).locale("vi").fromNow())
-                    //},
-                    //{
-                    //    dataField: "modifyBy", caption: "Cập nhật",
-                    //    width: 250, alignment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
-                    //},
+                    },  
                 ],
                 paging: {
                     enabled: true,
@@ -139,7 +119,6 @@
                 searchPanel: {
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
-                    placeholder: "Tìm nhanh...",
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
@@ -147,8 +126,9 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    refreshMode: "reshape", mode: "cell",
-                    useIcons: false, confirmDelete: true,               
+                    mode: "cell",
+                    useIcons: false,
+                    confirmDelete: true, refreshMode: "full"            
                 }, 
                 onToolbarPreparing: function (e) {
                     var container = e.component;

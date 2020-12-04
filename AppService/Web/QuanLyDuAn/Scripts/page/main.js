@@ -135,9 +135,10 @@ let ajax_update = (url, key, values) => {
 
 let ajax_delete = (url, key) => {
     var deferred = $.Deferred();
+    var keys = typeof (key) == 'number' ? [key] : key;
     $.ajax({
         headers: header, url: url, dataType: "json", type: "DELETE",
-        data: JSON.stringify({ "ids": [key]}),
+        data: JSON.stringify({ "ids": keys}),
         success: function (data) {
             deferred.resolve();
         },

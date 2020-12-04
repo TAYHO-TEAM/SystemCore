@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Loại thầu";
+    ViewBag.Title = "Danh sách loại thầu";
 }
 
 @section style{   }
@@ -23,7 +23,7 @@
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                let deferred = $.Deferred(), params = {}; 
+                let deferred = $.Deferred(), params = {};
 
                 if (values.filter && values.filter[0] == "parentId")
                     params['FindParentId'] = values.filter[2];
@@ -38,21 +38,21 @@
                     dataType: "json",
                     data: params,
                     success: function (data) {
-                        let list = data.result.items.filter(x => x.projectId == PROJECTID); 
+                        let list = data.result.items.filter(x => x.projectId == PROJECTID);
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
                     },
-                    timeout: 10000//10 giây
+                    timeout: 10000 //10 giây
                 });
 
                 return deferred.promise();
             },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
-            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),  
         });
 
         let customStore_Projects = new DevExpress.data.CustomStore({
@@ -81,20 +81,16 @@
         }); 
 
         $(function () {
-            loadData(customStore);
-        });
-
-        let loadData = (dataSource) => { 
             $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: customStore,
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
                     sorting: true,
                     grouping: false
-                }, 
-                cacheEnabled:true,
+                },
+                cacheEnabled: true,
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
@@ -102,12 +98,13 @@
                 columns: [
                     {
                         dataField: "tenGoiThau", caption: "Tên loại thầu",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", alignment:"left",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", alignment: "left",
                         editorType: "dxTextBox",
-                        editorOptions: {  
-                            placeholder: "Vui lòng nhập...", showClearButton: true,
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập...",
+                            showClearButton: true,
                         },
-                        validationRules: [{ type: "required"}]
+                        validationRules: [{ type: "required" }]
                     },
                     {
                         dataField: "dienGiai", caption: "Diễn giải",
@@ -116,7 +113,7 @@
                         editorOptions: {
                             placeholder: "Vui lòng nhập (nếu có)...", showClearButton: true,
                         },
-                    }, 
+                    },
                     {
                         dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
@@ -124,11 +121,11 @@
                     {
                         dataField: "isVisible", width: 100, alignment: "center",
                         editorType: "dxSwitch",
-                    }, 
+                    },
                     {
-                        type: "buttons", caption: "Tác vụ",  
-                        width: 100, alignment:"center",
-                        buttons: ["add", "delete"]
+                        type: "buttons", caption: "Tác vụ",
+                        width: 120, alignment: "center",
+                        buttons: ["add", "edit", "delete"]
                     }
                 ],
                 paging: {
@@ -141,17 +138,17 @@
                     showInfo: true,
                 },
                 searchPanel: {
-                    highlightCaseSensitive: true, highlightSearchText: true, 
+                    highlightCaseSensitive: true, highlightSearchText: true,
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
                     allowAdding: true,
                     allowUpdating: true,
-                    allowDeleting: true,
+                    allowDeleting: true, 
                     mode: "cell",
                     useIcons: false,
-                    confirmDelete: true, 
+                    confirmDelete: false,  
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -159,17 +156,17 @@
                         {
                             location: "before", widget: "dxSelectBox",
                             options: {
-                                dataSource: customStore_Projects,                                
+                                dataSource: customStore_Projects,
                                 valueExpr: "id", displayExpr: "title",
                                 searchEnabled: true,
-                                searchMode: "contains", 
+                                searchMode: "contains",
                                 width: "100%",
                                 showClearButton: false,
                                 value: PROJECTID,
-                                onValueChanged: function (data) {
+                                onValueChanged: (data) => {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
+                                    container.refresh();
                                 },
                             },
                         },
@@ -189,8 +186,8 @@
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 0)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
-                }
+                },
             });
-        }
+        }); 
     </script>
 }

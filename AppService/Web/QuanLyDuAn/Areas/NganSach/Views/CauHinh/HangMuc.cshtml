@@ -17,12 +17,39 @@
         const ACTION = "/NS_HangMuc";
         const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
         const ACTION_PROJECT = "/Projects";
+        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            load: (values) => {
+                console.log(values)
+                let deferred = $.Deferred(), params = {};
+                if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        let list = data.result.items.filter(x => x.projectId == PROJECTID);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000//10 giây
+                });
+
+                return deferred.promise();
+            },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
@@ -48,24 +75,28 @@
         }); 
 
         let customStore_Projects = new DevExpress.data.CustomStore({
-            key: "id",
+            key: "id", loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_PROJECT, 
-                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible == true)),
-                    error: (xhr, textStatus, errorThrown) => {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
                     },
-                    timeout: 5000
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
                 });
                 return deferred.promise();
             },
-            byKey: (key) => {
-                return { id: key }
-            }
         }); 
 
         $(function () {
@@ -78,13 +109,20 @@
                 dataSource: dataSource,
                 repaintChangesOnly: true,
                 remoteOperations: {
-                    filtering: false,
+                    filtering: true,
                     sorting: true,
                     grouping: false
                 },
+                cacheEnabled: true,
+                //stateStoring: {
+                //    enabled: true,
+                //    type: "localStorage",
+                //    storageKey: "localStorage_hangmuc"
+                //},
+                scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
-                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true, 
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
                         dataField: "tenHangMuc", caption: "Tên hạng mục",
@@ -111,25 +149,21 @@
                             itemTemplate: function (data) {
                                 return $("<div>").append($("<b>").append(data.tenNhomChiPhi).addClass("mr-1"), $("<em>").append(data.dienGiai));
                             }, 
-                        },
+                        }
                     },
                     {
-                        dataField: "projectId", caption: "Dự án",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
-                        lookup: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                        }, 
-                    },
-                    {
-                        dataField: "isActive", width: 100,
+                        dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
-
                     {
-                        dataField: "isVisible", width: 100,
+                        dataField: "isVisible", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
+                    {
+                        type: "buttons", caption: "Tác vụ",
+                        width: 120, alignment: "center",
+                        buttons: ["add", "edit", "delete"]
+                    }
                 ],
                 paging: {
                     enabled: true,
@@ -150,12 +184,30 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    refreshMode: "reshape", mode: "cell",
-                    useIcons: false, confirmDelete: true, 
+                    mode: "cell",
+                    useIcons: false,
+                    confirmDelete: true, 
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift( 
+                        {
+                            location: "before", widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_Projects,
+                                valueExpr: "id", displayExpr: "title",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: PROJECTID,
+                                onValueChanged: function (data) {
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -167,6 +219,11 @@
                 onInitNewRow: (e) => { 
                     e.data.isActive = true;
                     e.data.isVisible = true;
+                    e.data.ProjectId = PROJECTID;
+                },
+                onCellPrepared: (e) => {
+                    if (e.rowType == "data" && e.columnIndex == 0)
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 }
             });
         }
