@@ -12,10 +12,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects.BaseClasses
         public DOBase()
         {
         }
-        public DOBase(int? CreateBy)
-        {
-            if (!CreateBy.HasValue) _createBy = CreateBy;
-        }
+     
         public virtual void SetCreateAccount(int? createBy)
         {
             CreateBy = createBy.HasValue ? createBy : CreateBy;

@@ -14,6 +14,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         {
             _mapper = mapper;
             _NS_NganSachRepository = NS_NganSachRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
     }
 }

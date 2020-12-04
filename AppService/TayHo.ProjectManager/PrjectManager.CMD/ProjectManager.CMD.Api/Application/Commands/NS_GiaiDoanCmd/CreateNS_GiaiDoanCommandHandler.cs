@@ -5,12 +5,13 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_GiaiDoanCommandHandler : NS_GiaiDoanCommandHandler, IRequestHandler<CreateNS_GiaiDoanCommand, MethodResult<CreateNS_GiaiDoanCommandResponse>>
     {
-        public CreateNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository) : base(mapper, NS_GiaiDoanRepository)
+        public CreateNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, NS_GiaiDoanRepository, httpContextAccessor)
         {
         }
 
@@ -25,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var methodResult = new MethodResult<CreateNS_GiaiDoanCommandResponse>();
             var newNS_GiaiDoan = new NS_GiaiDoan(request.TenGiaiDoan,
 request.DienGiai);
-            newNS_GiaiDoan.SetCreateAccount(0);
+            newNS_GiaiDoan.SetCreateAccount(_user);
             newNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : newNS_GiaiDoan.Status;
             newNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_GiaiDoan.IsActive;
             newNS_GiaiDoan.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_GiaiDoan.IsVisible;

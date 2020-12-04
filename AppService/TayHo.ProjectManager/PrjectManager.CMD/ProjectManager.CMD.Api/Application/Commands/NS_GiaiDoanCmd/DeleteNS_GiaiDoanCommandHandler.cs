@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_GiaiDoanCommandHandler : NS_GiaiDoanCommandHandler, IRequestHandler<DeleteNS_GiaiDoanCommand, MethodResult<DeleteNS_GiaiDoanCommandResponse>>
     {
-        public DeleteNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository) : base(mapper, NS_GiaiDoanRepository)
+        public DeleteNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, NS_GiaiDoanRepository, httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(0,0);
+                existingAssignment.SetUpdate(_user,0);
             }
             _NS_GiaiDoanRepository.UpdateRange(existingNS_GiaiDoan);
             await _NS_GiaiDoanRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
