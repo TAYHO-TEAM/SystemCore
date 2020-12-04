@@ -24,10 +24,7 @@ namespace Services.Common.DomainObjects
             CreateDate = DateTime.Now;
             IsDelete = false;
         }
-        public virtual void SetCreate(int? createby)
-        {
-            CreateBy = createby.HasValue? createby : CreateBy;
-        }
+       
         public virtual void SetUpdate(int? modifyBy, byte? status)
         {
             UpdateDateUTC = DateTime.UtcNow;

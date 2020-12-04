@@ -12,6 +12,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 
         public RequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository,  IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _RequestsRepository = RequestsRepository;
         }

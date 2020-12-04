@@ -13,6 +13,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public ReplyCommandHandler(IMapper mapper, IReplyRepository ReplyRepository,  IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
             _ReplyRepository = ReplyRepository;
         }
     }

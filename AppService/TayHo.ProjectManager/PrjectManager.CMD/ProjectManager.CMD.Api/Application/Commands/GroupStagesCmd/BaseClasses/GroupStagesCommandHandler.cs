@@ -14,6 +14,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         {
             _mapper = mapper;
             _GroupStagesRepository = GroupStagesRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
     }
 }

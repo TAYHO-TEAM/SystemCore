@@ -13,6 +13,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public StagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository,  IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
             _StagesRepository = StagesRepository;
         }
     }

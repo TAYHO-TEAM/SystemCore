@@ -14,6 +14,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         {
             _mapper = mapper;
             _NS_NhomChiPhiRepository = NS_NhomChiPhiRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
     }
 }

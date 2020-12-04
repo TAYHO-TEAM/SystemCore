@@ -7,12 +7,13 @@ using Services.Common.DomainObjects.Exceptions;
 using Services.Common.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_GiaiDoanCommandHandler : NS_GiaiDoanCommandHandler,IRequestHandler<UpdateNS_GiaiDoanCommand, MethodResult<UpdateNS_GiaiDoanCommandResponse>>
     {
-        public UpdateNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository) : base(mapper, NS_GiaiDoanRepository)
+        public UpdateNS_GiaiDoanCommandHandler(IMapper mapper, INS_GiaiDoanRepository NS_GiaiDoanRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, NS_GiaiDoanRepository, httpContextAccessor)
         {
         }
 
@@ -39,7 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : existingNS_GiaiDoan.Status;
             existingNS_GiaiDoan.SetTenGiaiDoan(request.TenGiaiDoan);
             existingNS_GiaiDoan.SetDienGiai(request.DienGiai);
-            existingNS_GiaiDoan.SetUpdate(0,0);
+            existingNS_GiaiDoan.SetUpdate(_user, 0);
             _NS_GiaiDoanRepository.Update(existingNS_GiaiDoan);
             await _NS_GiaiDoanRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_GiaiDoanCommandResponse>(existingNS_GiaiDoan);
