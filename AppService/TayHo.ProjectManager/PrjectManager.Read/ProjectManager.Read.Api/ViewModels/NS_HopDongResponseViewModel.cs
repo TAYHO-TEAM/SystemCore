@@ -1,18 +1,16 @@
-﻿using ProjectManager.Read.Sql.DTOs.BaseClasses;
+﻿using ProjectManager.Read.Api.ViewModels.BaseClasses;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ProjectManager.Read.Sql.DTOs.DTO
+namespace ProjectManager.Read.Api.ViewModels
 {
-    public class NS_HopDongDTO: DTOChilCountBase
+    public class NS_HopDongResponseViewModel : BaseResponseChilCountViewModel
     {
         public int ParentID { get; set; }
         public string SoHopDong { get; set; }
         public int ContractorInfoId { get; set; }
         public int GoiThauID { get; set; }
         public decimal GiaTri { get; set; }
-        public DateTime NgayKy { get; set; }
+        public DateTime? NgayKy { get; set; }
         public string DienGiai { get; set; }
     }
 }

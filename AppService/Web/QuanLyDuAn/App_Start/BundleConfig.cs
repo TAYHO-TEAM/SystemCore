@@ -38,6 +38,7 @@ namespace QuanLyDuAn
             scriptBundleDX.Include(
                 "~/Scripts/jszip.js",
                 "~/Scripts/dx.all.js",
+                "~/Scripts/localization/dx.messages.vi.js",
                 "~/Scripts/aspnet/dx.aspnet.mvc.js",
                 "~/Scripts/aspnet/dx.aspnet.data.js");
 

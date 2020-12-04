@@ -8,6 +8,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
     public class NS_NganSach : DOBase
     {
         #region Fields
+        private int? _projectId;
         private int? _hangMucId;
         private int? _goiThauId;
         private int? _giaiDoanId;
@@ -21,13 +22,15 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_NganSach(int? HangMucId,
-            int? GoiThauId,
-            int? GiaiDoanId,
-            string DienGiai,
-            decimal? GiaTri,
-            bool? isLock) : this()
+        public NS_NganSach(int? ProjectId,
+int? HangMucId,
+int? GoiThauId,
+int? GiaiDoanId,
+string DienGiai,
+decimal? GiaTri,
+bool? isLock) : this()
         {
+             _projectId = ProjectId;
             _hangMucId = HangMucId;
             _goiThauId = GoiThauId;
             _giaiDoanId = GiaiDoanId;
@@ -38,6 +41,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Constructors
 
         #region Properties
+        public int? ProjectId { get => _projectId; }
         public int? HangMucId { get => _hangMucId; }
         public int? GoiThauId { get => _goiThauId; }
         public int? GiaiDoanId { get => _giaiDoanId; }
@@ -47,6 +51,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
+        public void SetProjectId(int? ProjectId)
+        { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetHangMucId(int? HangMucId)
         { _hangMucId = HangMucId.HasValue ? _hangMucId : HangMucId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetGoiThauId(int? GoiThauId)

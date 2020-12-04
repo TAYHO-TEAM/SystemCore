@@ -23,7 +23,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_NganSachCommandResponse>> Handle(CreateNS_NganSachCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_NganSachCommandResponse>();
-            var newNS_NganSach = new NS_NganSach(request.HangMucId,
+            var newNS_NganSach = new NS_NganSach(
+                request.ProjectId,
+                request.HangMucId,
                 request.GoiThauId,
                 request.GiaiDoanId,
                 request.DienGiai,

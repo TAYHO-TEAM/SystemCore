@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
-    public class GiaiDoanController : Controller
+    public class DefaultController : Controller
     {
-        // GET: NganSach/GiaiDoan
+        // GET: NganSach/Home
         public ActionResult Index()
         {
             return View();

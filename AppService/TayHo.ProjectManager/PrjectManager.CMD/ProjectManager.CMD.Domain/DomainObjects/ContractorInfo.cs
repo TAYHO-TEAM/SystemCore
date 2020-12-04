@@ -69,18 +69,18 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
-        public void SetCode(string Code) { _code = !string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTaxCode(string TaxCode) { _taxCode = !string.IsNullOrEmpty(TaxCode) ? _taxCode : TaxCode; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetAvatarImg(string AvatarImg) { _avatarImg = !string.IsNullOrEmpty(AvatarImg) ? _avatarImg : AvatarImg; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetName(string Name) { _name = !string.IsNullOrEmpty(Name) ? _name : Name; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDescriptions(string Descriptions) { _descriptions = !string.IsNullOrEmpty(Descriptions) ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetBusinessAreas(string BusinessAreas) { _businessAreas = !string.IsNullOrEmpty(BusinessAreas) ? _businessAreas : BusinessAreas; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetCountry(string Country) { _country = !string.IsNullOrEmpty(Country) ? _country : Country; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetCity(string City) { _city = !string.IsNullOrEmpty(City) ? _city : City; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDistrict(string District) { _district = !string.IsNullOrEmpty(District) ? _district : District; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetAddress(string Address) { _address = !string.IsNullOrEmpty(Address) ? _address : Address; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetPhone(string Phone) { _phone = !string.IsNullOrEmpty(Phone) ? _phone : Phone; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetEmail(string Email) { _email = !string.IsNullOrEmpty(Email) ? _email : Email; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTaxCode(string TaxCode) { _taxCode = string.IsNullOrEmpty(TaxCode) ? _taxCode : TaxCode; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetAvatarImg(string AvatarImg) { _avatarImg = string.IsNullOrEmpty(AvatarImg) ? _avatarImg : AvatarImg; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetName(string Name) { _name = string.IsNullOrEmpty(Name) ? _name : Name; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDescriptions(string Descriptions) { _descriptions = Descriptions == null ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetBusinessAreas(string BusinessAreas) { _businessAreas = string.IsNullOrEmpty(BusinessAreas) ? _businessAreas : BusinessAreas; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCountry(string Country) { _country = string.IsNullOrEmpty(Country) ? _country : Country; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCity(string City) { _city = string.IsNullOrEmpty(City) ? _city : City; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDistrict(string District) { _district = string.IsNullOrEmpty(District) ? _district : District; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetAddress(string Address) { _address = string.IsNullOrEmpty(Address) ? _address : Address; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetPhone(string Phone) { _phone = string.IsNullOrEmpty(Phone) ? _phone : Phone; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetEmail(string Email) { _email = string.IsNullOrEmpty(Email) ? _email : Email; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

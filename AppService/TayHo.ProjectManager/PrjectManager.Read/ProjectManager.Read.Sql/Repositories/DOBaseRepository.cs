@@ -37,10 +37,28 @@ namespace ProjectManager.Read.Sql.Repositories
 
             return result;
         }
+        public async Task<PagingItems<T>> GetWithPaggingFKAsync(RequestBaseFilterParam requestBaseFilterParam)
+        {
+            requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName?? "*" ;//GetColumnTableName();
+            var result = new PagingItems<T>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestBaseFilterParam.PageNumber,
+                    PageSize = requestBaseFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_GetDataTableSS_WithPage_FK", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+
+            return result;
+        }
         public string GetColumnTableName()
         {
             var properties = typeof(T).GetProperties();
-            return string.Join(",", properties.Select(x => x.Name));
+            return  string.Join(",", properties.Select(x => x.Name));
         }
     }
 }

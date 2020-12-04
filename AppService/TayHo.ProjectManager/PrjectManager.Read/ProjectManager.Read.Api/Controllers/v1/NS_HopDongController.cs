@@ -15,33 +15,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_HangMucController : APIControllerBase
+    public class NS_HopDongController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_HangMucDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<NS_HopDongDTO> _dOBaseRepository;
 
-        public NS_HangMucController(IMapper mapper, IDOBaseRepository<NS_HangMucDTO> dOBaseRepository) : base(mapper)
+        public NS_HopDongController(IMapper mapper, IDOBaseRepository<NS_HopDongDTO> dOBaseRepository) : base(mapper)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_HangMuc.
+        /// Get List of NS_HopDong.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_HangMucResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_HopDongResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_HangMucAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetNS_HopDongAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_HangMucResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_HopDongResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_HangMuc_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.NS_HopDong_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_HangMucResponseViewModel>
+            methodResult.Result = new PagingItems<NS_HopDongResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_HangMucResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_HopDongResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }
