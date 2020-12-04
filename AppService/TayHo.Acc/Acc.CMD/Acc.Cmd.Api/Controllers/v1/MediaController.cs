@@ -56,7 +56,7 @@ namespace Acc.Cmd.Api.Controllers.V1
         /// <summary>
         /// SaveFile
         /// </summary>
-        /// <param name="subDirectory"></param>
+        /// <param name="files"></param>
         /// <returns></returns>
         [HttpPost(SaveFile)]
         [ProducesResponseType(typeof(MethodResult<List<int>>), (int)HttpStatusCode.OK)]
