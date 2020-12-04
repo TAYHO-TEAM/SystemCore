@@ -21,7 +21,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public DocumentType(string Code,
                             string Title,
                             string Descriptions,
-                            int? OperationProcessId,) : this()
+                            int? OperationProcessId) : this()
         {
             _code = Code;
             _title = Title;

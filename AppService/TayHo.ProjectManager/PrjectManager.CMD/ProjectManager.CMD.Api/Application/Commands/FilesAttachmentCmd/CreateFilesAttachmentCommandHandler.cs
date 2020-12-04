@@ -33,7 +33,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.Host,
                                                         request.Type,
                                                         request.Direct);
-            newFilesAttachment.SetCreateAccount(_user);
+            newFilesAttachment.SetCreate(_user);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
             newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;

@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var methodResult = new MethodResult<CreateGroupStagesCommandResponse>();
             var newGroupStages = new GroupStages(request.GroupId,
                                                 request.StageId);
-            newGroupStages.SetCreateAccount(_user);
+            newGroupStages.SetCreate(_user);
             newGroupStages.Status = request.Status.HasValue ? request.Status : newGroupStages.Status;
             newGroupStages.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupStages.IsActive;
             newGroupStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newGroupStages.IsVisible;

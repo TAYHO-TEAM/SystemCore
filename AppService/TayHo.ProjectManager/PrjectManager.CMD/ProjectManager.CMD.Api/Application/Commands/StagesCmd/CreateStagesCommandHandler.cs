@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateStagesCommandResponse>();
             var newStages = new Stages(request.Code, request.Title, request.Descriptions);
-            newStages.SetCreateAccount(_user);
+            newStages.SetCreate(_user);
             newStages.Status = request.Status.HasValue ? request.Status : newStages.Status;
             newStages.IsActive = request.IsActive.HasValue ? request.IsActive : newStages.IsActive;
             newStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newStages.IsVisible;

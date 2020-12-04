@@ -24,8 +24,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateDocumentTypeCommandResponse>> Handle(CreateDocumentTypeCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateDocumentTypeCommandResponse>();
-            var newDocumentType = new DocumentType(request.Code, request.Title, request.Descriptions);
-            newDocumentType.SetCreateAccount(_user);
+            var newDocumentType = new DocumentType(request.Code, request.Title, request.Descriptions,request.OperationProcessId);
+            newDocumentType.SetCreate(_user);
             newDocumentType.Status = request.Status.HasValue ? request.Status : newDocumentType.Status;
             newDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentType.IsActive;
             newDocumentType.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentType.IsVisible;

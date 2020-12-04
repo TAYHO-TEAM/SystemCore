@@ -29,7 +29,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.KyHieu,
                 request.NhomChiPhiId,
                 request.ProjectId);
-            newNS_HangMuc.SetCreateAccount(_user);
+            newNS_HangMuc.SetCreate(_user);
             newNS_HangMuc.Status = request.Status.HasValue ? request.Status : newNS_HangMuc.Status;
             newNS_HangMuc.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_HangMuc.IsActive;
             newNS_HangMuc.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_HangMuc.IsVisible;

@@ -32,7 +32,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                             request.ReplyById,
                                             request.SendDateTime,
                                             request.NoAttachment);
-            newRequests.SetCreateAccount(_user);
+            newRequests.SetCreate(_user);
             newRequests.Status = request.Status.HasValue ? request.Status : newRequests.Status;
             newRequests.IsActive = request.IsActive.HasValue ? request.IsActive : newRequests.IsActive;
             newRequests.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequests.IsVisible;

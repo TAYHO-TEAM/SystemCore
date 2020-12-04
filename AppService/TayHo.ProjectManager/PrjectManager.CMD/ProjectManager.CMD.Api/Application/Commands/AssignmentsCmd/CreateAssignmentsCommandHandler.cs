@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newAssignments = new Assignments(request.AccountId,
                                                 request.RequestId,
                                                 request.RequestDetailId);
-            newAssignments.SetCreateAccount(_user);
+            newAssignments.SetCreate(_user);
             newAssignments.Status = request.Status.HasValue ? request.Status : newAssignments.Status;
             newAssignments.IsActive = request.IsActive.HasValue ? request.IsActive : newAssignments.IsActive;
             newAssignments.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newAssignments.IsVisible;
