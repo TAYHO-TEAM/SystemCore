@@ -28,7 +28,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.TenGoiThau,
                 request.DienGiai,
                 request.ProjectId);
-            newNS_LoaiThau.SetCreateAccount(_user);
+            newNS_LoaiThau.SetCreate(_user);
             newNS_LoaiThau.Status = request.Status.HasValue ? request.Status : newNS_LoaiThau.Status;
             newNS_LoaiThau.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_LoaiThau.IsActive;
             newNS_LoaiThau.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_LoaiThau.IsVisible;

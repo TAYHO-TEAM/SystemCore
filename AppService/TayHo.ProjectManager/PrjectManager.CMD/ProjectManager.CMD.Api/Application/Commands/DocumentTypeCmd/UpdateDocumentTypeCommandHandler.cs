@@ -40,6 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingStage.Status = request.Status.HasValue ? request.Status : existingStage.Status;
             existingStage.SetCode(request.Code);
             existingStage.SetDescription(request.Descriptions);
+            existingStage.SetOperationProcessId(request.OperationProcessId);
             existingStage.SetTitle(request.Title);
             existingStage.SetUpdate(_user,0);
             _DocumentTypeRepository.Update(existingStage);

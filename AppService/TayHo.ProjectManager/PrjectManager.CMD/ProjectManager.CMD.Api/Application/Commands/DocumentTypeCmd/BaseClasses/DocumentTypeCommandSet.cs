@@ -5,5 +5,6 @@
         public string Code { get; set; }
         public string Title { get; set; }
         public string Descriptions { get; set; }
+        public int? OperationProcessId { get; set; }
     }
 }

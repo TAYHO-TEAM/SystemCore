@@ -31,7 +31,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.GiaTri,
                 request.NgayKy,
                 request.DienGiai);
-            newNS_HopDong.SetCreateAccount(_user);
+            newNS_HopDong.SetCreate(_user);
             newNS_HopDong.Status = request.Status.HasValue ? request.Status : newNS_HopDong.Status;
             newNS_HopDong.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_HopDong.IsActive;
             newNS_HopDong.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_HopDong.IsVisible;

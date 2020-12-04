@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var methodResult = new MethodResult<CreateNS_GiaiDoanCommandResponse>();
             var newNS_GiaiDoan = new NS_GiaiDoan(request.TenGiaiDoan,
 request.DienGiai);
-            newNS_GiaiDoan.SetCreateAccount(_user);
+            newNS_GiaiDoan.SetCreate(_user);
             newNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : newNS_GiaiDoan.Status;
             newNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_GiaiDoan.IsActive;
             newNS_GiaiDoan.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_GiaiDoan.IsVisible;

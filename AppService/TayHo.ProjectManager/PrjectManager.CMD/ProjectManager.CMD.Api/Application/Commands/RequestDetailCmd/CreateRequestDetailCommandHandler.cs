@@ -35,7 +35,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.FromDate,
                                                         request.ToDate,
                                                         request.NoAttachment);
-            newRequestDetail.SetCreateAccount(_user);
+            newRequestDetail.SetCreate(_user);
             newRequestDetail.Status = request.Status.HasValue ? request.Status : newRequestDetail.Status;
             newRequestDetail.IsActive = request.IsActive.HasValue ? request.IsActive : newRequestDetail.IsActive;
             newRequestDetail.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequestDetail.IsVisible;

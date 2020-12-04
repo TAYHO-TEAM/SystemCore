@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newProblemCategory = new ProblemCategory(request.Title,
                                                         request.Descriptions,
                                                         request.Priotity);
-            newProblemCategory.SetCreateAccount(_user);
+            newProblemCategory.SetCreate(_user);
             newProblemCategory.Status = request.Status.HasValue ? request.Status : newProblemCategory.Status;
             newProblemCategory.IsActive = request.IsActive.HasValue ? request.IsActive : newProblemCategory.IsActive;
             newProblemCategory.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newProblemCategory.IsVisible;

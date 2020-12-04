@@ -28,7 +28,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                         request.Title,
                                         request.NoAttachment,
                                         request.Content);
-            newReply.SetCreateAccount(_user);
+            newReply.SetCreate(_user);
             newReply.Status = request.Status.HasValue ? request.Status : newReply.Status;
             newReply.IsActive = request.IsActive.HasValue ? request.IsActive : newReply.IsActive;
             newReply.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newReply.IsVisible;

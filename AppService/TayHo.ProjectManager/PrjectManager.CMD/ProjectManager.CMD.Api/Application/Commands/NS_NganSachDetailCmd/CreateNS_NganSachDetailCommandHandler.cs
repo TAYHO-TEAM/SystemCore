@@ -30,7 +30,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.NgayCapNhat,
                 request.DienGiai,
                 request.isLock);
-            newNS_NganSachDetail.SetCreateAccount(_user);
+            newNS_NganSachDetail.SetCreate(_user);
             newNS_NganSachDetail.Status = request.Status.HasValue ? request.Status : newNS_NganSachDetail.Status;
             newNS_NganSachDetail.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NganSachDetail.IsActive;
             newNS_NganSachDetail.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_NganSachDetail.IsVisible;

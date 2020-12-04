@@ -25,7 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_NhomChiPhiCommandResponse>();
             var newNS_NhomChiPhi = new NS_NhomChiPhi(request.TenNhomChiPhi, request.DienGiai);
-            newNS_NhomChiPhi.SetCreateAccount(_user);
+            newNS_NhomChiPhi.SetCreate(_user);
             newNS_NhomChiPhi.Status = request.Status.HasValue ? request.Status : newNS_NhomChiPhi.Status;
             newNS_NhomChiPhi.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NhomChiPhi.IsActive;
             newNS_NhomChiPhi.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_NhomChiPhi.IsVisible;
