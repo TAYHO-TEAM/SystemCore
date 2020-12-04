@@ -25,9 +25,8 @@
             load: (values) => {
                 let deferred = $.Deferred(), params = {}; 
 
-                if (values.filter && values.filter[0] == "parentId") {
+                if (values.filter && values.filter[0] == "parentId")
                     params['FindParentId'] = values.filter[2];
-                } 
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
@@ -46,7 +45,7 @@
                         console.log(xhr.responseJSON);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
                     },
-                    timeout: 5000
+                    timeout: 10000//10 giây
                 });
 
                 return deferred.promise();
@@ -73,9 +72,9 @@
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
                     },
-                    timeout: 5000
+                    timeout: 10000
                 });
                 return deferred.promise();
             },
@@ -98,27 +97,36 @@
                 cacheEnabled:true,
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
-                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
                         dataField: "tenGoiThau", caption: "Tên loại thầu",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", alignment:"left",
+                        editorType: "dxTextBox",
+                        editorOptions: {  
+                            placeholder: "Vui lòng nhập...", showClearButton: true,
+                        },
+                        validationRules: [{ type: "required"}]
                     },
                     {
                         dataField: "dienGiai", caption: "Diễn giải",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 150 : "100%",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 150 : "100%", alignment: "left",
+                        editorType: "dxTextBox",
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập (nếu có)...", showClearButton: true,
+                        },
                     }, 
                     {
-                        dataField: "isActive", width: 100,
-                        editorType: "dxSwitch"},
-
+                        dataField: "isActive", width: 100, alignment: "center",
+                        editorType: "dxSwitch",
+                    },
                     {
-                        dataField: "isVisible", width: 100,
+                        dataField: "isVisible", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     }, 
                     {
-                        type: "buttons", caption: "Tác vụ",
+                        type: "buttons", caption: "Tác vụ",  
                         width: 100, alignment:"center",
                         buttons: ["add", "delete"]
                     }

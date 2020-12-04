@@ -31327,8 +31327,7 @@ a.text-muted:hover {
     font-weight: bold;
     color: white !important;
     background-color: rgb(248,141,43) !important;
-    vertical-align: middle !important;
-    text-align: center !important;
+    vertical-align: middle !important; 
     font-size: 13px !important;
     text-transform: uppercase !important;
 } 
