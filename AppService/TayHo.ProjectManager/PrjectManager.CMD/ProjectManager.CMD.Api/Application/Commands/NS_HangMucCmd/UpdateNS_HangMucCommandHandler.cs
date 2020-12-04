@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_HangMucCommandHandler : NS_HangMucCommandHandler,IRequestHandler<UpdateNS_HangMucCommand, MethodResult<UpdateNS_HangMucCommandResponse>>
     {
-        public UpdateNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository) : base(mapper, NS_HangMucRepository)
+        public UpdateNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HangMucRepository,httpContextAccessor)
         {
         }
 
@@ -42,7 +43,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HangMuc.SetKyHieu(request.KyHieu);
             existingNS_HangMuc.SetNhomChiPhiId(request.NhomChiPhiId);
             existingNS_HangMuc.SetProjectId(request.ProjectId);
-            existingNS_HangMuc.SetUpdate(0,0);
+            existingNS_HangMuc.SetUpdate(_user,0);
             _NS_HangMucRepository.Update(existingNS_HangMuc);
             await _NS_HangMucRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_HangMucCommandResponse>(existingNS_HangMuc);

@@ -1,16 +1,18 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateStagesCommandHandler : StagesCommandHandler, IRequestHandler<CreateStagesCommand, MethodResult<CreateStagesCommandResponse>>
     {
-        public CreateStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository) : base(mapper, StagesRepository)
+        public CreateStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, StagesRepository,httpContextAccessor)
         {
         }
 
@@ -24,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateStagesCommandResponse>();
             var newStages = new Stages(request.Code, request.Title, request.Descriptions);
-            newStages.SetCreateAccount(0);
+            newStages.SetCreateAccount(_user);
             newStages.Status = request.Status.HasValue ? request.Status : newStages.Status;
             newStages.IsActive = request.IsActive.HasValue ? request.IsActive : newStages.IsActive;
             newStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newStages.IsVisible;

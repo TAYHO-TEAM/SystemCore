@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_NganSachDetailCommandHandler : NS_NganSachDetailCommandHandler, IRequestHandler<CreateNS_NganSachDetailCommand, MethodResult<CreateNS_NganSachDetailCommandResponse>>
     {
-        public CreateNS_NganSachDetailCommandHandler(IMapper mapper, INS_NganSachDetailRepository NS_NganSachDetailRepository) : base(mapper, NS_NganSachDetailRepository)
+        public CreateNS_NganSachDetailCommandHandler(IMapper mapper, INS_NganSachDetailRepository NS_NganSachDetailRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NganSachDetailRepository,httpContextAccessor)
         {
         }
 
@@ -29,7 +30,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.NgayCapNhat,
                 request.DienGiai,
                 request.isLock);
-            newNS_NganSachDetail.SetCreateAccount(0);
+            newNS_NganSachDetail.SetCreateAccount(_user);
             newNS_NganSachDetail.Status = request.Status.HasValue ? request.Status : newNS_NganSachDetail.Status;
             newNS_NganSachDetail.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NganSachDetail.IsActive;
             newNS_NganSachDetail.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_NganSachDetail.IsVisible;

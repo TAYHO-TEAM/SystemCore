@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateRequestDetailCommandHandler : RequestDetailCommandHandler,IRequestHandler<UpdateRequestDetailCommand, MethodResult<UpdateRequestDetailCommandResponse>>
     {
-        public UpdateRequestDetailCommandHandler(IMapper mapper, IRequestDetailRepository RequestDetailRepository) : base(mapper, RequestDetailRepository)
+        public UpdateRequestDetailCommandHandler(IMapper mapper, IRequestDetailRepository RequestDetailRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, RequestDetailRepository,httpContextAccessor)
         {
         }
 
@@ -48,7 +49,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestDetail.SetFromDate(request.FromDate);
             existingRequestDetail.SetToDate(request.ToDate);
             existingRequestDetail.SetNoAttachment(request.NoAttachment);
-            existingRequestDetail.SetUpdate(0,0);
+            existingRequestDetail.SetUpdate(_user,0);
            
             _RequestDetailRepository.Update(existingRequestDetail);
             await _RequestDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

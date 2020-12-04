@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteStagesCommandHandler : StagesCommandHandler, IRequestHandler<DeleteStagesCommand, MethodResult<DeleteStagesCommandResponse>>
     {
-        public DeleteStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository) : base(mapper, StagesRepository)
+        public DeleteStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, StagesRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingStage.UpdateDateUTC = utc;
                 existingStage.IsDelete = true;
                 existingStage.ModifyBy = 0;
-                existingStage.SetUpdate(0,0);
+                existingStage.SetUpdate(_user,0);
                 _StagesRepository.Update(existingStage);
             }
 

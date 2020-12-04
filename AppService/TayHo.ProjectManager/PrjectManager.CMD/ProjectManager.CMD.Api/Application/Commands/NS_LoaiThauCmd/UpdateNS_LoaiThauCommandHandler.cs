@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_LoaiThauCommandHandler : NS_LoaiThauCommandHandler,IRequestHandler<UpdateNS_LoaiThauCommand, MethodResult<UpdateNS_LoaiThauCommandResponse>>
     {
-        public UpdateNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository) : base(mapper, NS_LoaiThauRepository)
+        public UpdateNS_LoaiThauCommandHandler(IMapper mapper, INS_LoaiThauRepository NS_LoaiThauRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_LoaiThauRepository,httpContextAccessor)
         {
         }
 
@@ -41,7 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_LoaiThau.SetTenGoiThau(request.TenGoiThau);
             existingNS_LoaiThau.SetDienGiai(request.DienGiai);
             existingNS_LoaiThau.SetProjectId(request.ProjectId); 
-            existingNS_LoaiThau.SetUpdate(0,0);
+            existingNS_LoaiThau.SetUpdate(_user,0);
             _NS_LoaiThauRepository.Update(existingNS_LoaiThau);
             await _NS_LoaiThauRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_LoaiThauCommandResponse>(existingNS_LoaiThau);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateNS_NganSachCommandHandler : NS_NganSachCommandHandler,IRequestHandler<UpdateNS_NganSachCommand, MethodResult<UpdateNS_NganSachCommandResponse>>
     {
-        public UpdateNS_NganSachCommandHandler(IMapper mapper, INS_NganSachRepository NS_NganSachRepository) : base(mapper, NS_NganSachRepository)
+        public UpdateNS_NganSachCommandHandler(IMapper mapper, INS_NganSachRepository NS_NganSachRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NganSachRepository,httpContextAccessor)
         {
         }
 
@@ -44,7 +45,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_NganSach.SetDienGiai(request.DienGiai);
             existingNS_NganSach.SetGiaTri(request.GiaTri);
             existingNS_NganSach.SetisLock(request.isLock);
-            existingNS_NganSach.SetUpdate(0,0);
+            existingNS_NganSach.SetUpdate(_user,0);
             _NS_NganSachRepository.Update(existingNS_NganSach);
             await _NS_NganSachRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_NganSachCommandResponse>(existingNS_NganSach);

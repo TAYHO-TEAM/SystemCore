@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_NhomChiPhiCommandHandler : NS_NhomChiPhiCommandHandler, IRequestHandler<DeleteNS_NhomChiPhiCommand, MethodResult<DeleteNS_NhomChiPhiCommandResponse>>
     {
-        public DeleteNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository) : base(mapper, NS_NhomChiPhiRepository)
+        public DeleteNS_NhomChiPhiCommandHandler(IMapper mapper, INS_NhomChiPhiRepository NS_NhomChiPhiRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_NhomChiPhiRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(0,0);
+                existingAssignment.SetUpdate(_user,0);
             }
             _NS_NhomChiPhiRepository.UpdateRange(existingNS_NhomChiPhi);
             await _NS_NhomChiPhiRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

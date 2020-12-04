@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateProblemCategoryCommandHandler : ProblemCategoryCommandHandler, IRequestHandler<CreateProblemCategoryCommand, MethodResult<CreateProblemCategoryCommandResponse>>
     {
-        public CreateProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository) : base(mapper, ProblemCategoryRepository)
+        public CreateProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ProblemCategoryRepository,httpContextAccessor)
         {
         }
 
@@ -26,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newProblemCategory = new ProblemCategory(request.Title,
                                                         request.Descriptions,
                                                         request.Priotity);
-            newProblemCategory.SetCreateAccount(0);
+            newProblemCategory.SetCreateAccount(_user);
             newProblemCategory.Status = request.Status.HasValue ? request.Status : newProblemCategory.Status;
             newProblemCategory.IsActive = request.IsActive.HasValue ? request.IsActive : newProblemCategory.IsActive;
             newProblemCategory.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newProblemCategory.IsVisible;

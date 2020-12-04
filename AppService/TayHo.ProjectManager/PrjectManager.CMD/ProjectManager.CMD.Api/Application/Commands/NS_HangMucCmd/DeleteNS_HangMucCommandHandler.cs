@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_HangMucCommandHandler : NS_HangMucCommandHandler, IRequestHandler<DeleteNS_HangMucCommand, MethodResult<DeleteNS_HangMucCommandResponse>>
     {
-        public DeleteNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository) : base(mapper, NS_HangMucRepository)
+        public DeleteNS_HangMucCommandHandler(IMapper mapper, INS_HangMucRepository NS_HangMucRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HangMucRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(0,0);
+                existingAssignment.SetUpdate(_user,0);
             }
             _NS_HangMucRepository.UpdateRange(existingNS_HangMuc);
             await _NS_HangMucRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteProblemCategoryCommandHandler : ProblemCategoryCommandHandler, IRequestHandler<DeleteProblemCategoryCommand, MethodResult<DeleteProblemCategoryCommandResponse>>
     {
-        public DeleteProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository) : base(mapper, ProblemCategoryRepository)
+        public DeleteProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ProblemCategoryRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingProblemCategory.UpdateDateUTC = utc;
                 existingProblemCategory.IsDelete = true;
                 existingProblemCategory.ModifyBy = 0;
-                existingProblemCategory.SetUpdate(0,0);
+                existingProblemCategory.SetUpdate(_user,0);
             }
             _ProblemCategoryRepository.UpdateRange(existingProblemCategorys);
             await _ProblemCategoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

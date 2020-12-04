@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateDocumentTypeCommandHandler : DocumentTypeCommandHandler,IRequestHandler<UpdateDocumentTypeCommand, MethodResult<UpdateDocumentTypeCommandResponse>>
     {
-        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository) : base(mapper, DocumentTypeRepository)
+        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, DocumentTypeRepository,httpContextAccessor)
         {
         }
 
@@ -40,7 +41,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingStage.SetCode(request.Code);
             existingStage.SetDescription(request.Descriptions);
             existingStage.SetTitle(request.Title);
-            existingStage.SetUpdate(0,0);
+            existingStage.SetUpdate(_user,0);
             _DocumentTypeRepository.Update(existingStage);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateDocumentTypeCommandResponse>(existingStage);

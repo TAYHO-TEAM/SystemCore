@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateDocumentTypeCommandHandler : DocumentTypeCommandHandler, IRequestHandler<CreateDocumentTypeCommand, MethodResult<CreateDocumentTypeCommandResponse>>
     {
-        public CreateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository) : base(mapper, DocumentTypeRepository)
+        public CreateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, DocumentTypeRepository,httpContextAccessor)
         {
         }
 
@@ -24,7 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateDocumentTypeCommandResponse>();
             var newDocumentType = new DocumentType(request.Code, request.Title, request.Descriptions);
-            newDocumentType.SetCreateAccount(0);
+            newDocumentType.SetCreateAccount(_user);
             newDocumentType.Status = request.Status.HasValue ? request.Status : newDocumentType.Status;
             newDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentType.IsActive;
             newDocumentType.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentType.IsVisible;

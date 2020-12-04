@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateNS_HopDongCommandHandler : NS_HopDongCommandHandler, IRequestHandler<CreateNS_HopDongCommand, MethodResult<CreateNS_HopDongCommandResponse>>
     {
-        public CreateNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository) : base(mapper, NS_HopDongRepository)
+        public CreateNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HopDongRepository,httpContextAccessor)
         {
         }
 
@@ -30,7 +31,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 request.GiaTri,
                 request.NgayKy,
                 request.DienGiai);
-            newNS_HopDong.SetCreateAccount(0);
+            newNS_HopDong.SetCreateAccount(_user);
             newNS_HopDong.Status = request.Status.HasValue ? request.Status : newNS_HopDong.Status;
             newNS_HopDong.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_HopDong.IsActive;
             newNS_HopDong.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newNS_HopDong.IsVisible;

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_HopDongCommandHandler : NS_HopDongCommandHandler, IRequestHandler<DeleteNS_HopDongCommand, MethodResult<DeleteNS_HopDongCommandResponse>>
     {
-        public DeleteNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository) : base(mapper, NS_HopDongRepository)
+        public DeleteNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HopDongRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(0,0);
+                existingAssignment.SetUpdate(_user,0);
             }
             _NS_HopDongRepository.UpdateRange(existingNS_HopDong);
             await _NS_HopDongRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

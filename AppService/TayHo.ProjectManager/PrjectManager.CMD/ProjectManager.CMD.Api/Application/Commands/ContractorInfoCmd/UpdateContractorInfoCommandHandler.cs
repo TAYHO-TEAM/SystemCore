@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +14,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateContractorInfoCommandHandler : ContractorInfoCommandHandler,IRequestHandler<UpdateContractorInfoCommand, MethodResult<UpdateContractorInfoCommandResponse>>
     {
-        public UpdateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, accountRepository,httpContextAccessor)
         {
         }
 
@@ -50,7 +51,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingContractorInfo.SetAddress(request.Address);
             existingContractorInfo.SetPhone(request.Phone);
             existingContractorInfo.SetEmail(request.Email);
-            existingContractorInfo.SetUpdate(0,0);
+            existingContractorInfo.SetUpdate(_user,0);
             _ContractorInfoRepository.Update(existingContractorInfo);
             await _ContractorInfoRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateContractorInfoCommandResponse>(existingContractorInfo);

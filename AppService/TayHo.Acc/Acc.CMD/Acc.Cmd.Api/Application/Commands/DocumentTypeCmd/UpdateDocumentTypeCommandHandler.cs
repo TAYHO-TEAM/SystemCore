@@ -41,7 +41,8 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingDocumentType.Status = request.Status.HasValue ? request.Status : existingDocumentType.Status;
             existingDocumentType.SetCode(request.Code);
             existingDocumentType.SetTitle(request.Title);
-            existingDocumentType.SetDescription(request.Descriptions);
+            existingDocumentType.SetDescriptions(request.Descriptions);
+            existingDocumentType.SetOperationProcessId(request.OperationProcessId);
             existingDocumentType.SetUpdate(_user,null);
             _DocumentTypeRepository.Update(existingDocumentType);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateFilesAttachmentCommandHandler : FilesAttachmentCommandHandler, IRequestHandler<CreateFilesAttachmentCommand, MethodResult<CreateFilesAttachmentCommandResponse>>
     {
-        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository) : base(mapper, FilesAttachmentRepository)
+        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
         {
         }
 
@@ -32,7 +33,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.Host,
                                                         request.Type,
                                                         request.Direct);
-            newFilesAttachment.SetCreateAccount(0);
+            newFilesAttachment.SetCreateAccount(_user);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
             newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;

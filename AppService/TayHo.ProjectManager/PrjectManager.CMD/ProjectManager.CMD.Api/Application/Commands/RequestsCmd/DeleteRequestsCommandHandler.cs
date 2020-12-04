@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteRequestsCommandHandler : RequestsCommandHandler, IRequestHandler<DeleteRequestsCommand, MethodResult<DeleteRequestsCommandResponse>>
     {
-        public DeleteRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository) : base(mapper, RequestsRepository)
+        public DeleteRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, RequestsRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingRequest.UpdateDateUTC = utc;
                 existingRequest.IsDelete = true;
                 existingRequest.ModifyBy = 0;
-                existingRequest.SetUpdate(0,0);
+                existingRequest.SetUpdate(_user,0);
             }
             _RequestsRepository.UpdateRange(existingRequests);
             await _RequestsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

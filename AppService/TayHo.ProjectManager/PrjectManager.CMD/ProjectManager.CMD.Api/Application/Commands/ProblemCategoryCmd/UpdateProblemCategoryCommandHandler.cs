@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateProblemCategoryCommandHandler : ProblemCategoryCommandHandler,IRequestHandler<UpdateProblemCategoryCommand, MethodResult<UpdateProblemCategoryCommandResponse>>
     {
-        public UpdateProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository) : base(mapper, ProblemCategoryRepository)
+        public UpdateProblemCategoryCommandHandler(IMapper mapper, IProblemCategoryRepository ProblemCategoryRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ProblemCategoryRepository,httpContextAccessor)
         {
         }
 
@@ -41,7 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingProblemCategory.SetDescriptions(request.Descriptions);
             existingProblemCategory.SetPriotity(request.Priotity);
             existingProblemCategory.SetTitle(request.Title);
-            existingProblemCategory.SetUpdate(0,0);
+            existingProblemCategory.SetUpdate(_user,0);
             _ProblemCategoryRepository.Update(existingProblemCategory);
             await _ProblemCategoryRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateProblemCategoryCommandResponse>(existingProblemCategory);

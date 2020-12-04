@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +11,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateRequestsCommandHandler : RequestsCommandHandler, IRequestHandler<CreateRequestsCommand, MethodResult<CreateRequestsCommandResponse>>
     {
-        public CreateRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository) : base(mapper, RequestsRepository)
+        public CreateRequestsCommandHandler(IMapper mapper, IRequestsRepository RequestsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, RequestsRepository,httpContextAccessor)
         {
         }
 
@@ -31,7 +32,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                             request.ReplyById,
                                             request.SendDateTime,
                                             request.NoAttachment);
-            newRequests.SetCreateAccount(0);
+            newRequests.SetCreateAccount(_user);
             newRequests.Status = request.Status.HasValue ? request.Status : newRequests.Status;
             newRequests.IsActive = request.IsActive.HasValue ? request.IsActive : newRequests.IsActive;
             newRequests.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequests.IsVisible;
