@@ -21,7 +21,7 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",  
+            key: "id",
             load: (values) => {
                 let deferred = $.Deferred(), params = {}; 
 
@@ -143,8 +143,7 @@
                     allowDeleting: true,
                     mode: "cell",
                     useIcons: false,
-                    confirmDelete: true,
-                    refreshMode: "repaint",
+                    confirmDelete: true, 
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;

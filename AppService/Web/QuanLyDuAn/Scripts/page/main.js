@@ -96,41 +96,7 @@ function getParamInUrl(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-let ajax_load = (url, values) => { 
-    var deferred = $.Deferred();
-
-//    let params = {};
-//    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-//        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-//                };
-//if (values.sort != null && values.sort.length > 0) {
-//    params['SortCol'] = values.sort[0].selector;
-//    params['SortADSC'] = values.sort[0].desc;
-//}
-
-    $.ajax({
-        headers: header,
-        url: url,
-        dataType: "json",
-        data: values,
-        success: function (data) {
-            deferred.resolve(
-                data.result.items,
-                {
-                    totalCount: data.result.pagingInfo.totalItems,
-                }
-            );
-        },
-        error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
-            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-        },
-        timeout: 5000
-    });
-    return deferred.promise();
-}
+} 
 
 let ajax_insert = (url, values) => {
     var deferred = $.Deferred();

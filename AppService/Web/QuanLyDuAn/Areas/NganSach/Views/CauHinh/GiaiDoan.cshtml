@@ -19,7 +19,39 @@
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            load: (values) => {
+                let deferred = $.Deferred(), params = {};
+
+                params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                //if (values.sort != null && values.sort.length > 0) {
+                //    params['SortCol'] = values.sort[0].selector;
+                //    params['SortADSC'] = values.sort[0].desc;
+                //}
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems,
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
