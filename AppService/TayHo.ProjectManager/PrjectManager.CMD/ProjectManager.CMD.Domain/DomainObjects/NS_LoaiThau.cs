@@ -40,13 +40,13 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetParentId(int? ParentId)
-        { _parentId = ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTenGoiThau(string TenGoiThau)
-        { _tenGoiThau = string.IsNullOrEmpty(TenGoiThau) ? _tenGoiThau : TenGoiThau; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _tenGoiThau = TenGoiThau == null ? _tenGoiThau : TenGoiThau; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDienGiai(string DienGiai)
-        { _dienGiai = string.IsNullOrEmpty(DienGiai) ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetProjectId(int? ProjectId)
-        { _projectId = ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
 
         public sealed override bool IsValid()
         {

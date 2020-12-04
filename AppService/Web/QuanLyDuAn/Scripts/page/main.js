@@ -53,10 +53,6 @@ function loadMenu() {
         }).always(function () {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
-
-                console.log(window.location.pathname);
-                console.log($(this).find('a').attr('href'));
-
                 $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
                 $(this).children(".nav-link").toggleClass('active', window.location.pathname == ($(this).find('a').attr('href')));
             });
@@ -102,21 +98,23 @@ function getParamInUrl(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-let ajax_load = (url, values) => {
-    console.log(url);
-    console.log(values);
-    var deferred = $.Deferred(), params = {};
-    params = {
-        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-    };
-    if (values.sort != null && values.sort.length > 0) {
-        params['SortCol'] = values.sort[0].selector;
-        params['SortADSC'] = values.sort[0].desc;
-    }
+let ajax_load = (url, values) => { 
+    var deferred = $.Deferred();
+
+//    let params = {};
+//    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+//        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+//                };
+//if (values.sort != null && values.sort.length > 0) {
+//    params['SortCol'] = values.sort[0].selector;
+//    params['SortADSC'] = values.sort[0].desc;
+//}
 
     $.ajax({
-        headers: header, url: url, dataType: "json", data: params,
+        headers: header,
+        url: url,
+        dataType: "json",
+        data: values,
         success: function (data) {
             deferred.resolve(
                 data.result.items,
@@ -133,6 +131,7 @@ let ajax_load = (url, values) => {
     });
     return deferred.promise();
 }
+
 let ajax_insert = (url, values) => {
     var deferred = $.Deferred();
     $.ajax({
