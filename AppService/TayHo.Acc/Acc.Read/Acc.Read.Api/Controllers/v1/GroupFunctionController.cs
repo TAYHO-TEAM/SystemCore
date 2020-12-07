@@ -6,6 +6,7 @@ using Acc.Read.Sql.DTOs;
 using Acc.Read.Sql.Interfaces;
 using Acc.Read.Sql.Parameters;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Common.DomainObjects;
 using Services.Common.Paging;
@@ -20,7 +21,7 @@ namespace Acc.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<GroupFunctionDTO> _dOBaseRepository;
 
-        public GroupFunctionController(IMapper mapper, IDOBaseRepository<GroupFunctionDTO> dOBaseRepository) : base(mapper)
+        public GroupFunctionController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<GroupFunctionDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }

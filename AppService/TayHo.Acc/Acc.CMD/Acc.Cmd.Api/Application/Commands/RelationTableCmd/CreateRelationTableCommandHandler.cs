@@ -30,7 +30,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newRelationTable.SetCreate(_user);
             newRelationTable.Status = request.Status.HasValue ? request.Status : newRelationTable.Status;
             newRelationTable.IsActive = request.IsActive.HasValue ? request.IsActive : newRelationTable.IsActive;
-            newRelationTable.IsVisible = request.IsActive.HasValue ? request.IsVisible : newRelationTable.IsVisible;
+            newRelationTable.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newRelationTable.IsVisible;
             await _RelationTableRepository.AddAsync(newRelationTable).ConfigureAwait(false);
             await _RelationTableRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateRelationTableCommandResponse>(newRelationTable);

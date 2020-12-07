@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingContractorInfo.IsActive = request.IsActive.HasValue ? request.IsActive : existingContractorInfo.IsActive;
-            existingContractorInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingContractorInfo.IsVisible;
+            existingContractorInfo.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingContractorInfo.IsVisible;
             existingContractorInfo.Status = request.Status.HasValue ? request.Status : existingContractorInfo.Status;
             existingContractorInfo.SetCode(request.Code);
             existingContractorInfo.SetTaxCode(request.TaxCode);

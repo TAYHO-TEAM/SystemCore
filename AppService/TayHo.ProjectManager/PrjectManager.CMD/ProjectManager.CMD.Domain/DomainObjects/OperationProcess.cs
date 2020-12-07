@@ -70,6 +70,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
             return base.IsValid();
         }
+   
+
         #endregion Behaviours
     }
 }

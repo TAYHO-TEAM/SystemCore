@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -19,7 +20,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<RequestsDTO> _dOBaseRepository;
 
-        public RequestsController(IMapper mapper, IDOBaseRepository<RequestsDTO> dOBaseRepository) : base(mapper)
+        public RequestsController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<RequestsDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }

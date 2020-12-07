@@ -32,7 +32,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupStepProcessPermistion.SetCreate(_user);
             newGroupStepProcessPermistion.Status = request.Status.HasValue ? request.Status : newGroupStepProcessPermistion.Status;
             newGroupStepProcessPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupStepProcessPermistion.IsActive;
-            newGroupStepProcessPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupStepProcessPermistion.IsVisible;
+            newGroupStepProcessPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupStepProcessPermistion.IsVisible;
             await _GroupStepProcessPermistionRepository.AddAsync(newGroupStepProcessPermistion).ConfigureAwait(false);
             await _GroupStepProcessPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupStepProcessPermistionCommandResponse>(newGroupStepProcessPermistion);

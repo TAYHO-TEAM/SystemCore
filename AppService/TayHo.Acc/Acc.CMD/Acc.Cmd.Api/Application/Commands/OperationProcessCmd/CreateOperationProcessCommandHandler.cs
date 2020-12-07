@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newOperationProcess.SetCreate(_user);
             newOperationProcess.Status = request.Status.HasValue ? request.Status : newOperationProcess.Status;
             newOperationProcess.IsActive = request.IsActive.HasValue ? request.IsActive : newOperationProcess.IsActive;
-            newOperationProcess.IsVisible = request.IsActive.HasValue ? request.IsVisible : newOperationProcess.IsVisible;
+            newOperationProcess.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newOperationProcess.IsVisible;
             await _OperationProcessRepository.AddAsync(newOperationProcess).ConfigureAwait(false);
             await _OperationProcessRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateOperationProcessCommandResponse>(newOperationProcess);

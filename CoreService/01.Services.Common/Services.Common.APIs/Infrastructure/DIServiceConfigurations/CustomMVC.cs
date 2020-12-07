@@ -46,7 +46,8 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
                 .AddMediatR(executingAssembly, entryAssembly)
                 .AddAutoMapper(executingAssembly, entryAssembly)
                 .AddRedisCache()
-                .AddCustomJwtAuthentication();
+                .AddCustomJwtAuthentication()
+                .AddHttpClient();
                 //.AddCustomHealthCheck();
 
             return services;

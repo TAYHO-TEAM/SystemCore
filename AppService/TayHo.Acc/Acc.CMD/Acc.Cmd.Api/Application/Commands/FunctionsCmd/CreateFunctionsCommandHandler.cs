@@ -34,7 +34,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newFunctions.SetCreate(_user);
             newFunctions.Status = request.Status.HasValue ? request.Status : newFunctions.Status;
             newFunctions.IsActive = request.IsActive.HasValue ? request.IsActive : newFunctions.IsActive;
-            newFunctions.IsVisible = request.IsActive.HasValue ? request.IsVisible : newFunctions.IsVisible;
+            newFunctions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newFunctions.IsVisible;
             await _FunctionsRepository.AddAsync(newFunctions).ConfigureAwait(false);
             await _FunctionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateFunctionsCommandResponse>(newFunctions);

@@ -34,8 +34,8 @@ namespace ProjectManager.CMD.Api.Application.DomainEventHandlers
             var newRequestRegist = notification.RequestRegist;
             if (newRequestRegist == null) return;
 
-            var isFunctionExisting = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)notification.RequestRegist.DocumentTypeId, 0, notification.RequestRegist.Id).ConfigureAwait(false);
-            if (!isFunctionExisting)
+            var isRequestRegist = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)notification.RequestRegist.DocumentTypeId, (int)notification.RequestRegist.CreateBy, notification.RequestRegist.Id).ConfigureAwait(false);
+            if (!isRequestRegist)
             {
                 var errorResult = new ErrorResult
                 {

@@ -44,6 +44,7 @@ namespace Acc.Read.Sql
             services.AddScoped<IDOBaseRepository<ProjectsDTO>, DOBaseRepository<ProjectsDTO>>();
             services.AddScoped<IDOBaseRepository<RelationTableDTO>, DOBaseRepository<RelationTableDTO>>();
             services.AddScoped<IDOBaseRepository<UserInfoDTO>, DOBaseRepository<UserInfoDTO>>();
+            services.AddScoped<IActionsRepository<ActionsDTOCC>, ActionsRepository<ActionsDTOCC>>();
             return services;
         }
 

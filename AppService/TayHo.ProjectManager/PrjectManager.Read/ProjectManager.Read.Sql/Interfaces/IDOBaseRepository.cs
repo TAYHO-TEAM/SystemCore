@@ -8,6 +8,7 @@ namespace ProjectManager.Read.Sql.Interfaces
     {
         Task<PagingItems<T>> GetWithPaggingAsync(RequestBaseFilterParam requetsBaseFilterParam);
         Task<PagingItems<T>> GetWithPaggingFKAsync(RequestBaseFilterParam requetsBaseFilterParam);
+        Task<PagingItems<T>> GetWithPaggingAccountFKAsync(RequestHasAccountIdFilterParam requestHasAccountIdFilterParam);
     }
 
 }

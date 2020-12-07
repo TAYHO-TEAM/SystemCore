@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class AssignmentsController : APIControllerBase
+    public class RequestDetailController : APIControllerBase
     {
-        private readonly IDOBaseRepository<AssignmentsDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<RequestDetailDTO> _dOBaseRepository;
 
-        public AssignmentsController(IMapper mapper, IDOBaseRepository<AssignmentsDTO> dOBaseRepository) : base(mapper)
+        public RequestDetailController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<RequestDetailDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of Assignments.
+        /// Get List of RequestDetail.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<AssignmentsResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<RequestDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetAssignmentsAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetRequestDetailAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<AssignmentsResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<RequestDetailResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.Assignments_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.RequestDetail_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<AssignmentsResponseViewModel>
+            methodResult.Result = new PagingItems<RequestDetailResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<AssignmentsResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<RequestDetailResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

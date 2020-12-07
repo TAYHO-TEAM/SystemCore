@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class ReplyController : APIControllerBase
+    public class ProjectsController : APIControllerBase
     {
-        private readonly IDOBaseRepository<ReplyDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<ProjectsDTO> _dOBaseRepository;
 
-        public ReplyController(IMapper mapper, IDOBaseRepository<ReplyDTO> dOBaseRepository) : base(mapper)
+        public ProjectsController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ProjectsDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of Reply.
+        /// Get List of Projects.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<ReplyResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ProjectsResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetReplyAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetProjectsAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<ReplyResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<ProjectsResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.Reply_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.Projects_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<ReplyResponseViewModel>
+            methodResult.Result = new PagingItems<ProjectsResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<ReplyResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<ProjectsResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

@@ -27,7 +27,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                                                request.Descriptions);
             newCategorys.Status = request.Status.HasValue ? request.Status : newCategorys.Status;
             newCategorys.IsActive = request.IsActive.HasValue ? request.IsActive : newCategorys.IsActive;
-            newCategorys.IsVisible = request.IsActive.HasValue ? request.IsVisible : newCategorys.IsVisible;
+            newCategorys.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newCategorys.IsVisible;
             newCategorys.SetCreate(_user);
             await _CategorysRepository.AddAsync(newCategorys).ConfigureAwait(false);
             await _CategorysRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

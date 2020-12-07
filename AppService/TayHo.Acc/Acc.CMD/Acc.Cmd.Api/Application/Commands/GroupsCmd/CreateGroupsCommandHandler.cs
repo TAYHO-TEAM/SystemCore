@@ -30,7 +30,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroups.SetCreate(_user);
             newGroups.Status = request.Status.HasValue ? request.Status : newGroups.Status;
             newGroups.IsActive = request.IsActive.HasValue ? request.IsActive : newGroups.IsActive;
-            newGroups.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroups.IsVisible;
+            newGroups.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroups.IsVisible;
             await _GroupsRepository.AddAsync(newGroups).ConfigureAwait(false);
             await _GroupsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupsCommandResponse>(newGroups);

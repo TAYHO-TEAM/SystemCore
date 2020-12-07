@@ -34,7 +34,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newProjects.SetCreate(_user);
             newProjects.Status = request.Status.HasValue ? request.Status : newProjects.Status;
             newProjects.IsActive = request.IsActive.HasValue ? request.IsActive : newProjects.IsActive;
-            newProjects.IsVisible = request.IsActive.HasValue ? request.IsVisible : newProjects.IsVisible;
+            newProjects.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newProjects.IsVisible;
             await _ProjectsRepository.AddAsync(newProjects).ConfigureAwait(false);
             await _ProjectsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateProjectsCommandResponse>(newProjects);

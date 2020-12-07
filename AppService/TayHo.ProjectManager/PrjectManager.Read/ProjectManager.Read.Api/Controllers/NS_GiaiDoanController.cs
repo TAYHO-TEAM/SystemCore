@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -19,7 +20,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<NS_GiaiDoanDTO> _dOBaseRepository;
 
-        public NS_GiaiDoanController(IMapper mapper, IDOBaseRepository<NS_GiaiDoanDTO> dOBaseRepository) : base(mapper)
+        public NS_GiaiDoanController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_GiaiDoanDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }

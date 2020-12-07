@@ -28,7 +28,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupFunction.SetCreate(_user);
             newGroupFunction.Status = request.Status.HasValue ? request.Status : newGroupFunction.Status;
             newGroupFunction.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupFunction.IsActive;
-            newGroupFunction.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupFunction.IsVisible;
+            newGroupFunction.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupFunction.IsVisible;
             await _GroupFunctionRepository.AddAsync(newGroupFunction).ConfigureAwait(false);
             await _GroupFunctionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupFunctionCommandResponse>(newGroupFunction);

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using Services.Common.APIs.Cmd.EF;
-using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -24,8 +23,8 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
             cmd.Parameters.Add(new SqlParameter("@AccountId", AccountId));
             cmd.Parameters.Add(new SqlParameter("@RequestRegistId", Id));
 
-            var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-            return (bool)result;
+            var result = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+            return (bool)(result == 0? false : true) ;
         }
     }
 }

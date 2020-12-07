@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Common;
+using Services.Common.Security;
 using System;
 
 namespace ProjectManager.Read.Api.Controllers.v1.BaseClasses
@@ -12,10 +14,20 @@ namespace ProjectManager.Read.Api.Controllers.v1.BaseClasses
     public class APIControllerBase : ControllerBase
     {
         protected readonly IMapper _mapper;
-
-        public APIControllerBase(IMapper mapper)
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected int _user { get; }
+        public APIControllerBase(IMapper mapper,IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(mapper));
+            try
+            {
+                _user = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
+            }
+            catch
+            {
+                _user = 0;
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupPermistion.IsActive;
-            existingGroupPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupPermistion.IsVisible;
+            existingGroupPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroupPermistion.IsVisible;
             existingGroupPermistion.Status = request.Status.HasValue ? request.Status : existingGroupPermistion.Status;
             existingGroupPermistion.SetPermistionId(request.PermistionId);
             existingGroupPermistion.SetGroupId(request.GroupId);

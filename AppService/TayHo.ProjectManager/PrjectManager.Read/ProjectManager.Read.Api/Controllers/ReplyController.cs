@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_LoaiThauController : APIControllerBase
+    public class ReplyController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_LoaiThauDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<ReplyDTO> _dOBaseRepository;
 
-        public NS_LoaiThauController(IMapper mapper, IDOBaseRepository<NS_LoaiThauDTO> dOBaseRepository) : base(mapper)
+        public ReplyController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ReplyDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_LoaiThau.
+        /// Get List of Reply.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ReplyResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_LoaiThauAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetReplyAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<ReplyResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiThau_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_LoaiThauResponseViewModel>
+            requestFilter.TableName = QuanLyDuAnConstants.Reply_TABLENAME;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<ReplyResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_LoaiThauResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<ReplyResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

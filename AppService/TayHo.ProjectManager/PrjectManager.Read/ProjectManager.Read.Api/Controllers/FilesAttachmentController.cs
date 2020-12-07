@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_NganSachController : APIControllerBase
+    public class FilesAttachmentController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_NganSachDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<FilesAttachmentDTO> _dOBaseRepository;
 
-        public NS_NganSachController(IMapper mapper, IDOBaseRepository<NS_NganSachDTO> dOBaseRepository) : base(mapper)
+        public FilesAttachmentController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<FilesAttachmentDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_NganSach.
+        /// Get List of FilesAttachment.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NganSachResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<FilesAttachmentResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_NganSachAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetFilesAttachmentAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_NganSachResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<FilesAttachmentResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_NganSach_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.FilesAttachment_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_NganSachResponseViewModel>
+            methodResult.Result = new PagingItems<FilesAttachmentResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_NganSachResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<FilesAttachmentResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

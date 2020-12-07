@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingUserInfo.IsActive = request.IsActive.HasValue ? request.IsActive : existingUserInfo.IsActive;
-            existingUserInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingUserInfo.IsVisible;
+            existingUserInfo.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingUserInfo.IsVisible;
             existingUserInfo.Status = request.Status.HasValue ? request.Status : existingUserInfo.Status;
             existingUserInfo.SetAddress(request.Address);
             existingUserInfo.SetCity(request.City);

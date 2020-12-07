@@ -29,7 +29,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupActionPermistion.SetCreate(_user);
             newGroupActionPermistion.Status = request.Status.HasValue ? request.Status : newGroupActionPermistion.Status;
             newGroupActionPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupActionPermistion.IsActive;
-            newGroupActionPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupActionPermistion.IsVisible;
+            newGroupActionPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupActionPermistion.IsVisible;
             await _GroupActionPermistionRepository.AddAsync(newGroupActionPermistion).ConfigureAwait(false);
             await _GroupActionPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupActionPermistionCommandResponse>(newGroupActionPermistion);

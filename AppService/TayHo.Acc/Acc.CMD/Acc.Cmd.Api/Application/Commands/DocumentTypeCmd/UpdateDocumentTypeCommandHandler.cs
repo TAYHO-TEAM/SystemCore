@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : existingDocumentType.IsActive;
-            existingDocumentType.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingDocumentType.IsVisible;
+            existingDocumentType.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingDocumentType.IsVisible;
             existingDocumentType.Status = request.Status.HasValue ? request.Status : existingDocumentType.Status;
             existingDocumentType.SetCode(request.Code);
             existingDocumentType.SetTitle(request.Title);
