@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<UpdateRequestRegistCommandResponse>> Handle(UpdateRequestRegistCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<UpdateRequestRegistCommandResponse>();
-            var existingRequestRegist = await _RequestRegistRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            var existingRequestRegist = await _requestRegistRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
             if (existingRequestRegist == null)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]
@@ -50,8 +50,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestRegist.SetDocumentTypeId(request.DocumentTypeId);
             existingRequestRegist.SetRev(request.Rev);
             existingRequestRegist.SetUpdate(_user,0);
-            _RequestRegistRepository.Update(existingRequestRegist);
-            await _RequestRegistRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            _requestRegistRepository.Update(existingRequestRegist);
+            await _requestRegistRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateRequestRegistCommandResponse>(existingRequestRegist);
             return methodResult;
         }

@@ -49,6 +49,8 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<NS_NhomChiPhiDTO>, DOBaseRepository<NS_NhomChiPhiDTO>>();
 
             services.AddScoped<IDOBaseRepository<RequestRegistDTO>, DOBaseRepository<RequestRegistDTO>>();
+            services.AddScoped<IDOBaseRepository<ResponseRegistDTO>, DOBaseRepository<ResponseRegistDTO>>();
+            services.AddScoped<IDOBaseRepository<ResponseRegistReplyDTO>, DOBaseRepository<ResponseRegistReplyDTO>>();
 
             return services;
         }
