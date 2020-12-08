@@ -28,13 +28,12 @@ namespace Services.Common.DomainObjects
         {
             CreateBy = createBy.HasValue ? createBy : CreateBy;
         }
-        public virtual void SetUpdate(int? modifyBy, byte? status)
+        public virtual void SetUpdate(int? modifyBy,byte? status)
         {
             UpdateDateUTC = DateTime.UtcNow;
             UpdateDate = DateTime.Now;
             IsModify = true;
-            ModifyBy = modifyBy.HasValue? modifyBy: ModifyBy;
-            Status = status.HasValue? status : Status;
+            ModifyBy = modifyBy.HasValue? modifyBy: ModifyBy; 
             IsModify = true;
         }
     }

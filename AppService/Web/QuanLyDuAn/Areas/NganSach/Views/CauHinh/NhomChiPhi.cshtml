@@ -74,10 +74,12 @@
                 remoteOperations: true,
                 columns: [
                     {
-                        caption: "STT",
-                        width: 80, alignment: "center",
-                        allowEditting: false,
-                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
+                        dataField: "status", caption: "#",
+                        dataType: "number", width: 100, alignment: "center",
+                        editorType: "dxNumberBox",
+                        editorOptions: {
+                            min: 1, step: 1, showSpinButtons: true,
+                        }, sortOrder: "desc"
                     },
                     {
                         dataField: "tenNhomChiPhi", caption: "Tên nhóm",
@@ -127,7 +129,7 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "row",
+                    mode: "batch",
                     useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
