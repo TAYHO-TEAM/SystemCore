@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupStepProcessPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupStepProcessPermistion.IsActive;
-            existingGroupStepProcessPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupStepProcessPermistion.IsVisible;
+            existingGroupStepProcessPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroupStepProcessPermistion.IsVisible;
             existingGroupStepProcessPermistion.Status = request.Status.HasValue ? request.Status : existingGroupStepProcessPermistion.Status;
 
             existingGroupStepProcessPermistion.SetGroupId(request.GroupId);

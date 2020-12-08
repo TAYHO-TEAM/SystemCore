@@ -29,7 +29,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupAction.SetCreate(_user);
             newGroupAction.Status = request.Status.HasValue ? request.Status : newGroupAction.Status;
             newGroupAction.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupAction.IsActive;
-            newGroupAction.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupAction.IsVisible;
+            newGroupAction.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupAction.IsVisible;
             await _GroupActionRepository.AddAsync(newGroupAction).ConfigureAwait(false);
             await _GroupActionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupActionCommandResponse>(newGroupAction);

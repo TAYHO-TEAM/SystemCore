@@ -5,7 +5,8 @@ namespace Acc.Cmd.Api.Application.Commands
 {
     public class FunctionsCommandHandler: BaseCommandHandler
     {
-        protected readonly IMapper _mapper; protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IMapper _mapper;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
         protected readonly IFunctionsRepository _FunctionsRepository;
 
         public FunctionsCommandHandler(IMapper mapper,  IHttpContextAccessor httpContextAccessor, IFunctionsRepository FunctionsRepository) :  base (httpContextAccessor)

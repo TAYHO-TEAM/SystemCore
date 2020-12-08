@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingOperationProcess.IsActive = request.IsActive.HasValue ? request.IsActive : existingOperationProcess.IsActive;
-            existingOperationProcess.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingOperationProcess.IsVisible;
+            existingOperationProcess.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingOperationProcess.IsVisible;
             existingOperationProcess.Status = request.Status.HasValue ? request.Status : existingOperationProcess.Status;
 
             existingOperationProcess.SetCode(request.Code);

@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingProjects.IsActive = request.IsActive.HasValue ? request.IsActive : existingProjects.IsActive;
-            existingProjects.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingProjects.IsVisible;
+            existingProjects.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingProjects.IsVisible;
             existingProjects.Status = request.Status.HasValue ? request.Status : existingProjects.Status;
             existingProjects.SetCode(request.Code);
             existingProjects.SetBarCode(request.BarCode);

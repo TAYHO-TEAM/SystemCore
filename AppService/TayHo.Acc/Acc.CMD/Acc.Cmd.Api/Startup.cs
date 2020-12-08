@@ -49,7 +49,7 @@ namespace Acc.Cmd.Api
             #endregion Custom Swagger
             #region Http
 
-            services.AddHttpClient();
+            //services.AddHttpClient();
 
             #endregion http
 

@@ -28,7 +28,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupAccount.SetCreate(_user);
             newGroupAccount.Status = request.Status.HasValue ? request.Status : newGroupAccount.Status;
             newGroupAccount.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupAccount.IsActive;
-            newGroupAccount.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupAccount.IsVisible;
+            newGroupAccount.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupAccount.IsVisible;
             await _GroupAccountRepository.AddAsync(newGroupAccount).ConfigureAwait(false);
             await _GroupAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupAccountCommandResponse>(newGroupAccount);

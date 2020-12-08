@@ -8,13 +8,13 @@ namespace ProjectManager.CMD.Api.Application.Commands
     {
         protected readonly IMapper _mapper;
         protected readonly IHttpContextAccessor _httpContextAccessor;
-        protected readonly IRequestRegistRepository _RequestRegistRepository;
+        protected readonly IRequestRegistRepository _requestRegistRepository;
 
         public RequestRegistCommandHandler(IMapper mapper, IRequestRegistRepository RequestRegistRepository,  IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
-            _RequestRegistRepository = RequestRegistRepository;
+            _requestRegistRepository = RequestRegistRepository;
         }
     }
 }

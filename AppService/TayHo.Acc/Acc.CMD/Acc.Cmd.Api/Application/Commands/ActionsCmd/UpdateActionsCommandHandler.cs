@@ -42,7 +42,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingActions.IsActive = request.IsActive.HasValue ? request.IsActive : existingActions.IsActive;
-            existingActions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingActions.IsVisible;
+            existingActions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingActions.IsVisible;
             existingActions.Status = request.Status.HasValue ? request.Status : existingActions.Status;
             existingActions.SetParentId(parentActions== null? 0:parentActions.Id );
             existingActions.SetTitle(request.Title);

@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingPermistions.IsActive = request.IsActive.HasValue ? request.IsActive : existingPermistions.IsActive;
-            existingPermistions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingPermistions.IsVisible;
+            existingPermistions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingPermistions.IsVisible;
             existingPermistions.Status = request.Status.HasValue ? request.Status : existingPermistions.Status;
             existingPermistions.SetType(request.Type);
             existingPermistions.SetTitle(request.Title);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_GiaiDoanController : APIControllerBase
+    public class DocumentTypeController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_GiaiDoanDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<DocumentTypeDTO> _dOBaseRepository;
 
-        public NS_GiaiDoanController(IMapper mapper, IDOBaseRepository<NS_GiaiDoanDTO> dOBaseRepository) : base(mapper)
+        public DocumentTypeController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<DocumentTypeDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_GiaiDoan.
+        /// Get List of DocumentType.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_GiaiDoanResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<DocumentTypeResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_GiaiDoanAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetDocumentTypeAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_GiaiDoanResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<DocumentTypeResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_GiaiDoan_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.DocumentType_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_GiaiDoanResponseViewModel>
+            methodResult.Result = new PagingItems<DocumentTypeResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_GiaiDoanResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<DocumentTypeResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

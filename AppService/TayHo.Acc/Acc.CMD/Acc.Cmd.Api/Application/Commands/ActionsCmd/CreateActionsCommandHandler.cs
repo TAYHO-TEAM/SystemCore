@@ -50,7 +50,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newActions.SetCreate(_user);
             newActions.Status = request.Status.HasValue ? request.Status : newActions.Status;
             newActions.IsActive = request.IsActive.HasValue ? request.IsActive : newActions.IsActive;
-            newActions.IsVisible = request.IsActive.HasValue ? request.IsVisible : newActions.IsVisible;
+            newActions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newActions.IsVisible;
             await _actionsRepository.AddAsync(newActions).ConfigureAwait(false);
             await _actionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateActionsCommandResponse>(newActions);

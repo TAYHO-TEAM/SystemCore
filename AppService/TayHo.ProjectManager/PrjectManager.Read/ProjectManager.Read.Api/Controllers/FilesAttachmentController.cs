@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class GroupStagesController : APIControllerBase
+    public class FilesAttachmentController : APIControllerBase
     {
-        private readonly IDOBaseRepository<GroupStagesDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<FilesAttachmentDTO> _dOBaseRepository;
 
-        public GroupStagesController(IMapper mapper, IDOBaseRepository<GroupStagesDTO> dOBaseRepository) : base(mapper)
+        public FilesAttachmentController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<FilesAttachmentDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of GroupStages.
+        /// Get List of FilesAttachment.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<GroupStagesResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<FilesAttachmentResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetGroupStagesAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetFilesAttachmentAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<GroupStagesResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<FilesAttachmentResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.GroupStages_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.FilesAttachment_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<GroupStagesResponseViewModel>
+            methodResult.Result = new PagingItems<FilesAttachmentResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<GroupStagesResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<FilesAttachmentResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

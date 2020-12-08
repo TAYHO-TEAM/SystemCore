@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class RequestDetailController : APIControllerBase
+    public class ProjectsController : APIControllerBase
     {
-        private readonly IDOBaseRepository<RequestDetailDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<ProjectsDTO> _dOBaseRepository;
 
-        public RequestDetailController(IMapper mapper, IDOBaseRepository<RequestDetailDTO> dOBaseRepository) : base(mapper)
+        public ProjectsController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ProjectsDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of RequestDetail.
+        /// Get List of Projects.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<RequestDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ProjectsResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetRequestDetailAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetProjectsAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<RequestDetailResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<ProjectsResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.RequestDetail_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.Projects_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<RequestDetailResponseViewModel>
+            methodResult.Result = new PagingItems<ProjectsResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<RequestDetailResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<ProjectsResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

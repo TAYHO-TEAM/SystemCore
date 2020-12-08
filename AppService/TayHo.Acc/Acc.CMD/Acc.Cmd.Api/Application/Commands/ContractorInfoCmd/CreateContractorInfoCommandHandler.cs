@@ -38,7 +38,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newContractorInfo.SetCreate(_user);
             newContractorInfo.Status = request.Status.HasValue ? request.Status : newContractorInfo.Status;
             newContractorInfo.IsActive = request.IsActive.HasValue ? request.IsActive : newContractorInfo.IsActive;
-            newContractorInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : newContractorInfo.IsVisible;
+            newContractorInfo.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newContractorInfo.IsVisible;
             await _ContractorInfoRepository.AddAsync(newContractorInfo).ConfigureAwait(false);
             await _ContractorInfoRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateContractorInfoCommandResponse>(newContractorInfo);

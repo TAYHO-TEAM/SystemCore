@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingCategorys.IsActive = request.IsActive.HasValue ? request.IsActive : existingCategorys.IsActive;
-            existingCategorys.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingCategorys.IsVisible;
+            existingCategorys.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingCategorys.IsVisible;
             existingCategorys.Status = request.Status.HasValue ? request.Status : existingCategorys.Status;
             existingCategorys.SetTitle(request.Title);
             existingCategorys.SetDescriptions(request.Descriptions);

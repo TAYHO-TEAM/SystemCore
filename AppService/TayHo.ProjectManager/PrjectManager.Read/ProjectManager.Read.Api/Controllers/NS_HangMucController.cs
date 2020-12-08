@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class StagesController : APIControllerBase
+    public class NS_HangMucController : APIControllerBase
     {
-        private readonly IDOBaseRepository<StagesDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<NS_HangMucDTO> _dOBaseRepository;
 
-        public StagesController(IMapper mapper, IDOBaseRepository<StagesDTO> dOBaseRepository) : base(mapper)
+        public NS_HangMucController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_HangMucDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of Stages.
+        /// Get List of NS_HangMuc.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<StagesResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_HangMucResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetStagesAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetNS_HangMucAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<StagesResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_HangMucResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.Stages_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<StagesResponseViewModel>
+            requestFilter.TableName = QuanLyDuAnConstants.NS_HangMuc_TABLENAME;
+            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_HangMucResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<StagesResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_HangMucResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newStepsProcess.SetCreate(_user);
             newStepsProcess.Status = request.Status.HasValue ? request.Status : newStepsProcess.Status;
             newStepsProcess.IsActive = request.IsActive.HasValue ? request.IsActive : newStepsProcess.IsActive;
-            newStepsProcess.IsVisible = request.IsActive.HasValue ? request.IsVisible : newStepsProcess.IsVisible;
+            newStepsProcess.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newStepsProcess.IsVisible;
             await _StepsProcessRepository.AddAsync(newStepsProcess).ConfigureAwait(false);
             await _StepsProcessRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateStepsProcessCommandResponse>(newStepsProcess);

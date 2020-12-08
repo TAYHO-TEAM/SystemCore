@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class ProjectsController : APIControllerBase
+    public class NS_NhomChiPhiController : APIControllerBase
     {
-        private readonly IDOBaseRepository<ProjectsDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<NS_NhomChiPhiDTO> _dOBaseRepository;
 
-        public ProjectsController(IMapper mapper, IDOBaseRepository<ProjectsDTO> dOBaseRepository) : base(mapper)
+        public NS_NhomChiPhiController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_NhomChiPhiDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of Projects.
+        /// Get List of NS_NhomChiPhi.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<ProjectsResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NhomChiPhiResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetProjectsAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetNS_NhomChiPhiAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<ProjectsResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_NhomChiPhiResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.Projects_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.NS_NhomChiPhi_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<ProjectsResponseViewModel>
+            methodResult.Result = new PagingItems<NS_NhomChiPhiResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<ProjectsResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_NhomChiPhiResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

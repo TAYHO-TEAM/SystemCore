@@ -28,7 +28,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupPermistion.SetCreate(_user);
             newGroupPermistion.Status = request.Status.HasValue ? request.Status : newGroupPermistion.Status;
             newGroupPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupPermistion.IsActive;
-            newGroupPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupPermistion.IsVisible;
+            newGroupPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupPermistion.IsVisible;
             await _GroupPermistionRepository.AddAsync(newGroupPermistion).ConfigureAwait(false);
             await _GroupPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupPermistionCommandResponse>(newGroupPermistion);

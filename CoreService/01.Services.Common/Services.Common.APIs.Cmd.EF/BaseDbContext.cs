@@ -24,7 +24,7 @@ namespace Services.Common.APIs.Cmd.EF
         public async Task DispatchEventsAsync(CancellationToken cancellationToken = default)
         {
             var domainEntities = ChangeTracker
-                .Entries<Entity>()
+                .Entries<EntityDO>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
                 .Select(x => x.Entity).ToArray();
             await _mediator.DispatchDomainEventsAsync(domainEntities);
@@ -38,7 +38,7 @@ namespace Services.Common.APIs.Cmd.EF
             // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions.
             // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers.
             var domainEntities = ChangeTracker
-                .Entries<Entity>()
+                .Entries<EntityDO>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
                 .Select(x => x.Entity).ToArray();
             await _mediator.DispatchDomainEventsAsync(domainEntities);

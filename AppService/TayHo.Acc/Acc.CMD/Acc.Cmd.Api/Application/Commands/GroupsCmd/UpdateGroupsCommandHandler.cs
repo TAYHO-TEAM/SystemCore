@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroups.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroups.IsActive;
-            existingGroups.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroups.IsVisible;
+            existingGroups.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroups.IsVisible;
             existingGroups.Status = request.Status.HasValue ? request.Status : existingGroups.Status;
             existingGroups.SetTitle(request.Title);
             existingGroups.SetDescriptions(request.Descriptions);

@@ -12,8 +12,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateResponseRegistReplyCommandHandler : ResponseRegistReplyCommandHandler, IRequestHandler<CreateResponseRegistReplyCommand, MethodResult<CreateResponseRegistReplyCommandResponse>>
     {
-        public CreateResponseRegistReplyCommandHandler(IMapper mapper, IResponseRegistReplyRepository ResponseRegistReplyRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ResponseRegistReplyRepository,httpContextAccessor)
+        protected readonly IResponseRegistRepository _responseRegistRepository;
+        public CreateResponseRegistReplyCommandHandler(IMapper mapper, IResponseRegistReplyRepository ResponseRegistReplyRepository,IHttpContextAccessor httpContextAccessor, IResponseRegistRepository responseRegistRepository) : base(mapper, ResponseRegistReplyRepository,httpContextAccessor)
         {
+            _responseRegistRepository = responseRegistRepository;
         }
 
         /// <summary>
@@ -24,6 +26,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateResponseRegistReplyCommandResponse>> Handle(CreateResponseRegistReplyCommand request, CancellationToken cancellationToken)
         {
+            var existsResponseRegist = await _responseRegistRepository.AnyAsync(x=>x.Id == request.Id && (x.IsDelete == false || !x.IsDelete.HasValue) && x.IsActive == true).ConfigureAwait(false);
+
             var methodResult = new MethodResult<CreateResponseRegistReplyCommandResponse>();
             var newResponseRegistReply = new ResponseRegistReply(request.Title,
                                                                     request.Description,

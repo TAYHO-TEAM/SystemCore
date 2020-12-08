@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingRelationTable.IsActive = request.IsActive.HasValue ? request.IsActive : existingRelationTable.IsActive;
-            existingRelationTable.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingRelationTable.IsVisible;
+            existingRelationTable.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingRelationTable.IsVisible;
             existingRelationTable.Status = request.Status.HasValue ? request.Status : existingRelationTable.Status;
             existingRelationTable.SetPrimaryTable(request.PrimaryTable);
             existingRelationTable.SetPrimaryKey(request.PrimaryKey);

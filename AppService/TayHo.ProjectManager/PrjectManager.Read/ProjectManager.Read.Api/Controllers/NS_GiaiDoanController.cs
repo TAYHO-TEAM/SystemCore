@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.Common;
 using ProjectManager.Read.Api.Controllers.v1.BaseClasses;
@@ -15,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_NganSachDetailController : APIControllerBase
+    public class NS_GiaiDoanController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_NganSachDetailDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<NS_GiaiDoanDTO> _dOBaseRepository;
 
-        public NS_NganSachDetailController(IMapper mapper, IDOBaseRepository<NS_NganSachDetailDTO> dOBaseRepository) : base(mapper)
+        public NS_GiaiDoanController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_GiaiDoanDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_NganSachDetail.
+        /// Get List of NS_GiaiDoan.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NganSachDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_GiaiDoanResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_NganSachDetailAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetNS_GiaiDoanAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_NganSachDetailResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_GiaiDoanResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_NganSachDetail_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_NganSachDetailResponseViewModel>
+            requestFilter.TableName = QuanLyDuAnConstants.NS_GiaiDoan_TABLENAME;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_GiaiDoanResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_NganSachDetailResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_GiaiDoanResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

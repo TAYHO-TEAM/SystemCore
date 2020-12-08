@@ -29,7 +29,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<DeleteRequestRegistCommandResponse>> Handle(DeleteRequestRegistCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<DeleteRequestRegistCommandResponse>();
-            var existingRequestRegists = await _RequestRegistRepository.GetAllListAsync(x => request.Ids.Contains(x.Id) && x.IsDelete == false).ConfigureAwait(false);
+            var existingRequestRegists = await _requestRegistRepository.GetAllListAsync(x => request.Ids.Contains(x.Id) && x.IsDelete == false).ConfigureAwait(false);
             if (existingRequestRegists == null || !existingRequestRegists.Any())
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeDelete.DErr001), new[]
@@ -50,9 +50,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingRequestRegist.SetUpdate(_user,0);
                 
             }
-            _RequestRegistRepository.UpdateRange(existingRequestRegists);
+            _requestRegistRepository.UpdateRange(existingRequestRegists);
 
-            await _RequestRegistRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _requestRegistRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             var RequestRegistResponseDTOs = _mapper.Map<List<RequestRegistCommandResponseDTO>>(existingRequestRegists);
             methodResult.Result = new DeleteRequestRegistCommandResponse(RequestRegistResponseDTOs);
             return methodResult;

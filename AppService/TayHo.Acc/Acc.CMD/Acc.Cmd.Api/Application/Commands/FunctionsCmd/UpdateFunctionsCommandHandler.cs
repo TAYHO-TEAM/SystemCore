@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingFunctions.IsActive = request.IsActive.HasValue ? request.IsActive : existingFunctions.IsActive;
-            existingFunctions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingFunctions.IsVisible;
+            existingFunctions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingFunctions.IsVisible;
             existingFunctions.Status = request.Status.HasValue ? request.Status : existingFunctions.Status;
             existingFunctions.SetActionId(request.ActionId);
             existingFunctions.SetParentId(request.ParentId);

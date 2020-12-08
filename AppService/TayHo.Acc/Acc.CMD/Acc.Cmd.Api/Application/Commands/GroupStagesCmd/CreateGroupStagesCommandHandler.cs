@@ -29,7 +29,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newGroupStages.SetCreate(_user);
             newGroupStages.Status = request.Status.HasValue ? request.Status : newGroupStages.Status;
             newGroupStages.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupStages.IsActive;
-            newGroupStages.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupStages.IsVisible;
+            newGroupStages.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupStages.IsVisible;
             await _GroupStagesRepository.AddAsync(newGroupStages).ConfigureAwait(false);
             await _GroupStagesRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupStagesCommandResponse>(newGroupStages);

@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingAccounts.IsActive = request.IsActive.HasValue ? request.IsActive : existingAccounts.IsActive;
-            existingAccounts.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingAccounts.IsVisible;
+            existingAccounts.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingAccounts.IsVisible;
             existingAccounts.Status = request.Status.HasValue ? request.Status : existingAccounts.Status;
             existingAccounts.SetCode(request.Code);
             existingAccounts.SetType(request.Type);

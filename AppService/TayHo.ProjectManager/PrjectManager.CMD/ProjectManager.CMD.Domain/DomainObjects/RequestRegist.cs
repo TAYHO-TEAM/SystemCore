@@ -1,4 +1,5 @@
-﻿using ProjectManager.CMD.Domain.DomainObjects.BaseClasses;
+﻿using ProjectManager.CMD.Domain.DomainEvents.RequestRegistDomainEvent;
+using ProjectManager.CMD.Domain.DomainObjects.BaseClasses;
 using Services.Common.DomainObjects.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
@@ -49,7 +50,9 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             _workItemId = WorkItemId;
             _documentTypeId = DocumentTypeId;
             _rev = Rev;
+            AddRequestRegistCreatedDomainEvent();
             if (!IsValid()) throw new DomainException(_errorMessages);
+            
         }
         #endregion Constructors
         #region Properties
@@ -81,6 +84,12 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public sealed override bool IsValid()
         {
             return base.IsValid();
+        }
+        public void AddRequestRegistCreatedDomainEvent()
+        {
+            var requestRegistCreatedDomainEvent = new RequestRegistCreatedDomainEvent(this);
+            ClearDomainEvents();
+            AddDomainEvent(requestRegistCreatedDomainEvent);
         }
         #endregion Behaviours
     }

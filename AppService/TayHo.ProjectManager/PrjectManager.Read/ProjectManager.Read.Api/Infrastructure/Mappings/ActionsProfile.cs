@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public ActionsProfile()
         {
             CreateMap<ActionsDTO, ActionsResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            
         }
     }
 }

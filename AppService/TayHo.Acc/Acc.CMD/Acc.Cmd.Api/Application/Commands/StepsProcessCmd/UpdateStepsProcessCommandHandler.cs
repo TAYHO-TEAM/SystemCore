@@ -37,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingStepsProcess.IsActive = request.IsActive.HasValue ? request.IsActive : existingStepsProcess.IsActive;
-            existingStepsProcess.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingStepsProcess.IsVisible;
+            existingStepsProcess.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingStepsProcess.IsVisible;
             existingStepsProcess.Status = request.Status.HasValue ? request.Status : existingStepsProcess.Status;
 
             existingStepsProcess.SetCode(request.Code);

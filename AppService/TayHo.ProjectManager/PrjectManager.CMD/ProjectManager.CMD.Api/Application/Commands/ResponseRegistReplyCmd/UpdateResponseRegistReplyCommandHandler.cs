@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<UpdateResponseRegistReplyCommandResponse>> Handle(UpdateResponseRegistReplyCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<UpdateResponseRegistReplyCommandResponse>();
-            var existingResponseRegistReply = await _ResponseRegistReplyRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            var existingResponseRegistReply = await _ResponseRegistReplyRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false && x.ReplyAccountId == _user).ConfigureAwait(false);
             if (existingResponseRegistReply == null)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]

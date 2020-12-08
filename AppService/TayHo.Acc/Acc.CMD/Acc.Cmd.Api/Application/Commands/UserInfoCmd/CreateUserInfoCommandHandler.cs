@@ -27,7 +27,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             newUserInfo.SetCreate(_user);
             newUserInfo.Status = request.Status.HasValue ? request.Status : newUserInfo.Status;
             newUserInfo.IsActive = request.IsActive.HasValue ? request.IsActive : newUserInfo.IsActive;
-            newUserInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : newUserInfo.IsVisible;
+            newUserInfo.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newUserInfo.IsVisible;
             await _UserInfoRepository.AddAsync(newUserInfo).ConfigureAwait(false);
             await _UserInfoRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateUserInfoCommandResponse>(newUserInfo);

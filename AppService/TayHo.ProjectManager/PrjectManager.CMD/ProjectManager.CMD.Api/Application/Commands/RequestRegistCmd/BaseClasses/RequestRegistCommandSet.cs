@@ -9,9 +9,9 @@
         public int? ParentId { get; set; }
         public int? Level { get; set; }
         public byte? NoAttachment { get; set; }
-        public int? ProjectId { get; set; }
-        public int? WorkItemId { get; set; }
-        public int? DocumentTypeId { get; set; }
+        public int ProjectId { get; set; }
+        public int WorkItemId { get; set; }
+        public int DocumentTypeId { get; set; }
         public int? Rev { get; set; }
     }
 }
