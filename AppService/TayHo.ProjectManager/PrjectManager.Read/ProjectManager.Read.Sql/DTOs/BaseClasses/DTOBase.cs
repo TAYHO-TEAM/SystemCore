@@ -15,5 +15,6 @@ namespace ProjectManager.Read.Sql.DTOs.BaseClasses
         public int? ModifyBy { get; set; }
         public DateTime? UpdateDateUTC { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public byte? Status { get; set; }
     }
 }

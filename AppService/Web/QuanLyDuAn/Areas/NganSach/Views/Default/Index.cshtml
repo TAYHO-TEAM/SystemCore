@@ -4,8 +4,7 @@
     ViewBag.Title = "Theo dõi ngân sách";
 }
 
-@section style{  
-    
+@section style{    
    <style>
        
    </style> 
@@ -38,6 +37,7 @@
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                 };
+                params = { 'FindParentId':'nganSachId,0'};
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
@@ -78,9 +78,7 @@
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                 };
-                params = {
-                    'FindParentId': 'NganSachId,'+id.toString()
-                };
+                params = { 'FindId': 'NganSachId,'+id.toString() };
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
@@ -92,11 +90,7 @@
                     data: params,
                     success: function (data) {
                         let list = data.result.items;
-                        deferred.resolve(
-                            list,
-                            {
-                                totalCount: list.length,
-                            }
+                        deferred.resolve(list, { totalCount: list.length, }
                         );
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -279,6 +273,7 @@
                                 return $("<div>").append($("<b>").append(data.tenGiaiDoan).addClass("mr-1"), $("<em>").append(data.dienGiai));
                             },
                         },
+                        cellTemplate: (c, o) => $("<div>").append(o.text, (o.data.chilCount>0?$("<span />").addClass("float-right badge bg-info").append(o.data.chilCount + " chi tiết"):null)).appendTo(c),
                         validationRules: [{ type: "required" }]
                     },//giaiDoanId
                     {
@@ -356,31 +351,23 @@
                         ]
                     }
                 }, 
-                //selection: {
-                //    mode: "single"
-                //},
-                //onSelectionChanged: function (e) {
-                //    e.component.collapseAll(-1);
-                //    e.component.expandRow(e.currentSelectedRowKeys[0]);
-                //},
-                //onCellPrepared: function (cellElement, cellInfo) {
-                //    if (cellElement.rowType != "data" || !cellElement.isEditing)
-                //        return;
-                //    if (cellElement.column.dataField === 'giaTri' && !cellElement.row.inserted)
-                //        cellElement.element.find('input').prop('readonly', true);
-                //},
-
-                //onEditorPreparing: function (e) {
-                //    if (e.parentType === "dataRow" && e.dataField !== "giaTri") {
-                //        return;
-                //    }
-                //    if (!e.row.isNewRow)
-                //        e.editorOptions.disabled = true;
-                //},
+                selection: {
+                    mode: "single"
+                },
+                onSelectionChanged: function (e) {
+                    e.component.collapseAll(-1);
+                    e.component.expandRow(e.currentSelectedRowKeys[0]); 
+                }, 
+                onEditorPreparing: function (e) {
+                    if (e.parentType === "dataRow" && e.dataField !== "giaTri") {
+                        return;
+                    }
+                    if (!e.row.isNewRow && e.row.data.chilCount > 0)
+                        e.editorOptions.disabled = true;
+                },
                 masterDetail: {
-                    enabled: true,
+                    enabled: false,
                     template: function (container, options) { 
-                        console.log(options);
                         $("<div>").addClass("elevation-3").dxDataGrid({
                             dataSource: dataSource_NganSachDetail(options.data.id),
                             remoteOperations: {
@@ -429,7 +416,7 @@
                                 },
                             ],
                             editing: {
-                                allowAdding: true,
+                                allowAdding: !options.data.isLock,
                                 allowUpdating: true,
                                 allowDeleting: true,
                                 useIcons: false,
@@ -531,6 +518,14 @@
                         column: "giaTri",
                         summaryType: "sum",
                         valueFormat: { type: "currency", currency: "VND" },
+                        displayFormat: "{0}",
+                    }],
+                    groupItems: [{
+                        column: "giaTri",
+                        summaryType: "sum", 
+                        alignByColumn: true, showInColumn: "giaTri",
+                        valueFormat: { type: "currency", currency: "VND" },
+                        displayFormat: "{0}",
                     }]
                 }
             });

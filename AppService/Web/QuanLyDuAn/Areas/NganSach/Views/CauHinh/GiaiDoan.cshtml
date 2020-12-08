@@ -74,10 +74,12 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        caption: "STT",
-                        width: 80, alignment: "center",
-                        allowEditting: false,
-                        cellTemplate: (container, options) => container.append(options.rowIndex + 1),
+                        dataField: "status", caption: "#",
+                        dataType: "number", width: 100, alignment: "center",
+                        editorType: "dxNumberBox",
+                        editorOptions: { 
+                            min: 1, step: 1, showSpinButtons: true,
+                        }, sortOrder: "desc"
                     },
                     {
                         dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
@@ -125,11 +127,10 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false,
-                    confirmDelete: true, refreshMode: "full"            
+                    mode: "batch",
+                    useIcons: false, confirmDelete: true,
                 }, 
-                onToolbarPreparing: function (e) {
+                onToolbarPreparing: (e) => {
                     var container = e.component;
                     e.toolbarOptions.items.unshift( 
                         {

@@ -24,8 +24,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_GiaiDoanCommandResponse>> Handle(CreateNS_GiaiDoanCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_GiaiDoanCommandResponse>();
-            var newNS_GiaiDoan = new NS_GiaiDoan(request.TenGiaiDoan,
-request.DienGiai);
+            var newNS_GiaiDoan = new NS_GiaiDoan(request.TenGiaiDoan, request.DienGiai);
             newNS_GiaiDoan.SetCreate(_user);
             newNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : newNS_GiaiDoan.Status;
             newNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_GiaiDoan.IsActive;
