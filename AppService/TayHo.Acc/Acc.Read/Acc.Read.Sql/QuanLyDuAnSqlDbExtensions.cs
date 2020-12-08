@@ -27,6 +27,7 @@ namespace Acc.Read.Sql
 
         private static IServiceCollection AddSqlRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IActionsRepository<ActionsDTOCC>, ActionsRepository<ActionsDTOCC>>();
             services.AddScoped<IDOBaseRepository<ActionsDTO>, DOBaseRepository<ActionsDTO>>();
             services.AddScoped<IDOBaseRepository<AccountsDTO>, DOBaseRepository<AccountsDTO>>();
             services.AddScoped<IDOBaseRepository<CategorysDTO>, DOBaseRepository<CategorysDTO>>();
