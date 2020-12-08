@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Phân quyền nhóm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section script{
+    <script>
+        var ACTION = "/GroupActionPermistion";
+        $(function () {
+            var customStore = new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => {
+                    console.log(values)
+                    let deferred = $.Deferred(), params = {};
+                    if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+                    if (values.sort) {
+                        params['SortCol'] = values.sort[0].selector;
+                        params['SortADSC'] = values.sort[0].desc;
+                    }
+
+                    $.ajax({
+                        headers: header,
+                        url: URL_API_ACC_READ + ACTION,
+                        dataType: "json",
+                        data: params,
+                        success: function (data) {
+                            let list = data.result.items;
+                            deferred.resolve(list);
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(xhr.responseJSON);
+                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        },
+                        timeout: 10000//10 giây
+                    });
+
+                    return deferred.promise();
+                },
+                insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+                update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+                remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
+            });
+            loadData(customStore);
+        });
+
+        function loadData(dataSource) {
+            $("#container").dxTreeList({
+                height: heightScreen,
+                dataSource: dataSource,
+                remoteOperations: {
+                    filtering: false,
+                    sorting: true,
+                    grouping: false
+                },
+                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
+                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                columns: [
+                    {
+                        dataField: "title",
+                        dataType: "string",
+                        caption: "Tiêu đề ",
+                    },
+                    {
+                        dataField: "descriptions",
+                        dataType: "string",
+                        caption: "Mô tả ",
+                    },
+                    {
+                        dataField: "icon",
+                        dataType: "string",
+                        caption: "Icon ",
+                    },
+                    {
+                        dataField: "url",
+                        dataType: "string",
+                        caption: "url",
+                    },
+                    {
+                        dataField: "categoryId",
+
+                    },
+                    {
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch",
+                    },
+                    {
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch",
+                    },
+                ],
+
+                editing: {
+                    allowAdding: true,
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    mode: "batch"
+                }
+            });
+        }
+    </script>
+}
+

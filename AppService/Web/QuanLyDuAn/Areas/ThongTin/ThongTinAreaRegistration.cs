@@ -15,6 +15,11 @@ namespace QuanLyDuAn.Areas.ThongTin
         public override void RegisterArea(AreaRegistrationContext context) 
         {
             context.MapRoute(
+              "ThongTin_default_2",
+              "ThongTin/{controller}/{action}/{id}",
+              new { action = "Index", id = UrlParameter.Optional }
+          );
+            context.MapRoute(
                 "ThongTin_default",
                 "ThongTin/{controller}/{action}/{id}",
                 new { controller ="Home",action = "Index", id = UrlParameter.Optional }

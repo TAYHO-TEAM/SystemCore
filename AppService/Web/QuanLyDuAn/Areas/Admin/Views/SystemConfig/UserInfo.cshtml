@@ -1,10 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "Groups";
+    ViewBag.Title = "UserInfo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 @section style{   }
 
 <div class="row">
@@ -15,9 +13,8 @@
 
 @section script{
     <script>
-        const ACTION = "/Groups";
+        const ACTION = "/UserInfo";
         var WIDTH_CONTAINER = $("#container").width();
-
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -84,8 +81,9 @@
                         },
                     },
                     {
-                        dataField: "title", caption: "Tên Nhóm",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataField: "firstName", caption: "Họ",
+                        dataType: "string",
+                        width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
                             placeholder: "Vui lòng nhập...",
                             showClearButton: true
@@ -93,29 +91,38 @@
                         validationRules: [{ type: "required" }]
                     },
                     {
-                        dataField: "descriptions", caption: "Mô Tả",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                        editorOptions: {
-                            placeholder: "Vui lòng nhập...",
-                            showClearButton: true
-                        }
-                    },
-                    {
-                        dataField: "type", caption: "Kiểu",
+                        dataField: "lastName", caption: "Tên",
                         dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
                             placeholder: "Vui lòng nhập...",
                             showClearButton: true
                         },
-                        validationRules: [{ type: "required" }]
+                        alignment: "center",
+                    },
+                    {
+                        dataField: "sex", caption: "Giới tính",
+                        dataType: "number", width: (WIDTH_CONTAINER < 700) ? 50 : "100%",
+                        alignment: "center",
+                        cellTemplate: (container, options) => {
+                            container.append(options.value == 0 ? 'Nữ' : options.value == 1 ? 'Nam': 'Khác')
+                        },
+                        editorOptions: { 
+                            dataSource: listSexs,
+                            displayExpr: "text",
+                            valueExpr: "value",
+                        },
+                        editorType: "dxSelectBox",
+                    },
+                    {
+                        dataField: "dateOfBirth",
+                        caption: "Ngày sinh",
+                        dataType: "date",
+                        width: 150,
+                        alignment: "center",
+                        format: "dd/MM/yyyy"
                     },
                     {
                         dataField: "isActive", width: 100,
-                        editorType: "dxSwitch",
-                    },
-
-                    {
-                        dataField: "isVisible", width: 100,
                         editorType: "dxSwitch",
                     },
                 ],
@@ -138,7 +145,7 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
+                    mode: "cell", ////row,batch,popup 
                     useIcons: false,
                     confirmDelete: true, refreshMode: "full"
                 },
@@ -162,6 +169,4 @@
 
     </script>
 }
-
-
 

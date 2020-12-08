@@ -185,6 +185,7 @@
     <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
     <Compile Include="Areas\ThongTin\Controllers\CauHinhController.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\DangKyController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -2435,6 +2436,9 @@
     <Content Include="Areas\Admin\Views\SystemConfig\Accounts.cshtml" />
     <Content Include="Areas\Admin\Views\SystemConfig\Functions.cshtml" />
     <Content Include="Areas\Admin\Views\SystemConfig\Groups.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\GroupActionPermistion.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\UserInfo.cshtml" />
+    <Content Include="Areas\ThongTin\Views\DangKy\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
