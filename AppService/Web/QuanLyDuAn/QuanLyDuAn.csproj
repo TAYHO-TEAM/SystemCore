@@ -179,9 +179,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ActionsConfigController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SystemConfigController.cs" />
+    <Compile Include="Areas\Admin\Controllers\WorkItemsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -2426,6 +2429,12 @@
     <Content Include="Areas\NganSach\Views\CauHinh\NhaThau.cshtml" />
     <Content Include="Areas\ThongTin\Views\Home\RequestRegist.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\HopDong.cshtml" />
+    <Content Include="Areas\Admin\Views\WorkItemsConfig\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\HangMuc.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\Actions.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\Accounts.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\Functions.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemConfig\Groups.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

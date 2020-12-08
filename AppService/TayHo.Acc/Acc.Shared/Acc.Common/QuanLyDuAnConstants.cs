@@ -24,6 +24,7 @@ namespace Acc.Common
         public const string OperationProcess_TABLENAME = "OperationProcess";
         public const string GroupStepProcessPermistion_TABLENAME = "GroupStepProcessPermistion";
         public const string StepsProcess_TABLENAME = "StepsProcess";
+        public const string WorkItems_TABLENAME = "WorkItems";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";
@@ -35,5 +36,6 @@ namespace Acc.Common
         public const string Assignments_TABLENAME = "Assignments";
         public const string Projects_TABLENAME = "Projects";
         public const string Reply_TABLENAME = "Reply";
+
     }
 }

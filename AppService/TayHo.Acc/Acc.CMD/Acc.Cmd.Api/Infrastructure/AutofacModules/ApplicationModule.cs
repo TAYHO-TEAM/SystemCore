@@ -41,6 +41,7 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterType<StaffTayHoRepository>().As<IStaffTayHoRepository>().InstancePerLifetimeScope();
             builder.RegisterType<StepsProcessRepository>().As<IStepsProcessRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupStepProcessPermistionRepository>().As<IGroupStepProcessPermistionRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<WorkItemsRepository>().As<IWorkItemsRepository>().InstancePerLifetimeScope();
         }
     }
 }

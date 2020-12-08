@@ -1,10 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Actions";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div id="container" class="elevation-2"></div>
 
 @section script{
     <script>
@@ -41,7 +40,7 @@
                 },
                 insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
                 update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
-                remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key), 
+                remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
             });
             loadData(customStore);
         });
@@ -57,7 +56,7 @@
                 },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,                 
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
                         dataField: "title",
@@ -80,13 +79,8 @@
                         caption: "url",
                     },
                     {
-                        dataField: "priority",
-                        dataType: "number",
-                        caption: "Ưu tiên",
-                    },
-                    {
-                        dataField: "categoryId", 
-                        
+                        dataField: "categoryId",
+
                     },
                     {
                         dataField: "isActive", width: 100,
@@ -97,14 +91,15 @@
                         editorType: "dxSwitch",
                     },
                 ],
-                 
+
                 editing: {
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
                     mode: "batch"
-                } 
+                }
             });
         }
     </script>
 }
+
