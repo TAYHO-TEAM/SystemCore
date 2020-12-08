@@ -28,5 +28,9 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
+        public ActionResult HopDong()
+        {
+            return View();
+        }
     }
 }

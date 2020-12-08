@@ -37,7 +37,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
             var methodResult = new MethodResult<PagingItems<NS_NganSachDetailResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.NS_NganSachDetail_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<NS_NganSachDetailResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,

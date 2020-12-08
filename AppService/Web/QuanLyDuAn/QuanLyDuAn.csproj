@@ -2424,6 +2424,7 @@
     <Content Include="Areas\NganSach\Views\CauHinh\HangMuc.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomChiPhi.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhaThau.cshtml" />
+    <Content Include="Areas\NganSach\Views\CauHinh\HopDong.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

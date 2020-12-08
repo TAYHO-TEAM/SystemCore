@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newNS_NganSach = new NS_NganSach(
                 request.ProjectId,
                 request.HangMucId,
-                request.GoiThauId,
+                request.LoaiThauId,
                 request.GiaiDoanId,
                 request.DienGiai,
                 request.GiaTri,

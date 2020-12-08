@@ -14,10 +14,9 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_HangMuc";
-        const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
-        const ACTION_PROJECT = "/Projects";
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+        const ACTION = "/NS_HopDong";
+        const ACTION_CONTRACTORINFO = "/ContractorInfo";
+        const ACTION_LOAITHAU = "/NS_LoaiThau";
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -37,15 +36,14 @@
                     url: URL_API_PM_READ + ACTION,
                     dataType: "json",
                     data: params,
-                    success: function (data) {
-                        let list = data.result.items.filter(x => x.projectId == PROJECTID);
-                        deferred.resolve(list);
+                    success: function (data) { 
+                        deferred.resolve(data.result.items);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
                     },
-                    timeout: 10000//10 giây
+                    timeout: 10000 //10 giây
                 });
 
                 return deferred.promise();
@@ -54,14 +52,13 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
-
-        let customStore_NhomChiPhi = new DevExpress.data.CustomStore({
+        let customStore_ContractorInfo = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
-                    headers: header, dataType: "json", 
-                    url: URL_API_PM_READ + ACTION_NHOMCHIPHI, 
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_CONTRACTORINFO,
                     success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible==true)),
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -72,21 +69,16 @@
                 return deferred.promise();
             },
             byKey: (key) => { return key; }
-        }); 
-
-        let customStore_Projects = new DevExpress.data.CustomStore({
+        });
+        let customStore_LoaiThau = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    url: URL_API_PM_READ + ACTION_LOAITHAU,
                     success: function (data) {
-                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true); 
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -97,7 +89,7 @@
                 });
                 return deferred.promise();
             },
-        }); 
+        });
 
         $(function () {
             loadData(customStore);
@@ -113,39 +105,69 @@
                     sorting: true,
                     grouping: false
                 },
-                cacheEnabled: true, 
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "tenHangMuc", caption: "Tên hạng mục",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
+                        dataField: "soHopDong", caption: "Số hợp đồng", dataType: "string",
+                        cellTemplate: (c, o) => $("<div>").addClass("font-weight-bold").append(o.value).appendTo(c),
+                        validationRules: [{ type: "required" }],
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập..."
+                        }
                     },
                     {
-                        dataField: "kyHieu", caption: "Ký Hiệu",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 150 : "100%", 
-                    },
-                    {
-                        dataField: "nhomChiPhiId", caption: "Nhóm chi phí",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%", 
+                        dataField: "loaiThauID", caption: "Loại thầu", width: 250,
                         lookup: {
-                            dataSource: customStore_NhomChiPhi,
-                            valueExpr: "id", displayExpr: "tenNhomChiPhi",
+                            dataSource: customStore_LoaiThau,
+                            valueExpr: "id", displayExpr: "tenGoiThau",
                         },
                         editorType: "dxSelectBox",
                         editorOptions: {
-                            dataSource: customStore_NhomChiPhi,
-                            valueExpr: "id", displayExpr: "tenNhomChiPhi",
+                            dataSource: customStore_LoaiThau,
+                            valueExpr: "id", displayExpr: "tenGoiThau",
                             noDataText: "Không tìm thấy dữ liệu",
                             placeholder: "Vui lòng chọn...",
                             searchEnabled: true,
                             itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.tenNhomChiPhi).addClass("mr-1"), $("<em>").append(data.dienGiai));
-                            }, 
-                        }
+                                return $("<div>").append($("<b>").append(data.tenGoiThau).addClass("mr-1"), $("<em>").append(data.dienGiai));
+                            },
+                        },
+                        validationRules: [{ type: "required" }]
+                    },//loaiThauId
+                    {
+                        dataField: "contractorInfoId", caption: "Nhà thầu", width: 250,
+                        lookup: {
+                            dataSource: customStore_ContractorInfo,
+                            valueExpr: "id", displayExpr: "name",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_ContractorInfo,
+                            valueExpr: "id", displayExpr: "name",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"),$("<b>").append(data.name).addClass("mr-1"), $("<em>").append(data.Descriptions));
+                            },
+                        },
+                        validationRules: [{ type: "required" }]
+                    },//contractorInfoId
+                    {
+                        dataField: "giaTri", caption: "Giá trị", dataType: "number", 
+                        width: 150, alignment: "center", format: "###,### đ"
                     },
+                    {
+                        dataField: "ngayKy", caption: "Ngày ký", dataType: "date", 
+                        width: 150, alignment: "center", format:"dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string", 
+                        width: 300, alignment: "left"
+                    }, 
                     {
                         dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
@@ -181,28 +203,11 @@
                     allowDeleting: true,
                     mode: "cell",
                     useIcons: false,
-                    confirmDelete: true, 
+                    confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift( 
-                        {
-                            location: "before", widget: "dxSelectBox",
-                            options: {
-                                dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: PROJECTID,
-                                onValueChanged: function (data) {
-                                    PROJECTID = data.value;
-                                    localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
-                                },
-                            },
-                        },
+                    e.toolbarOptions.items.unshift(
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -211,10 +216,9 @@
                             }
                         })
                 },
-                onInitNewRow: (e) => { 
+                onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 0)

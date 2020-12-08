@@ -24,10 +24,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_HopDongCommandResponse>> Handle(CreateNS_HopDongCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_HopDongCommandResponse>();
-            var newNS_HopDong = new NS_HopDong(request.ParentID,
+            var newNS_HopDong = new NS_HopDong(request.ParentId,
                 request.SoHopDong,
                 request.ContractorInfoId,
-                request.GoiThauID,
+                request.LoaiThauId,
                 request.GiaTri,
                 request.NgayKy,
                 request.DienGiai);

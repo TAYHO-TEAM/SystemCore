@@ -17083,3 +17083,7 @@
   -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1),0 6px 8px rgba(0,0,0,.2);
   box-shadow: 0 1px 3px rgba(0,0,0,.1),0 6px 8px rgba(0,0,0,.2);
 }
+.dx-field-item-label-text {
+    color: rgb(248,141,43);
+    text-transform: uppercase;
+}

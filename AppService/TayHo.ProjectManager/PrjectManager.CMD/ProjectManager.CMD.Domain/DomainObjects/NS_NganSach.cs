@@ -10,7 +10,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #region Fields
         private int? _projectId;
         private int? _hangMucId;
-        private int? _goiThauId;
+        private int? _loaiThauId;
         private int? _giaiDoanId;
         private string _dienGiai;
         private decimal? _giaTri;
@@ -22,17 +22,11 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_NganSach(int? ProjectId,
-int? HangMucId,
-int? GoiThauId,
-int? GiaiDoanId,
-string DienGiai,
-decimal? GiaTri,
-bool? isLock) : this()
+        public NS_NganSach(int? ProjectId, int? HangMucId, int? LoaiThauId, int? GiaiDoanId, string DienGiai, decimal? GiaTri, bool? isLock) : this()
         {
-             _projectId = ProjectId;
+            _projectId = ProjectId;
             _hangMucId = HangMucId;
-            _goiThauId = GoiThauId;
+            _loaiThauId = LoaiThauId;
             _giaiDoanId = GiaiDoanId;
             _dienGiai = DienGiai;
             _giaTri = GiaTri;
@@ -43,9 +37,9 @@ bool? isLock) : this()
         #region Properties
         public int? ProjectId { get => _projectId; }
         public int? HangMucId { get => _hangMucId; }
-        public int? GoiThauId { get => _goiThauId; }
+        public int? LoaiThauId { get => _loaiThauId; }
         public int? GiaiDoanId { get => _giaiDoanId; }
-        [MaxLength(-1, ErrorMessage = nameof(ErrorCodeInsert.IErr000))] public string DienGiai { get => _dienGiai; }
+        public string DienGiai { get => _dienGiai; }
         public decimal? GiaTri { get => _giaTri; }
         public bool? isLock { get => _isLock; }
         #endregion Properties
@@ -54,17 +48,17 @@ bool? isLock) : this()
         public void SetProjectId(int? ProjectId)
         { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetHangMucId(int? HangMucId)
-        { _hangMucId = HangMucId.HasValue ? _hangMucId : HangMucId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetGoiThauId(int? GoiThauId)
-        { _goiThauId = GoiThauId.HasValue ? _goiThauId : GoiThauId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _hangMucId = !HangMucId.HasValue ? _hangMucId : HangMucId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetLoaiThauId(int? LoaiThauId)
+        { _loaiThauId = !LoaiThauId.HasValue ? _loaiThauId : LoaiThauId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetGiaiDoanId(int? GiaiDoanId)
-        { _giaiDoanId = GiaiDoanId.HasValue ? _giaiDoanId : GiaiDoanId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _giaiDoanId = !GiaiDoanId.HasValue ? _giaiDoanId : GiaiDoanId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDienGiai(string DienGiai)
-        { _dienGiai = string.IsNullOrEmpty(DienGiai) ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetGiaTri(decimal? GiaTri)
-        { _giaTri = GiaTri.HasValue ? _giaTri : GiaTri; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _giaTri = !GiaTri.HasValue ? _giaTri : GiaTri; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetisLock(bool? isLock)
-        { _isLock = isLock.HasValue ? _isLock : isLock; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _isLock = !isLock.HasValue ? _isLock : isLock; if (!IsValid()) throw new DomainException(_errorMessages); }
 
         public sealed override bool IsValid()
         {

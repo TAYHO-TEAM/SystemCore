@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class NS_NganSachDetailResponseViewModel : BaseResponseViewModel
+    public class NS_NganSachDetailResponseViewModel : BaseResponseChilCountViewModel
     {
         public int NganSachId { get; set; }
         public string CongViec { get; set; }

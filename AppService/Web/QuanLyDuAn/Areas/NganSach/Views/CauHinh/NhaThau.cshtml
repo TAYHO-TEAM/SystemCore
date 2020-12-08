@@ -19,7 +19,39 @@
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => ajax_load(URL_API_PM_READ + ACTION, values),
+            load: (values) => {
+                let deferred = $.Deferred(), params = {};
+
+                params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems,
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
@@ -37,9 +69,9 @@
                     paging: true,
                     sorting: true,
                 },
-                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                repaintChangesOnly: true, 
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                remoteOperations: true,
                 columns: [
                     {
                         caption: "STT",
@@ -50,9 +82,11 @@
                     {
                         dataField: "name", caption: "Tên nhà thầu",
                         dataType: "string",
+                        validationRules: [{ type: "required" }]
                     },
                     {
                         dataField: "code", dataType: "string",
+                        validationRules: [{ type: "required" }]
                     },
                     {
                         dataField: "descriptions", caption: "Thông tin khác",
@@ -68,18 +102,7 @@
                         dataField: "isVisible", width: 100,
                         editorType: "dxSwitch", dataType:"boolean"
                     },
-                    //{
-                    //    dataField: "createBy", caption: "Khởi tạo",
-                    //    width: 250, aligment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value, " đã tạo cách đây ", moment(options.data.createDate).locale("vi").fromNow())
-                    //},
-                    //{
-                    //    dataField: "modifyBy", caption: "Cập nhật",
-                    //    width: 250, alignment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
-                    //},
+
                 ],
                 paging: {
                     enabled: true,
@@ -97,22 +120,16 @@
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
+                    allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "batch",
+                    mode: "cell",
                     useIcons: false,
                     confirmDelete: true 
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift(
-                        {
-                            location: "before", widget: "dxButton",
-                            options: {
-                                text: "Thêm mới", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
+                    e.toolbarOptions.items.unshift( 
                         {
                             location: "after", widget: "dxButton",
                             options: {

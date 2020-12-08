@@ -40,7 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_NganSach.Status = request.Status.HasValue ? request.Status : existingNS_NganSach.Status;
             existingNS_NganSach.SetProjectId(request.ProjectId);
             existingNS_NganSach.SetHangMucId(request.HangMucId);
-            existingNS_NganSach.SetGoiThauId(request.GoiThauId);
+            existingNS_NganSach.SetLoaiThauId(request.LoaiThauId);
             existingNS_NganSach.SetGiaiDoanId(request.GiaiDoanId);
             existingNS_NganSach.SetDienGiai(request.DienGiai);
             existingNS_NganSach.SetGiaTri(request.GiaTri);

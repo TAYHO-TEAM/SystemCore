@@ -104,57 +104,35 @@
                     {
                         dataField: "isActive", width: 100,
                         editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
                     },
 
                     {
                         dataField: "isVisible", width: 100,
                         editorType: "dxSwitch",
-                        //cellTemplate: (c, o) => c.append($("<div>").append((o.value == true) ? "Hoạt động" : "Tạm dừng").addClass((o.value == true)?"badge badge-success":"badge badge-danger"))
-                    },
-                    //{
-                    //    dataField: "createBy", caption: "Khởi tạo",
-                    //    width: 250, aligment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value, " đã tạo cách đây ", moment(options.data.createDate).locale("vi").fromNow())
-                    //},
-                    //{
-                    //    dataField: "modifyBy", caption: "Cập nhật",
-                    //    width: 250, alignment: "left",
-                    //    allowEditting: false,
-                    //    cellTemplate: (container, options) => container.append(options.value != null ? (options.value, " đã cập nhật cách đây ", moment(options.data.updateDate).locale("vi").fromNow()):null)
-                    //},
+                    }, 
                 ],
                 paging: { enabled: true, pageSize: 20 },
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [10, 20, 40],
                     showInfo: true,
-                    infoText: "Trang {0} của {1} ({2} dòng)",
                 },
                 searchPanel: {
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
-                    placeholder: "Tìm nhanh...",
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
+                    allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "batch",
-                    useIcons: false, confirmDelete: true, texts: textDataGrid,
+                    mode: "row",
+                    useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift(
-                        {
-                            location: "before", widget: "dxButton",
-                            options: {
-                                text: "Thêm mới", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
+                    e.toolbarOptions.items.unshift( 
                         {
                             location: "after", widget: "dxButton",
                             options: {

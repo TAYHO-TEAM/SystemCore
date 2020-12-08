@@ -38,10 +38,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HopDong.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_HopDong.IsActive;
             existingNS_HopDong.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_HopDong.IsVisible;
             existingNS_HopDong.Status = request.Status.HasValue ? request.Status : existingNS_HopDong.Status;
-            existingNS_HopDong.SetParentID(request.ParentID);
+            existingNS_HopDong.SetParentId(request.ParentId);
             existingNS_HopDong.SetSoHopDong(request.SoHopDong);
             existingNS_HopDong.SetContractorInfoId(request.ContractorInfoId);
-            existingNS_HopDong.SetGoiThauID(request.GoiThauID);
+            existingNS_HopDong.SetLoaiThauId(request.LoaiThauId);
             existingNS_HopDong.SetGiaTri(request.GiaTri);
             existingNS_HopDong.SetNgayKy(request.NgayKy);
             existingNS_HopDong.SetDienGiai(request.DienGiai);
