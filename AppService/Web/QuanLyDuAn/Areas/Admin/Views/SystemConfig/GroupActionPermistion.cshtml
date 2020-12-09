@@ -6,6 +6,8 @@
 
 @section style{   }
 
+@section style{   }
+
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
@@ -34,28 +36,87 @@
                         params['SortADSC'] = values.sort[0].desc;
                     }
 
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_READ + ACTION,
-                        dataType: "json",
-                        data: params,
-                        success: function (data) {
-                            let list = data.result.items;
-                            deferred.resolve(list);
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            console.log(xhr.responseJSON);
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                        },
-                        timeout: 10000//10 giây
-                    });
+                $.ajax({
+                    headers: header,
+                    url: URL_API_ACC_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000 //10 giây
+                });
 
-                    return deferred.promise();
-                },
-                insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
-                update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
-                remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
-            });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
+        });
+        let customStore_Group = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_ACC_READ + ACTION_GROUPS,
+                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible == true)),
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            byKey: (key) => { return key; }
+        });
+        let customStore_Permistions = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_ACC_READ + ACTION_PERMISTIONS,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        let customStore_Action = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_ACC_READ + ACTION_ACTIONS,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+
+        $(function () {
             loadData(customStore);
         });
         let customStore_Permistions = new DevExpress.data.CustomStore({
@@ -126,8 +187,9 @@
             $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
+                repaintChangesOnly: true,
                 remoteOperations: {
-                    filtering: true, //////// truyền tham số pagging
+                    filtering: false,
                     sorting: true,
                     grouping: false
                 },
@@ -135,111 +197,60 @@
                 showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
+                    //{
+                    //    dataField: "soHopDong", caption: "Số hợp đồng", dataType: "string",
+                    //    cellTemplate: (c, o) => $("<div>").addClass("font-weight-bold").append(o.value).appendTo(c),
+                    //    validationRules: [{ type: "required" }],
+                    //    editorOptions: {
+                    //        placeholder: "Vui lòng nhập..."
+                    //    }
+                    //},
+                   
                     {
-                        dataField: "groupId",
+                        dataField: "title",
                         dataType: "string",
-                        caption: "Nhóm ",
-                        groupIndex: 0,
-                        lookup: {
-                            dataSource: customStore_Groups,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            dataSource: customStore_Groups,
-                            valueExpr: "id", displayExpr: "title",
-                            noDataText: "Không tìm thấy dữ liệu",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
-                            },
-                        }
+                        caption: "Tiêu đề ",
                     },
                     {
-                        dataField: "actionId",
+                        dataField: "descriptions",
                         dataType: "string",
-                        caption: "Hoạt động ",
-                        groupIndex: 1,
-                        lookup: {
-                            dataSource: customStore_Actions,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            dataSource: customStore_Actions,
-                            valueExpr: "id", displayExpr: "title",
-                            noDataText: "Không tìm thấy dữ liệu",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
-                            },
-                        }
+                        caption: "Mô tả ",
                     },
                     {
-                        dataField: "permistionId",
+                        dataField: "icon",
                         dataType: "string",
-                        caption: "Quyền ",
-                        lookup: {
-                            dataSource: customStore_Permistions,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            dataSource: customStore_Permistions,
-                            valueExpr: "id", displayExpr: "title",
-                            noDataText: "Không tìm thấy dữ liệu",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
-                            },
-                        }
+                        caption: "Icon ",
                     },
                     {
-                        dataField: "isActive", width: 100,
+                        dataField: "url",
+                        dataType: "string",
+                        caption: "url",
+                    },
+                    {
+                        dataField: "categoryId",
+
+                    },
+                    {
+                        dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
                     {
-                        dataField: "isVisible", width: 100,
+                        dataField: "isVisible", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
+                    {
+                        type: "buttons", caption: "Tác vụ",
+                        width: 120, alignment: "center",
+                        buttons: ["add", "edit", "delete"]
+                    }
                 ],
-                paging: { enabled: true, pageSize: 20 },
-                pager: {
-                    showPageSizeSelector: true,
-                    allowedPageSizes: [10, 20, 40],
-                    showInfo: true,
-                },
-                searchPanel: {
-                    highlightCaseSensitive: true,
-                    highlightSearchText: true,
-                    searchVisibleColumnsOnly: true,
-                    visible: WIDTH_CONTAINER > 350
-                },
+
                 editing: {
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "popup",
-                    useIcons: false, confirmDelete: true,
-                },
-                onToolbarPreparing: function (e) {
-                    var container = e.component;
-                    e.toolbarOptions.items.unshift(
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
-                                onClick: () => container.refresh()
-                            }
-                        })
-                },
-                onInitNewRow: (e) => {
-                    e.data.isActive = true;
-                    e.data.isVisible = true;
-                },
+                    mode: "batch"
+                }
             });
         }
     </script>
