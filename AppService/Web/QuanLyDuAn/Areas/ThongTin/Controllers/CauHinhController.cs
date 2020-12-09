@@ -17,5 +17,13 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult PhanQuyenPheDuyet()
+        {
+            return View();
+        }
+        public ActionResult QuyTrinh()
+        {
+            return View();
+        }
     }
 }

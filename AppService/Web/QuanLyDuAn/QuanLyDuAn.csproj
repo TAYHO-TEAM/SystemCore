@@ -2439,6 +2439,8 @@
     <Content Include="Areas\Admin\Views\SystemConfig\GroupActionPermistion.cshtml" />
     <Content Include="Areas\Admin\Views\SystemConfig\UserInfo.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
