@@ -62,7 +62,7 @@ namespace Acc.Read.Api.Controllers.v1
         [Route(getMenuOfUser)]
         [ProducesResponseType(typeof(MethodResult<PagingItems<ActionsResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetActionsOfUserAsync([FromQuery] BaseRequestViewModel request)
+        public async Task<IActionResult> GetActionsOfUserAsync([FromQuery] BaseRequestParentViewModel request)
         {
             var methodResult = new MethodResult<PagingItems<ActionsByPermistionResponseViewModel>>();
             RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);

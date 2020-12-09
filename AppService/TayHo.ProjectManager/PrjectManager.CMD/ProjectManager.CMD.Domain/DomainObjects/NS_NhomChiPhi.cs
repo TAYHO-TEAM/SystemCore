@@ -17,7 +17,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_NhomChiPhi(string TenNhomChiPhi, string DienGiai) : this()
+        public NS_NhomChiPhi(string TenNhomChiPhi, string DienGiai,) : this()
         {
             _tenNhomChiPhi = TenNhomChiPhi;
             _dienGiai = DienGiai;
@@ -30,11 +30,10 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
-        public void SetDienGiai(string DienGiai)
-        { _dienGiai = string.IsNullOrEmpty(DienGiai) ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTenNhomChiPhi(string TenNhomChiPhi)
-        { _tenNhomChiPhi = string.IsNullOrEmpty(TenNhomChiPhi) ? _tenNhomChiPhi : TenNhomChiPhi; if (!IsValid()) throw new DomainException(_errorMessages); }
-
+        { _tenNhomChiPhi = TenNhomChiPhi == null ? _tenNhomChiPhi : TenNhomChiPhi; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDienGiai(string DienGiai)
+        { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

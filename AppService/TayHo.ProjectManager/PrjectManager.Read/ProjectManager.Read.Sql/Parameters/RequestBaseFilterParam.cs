@@ -13,4 +13,8 @@ namespace ProjectManager.Read.Sql.Parameters
         public string KeyWord { get; set; }
         public string ColumName { get; set; }
     }
+    public class RequestTreeListBaseFilterParam : RequestBaseFilterParam
+    {
+        public byte? TypeStore { get; set; }
+    }
 }
