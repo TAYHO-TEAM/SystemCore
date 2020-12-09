@@ -2416,7 +2416,7 @@
     <Content Include="Content\icons\dxiconsmaterial.woff2" />
     <Content Include="manifest.json" />
     <Content Include="Areas\NganSach\Views\web.config" />
-    <Content Include="Areas\NganSach\Views\Default\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\Default\Index2.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\ThongTin\Views\web.config" />
     <Content Include="Areas\ThongTin\Views\_ViewStart.cshtml" />
@@ -2441,6 +2441,7 @@
     <Content Include="Areas\ThongTin\Views\DangKy\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
+    <Content Include="Areas\NganSach\Views\Default\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

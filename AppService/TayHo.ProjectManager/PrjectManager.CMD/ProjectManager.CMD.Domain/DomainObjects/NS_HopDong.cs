@@ -23,12 +23,12 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
 
         public NS_HopDong(int? ParentId,
-            string SoHopDong,
-            int? ContractorInfoId,
-            int? LoaiThauId,
-            decimal? GiaTri,
-            DateTime? NgayKy,
-            string DienGiai) : this()
+string SoHopDong,
+int? ContractorInfoId,
+int? LoaiThauId,
+decimal? GiaTri,
+DateTime? NgayKy,
+string DienGiai) : this()
         {
             _parentId = ParentId;
             _soHopDong = SoHopDong;

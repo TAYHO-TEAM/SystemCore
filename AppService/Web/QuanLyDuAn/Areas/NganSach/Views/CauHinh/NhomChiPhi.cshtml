@@ -111,7 +111,7 @@
                     {
                         dataField: "isVisible", width: 100,
                         editorType: "dxSwitch",
-                    }, 
+                    },
                 ],
                 paging: { enabled: true, pageSize: 20 },
                 pager: {
@@ -134,7 +134,7 @@
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift( 
+                    e.toolbarOptions.items.unshift(
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -148,15 +148,11 @@
                     e.data.isVisible = true;
                 },
                 rowDragging: {
-                    allowReordering: true, showDragIcons:false,
+                    allowReordering: true, showDragIcons: false,
                     onReorder: function (e) {
-                        var visibleRows = e.component.getVisibleRows(),
-                            toIndex = visibleRows[e.toIndex].data,
-                            fromIndex = e.itemData;
-
-                        console.log(fromIndex.status);
-                        console.log(toIndex.status);
-
+                        var visibleRows = e.component.getVisibleRows(), toIndex = visibleRows[e.toIndex].data;
+                        console.log(toIndex);
+                        console.log(ajax_update(URL_API_PM_CMD + ACTION, toIndex.id, { 'status': toIndex.status}));
                         e.component.refresh();
                     }
                 },

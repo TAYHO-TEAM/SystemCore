@@ -127,6 +127,7 @@ namespace Acc.Cmd.Infrastructure.Services
                     tokenResult.Title = existingStaffTaHo.Title;
                     tokenResult.AvatarImg = existingStaffTaHo.AvatarImg;
                     tokenResult.UserName = existingStaffTaHo.UserName;
+                    tokenResult.AccountId = existingAccount.Id;
                 }     
             }    
            

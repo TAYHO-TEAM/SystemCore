@@ -37,6 +37,7 @@
     public enum ErrorCodeUpdate
     {
         UErr01,
+        UErr02,
     }
     public enum ErrorCodeDelete
     {

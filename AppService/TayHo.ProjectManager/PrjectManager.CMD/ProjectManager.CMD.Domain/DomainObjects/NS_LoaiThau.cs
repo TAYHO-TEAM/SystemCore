@@ -19,10 +19,11 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_LoaiThau(int? ParentId,
-            string TenGoiThau,
-            string DienGiai,
-            int? ProjectId) : this()
+        public NS_LoaiThau(
+            int? ParentId,
+string TenGoiThau,
+string DienGiai,
+int? ProjectId) : this()
         {
             _parentId = ParentId;
             _tenGoiThau = TenGoiThau;
@@ -47,7 +48,6 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetProjectId(int? ProjectId)
         { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
-
         public sealed override bool IsValid()
         {
             return base.IsValid();

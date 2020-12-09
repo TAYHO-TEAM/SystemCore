@@ -12,4 +12,8 @@ namespace ProjectManager.Read.Api.ViewModels.BaseClasses
         public string KeyWord { get; set; }
         public string ColumName { get; set; }
     }
+    public class BaseTreeRequestViewModel : BaseRequestViewModel
+    {
+        public byte? TypeStore { get; set; }
+    }
 }

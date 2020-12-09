@@ -20,10 +20,10 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
 
         public NS_HangMuc(int? ParentId,
-            string TenHangMuc,
-            string KyHieu,
-            int? NhomChiPhiId,
-            int? ProjectId) : this()
+string TenHangMuc,
+string KyHieu,
+int? NhomChiPhiId,
+int? ProjectId) : this()
         {
             _parentId = ParentId;
             _tenHangMuc = TenHangMuc;
@@ -45,13 +45,13 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public void SetParentId(int? ParentId)
         { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTenHangMuc(string TenHangMuc)
-        { _tenHangMuc = string.IsNullOrEmpty(TenHangMuc) ? _tenHangMuc : TenHangMuc; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _tenHangMuc = TenHangMuc == null ? _tenHangMuc : TenHangMuc; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetKyHieu(string KyHieu)
-        { _kyHieu = string.IsNullOrEmpty(KyHieu) ? _kyHieu : KyHieu; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _kyHieu = KyHieu == null ? _kyHieu : KyHieu; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNhomChiPhiId(int? NhomChiPhiId)
-        { _nhomChiPhiId = NhomChiPhiId.HasValue ? NhomChiPhiId : _nhomChiPhiId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _nhomChiPhiId = !NhomChiPhiId.HasValue ? _nhomChiPhiId : NhomChiPhiId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetProjectId(int? ProjectId)
-        { _projectId = ProjectId.HasValue ? ProjectId : _projectId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

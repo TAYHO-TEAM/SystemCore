@@ -19,6 +19,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class NS_LoaiThauController : APIControllerBase
     {
         private readonly IDOBaseRepository<NS_LoaiThauDTO> _dOBaseRepository;
+        private const string Treelist = nameof(Treelist);
 
         public NS_LoaiThauController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_LoaiThauDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
@@ -39,6 +40,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiThau_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_LoaiThauResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<NS_LoaiThauResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+
+        /// <summary>
+        /// Get List of NS_LoaiThau.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Treelist)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetNS_LoaiThauTreeListAsync([FromQuery] BaseTreeRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>();
+            RequestTreeListBaseFilterParam requestFilter = _mapper.Map<RequestTreeListBaseFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiThau_TABLENAME;
+            var queryResult = await _dOBaseRepository.GetTreeListWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<NS_LoaiThauResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,

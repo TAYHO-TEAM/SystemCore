@@ -27,6 +27,13 @@ namespace  Acc.Cmd.Api.Application.Commands
         {
             var methodResult = new MethodResult<UpdateAccountsCommandResponse>();
             var existingAccounts = await _accountsRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            //if (existingAccounts.CreateBy != _user)
+            //{
+            //    methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
+            //    {
+            //        ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+            //    });
+            //}
             if (existingAccounts == null)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]
