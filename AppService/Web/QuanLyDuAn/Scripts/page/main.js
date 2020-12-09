@@ -1,12 +1,7 @@
 ﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
 var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
-var header = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Authorization': 'Bearer ' + UserCurrentInfo.accessToken,
-};
+var header = {};
 
 DevExpress.localization.locale('vi');
 
@@ -22,6 +17,13 @@ function logout(url) {
 }
 
 function loadMenu() {
+    //loadHeader
+    header = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': 'Bearer ' + UserCurrentInfo.accessToken,
+    };
     //loadInfo
     $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
     $('.user-panel div.info a').html(UserCurrentInfo.userName);
