@@ -9,7 +9,7 @@ namespace Acc.Read.Api.Infrastructure.Mappings
         public ActionsProfile()
         { 
             CreateMap<ActionsDTO, ActionsResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
-            CreateMap<ActionsDTOCC, ActionsResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<ActionsDTOCC, ActionsByPermistionResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

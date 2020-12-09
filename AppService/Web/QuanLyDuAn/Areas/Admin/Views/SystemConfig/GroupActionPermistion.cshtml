@@ -4,6 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
 
 @section script{
     <script>
@@ -11,13 +18,17 @@
         var ACTION_ACTIONS = "/Actions";
         var ACTION_GROUPS = "/Groups";
         var ACTION_PERMISTIONS = "/Permistions";
+        var WIDTH_CONTAINER = $("#container").width();
         $(function () {
             var customStore = new DevExpress.data.CustomStore({
                 key: "id",
                 load: (values) => {
                     console.log(values)
                     let deferred = $.Deferred(), params = {};
-                    if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+                    params = {
+                        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    };
                     if (values.sort) {
                         params['SortCol'] = values.sort[0].selector;
                         params['SortADSC'] = values.sort[0].desc;
@@ -56,10 +67,7 @@
                     url: URL_API_ACC_READ + ACTION_PERMISTIONS,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
+                      
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -70,20 +78,17 @@
                 });
                 return deferred.promise();
             },
-        }); 
+        });
         let customStore_Groups = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_ACC_READ + ACTION_PERMISTIONS,
+                    url: URL_API_ACC_READ + ACTION_GROUPS,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
+                      
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -94,20 +99,17 @@
                 });
                 return deferred.promise();
             },
-        }); 
+        });
         let customStore_Actions = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_ACC_READ + ACTION_PERMISTIONS,
+                    url: URL_API_ACC_READ + ACTION_ACTIONS,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
+                      
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -118,14 +120,14 @@
                 });
                 return deferred.promise();
             },
-        }); 
+        });
 
         function loadData(dataSource) {
-            $("#container").dxTreeList({
+            $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
                 remoteOperations: {
-                    filtering: false,
+                    filtering: true, //////// truyền tham số pagging
                     sorting: true,
                     grouping: false
                 },
@@ -134,28 +136,66 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        dataField: "title",
+                        dataField: "groupId",
                         dataType: "string",
-                        caption: "Tiêu đề ",
+                        caption: "Nhóm ",
+                        groupIndex: 0,
+                        lookup: {
+                            dataSource: customStore_Groups,
+                            valueExpr: "id", displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_Groups,
+                            valueExpr: "id", displayExpr: "title",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
+                            },
+                        }
                     },
                     {
-                        dataField: "descriptions",
+                        dataField: "actionId",
                         dataType: "string",
-                        caption: "Mô tả ",
+                        caption: "Hoạt động ",
+                        groupIndex: 1,
+                        lookup: {
+                            dataSource: customStore_Actions,
+                            valueExpr: "id", displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_Actions,
+                            valueExpr: "id", displayExpr: "title",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
+                            },
+                        }
                     },
                     {
-                        dataField: "icon",
+                        dataField: "permistionId",
                         dataType: "string",
-                        caption: "Icon ",
-                    },
-                    {
-                        dataField: "url",
-                        dataType: "string",
-                        caption: "url",
-                    },
-                    {
-                        dataField: "categoryId",
-
+                        caption: "Quyền ",
+                        lookup: {
+                            dataSource: customStore_Permistions,
+                            valueExpr: "id", displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_Permistions,
+                            valueExpr: "id", displayExpr: "title",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
+                            },
+                        }
                     },
                     {
                         dataField: "isActive", width: 100,
@@ -166,13 +206,40 @@
                         editorType: "dxSwitch",
                     },
                 ],
-
+                paging: { enabled: true, pageSize: 20 },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
                 editing: {
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "batch"
-                }
+                    mode: "popup",
+                    useIcons: false, confirmDelete: true,
+                },
+                onToolbarPreparing: function (e) {
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+                            }
+                        })
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                },
             });
         }
     </script>

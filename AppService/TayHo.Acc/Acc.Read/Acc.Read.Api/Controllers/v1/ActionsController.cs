@@ -64,15 +64,15 @@ namespace Acc.Read.Api.Controllers.v1
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetActionsOfUserAsync([FromQuery] BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<ActionsResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<ActionsByPermistionResponseViewModel>>();
             RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.Actions_TABLENAME;
             requestFilter.AccountId = _user;
             var queryResult = await _actionsRepository.GetActionByUserAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<ActionsResponseViewModel>
+            methodResult.Result = new PagingItems<ActionsByPermistionResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<ActionsResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<ActionsByPermistionResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }
