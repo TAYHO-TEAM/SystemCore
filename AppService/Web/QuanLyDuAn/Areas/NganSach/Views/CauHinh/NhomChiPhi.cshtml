@@ -69,12 +69,12 @@
                     paging: true,
                     sorting: true,
                 },
-                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 remoteOperations: true,
                 columns: [
                     {
-                        dataField: "status", caption: "#",
+                        dataField: "status", caption: "STT",
                         dataType: "number", width: 100, alignment: "center",
                         editorType: "dxNumberBox",
                         editorOptions: {
@@ -129,7 +129,7 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "batch",
+                    mode: "cell",
                     useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
@@ -146,7 +146,20 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                }
+                },
+                rowDragging: {
+                    allowReordering: true, showDragIcons:false,
+                    onReorder: function (e) {
+                        var visibleRows = e.component.getVisibleRows(),
+                            toIndex = visibleRows[e.toIndex].data,
+                            fromIndex = e.itemData;
+
+                        console.log(fromIndex.status);
+                        console.log(toIndex.status);
+
+                        e.component.refresh();
+                    }
+                },
             });
         }
     </script>
