@@ -1,22 +1,21 @@
 ﻿
 @{
-    ViewBag.Title = "Phân quyền nhóm";
+    ViewBag.Title = "QuyTrinh";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section style{   }
-
-<div class="row">
-    <div class="col-12">
-        <div id="container" class="elevation-2"></div>
-    </div>
+div class="row">
+<div class="col-12">
+    <div id="container" class="elevation-2"></div>
+</div>
 </div>
 
 @section script{
     <script>
-        var ACTION = "/GroupActionPermistion";
-        var ACTION_ACTIONS = "/Actions";
+        var ACTION = "/OperationProcess";
+        var ACTION_ACTIONS = "/StepsProcess";
         var ACTION_GROUPS = "/Groups";
+        var ACTION_GROUPSSTEPPERMISTION = "/GroupStepProcessPermistion";
         var ACTION_PERMISTIONS = "/Permistions";
         var WIDTH_CONTAINER = $("#container").width();
         $(function () {
