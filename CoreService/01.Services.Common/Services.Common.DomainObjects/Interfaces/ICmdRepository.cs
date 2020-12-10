@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Common.DomainObjects.Interfaces
 {
-    public interface ICmdRepository<T> : IRepository<T> where T : EntityBase
+    public interface ICmdRepository<T> : IRepository<T> where T : EntityDO
     {
         #region Refresh
 

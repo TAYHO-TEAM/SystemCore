@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Services.Common.APIs.Cmd.EF
 {
-    public class BaseRepository<T> : ICmdRepository<T> where T : EntityBase
+    public class BaseRepository<T> : ICmdRepository<T> where T : EntityDO
     {
         public BaseRepository(BaseDbContext dbContext)
         {

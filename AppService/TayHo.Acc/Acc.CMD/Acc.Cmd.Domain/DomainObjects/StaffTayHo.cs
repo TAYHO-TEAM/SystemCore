@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Acc.Cmd.Domain.DomainObjects
 {
-    public class StaffTayHo : EntityBase
+    public class StaffTayHo : EntityDO
     {
         #region Fields
         private string _userName;

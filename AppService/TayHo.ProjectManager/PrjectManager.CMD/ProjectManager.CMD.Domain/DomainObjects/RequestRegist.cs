@@ -50,14 +50,14 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             _workItemId = WorkItemId;
             _documentTypeId = DocumentTypeId;
             _rev = Rev;
-            AddRequestRegistCreatedDomainEvent();
+            //AddRequestRegistCreatedDomainEvent();
             if (!IsValid()) throw new DomainException(_errorMessages);
             
         }
         #endregion Constructors
         #region Properties
-        [MaxLength(64, ErrorMessage = nameof(ErrorCodeInsert.IErr64))] [Required(ErrorMessage = nameof(ErrorCodeInsert.IErr000))] public string Code { get => _code; }
-        [MaxLength(128, ErrorMessage = nameof(ErrorCodeInsert.IErr128))] [Required(ErrorMessage = nameof(ErrorCodeInsert.IErr000))] public string BarCode { get => _barCode; }
+        [MaxLength(64, ErrorMessage = nameof(ErrorCodeInsert.IErr64))] public string Code { get => _code; }
+        [MaxLength(128, ErrorMessage = nameof(ErrorCodeInsert.IErr128))] public string BarCode { get => _barCode; }
         [MaxLength(256, ErrorMessage = nameof(ErrorCodeInsert.IErr256))] public string Title { get => _title; }
         public string Descriptions { get => _descriptions; }
         public int? ParentId { get => _parentId; }
