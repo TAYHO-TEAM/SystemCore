@@ -27,7 +27,6 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newNS_HangMuc = new NS_HangMuc(request.ParentId,
                 request.TenHangMuc,
                 request.KyHieu,
-                request.NhomChiPhiId,
                 request.ProjectId);
             newNS_HangMuc.SetCreate(_user);
             newNS_HangMuc.Status = request.Status.HasValue ? request.Status : newNS_HangMuc.Status;

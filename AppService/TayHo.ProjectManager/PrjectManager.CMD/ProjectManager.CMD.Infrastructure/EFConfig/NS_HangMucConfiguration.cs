@@ -14,7 +14,6 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
             builder.Property(x => x.ParentId).HasField("_parentId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.TenHangMuc).HasField("_tenHangMuc").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.KyHieu).HasField("_kyHieu").HasMaxLength(50).UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.NhomChiPhiId).HasField("_nhomChiPhiId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }

@@ -22,6 +22,7 @@
   "IErrN4": "Dự liệu không thêm được do thiếu dữ liệu liên kết!",
   // Update Error 
   "UErr01": "Dữ liệu không tông tại!",
+  "UErr02": "Không được phép cập nhật dòng dữ liệu này!",
   // Delete Error
   "DErr001": "Dữ liệu không tông tại!",
   "DErr002": "Không được phép xoá dòng dữ liệu này!"

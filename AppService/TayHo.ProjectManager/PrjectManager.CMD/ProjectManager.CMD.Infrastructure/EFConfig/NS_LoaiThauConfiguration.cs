@@ -12,7 +12,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         {
             builder.ToTable(QuanLyDuAnConstants.NS_LoaiThau_TABLENAME);
             builder.Property(x => x.ParentId).HasField("_parentId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.TenGoiThau).HasField("_tenGoiThau").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.TenLoaiThau).HasField("_tenLoaiThau").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
         }

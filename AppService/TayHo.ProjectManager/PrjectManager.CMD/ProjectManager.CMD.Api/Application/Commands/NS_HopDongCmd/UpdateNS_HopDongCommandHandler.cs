@@ -34,6 +34,13 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+            if (existingNS_HopDong.CreateBy != _user)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+                });
+            }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_HopDong.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_HopDong.IsActive;
             existingNS_HopDong.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_HopDong.IsVisible;
@@ -41,7 +48,6 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HopDong.SetParentId(request.ParentId);
             existingNS_HopDong.SetSoHopDong(request.SoHopDong);
             existingNS_HopDong.SetContractorInfoId(request.ContractorInfoId);
-            existingNS_HopDong.SetLoaiThauId(request.LoaiThauId);
             existingNS_HopDong.SetGiaTri(request.GiaTri);
             existingNS_HopDong.SetNgayKy(request.NgayKy);
             existingNS_HopDong.SetDienGiai(request.DienGiai);

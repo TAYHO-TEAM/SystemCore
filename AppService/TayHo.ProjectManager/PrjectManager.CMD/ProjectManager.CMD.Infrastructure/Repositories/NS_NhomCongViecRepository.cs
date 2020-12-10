@@ -5,9 +5,9 @@ using Services.Common.APIs.Cmd.EF;
 
 namespace ProjectManager.CMD.Infrastructure.Repositories
 {
-    public class NS_GoiThauRepository : BaseRepository<NS_GoiThau>, INS_GoiThauRepository
+    public class NS_NhomCongViecRepository : BaseRepository<NS_NhomCongViec>, INS_NhomCongViecRepository
     {
-        public NS_GoiThauRepository(QuanLyDuAnContext dbContext) : base(dbContext)
+        public NS_NhomCongViecRepository(QuanLyDuAnContext dbContext) : base(dbContext)
         {
         }
     }

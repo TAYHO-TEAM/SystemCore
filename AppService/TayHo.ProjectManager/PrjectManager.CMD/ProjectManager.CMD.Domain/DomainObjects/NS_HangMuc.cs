@@ -10,7 +10,6 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         private int? _parentId;
         private string _tenHangMuc;
         private string _kyHieu;
-        private int? _nhomChiPhiId;
         private int? _projectId;
         #endregion Fields
 
@@ -22,13 +21,11 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public NS_HangMuc(int? ParentId,
 string TenHangMuc,
 string KyHieu,
-int? NhomChiPhiId,
 int? ProjectId) : this()
         {
             _parentId = ParentId;
             _tenHangMuc = TenHangMuc;
             _kyHieu = KyHieu;
-            _nhomChiPhiId = NhomChiPhiId;
             _projectId = ProjectId;
         }
         #endregion Constructors
@@ -37,21 +34,14 @@ int? ProjectId) : this()
         public int? ParentId { get => _parentId; }
         [MaxLength(500, ErrorMessage = nameof(ErrorCodeInsert.IErr500))] public string TenHangMuc { get => _tenHangMuc; }
         [MaxLength(50, ErrorMessage = nameof(ErrorCodeInsert.IErr50))] public string KyHieu { get => _kyHieu; }
-        public int? NhomChiPhiId { get => _nhomChiPhiId; }
         public int? ProjectId { get => _projectId; }
         #endregion Properties
 
         #region Behaviours
-        public void SetParentId(int? ParentId)
-        { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetTenHangMuc(string TenHangMuc)
-        { _tenHangMuc = TenHangMuc == null ? _tenHangMuc : TenHangMuc; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetKyHieu(string KyHieu)
-        { _kyHieu = KyHieu == null ? _kyHieu : KyHieu; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetNhomChiPhiId(int? NhomChiPhiId)
-        { _nhomChiPhiId = !NhomChiPhiId.HasValue ? _nhomChiPhiId : NhomChiPhiId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetProjectId(int? ProjectId)
-        { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetParentId(int? ParentId) { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTenHangMuc(string TenHangMuc) { _tenHangMuc = TenHangMuc == null ? _tenHangMuc : TenHangMuc; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetKyHieu(string KyHieu) { _kyHieu = KyHieu == null ? _kyHieu : KyHieu; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetProjectId(int? ProjectId) { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

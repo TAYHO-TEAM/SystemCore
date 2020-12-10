@@ -24,10 +24,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_CongViecCommandResponse>> Handle(CreateNS_CongViecCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_CongViecCommandResponse>();
-            var newNS_CongViec = new NS_CongViec(request.NganSachId,
+            var newNS_CongViec = new NS_CongViec(request.NhomCongViecId,
                 request.CongViec,
                 request.GiaTri,
-                request.NgayCapNhat,
                 request.DienGiai,
                 request.isLock);
             newNS_CongViec.SetCreate(_user);

@@ -34,6 +34,15 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+
+            if (existingNS_GiaiDoan.CreateBy != _user)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+                });
+            }
+
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_GiaiDoan.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_GiaiDoan.IsActive;
             existingNS_GiaiDoan.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_GiaiDoan.IsVisible;

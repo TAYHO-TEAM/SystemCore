@@ -68,13 +68,12 @@
                 remoteOperations: {
                     paging: true,
                     sorting: true,
-                },
-                repaintChangesOnly: true,                
+                },              
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        dataField: "status", caption: "#",
+                        dataField: "status", caption: "STT",
                         dataType: "number", width: 100, alignment: "center",
                         editorType: "dxNumberBox",
                         editorOptions: { 
@@ -144,7 +143,19 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                }
+                },
+                rowDragging: {
+                    allowReordering: true,
+                    showDragIcons: true,
+                    onDragEnd: function (e) {
+                        var source = e.itemData;
+                        var target = e.component.getVisibleRows()[e.toIndex].data;
+                        if (source.id != target.id) {
+                            console.log(ajax_update(URL_API_PM_CMD + ACTION, source.id, { status: target.status }));
+                            e.component.refresh();
+                        }
+                    },
+                },
             });
         }
     </script>
