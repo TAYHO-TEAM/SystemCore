@@ -19,6 +19,7 @@
 @section script{
     <script>
         const ACTION = "/RequestRegist";
+        const ACTION_RESPONSE = "/ResponseRegist";
         const ACTION_PROJECT = "/Projects";
         const ACTION_HANGMUC = "/WorkItems";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
@@ -26,7 +27,41 @@
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
-
+        let customStore_ResponseRegist = (id) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred(), params = {};
+                params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                params = { 'FindId': 'NganSachId,' + id.toString() };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION_RESPONSE,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        let list = data.result.items;
+                        deferred.resolve(list, { totalCount: list.length, }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_RESPONSE, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_RESPONSE, key),
+        });
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -130,7 +165,7 @@
         });
 
         let loadData = (dataSource) => {
-            $("#container").dxTreeList({
+            $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
                 repaintChangesOnly: true,
@@ -140,7 +175,7 @@
                     grouping: false
                 },
                 scrolling: { mode: "standard" },
-                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
+                //rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
@@ -148,44 +183,6 @@
                         dataField: "title", caption: "Tiêu đề",
                         dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
                     },//tiêu đề
-                    {
-                        dataField: "workItemId", caption: "Hạng mục",
-                        dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
-                        lookup: {
-                            dataSource: customStore_HangMuc,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxLookup",
-                        editorOptions: {
-                            dataSource: customStore_HangMuc,
-                            valueExpr: "id", displayExpr: "title",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                            },
-                        },
-                        validationRules: [{ type: "required" }],
-                    },//hangMucId
-                    {
-                        dataField: "documentTypeId", caption: "Loại tài liệu",
-                        dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
-                        lookup: {
-                            dataSource: customStore_DocumetnType,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxLookup",
-                        editorOptions: {
-                            dataSource: customStore_DocumetnType,
-                            valueExpr: "id", displayExpr: "title",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                            },
-                        },
-                        validationRules: [{ type: "required" }],
-                    },//loại tài liệu Id
                 ],
                 rowDragging: {
                     allowDropInsideItem: true,
@@ -214,12 +211,132 @@
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    allowAdding: false,
+                    allowUpdating: false,
+                    allowDeleting: false,
                     mode: "cell",
                     useIcons: false,
                     confirmDelete: true,
+                },
+                masterDetail: {
+                    enabled: false,
+                    template: function (container, options) {
+                        $("<div>").addClass("elevation-3").dxDataGrid({
+                            
+                            dataSource: customStore_ResponseRegist(options.data.id),
+                            remoteOperations: {
+                                paging: true,
+                                sorting: true,
+                            },
+                            repaintChangesOnly: true,
+                            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                            paging: {
+                                enabled: true,
+                                pageSize: 20
+                            },
+                            pager: {
+                                showPageSizeSelector: true,
+                                allowedPageSizes: [10, 20, 40],
+                                showInfo: true,
+                            },
+                            columns: [
+                                {
+                                    caption: "STT", width: 80, alignment:"center",
+                                    cellTemplate: (c, o) => $("<div />").append(o.rowIndex + 1).appendTo(c)
+                                },
+                                {
+                                    dataField: "congViec", caption: "Công việc / Hoạt động", alignment: "left",
+                                    validationRules: [{ type: "required" }],
+                                },
+                                {
+                                    dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
+                                    alignment: "left", width: 250,
+                                    cellTemplate: (c, o) => $("<div />").append((o.value == null || o.value.length == 0) ? "--" : o.value).appendTo(c)
+                                },
+                                {
+                                    dataField: "giaTri", caption: "Giá trị", dataType: "number",
+                                    alignment: "center", width: 200,
+                                    format: { type: "currency", currency: "VND" },
+                                    editorType: "dxNumberBox",
+                                    editorOptions: {
+                                        format: "#,##0 đ",
+                                        min: 1000000,
+                                        step: 1000000,
+                                        showSpinButtons: true,
+                                        showClearButton: true,
+                                    },
+                                    validationRules: [{ type: "required" }],
+                                },
+                            ],
+                            editing: {
+                                allowAdding: !options.data.isLock,
+                                allowUpdating: true,
+                                allowDeleting: true,
+                                useIcons: false,
+                                confirmDelete: true,
+                                mode: "popup",
+                                popup: {
+                                    width: 600, height: "auto",
+                                    showTitle: true, title:"THEO DÕI CHI TIẾT NGÂN SÁCH",
+                                    closeOnOutsideClick: false,
+                                    showCloseButton: true,
+                                },
+                                form: {
+                                    labelLocation: "left", itemType: "group", colCount: 12,
+                                    items: [
+                                        {
+                                            colSpan: 12,
+                                            dataField: "congViec",
+                                            label: { text: "Công việc" },
+                                        },
+                                        {
+                                            colSpan: 12,
+                                            dataField: "giaTri",
+                                            label: { text: "Giá trị" },
+                                        },
+                                        {
+                                            colSpan: 12,
+                                            dataField: "dienGiai",
+                                            label: { text: "Diễn giải" },
+                                        }
+                                    ]
+                                }
+                            },
+                            onToolbarPreparing: (e) => {
+                                console.log(options)
+                                var container = e.component;
+                                e.toolbarOptions.items.unshift(
+                                    {
+                                        location: "before",
+                                        template: "<b>NGÂN SÁCH CHI TIẾT</b>"
+                                    },
+                                    {
+                                        location: "after", widget: "dxButton",
+                                        options: {
+                                            icon: "refresh",
+                                            onClick: () => container.refresh()
+                                        }
+                                    });
+                            },
+                            onInitNewRow: (e) => {
+                                e.data.isActive = true;
+                                e.data.isVisible = true;
+                                e.data.NganSachId = options.data.id;
+                                e.data.isLock = false;
+                            },
+                            summary: {
+                                totalItems: [{
+                                    column: "giaTri",
+                                    summaryType: "sum",
+                                    valueFormat: { type: "currency", currency: "VND" },
+                                }]
+                            },
+                            onRowInserted: () => options.component.refresh(),
+                            onRowUpdated: () => options.component.refresh(),
+                            onRowRemoved: () => options.component.refresh()
+                        }).appendTo(container);
+                    }
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
