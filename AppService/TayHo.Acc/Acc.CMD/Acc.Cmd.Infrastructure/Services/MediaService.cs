@@ -10,26 +10,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Acc.Cmd.Domain;
+
 using Acc.Cmd.Domain.Services;
 using Services.Common.Media;
 using Services.Common.Utilities;
 using System.IO;
 using System.IO.Compression;
 using Services.Common.Options;
-using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Acc.Cmd.Infrastructure.Services
 {
     public class MediaService : IMediaService
     {
-
+        private readonly IWebHostEnvironment _env;
         private readonly IHttpClientFactory _clientFactory;
         private readonly MediaOptions _mediaOptions;
-        public MediaService(IOptionsSnapshot<MediaOptions> snapshotOptionsAccessor, IHttpClientFactory clientFactory)
+        public MediaService(IOptionsSnapshot<MediaOptions> snapshotOptionsAccessor, IHttpClientFactory clientFactory, IWebHostEnvironment env)
         {
             _mediaOptions = snapshotOptionsAccessor.Value;
             _clientFactory = clientFactory;
+            _env = env;
         }
 
         public async Task<List<MediaResponse>> UploadFileAsync(IEnumerable<IFormFile> formFiles)
@@ -51,7 +52,7 @@ namespace Acc.Cmd.Infrastructure.Services
                 content.Add(strFolderName, "pFolder");
                 content.Add(byteArrayContent, "File" + i, Uri.EscapeDataString(formFile.FileName));
 
-                var response = await client.PostAsync(_mediaOptions.MediaUploadUrl, content);
+                var response = await client.PostAsync(new Uri(string.Concat(_mediaOptions.MediaUploadUrl.ToString())), content);
                 var resultApi = await response.Content.ReadAsStringAsync();
                 if (!string.IsNullOrEmpty(resultApi))
                 {
@@ -120,7 +121,10 @@ namespace Acc.Cmd.Infrastructure.Services
             //}
             try
             {
-                var target = Path.Combine(@"D:\upload\");
+                var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads"); 
+                Directory.CreateDirectory(uploadPath);
+                var provider = new MultipartFormDataStreamProvider(uploadPath);
+                var target = Path.Combine(@"f:\upload\");
 
                 Directory.CreateDirectory(target);
                 foreach (var file in files)

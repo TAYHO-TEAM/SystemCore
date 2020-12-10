@@ -12,6 +12,7 @@ using Services.Common.APIs;
 using Services.Common.APIs.Cmd.EF;
 using Services.Common.APIs.Infrastructure.Configuration;
 using Services.Common.APIs.Infrastructure.DIServiceConfigurations;
+using Services.Common.Options;
 using System.Collections.Generic;
 
 
@@ -45,6 +46,27 @@ namespace Acc.Cmd.Api
                     }
                 }
             });
+            services.AddRazorPages(options =>
+                {
+                    options.Conventions
+                        .AddPageApplicationModelConvention("/StreamedSingleFileUploadDb",
+                            model =>
+                            {
+                                model.Filters.Add(
+                                    new GenerateAntiforgeryTokenCookieAttribute());
+                                model.Filters.Add(
+                                    new DisableFormValueModelBindingAttribute());
+                            });
+                    options.Conventions
+                        .AddPageApplicationModelConvention("/StreamedSingleFileUploadPhysical",
+                            model =>
+                            {
+                                model.Filters.Add(
+                                    new GenerateAntiforgeryTokenCookieAttribute());
+                                model.Filters.Add(
+                                    new DisableFormValueModelBindingAttribute());
+                            });
+                });
 
             #endregion Custom Swagger
             #region Http
