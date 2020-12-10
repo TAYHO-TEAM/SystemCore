@@ -13,5 +13,9 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult PhanHoi()
+        {
+            return View();
+        }
     }
 }

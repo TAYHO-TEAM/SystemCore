@@ -2442,6 +2442,7 @@
     <Content Include="Areas\NganSach\Views\Default\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
+    <Content Include="Areas\ThongTin\Views\DangKy\PhanHoi.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
