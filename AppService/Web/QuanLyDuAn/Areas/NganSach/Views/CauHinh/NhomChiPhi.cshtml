@@ -70,8 +70,7 @@
                     sorting: true,
                 },
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                remoteOperations: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true, 
                 columns: [
                     {
                         dataField: "status", caption: "STT",
@@ -148,13 +147,16 @@
                     e.data.isVisible = true;
                 },
                 rowDragging: {
-                    allowReordering: true, showDragIcons: false,
-                    onReorder: function (e) {
-                        var visibleRows = e.component.getVisibleRows(), toIndex = visibleRows[e.toIndex].data;
-                        console.log(toIndex);
-                        console.log(ajax_update(URL_API_PM_CMD + ACTION, toIndex.id, { 'status': toIndex.status}));
-                        e.component.refresh();
-                    }
+                    allowReordering: true,
+                    showDragIcons: true,
+                    onDragEnd: function (e) {
+                        var source = e.itemData;
+                        var target = e.component.getVisibleRows()[e.toIndex].data;
+                        if (source.id != target.id) {
+                            console.log(ajax_update(URL_API_PM_CMD + ACTION, source.id, { status: target.status }));
+                            e.component.refresh();
+                        }
+                    },
                 },
             });
         }
