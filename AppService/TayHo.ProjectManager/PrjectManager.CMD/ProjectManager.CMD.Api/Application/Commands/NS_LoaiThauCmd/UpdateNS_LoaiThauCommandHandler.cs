@@ -34,14 +34,21 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+            if (existingNS_LoaiThau.CreateBy != _user)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+                });
+            }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_LoaiThau.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_LoaiThau.IsActive;
             existingNS_LoaiThau.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_LoaiThau.IsVisible;
             existingNS_LoaiThau.Status = request.Status.HasValue ? request.Status : existingNS_LoaiThau.Status;
             existingNS_LoaiThau.SetParentId(request.ParentId);
-            existingNS_LoaiThau.SetTenGoiThau(request.TenGoiThau);
+            existingNS_LoaiThau.SetTenLoaiThau(request.TenLoaiThau);
             existingNS_LoaiThau.SetDienGiai(request.DienGiai);
-            existingNS_LoaiThau.SetProjectId(request.ProjectId); 
+            existingNS_LoaiThau.SetProjectId(request.ProjectId);
             existingNS_LoaiThau.SetUpdate(_user,0);
             _NS_LoaiThauRepository.Update(existingNS_LoaiThau);
             await _NS_LoaiThauRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

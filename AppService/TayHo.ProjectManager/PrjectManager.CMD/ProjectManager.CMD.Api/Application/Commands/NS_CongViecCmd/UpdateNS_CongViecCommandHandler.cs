@@ -34,14 +34,22 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+
+            if (existingNS_CongViec.CreateBy != _user)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+                });
+            }
+
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_CongViec.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_CongViec.IsActive;
             existingNS_CongViec.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_CongViec.IsVisible;
             existingNS_CongViec.Status = request.Status.HasValue ? request.Status : existingNS_CongViec.Status;
-            existingNS_CongViec.SetNganSachId(request.NganSachId);
+            existingNS_CongViec.SetNhomCongViecId(request.NhomCongViecId);
             existingNS_CongViec.SetCongViec(request.CongViec);
             existingNS_CongViec.SetGiaTri(request.GiaTri);
-            existingNS_CongViec.SetNgayCapNhat(request.NgayCapNhat);
             existingNS_CongViec.SetDienGiai(request.DienGiai);
             existingNS_CongViec.SetisLock(request.isLock);
             existingNS_CongViec.SetUpdate(_user,0);

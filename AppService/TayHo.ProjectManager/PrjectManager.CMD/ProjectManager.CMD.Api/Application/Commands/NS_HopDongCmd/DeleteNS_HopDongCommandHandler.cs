@@ -12,11 +12,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace  ProjectManager.CMD.Api.Application.Commands
+namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNS_HopDongCommandHandler : NS_HopDongCommandHandler, IRequestHandler<DeleteNS_HopDongCommand, MethodResult<DeleteNS_HopDongCommandResponse>>
     {
-        public DeleteNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HopDongRepository,httpContextAccessor)
+        public DeleteNS_HopDongCommandHandler(IMapper mapper, INS_HopDongRepository NS_HopDongRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HopDongRepository, httpContextAccessor)
         {
         }
 
@@ -43,11 +43,19 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             DateTime now = DateTime.Now;
             foreach (var existingAssignment in existingNS_HopDong)
             {
+
+                if (existingAssignment.CreateBy != _user)
+                {
+                    methodResult.AddAPIErrorMessage(nameof(ErrorCodeDelete.DErr002), new[]
+                    {
+                    ErrorHelpers.GenerateErrorResult(nameof(existingAssignment.Id),existingAssignment.Id)
+                });
+                }
                 existingAssignment.UpdateDate = now;
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
                 existingAssignment.ModifyBy = 0;
-                existingAssignment.SetUpdate(_user,0);
+                existingAssignment.SetUpdate(_user, 0);
             }
             _NS_HopDongRepository.UpdateRange(existingNS_HopDong);
             await _NS_HopDongRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

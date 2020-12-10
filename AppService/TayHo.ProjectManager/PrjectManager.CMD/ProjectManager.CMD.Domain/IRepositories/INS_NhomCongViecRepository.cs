@@ -3,7 +3,7 @@ using Services.Common.DomainObjects.Interfaces;
 
 namespace ProjectManager.CMD.Domain.IRepositories
 {
-    public interface INS_GoiThauRepository : ICmdRepository<NS_GoiThau>
+    public interface INS_NhomCongViecRepository : ICmdRepository<NS_NhomCongViec>
     {
     }
 }

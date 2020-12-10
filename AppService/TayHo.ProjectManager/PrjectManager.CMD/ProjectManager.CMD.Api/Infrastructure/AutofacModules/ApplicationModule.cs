@@ -32,8 +32,9 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<NS_HopDongRepository>().As<INS_HopDongRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_LoaiThauRepository>().As<INS_LoaiThauRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_CongViecRepository>().As<INS_CongViecRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<NS_GoiThauRepository>().As<INS_GoiThauRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_NhomChiPhiRepository>().As<INS_NhomChiPhiRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NS_NhomCongViecRepository>().As<INS_NhomCongViecRepository>().InstancePerLifetimeScope();
+
             builder.RegisterType<RequestRegistRepository>().As<IRequestRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();

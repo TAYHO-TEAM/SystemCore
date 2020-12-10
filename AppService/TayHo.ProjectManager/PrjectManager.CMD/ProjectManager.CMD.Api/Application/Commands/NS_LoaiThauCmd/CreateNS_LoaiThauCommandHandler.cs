@@ -25,7 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_LoaiThauCommandResponse>();
             var newNS_LoaiThau = new NS_LoaiThau(request.ParentId,
-                request.TenGoiThau,
+                request.TenLoaiThau,
                 request.DienGiai,
                 request.ProjectId);
             newNS_LoaiThau.SetCreate(_user);

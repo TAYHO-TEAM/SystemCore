@@ -22,8 +22,7 @@
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => {
-                console.log(values)
+            load: (values) => { 
                 let deferred = $.Deferred(), params = {};
                 if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {

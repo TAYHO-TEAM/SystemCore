@@ -14,8 +14,7 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_HangMuc";
-        const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
+        const ACTION = "/NS_HangMuc"; 
         const ACTION_PROJECT = "/Projects";
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
@@ -53,26 +52,7 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
-
-        let customStore_NhomChiPhi = new DevExpress.data.CustomStore({
-            key: "id",
-            load: (values) => {
-                var deferred = $.Deferred();
-                $.ajax({
-                    headers: header, dataType: "json", 
-                    url: URL_API_PM_READ + ACTION_NHOMCHIPHI, 
-                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible==true)),
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 5000
-                });
-                return deferred.promise();
-            },
-            byKey: (key) => { return key; }
-        }); 
-
+         
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
@@ -124,26 +104,7 @@
                     {
                         dataField: "kyHieu", caption: "Ký Hiệu",
                         dataType: "string",
-                    },
-                    {
-                        dataField: "nhomChiPhiId", caption: "Nhóm chi phí",
-                        dataType: "string",
-                        lookup: {
-                            dataSource: customStore_NhomChiPhi,
-                            valueExpr: "id", displayExpr: "tenNhomChiPhi",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            dataSource: customStore_NhomChiPhi,
-                            valueExpr: "id", displayExpr: "tenNhomChiPhi",
-                            noDataText: "Không tìm thấy dữ liệu",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.tenNhomChiPhi).addClass("mr-1"), $("<em>").append(data.dienGiai));
-                            }, 
-                        }
-                    },
+                    }, 
                     {
                         dataField: "status", caption: "Sắp xếp",
                         dataType: "number", width: 110, alignment: "center",

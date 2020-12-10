@@ -29,10 +29,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours 
-        public void SetTenGiaiDoan(string TenGiaiDoan)
-        { _tenGiaiDoan = TenGiaiDoan == null ? _tenGiaiDoan : TenGiaiDoan; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetDienGiai(string DienGiai)
-        { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetTenGiaiDoan(string TenGiaiDoan) { _tenGiaiDoan = TenGiaiDoan == null ? _tenGiaiDoan : TenGiaiDoan; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetDienGiai(string DienGiai) { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
 
         public sealed override bool IsValid()
         {
