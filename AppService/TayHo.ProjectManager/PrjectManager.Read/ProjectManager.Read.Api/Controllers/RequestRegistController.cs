@@ -19,12 +19,11 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class RequestRegistController : APIControllerBase
     {
         private readonly IDOBaseRepository<RequestRegistDTO> _dOBaseRepository;
-
+        private const string GetByAccountID= nameof(GetByAccountID);
         public RequestRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<RequestRegistDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
-
         /// <summary>
         /// Get List of RequestRegist.
         /// </summary>
@@ -33,7 +32,30 @@ namespace ProjectManager.Read.Api.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(MethodResult<PagingItems<RequestRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetRequestRegistAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetRequestRegistAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<RequestRegistResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.RequestRegist_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAccountFKAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<RequestRegistResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<RequestRegistResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of RequestRegistƯithAccont.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetByAccountID)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<RequestRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetRequestRegistWithAccountAsync([FromQuery]BaseRequestViewModel request)
         {
             var methodResult = new MethodResult<PagingItems<RequestRegistResponseViewModel>>();
             RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);

@@ -24,7 +24,6 @@ namespace ProjectManager.Read.Api.Controllers.v1
         {
             _dOBaseRepository = dOBaseRepository;
         }
-
         /// <summary>
         /// Get List of ResponseRegist.
         /// </summary>
@@ -33,7 +32,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(MethodResult<PagingItems<ResponseRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetResponseRegistAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetResponseRegistAsync([FromQuery] BaseRequestViewModel request)
         {
             var methodResult = new MethodResult<PagingItems<ResponseRegistResponseViewModel>>();
             RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
