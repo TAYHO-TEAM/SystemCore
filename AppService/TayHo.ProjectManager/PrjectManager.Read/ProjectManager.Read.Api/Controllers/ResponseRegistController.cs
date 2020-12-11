@@ -20,7 +20,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<ResponseRegistDTO> _dOBaseRepository;
 
-        public ResponseRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ResponseRegistDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public ResponseRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ResponseRegistDTO> dOBaseRepository) : base(mapper, httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
@@ -46,5 +46,6 @@ namespace ProjectManager.Read.Api.Controllers.v1
             };
             return Ok(methodResult);
         }
+
     }
 }

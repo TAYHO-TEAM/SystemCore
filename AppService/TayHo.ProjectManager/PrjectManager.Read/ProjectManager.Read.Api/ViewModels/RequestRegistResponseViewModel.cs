@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class RequestRegistResponseViewModel : BaseResponseViewModel
+    public class RequestRegistResponseViewModel : BaseResponseChilCountViewModel
     {
         public string Code { get; set; }
         public string BarCode { get; set; }
@@ -17,4 +17,8 @@ namespace ProjectManager.Read.Api.ViewModels
         public int? DocumentTypeId { get; set; }
         public int? Rev { get; set; }
     }
+
+    //public class RequestRegistResponseChildViewModel : RequestRegistResponseViewModel
+    //{ 
+    //}
 }

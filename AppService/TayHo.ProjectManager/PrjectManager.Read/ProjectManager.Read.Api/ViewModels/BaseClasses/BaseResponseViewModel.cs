@@ -5,8 +5,7 @@ namespace ProjectManager.Read.Api.ViewModels.BaseClasses
     public class BaseResponseViewModel : DTOBase
     {
     }
-    public class BaseResponseChilCountViewModel : DTOBase
+    public class BaseResponseChilCountViewModel : DTOChilCountBase
     {
-        public int? ChilCount { get; set; }
     }
 }

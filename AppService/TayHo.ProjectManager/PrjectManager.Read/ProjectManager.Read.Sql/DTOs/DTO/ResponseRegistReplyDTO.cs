@@ -2,7 +2,7 @@
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
-    public class ResponseRegistReplyDTO : DTOBase
+    public class ResponseRegistReplyDTO : DTOChilCountBase
     {
         public string Title { get; set; }
         public string Description { get; set; }
