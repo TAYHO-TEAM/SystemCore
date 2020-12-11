@@ -2838,9 +2838,9 @@
   color: #e91e63;
 }
 .dx-invalid-message > .dx-overlay-content {
-  background-color: transparent;
-  color: #e91e63;
-  padding: 4px 0 0;
+  background-color: red;
+  color: white;
+  padding: 5px 7px;
 }
 .dx-validationsummary > .dx-validationsummary-item:not(:last-child) {
   margin-bottom: 6px;

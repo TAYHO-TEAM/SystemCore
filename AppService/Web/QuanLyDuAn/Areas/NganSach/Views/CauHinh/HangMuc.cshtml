@@ -129,13 +129,15 @@
                 ],
                 rowDragging: {
                     allowDropInsideItem: true,
-                    allowReordering: false,
-                    showDragIcons: false,
-                    onDragEnd: function (e) {
-                        var id = e.itemData.id;
-                        var parentId = e.component.getVisibleRows()[e.toIndex].node.key; 
-                        ajax_update(URL_API_PM_CMD + ACTION, id, { parentId: (id != parentId) ? parentId : 0 }); 
-                        e.component.refresh();
+                    allowReordering: false, 
+                    dropFeedbackMode: "push",
+                    onDragEnd: function (e) { 
+                        var source = e.itemData,
+                            target = e.component.getVisibleRows()[e.toIndex].data,
+                            d = $.Deferred();
+                        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                            e.component.refresh().then(d.resolve, d.reject);
+                        }, d.reject);
                     },
                 },
                 paging: {
