@@ -14,4 +14,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public DateTime? SendDateTime { get; set; }
         public byte? NoAttachment { get; set; }
     }
+    public class RequestsChildDTO : DTOChilCountBase
+    { 
+    }
 }

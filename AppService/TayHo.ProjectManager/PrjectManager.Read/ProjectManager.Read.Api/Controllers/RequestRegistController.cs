@@ -55,19 +55,19 @@ namespace ProjectManager.Read.Api.Controllers.v1
         /// <returns></returns>
         [HttpGet]
         [Route(GetByAccountID)]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<RequestRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ResponseRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetRequestRegistWithAccountAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<RequestRegistResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<ResponseRegistResponseViewModel>>();
             RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.RequestRegist_TABLENAME;
             requestFilter.AccountId = _user;
             var queryResult = await _requestRegistRepository.GetWithPaggingStepPermistionAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<RequestRegistResponseViewModel>
+            methodResult.Result = new PagingItems<ResponseRegistResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<RequestRegistResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<ResponseRegistResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

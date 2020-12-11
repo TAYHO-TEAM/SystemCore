@@ -17,4 +17,5 @@ namespace ProjectManager.Read.Sql.Parameters
     {
         public byte? TypeStore { get; set; }
     }
+    
 }

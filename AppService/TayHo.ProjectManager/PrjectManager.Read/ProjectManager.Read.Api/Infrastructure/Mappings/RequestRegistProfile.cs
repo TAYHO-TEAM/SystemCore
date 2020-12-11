@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public RequestRegistProfile()
         {
             CreateMap<RequestRegistDTO, RequestRegistResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<RequestRegistDTO, ResponseRegistResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }
