@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class ResponseRegistReplyResponseViewModel : BaseResponseViewModel
+    public class ResponseRegistReplyResponseViewModel : BaseResponseChilCountViewModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -18,7 +18,7 @@ namespace ProjectManager.Read.Sql.Repositories
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
-        public async Task<PagingItems<T>> GetWithPaggingFKAsync(RequestBaseFilterParam requestBaseFilterParam)
+        public async Task<PagingItems<T>> GetWithPaggingStepPermistionAsync(RequestHasAccountIdFilterParam requestBaseFilterParam)
         {
             requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName?? "*" ;//GetColumnTableName();
             var result = new PagingItems<T>
@@ -30,7 +30,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 }
             };
             using var conn = await _connectionFactory.CreateConnectionAsync();
-            using var rs = conn.QueryMultipleAsync("sp_GetDataTableSS_WithPage_AccountID_FK", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            using var rs = conn.QueryMultipleAsync("sp_RequestRegist_GetByStepPermistion", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
             result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
             result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
 

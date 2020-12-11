@@ -31,7 +31,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 
             var parentRequestRegist = await _requestRegistRepository.SingleOrDefaultAsync(x => x.Id == request.ParentId && x.IsDelete == false).ConfigureAwait(false);
             var lastRequestRegistsRev = (await _requestRegistRepository.GetAllListAsync(x => x.ParentId == request.ParentId && x.IsDelete == false).ConfigureAwait(false)).Max(x => x.Rev);
-            if (parentRequestRegist == null && (request.ParentId.HasValue || request.ParentId != 0))
+            if (parentRequestRegist == null && (request.ParentId.HasValue && request.ParentId != 0))
             {
                 methodResult.AddErrorMessage(nameof(ErrorCodeInsert.IErrN3), new[]
                 {
@@ -40,15 +40,16 @@ namespace ProjectManager.CMD.Api.Application.Commands
             }
             else if (!request.ParentId.HasValue || request.ParentId == 0)
             {
-                request.Rev = 0;
-                request.Code = parentRequestRegist.Code;
-                request.Title = parentRequestRegist.Title;
+                request.ParentId =request.Rev= request.Level = 0;
+                request.Title = await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
+                request.Code = request.Title.Replace("-","");
             }
             else
             {
-                request.Title = "";/// await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
+                request.Title = !string.IsNullOrEmpty(parentRequestRegist.Title)? parentRequestRegist.Title: await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
                 request.Level = (parentRequestRegist.Level.HasValue ? ((int)parentRequestRegist.Level + 1) : 0);
-                request.Rev = lastRequestRegistsRev ?? +1;
+                request.Rev = lastRequestRegistsRev.HasValue? lastRequestRegistsRev + 1:1;
+                request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : parentRequestRegist.Title.Remove('-');
             }
             var newRequestRegist = new RequestRegist(request.Code,
                                                         request.BarCode,
