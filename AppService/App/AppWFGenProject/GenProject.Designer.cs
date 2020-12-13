@@ -41,15 +41,26 @@ namespace AppWFGenProject
             this.btnTestConnec = new System.Windows.Forms.Button();
             this.lbl2 = new System.Windows.Forms.Label();
             this.lbl3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.lbl4 = new System.Windows.Forms.Label();
             this.lbl1 = new System.Windows.Forms.Label();
+            this.rbtCMD = new System.Windows.Forms.RadioButton();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.rbtRead = new System.Windows.Forms.RadioButton();
+            this.rbtHtml = new System.Windows.Forms.RadioButton();
+            this.tbcConfigGen = new System.Windows.Forms.TabControl();
+            this.tbpCUDR = new System.Windows.Forms.TabPage();
+            this.tbpHtml = new System.Windows.Forms.TabPage();
             this.groupBox1.SuspendLayout();
+            this.tbcConfigGen.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBox1.Controls.Add(this.tbcConfigGen);
+            this.groupBox1.Controls.Add(this.rbtHtml);
+            this.groupBox1.Controls.Add(this.rbtRead);
+            this.groupBox1.Controls.Add(this.rbtCMD);
             this.groupBox1.Controls.Add(this.chlTable);
             this.groupBox1.Controls.Add(this.lbl7);
             this.groupBox1.Controls.Add(this.txtDB);
@@ -61,7 +72,6 @@ namespace AppWFGenProject
             this.groupBox1.Controls.Add(this.btnTestConnec);
             this.groupBox1.Controls.Add(this.lbl2);
             this.groupBox1.Controls.Add(this.lbl3);
-            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.lbl4);
             this.groupBox1.Controls.Add(this.lbl1);
             this.groupBox1.Location = new System.Drawing.Point(0, 12);
@@ -165,15 +175,6 @@ namespace AppWFGenProject
             this.lbl3.TabIndex = 3;
             this.lbl3.Text = "Pass:";
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(664, 111);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 15);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Server:";
-            // 
             // lbl4
             // 
             this.lbl4.AutoSize = true;
@@ -192,6 +193,69 @@ namespace AppWFGenProject
             this.lbl1.TabIndex = 0;
             this.lbl1.Text = "Server:";
             // 
+            // rbtCMD
+            // 
+            this.rbtCMD.AutoSize = true;
+            this.rbtCMD.Location = new System.Drawing.Point(208, 122);
+            this.rbtCMD.Name = "rbtCMD";
+            this.rbtCMD.Size = new System.Drawing.Size(52, 19);
+            this.rbtCMD.TabIndex = 15;
+            this.rbtCMD.TabStop = true;
+            this.rbtCMD.Text = "CMD";
+            this.rbtCMD.UseVisualStyleBackColor = true;
+            // 
+            // rbtRead
+            // 
+            this.rbtRead.AutoSize = true;
+            this.rbtRead.Location = new System.Drawing.Point(208, 156);
+            this.rbtRead.Name = "rbtRead";
+            this.rbtRead.Size = new System.Drawing.Size(51, 19);
+            this.rbtRead.TabIndex = 16;
+            this.rbtRead.TabStop = true;
+            this.rbtRead.Text = "Read";
+            this.rbtRead.UseVisualStyleBackColor = true;
+            // 
+            // rbtHtml
+            // 
+            this.rbtHtml.AutoSize = true;
+            this.rbtHtml.Location = new System.Drawing.Point(208, 196);
+            this.rbtHtml.Name = "rbtHtml";
+            this.rbtHtml.Size = new System.Drawing.Size(57, 19);
+            this.rbtHtml.TabIndex = 17;
+            this.rbtHtml.TabStop = true;
+            this.rbtHtml.Text = "HTML";
+            this.rbtHtml.UseVisualStyleBackColor = true;
+            // 
+            // tbcConfigGen
+            // 
+            this.tbcConfigGen.Controls.Add(this.tbpCUDR);
+            this.tbcConfigGen.Controls.Add(this.tbpHtml);
+            this.tbcConfigGen.Location = new System.Drawing.Point(290, 122);
+            this.tbcConfigGen.Name = "tbcConfigGen";
+            this.tbcConfigGen.SelectedIndex = 0;
+            this.tbcConfigGen.Size = new System.Drawing.Size(630, 281);
+            this.tbcConfigGen.TabIndex = 18;
+            // 
+            // tbpCUDR
+            // 
+            this.tbpCUDR.Location = new System.Drawing.Point(4, 24);
+            this.tbpCUDR.Name = "tbpCUDR";
+            this.tbpCUDR.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpCUDR.Size = new System.Drawing.Size(622, 253);
+            this.tbpCUDR.TabIndex = 0;
+            this.tbpCUDR.Text = "CUDR";
+            this.tbpCUDR.UseVisualStyleBackColor = true;
+            // 
+            // tbpHtml
+            // 
+            this.tbpHtml.Location = new System.Drawing.Point(4, 24);
+            this.tbpHtml.Name = "tbpHtml";
+            this.tbpHtml.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpHtml.Size = new System.Drawing.Size(622, 253);
+            this.tbpHtml.TabIndex = 1;
+            this.tbpHtml.Text = "HTML";
+            this.tbpHtml.UseVisualStyleBackColor = true;
+            // 
             // GenProject
             // 
             this.ClientSize = new System.Drawing.Size(932, 429);
@@ -201,6 +265,7 @@ namespace AppWFGenProject
             this.Load += new System.EventHandler(this.GenProject_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tbcConfigGen.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -211,7 +276,6 @@ namespace AppWFGenProject
         private System.Windows.Forms.Button btnTestConnec;
         private System.Windows.Forms.Label lbl2;
         private System.Windows.Forms.Label lbl3;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lbl4;
         private System.Windows.Forms.Label lbl1;
         private System.Windows.Forms.TextBox txtUser;
@@ -222,6 +286,13 @@ namespace AppWFGenProject
         private System.Windows.Forms.Label lbl6;
         private System.Windows.Forms.Label lbl7;
         private System.Windows.Forms.CheckedListBox chlTable;
+        private System.Windows.Forms.TabControl tbcConfigGen;
+        private System.Windows.Forms.TabPage tbpCUDR;
+        private System.Windows.Forms.TabPage tbpHtml;
+        private System.Windows.Forms.RadioButton rbtHtml;
+        private System.Windows.Forms.RadioButton rbtRead;
+        private System.Windows.Forms.RadioButton rbtCMD;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
