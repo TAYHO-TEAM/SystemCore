@@ -1,0 +1,17 @@
+﻿using {nameproject}.Api.Application.Commands;
+using {nameproject}.Domain.DomainObjects;
+using AutoMapper;
+
+
+namespace {nameproject}.Api.Infrastructure.Mappings
+{
+    public class {Entity}Profile : Profile 
+    {
+        public {Entity}Profile()
+        {
+            CreateMap<{Entity}, Create{Entity}CommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<{Entity}, Update{Entity}CommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<{Entity}, {Entity}CommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+        }
+    }
+}

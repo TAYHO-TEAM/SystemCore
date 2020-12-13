@@ -1,0 +1,15 @@
+﻿using {nameproject}.Api.ViewModels;
+using {nameproject}.Sql.DTOs;
+using AutoMapper;
+
+namespace {nameproject}.Api.Infrastructure.Mappings
+{
+   
+    public class {Entity}Profile : Profile
+    {
+        public {Entity}Profile()
+        { 
+            CreateMap<{Entity}DTO, {Entity}ResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+        }
+    }
+}

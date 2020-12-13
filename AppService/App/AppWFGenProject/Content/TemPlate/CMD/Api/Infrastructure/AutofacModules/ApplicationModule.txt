@@ -1,0 +1,26 @@
+﻿using {nameproject}.Api.Application.Behaviors;
+using {nameproject}.Domain.Repositories;
+using {nameproject}.Domain.Services;
+using {nameproject}.Infrastructure.Repositories;
+using {nameproject}.Infrastructure.Services;
+using Autofac;
+using MediatR;
+
+namespace {nameproject}.Api.Infrastructure.AutofacModules
+{
+    public class ApplicationModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            // register services
+            builder.RegisterGeneric(typeof(LoggingBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
+            builder.RegisterGeneric(typeof(RequestPerformanceBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
+            builder.RegisterType<AccountService>().As<IAccountService>().InstancePerLifetimeScope();
+            builder.RegisterType<TokenManager>().As<ITokenManager>().InstancePerLifetimeScope();
+            builder.RegisterType<MediaService>().As<IMediaService>().InstancePerLifetimeScope();
+            //builder.RegisterType<UserBlackListCacheManager>().As<IUserBlackListCacheManager>().InstancePerLifetimeScope();
+            // register repositories
+            {biulderRegister}
+        }
+    }
+}

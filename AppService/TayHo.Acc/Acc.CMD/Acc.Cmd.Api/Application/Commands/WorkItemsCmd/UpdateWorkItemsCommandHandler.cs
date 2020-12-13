@@ -5,7 +5,6 @@ using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
 using Services.Common.Utilities;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateWorkItemsCommandHandler : WorkItemsCommandHandler,IRequestHandler<UpdateWorkItemsCommand, MethodResult<UpdateWorkItemsCommandResponse>>
     {
-        public UpdateWorkItemsCommandHandler(IMapper mapper, IWorkItemsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
+        public UpdateWorkItemsCommandHandler(IMapper mapper, IWorkItemsRepository workItemsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, workItemsRepository)
         {
         }
 
@@ -27,7 +26,7 @@ namespace  Acc.Cmd.Api.Application.Commands
         public async Task<MethodResult<UpdateWorkItemsCommandResponse>> Handle(UpdateWorkItemsCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<UpdateWorkItemsCommandResponse>();
-            var existingWorkItems = await _WorkItemsRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            var existingWorkItems = await _workItemsRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
             if (existingWorkItems == null)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]
@@ -49,8 +48,8 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingWorkItems.SetProjectId(request.ProjectId);
 
             existingWorkItems.SetUpdate(_user,null);
-            _WorkItemsRepository.Update(existingWorkItems);
-            await _WorkItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            _workItemsRepository.Update(existingWorkItems);
+            await _workItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateWorkItemsCommandResponse>(existingWorkItems);
             return methodResult;
         }

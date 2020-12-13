@@ -34,6 +34,15 @@ namespace AppWFGenProject.Extensions
 
             }
         }
+        public SqlConnectionStringBuilder Connect(string server, string user, string pass, string db)
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder.DataSource = server;
+            builder.UserID = user;
+            builder.Password = pass;
+            builder.InitialCatalog = db;
+            return builder;
+        }
         public SqlConnectionStringBuilder Connect()
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -43,44 +52,43 @@ namespace AppWFGenProject.Extensions
             builder.InitialCatalog = ConfigurationSettings.AppSettings["InitialCatalog"].ToString();
             return builder;
         }
-        public DataTable GetAllTable(string server, string user, string pass, string db)
+        public List<string> GetAllTable(string server, string user, string pass, string db)
         {
             DataTable dt = new DataTable();
-            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG = 'dbName'";
-            using (SqlConnection cnn = new SqlConnection(Connect().ConnectionString))
+            List<string> listTable = new List<string>();
+            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME NOT LIKE 'sysdiagrams'  AND TABLE_CATALOG = '" + db+"'";
+            using (SqlConnection cnn = new SqlConnection(Connect(server, user, pass, db).ConnectionString))
             {
                 try
                 {
                     SqlCommand cmd = new SqlCommand();
                     SqlDataAdapter da = new SqlDataAdapter();
-                    using (SqlConnection connection = new SqlConnection(Connect().ConnectionString))
+                    cmd = new SqlCommand(queryString, cnn);
+                    cnn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    try
                     {
-                        SqlCommand command = new SqlCommand(queryString, connection);
-                        //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-                        connection.Open();
-                        SqlDataReader reader = command.ExecuteReader();
-                        try
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                //Console.WriteLine(String.Format("{0}, {1}", reader["tPatCulIntPatIDPk"], reader["tPatSFirstname"]));// etc
-                            }
+                            listTable.Add(reader["TABLE_NAME"].ToString());
+                            //Console.WriteLine(String.Format("{0}, {1}", reader["tPatCulIntPatIDPk"], reader["tPatSFirstname"]));// etc
                         }
-                        finally
-                        {
-                            reader.Close();
-                            cmd.Dispose();
-                            cnn.Close();
-                        }
+                    }
+                    finally
+                    {
+                        reader.Close();
+                        cmd.Dispose();
                         cnn.Close();
                     }
+                    cnn.Close();
+
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Can not open connection ! ");
                 }
             }
-            return dt;
+            return listTable;
         }
         public DataTable GetAllEntry(string db, string selectkey, string colname)
         {

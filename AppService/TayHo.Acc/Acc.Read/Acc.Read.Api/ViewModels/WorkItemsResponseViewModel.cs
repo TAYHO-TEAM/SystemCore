@@ -1,5 +1,4 @@
 ﻿using Acc.Read.Api.ViewModels.BaseClasses;
-using System;
 
 namespace Acc.Read.Api.ViewModels
 {

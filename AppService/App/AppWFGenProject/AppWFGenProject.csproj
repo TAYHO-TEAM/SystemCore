@@ -15,7 +15,8 @@
   <ItemGroup>
     <Folder Include="BaseClasses\" />
     <Folder Include="Content\Config\" />
-    <Folder Include="Content\TemPlate\" />
+    <Folder Include="Content\TemPlate\CMD\Api\ViewModels\" />
+    <Folder Include="Content\TemPlate\VIEW\" />
     <Folder Include="FrameWork\" />
   </ItemGroup>
 

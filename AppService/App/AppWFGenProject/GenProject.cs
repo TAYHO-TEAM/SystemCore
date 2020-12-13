@@ -43,6 +43,15 @@ namespace AppWFGenProject
 
         }
 
-
+        private void btnLoadTable_Click(object sender, EventArgs e)
+        {
+            Connection newConn = new Connection();
+            var listTB = newConn.GetAllTable(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text);
+            foreach(string TB in listTB)
+            {
+                chlTable.Items.Add(TB,false);
+            }    
+           
+        }
     }
 }

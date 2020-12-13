@@ -1,0 +1,21 @@
+﻿using MediatR;
+using Services.Common.DomainObjects;
+using System.Collections.Generic;
+
+namespace  {nameproject}.Api.Application.Commands
+{
+    public class Delete{Entity}Command : IRequest<MethodResult<Delete{Entity}CommandResponse>>
+    {
+        public List<int> Ids { get; set; }
+    }
+
+    public class Delete{Entity}CommandResponse
+    {
+        public Delete{Entity}CommandResponse(List<{Entity}CommandResponseDTO> {Entity})
+        {
+            _{Entity} = {Entity};
+        }
+
+        public List<{Entity}CommandResponseDTO> _{Entity} { get; }
+    }
+}

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Acc.Common
+﻿namespace Acc.Common
 {
     public class QuanLyDuAnConstants
     {

@@ -1,0 +1,21 @@
+﻿using {nameproject}.Domain.Repositories;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Services.Common.Security;
+
+namespace {nameproject}.Api.Application.Commands
+{
+    public class {Entity}CommandHandler : BaseCommandHandler
+    {
+        protected readonly IMapper _mapper;
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly I{Entity}Repository {_entity}Repository;
+
+        public {Entity}CommandHandler(IMapper mapper, IHttpContextAccessor httpContextAccessor, I{Entity}Repository {Entity}Repository ) : base (httpContextAccessor)
+        {
+            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            {_entity}Repository = {Entity}Repository;
+        }
+    }
+}

@@ -37,8 +37,8 @@ namespace  Acc.Cmd.Api.Application.Commands
             newWorkItems.Status = request.Status.HasValue ? request.Status : newWorkItems.Status;
             newWorkItems.IsActive = request.IsActive.HasValue ? request.IsActive : newWorkItems.IsActive;
             newWorkItems.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newWorkItems.IsVisible;
-            await _WorkItemsRepository.AddAsync(newWorkItems).ConfigureAwait(false);
-            await _WorkItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _workItemsRepository.AddAsync(newWorkItems).ConfigureAwait(false);
+            await _workItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateWorkItemsCommandResponse>(newWorkItems);
             return methodResult;
         }

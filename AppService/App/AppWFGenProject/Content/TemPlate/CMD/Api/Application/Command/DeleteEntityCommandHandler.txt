@@ -1,0 +1,58 @@
+﻿using {nameproject}.Domain;
+using {nameproject}.Domain.Repositories;
+using AutoMapper;
+using MediatR;
+using Services.Common.DomainObjects;
+using Services.Common.DomainObjects.Exceptions;
+using Services.Common.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace {nameproject}.Api.Application.Commands
+{
+    public class Delete{Entity}CommandHandler : {Entity}CommandHandler, IRequestHandler<Delete{Entity}Command, MethodResult<Delete{Entity}CommandResponse>>
+    {
+        public Delete{Entity}CommandHandler(IMapper mapper, I{Entity}Repository {Entity}Repository, IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, {Entity}Repository)
+        {
+        }
+
+        /// <summary>
+        /// Handle for deleting a existing {Entity}.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<MethodResult<Delete{Entity}CommandResponse>> Handle(Delete{Entity}Command request, CancellationToken cancellationToken)
+        {
+            var methodResult = new MethodResult<Delete{Entity}CommandResponse>();
+            var existing{Entity}s = await {_entity}Repository.GetAllListAsync(x => request.Ids.Contains(x.Id) && x.IsDelete == false).ConfigureAwait(false);
+            if (existing{Entity}s == null || !existing{Entity}s.Any())
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeDelete.DErr001), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Ids),string.Join(',',request.Ids))
+                });
+            }
+            if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
+
+            DateTime utc = DateTime.UtcNow;
+            DateTime now = DateTime.Now;
+            foreach (var existing{Entity} in existing{Entity}s)
+            {
+                existing{Entity}.UpdateDate = now;
+                existing{Entity}.UpdateDateUTC = utc;
+                existing{Entity}.IsDelete = true;
+                existing{Entity}.SetUpdate(_user, null);
+            }
+            {_entity}Repository.UpdateRange(existing{Entity}s);
+            await {_entity}Repository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var {Entity}ResponseDTOs = _mapper.Map<List<{Entity}CommandResponseDTO>>(existing{Entity}s);
+            methodResult.Result = new Delete{Entity}CommandResponse({Entity}ResponseDTOs);
+            return methodResult;
+        }
+    }
+}

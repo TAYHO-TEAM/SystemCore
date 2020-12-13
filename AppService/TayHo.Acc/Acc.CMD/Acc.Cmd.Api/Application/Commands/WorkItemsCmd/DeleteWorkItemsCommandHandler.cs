@@ -29,7 +29,7 @@ namespace Acc.Cmd.Api.Application.Commands
         public async Task<MethodResult<DeleteWorkItemsCommandResponse>> Handle(DeleteWorkItemsCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<DeleteWorkItemsCommandResponse>();
-            var existingWorkItemss = await _WorkItemsRepository.GetAllListAsync(x => request.Ids.Contains(x.Id) && x.IsDelete == false).ConfigureAwait(false);
+            var existingWorkItemss = await _workItemsRepository.GetAllListAsync(x => request.Ids.Contains(x.Id) && x.IsDelete == false).ConfigureAwait(false);
             if (existingWorkItemss == null || !existingWorkItemss.Any())
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeDelete.DErr001), new[]
@@ -48,8 +48,8 @@ namespace Acc.Cmd.Api.Application.Commands
                 existingWorkItems.IsDelete = true;
                 existingWorkItems.SetUpdate(_user, null);
             }
-            _WorkItemsRepository.UpdateRange(existingWorkItemss);
-            await _WorkItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            _workItemsRepository.UpdateRange(existingWorkItemss);
+            await _workItemsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             var WorkItemsResponseDTOs = _mapper.Map<List<WorkItemsCommandResponseDTO>>(existingWorkItemss);
             methodResult.Result = new DeleteWorkItemsCommandResponse(WorkItemsResponseDTOs);
             return methodResult;

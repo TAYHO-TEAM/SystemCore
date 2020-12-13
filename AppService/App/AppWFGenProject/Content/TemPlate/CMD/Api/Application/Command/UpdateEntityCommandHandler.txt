@@ -1,0 +1,51 @@
+﻿using {nameproject}.Domain;
+using {nameproject}.Domain.Repositories;
+using AutoMapper;
+using MediatR;
+using Services.Common.DomainObjects;
+using Services.Common.DomainObjects.Exceptions;
+using Services.Common.Utilities;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace  {nameproject}.Api.Application.Commands
+{
+    public class Update{Entity}CommandHandler : {Entity}CommandHandler,IRequestHandler<Update{Entity}Command, MethodResult<Update{Entity}CommandResponse>>
+    {
+        public Update{Entity}CommandHandler(IMapper mapper,IHttpContextAccessor httpContextAccessor, I{Entity}Repository {entity}Repository) : base(mapper, httpContextAccessor, {entity}Repository)
+        {
+        }
+
+        /// <summary>
+        /// Handle for update a existing {Entity}.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<MethodResult<Update{Entity}CommandResponse>> Handle(Update{Entity}Command request, CancellationToken cancellationToken)
+        {
+            var methodResult = new MethodResult<Update{Entity}CommandResponse>();
+            var existing{Entity} = await {_entity}Repository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            if (existing{Entity} == null)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]
+                {
+                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
+                });
+            }
+            if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
+            existing{Entity}.IsActive = request.IsActive.HasValue ? request.IsActive : existing{Entity}.IsActive;
+            existing{Entity}.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existing{Entity}.IsVisible;
+            existing{Entity}.Status = request.Status.HasValue ? request.Status : existing{Entity}.Status;
+
+            {builderSetUpdate}
+
+            existing{Entity}.SetUpdate(_user,null);
+            {_entity}Repository.Update(existing{Entity});
+            await {_entity}Repository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            methodResult.Result = _mapper.Map<Update{Entity}CommandResponse>(existing{Entity});
+            return methodResult;
+        }
+    }
+}

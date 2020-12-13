@@ -30,6 +30,7 @@ namespace AppWFGenProject
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chlTable = new System.Windows.Forms.CheckedListBox();
             this.lbl7 = new System.Windows.Forms.Label();
             this.txtDB = new System.Windows.Forms.TextBox();
             this.lbl6 = new System.Windows.Forms.Label();
@@ -49,6 +50,7 @@ namespace AppWFGenProject
             // groupBox1
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBox1.Controls.Add(this.chlTable);
             this.groupBox1.Controls.Add(this.lbl7);
             this.groupBox1.Controls.Add(this.txtDB);
             this.groupBox1.Controls.Add(this.lbl6);
@@ -68,6 +70,15 @@ namespace AppWFGenProject
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "GenCode";
+            // 
+            // chlTable
+            // 
+            this.chlTable.CheckOnClick = true;
+            this.chlTable.FormattingEnabled = true;
+            this.chlTable.Location = new System.Drawing.Point(13, 111);
+            this.chlTable.Name = "chlTable";
+            this.chlTable.Size = new System.Drawing.Size(166, 292);
+            this.chlTable.TabIndex = 14;
             // 
             // lbl7
             // 
@@ -101,6 +112,7 @@ namespace AppWFGenProject
             this.btnLoadTable.TabIndex = 9;
             this.btnLoadTable.Text = "Load Table";
             this.btnLoadTable.UseVisualStyleBackColor = false;
+            this.btnLoadTable.Click += new System.EventHandler(this.btnLoadTable_Click);
             // 
             // txtUser
             // 
@@ -156,7 +168,7 @@ namespace AppWFGenProject
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(39, 131);
+            this.label2.Location = new System.Drawing.Point(664, 111);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(42, 15);
             this.label2.TabIndex = 2;
@@ -167,9 +179,9 @@ namespace AppWFGenProject
             this.lbl4.AutoSize = true;
             this.lbl4.Location = new System.Drawing.Point(13, 90);
             this.lbl4.Name = "lbl4";
-            this.lbl4.Size = new System.Drawing.Size(42, 15);
+            this.lbl4.Size = new System.Drawing.Size(65, 15);
             this.lbl4.TabIndex = 1;
-            this.lbl4.Text = "Server:";
+            this.lbl4.Text = "Danh sách:";
             // 
             // lbl1
             // 
@@ -209,6 +221,7 @@ namespace AppWFGenProject
         private System.Windows.Forms.TextBox txtDB;
         private System.Windows.Forms.Label lbl6;
         private System.Windows.Forms.Label lbl7;
+        private System.Windows.Forms.CheckedListBox chlTable;
     }
 }
 
