@@ -1,6 +1,6 @@
 ﻿namespace AppWFGenProject.Extensions
 {
-    public static class Enum
+    public static class EnumClass
     {
         public static string nameproject = "{nameproject}";
         public static string common = "{common}";

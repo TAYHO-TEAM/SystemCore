@@ -1,4 +1,5 @@
 ﻿using AppWFGenProject.Extensions;
+using AppWFGenProject.FrameWork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,6 +53,14 @@ namespace AppWFGenProject
                 chlTable.Items.Add(TB,false);
             }    
            
+        }
+
+        private void btnGen_Click(object sender, EventArgs e)
+        {
+            GenOB genOB = new GenOB();
+
+            //FileHelper fileHelper = new FileHelper();
+            //fileHelper.ChangeTxtToCS(@"C:\Users\poka\Desktop\testChange.txt");
         }
     }
 }
