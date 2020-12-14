@@ -16,57 +16,57 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class NS_LoaiThauController : APIControllerBase
+    public class NS_LoaiCongViecController : APIControllerBase
     {
-        private readonly IDOBaseRepository<NS_LoaiThauDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<NS_LoaiCongViecDTO> _dOBaseRepository;
         private const string Treelist = nameof(Treelist);
 
-        public NS_LoaiThauController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_LoaiThauDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public NS_LoaiCongViecController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_LoaiCongViecDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of NS_LoaiThau.
+        /// Get List of NS_LoaiCongViec.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiCongViecResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_LoaiThauAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetNS_LoaiCongViecAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_LoaiCongViecResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiThau_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiCongViec_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_LoaiThauResponseViewModel>
+            methodResult.Result = new PagingItems<NS_LoaiCongViecResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_LoaiThauResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_LoaiCongViecResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }
 
         /// <summary>
-        /// Get List of NS_LoaiThau.
+        /// Get List of NS_LoaiCongViec.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Treelist)]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_LoaiCongViecResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetNS_LoaiThauTreeListAsync([FromQuery] BaseTreeRequestViewModel request)
+        public async Task<IActionResult> GetNS_LoaiCongViecTreeListAsync([FromQuery] BaseTreeRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_LoaiThauResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_LoaiCongViecResponseViewModel>>();
             RequestTreeListBaseFilterParam requestFilter = _mapper.Map<RequestTreeListBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiThau_TABLENAME;
+            requestFilter.TableName = QuanLyDuAnConstants.NS_LoaiCongViec_TABLENAME;
             var queryResult = await _dOBaseRepository.GetTreeListWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_LoaiThauResponseViewModel>
+            methodResult.Result = new PagingItems<NS_LoaiCongViecResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_LoaiThauResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_LoaiCongViecResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

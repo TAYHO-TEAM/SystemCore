@@ -147,12 +147,16 @@
                 rowDragging: {
                     allowReordering: true,
                     showDragIcons: true,
+                    dropFeedbackMode: "push",
+                    dragDirection: "vertical",
                     onDragEnd: function (e) {
-                        var source = e.itemData;
-                        var target = e.component.getVisibleRows()[e.toIndex].data;
-                        if (source.id != target.id) {
-                            console.log(ajax_update(URL_API_PM_CMD + ACTION, source.id, { status: target.status }));
-                            e.component.refresh();
+                        var source = e.itemData,
+                            target = e.component.getVisibleRows()[e.toIndex].data,
+                            d = $.Deferred();
+                        if (source.id != target.id) { 
+                            customStore.update(source.id, { status: target.status }).then(() => {
+                                e.component.refresh().then(d.resolve, d.reject);
+                            }, d.reject);
                         }
                     },
                 },
