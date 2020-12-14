@@ -1,0 +1,9 @@
+﻿using {nameproject}.Api.ViewModels.BaseClasses;
+
+namespace {nameproject}.Api.ViewModels
+{
+    public class {Entity}ResponseViewModel : BaseResponseViewModel
+    {
+        {builderPublic}
+    }
+}

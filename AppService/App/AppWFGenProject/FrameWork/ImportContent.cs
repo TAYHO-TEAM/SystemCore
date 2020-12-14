@@ -27,7 +27,7 @@ namespace AppWFGenProject.FrameWork
             _dictionary.Add(EnumClass.functionCreate, genOB.functionCreate);
             _dictionary.Add(EnumClass.builderProperties, genOB.builderProperties);
             _dictionary.Add(EnumClass.builderBehaviours, genOB.builderBehaviours);
-            _dictionary.Add(EnumClass.biulderRegister, genOB.biulderRegister);
+            _dictionary.Add(EnumClass.builderRegister, genOB.builderRegister);
             _dictionary.Add(EnumClass.builderRequestParam, genOB.builderRequestParam);
             _dictionary.Add(EnumClass.builderSetUpdate, genOB.builderSetUpdate);
             _dictionary.Add(EnumClass.builderPublic, genOB.builderPublic);

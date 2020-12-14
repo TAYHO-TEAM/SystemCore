@@ -56,7 +56,7 @@ namespace AppWFGenProject.Extensions
         {
             DataTable dt = new DataTable();
             List<string> listTable = new List<string>();
-            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME NOT LIKE 'sysdiagrams'  AND TABLE_CATALOG = '" + db+"'";
+            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME NOT LIKE 'sysdiagrams'  AND TABLE_CATALOG = '" + db + "'";
             using (SqlConnection cnn = new SqlConnection(Connect(server, user, pass, db).ConnectionString))
             {
                 try
@@ -127,6 +127,34 @@ namespace AppWFGenProject.Extensions
                 }
             }
             return dt;
+        }
+        public DataSet GetAllCode(string server, string user, string pass, string db, string TableName, string BackList = "Id,IsDelete,IsActive,IsVisible,IsModify,CreateBy,CreateDateUTC,CreateDate,ModifyBy,UpdateDateUTC,UpdateDate,Status")
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection cnn = new SqlConnection(Connect(server, user, pass, db).ConnectionString))
+            {
+                try
+                {
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    string _storeproce = "sp_GenEntity_DO";// ConfigurationSettings.AppSettings["SPGetALLEntry"].ToString();
+
+                    using (SqlCommand cmd = new SqlCommand(_storeproce, cnn))
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@Tables", TableName));
+                        cmd.Parameters.Add(new SqlParameter("@BackList", BackList));
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cnn.Open();
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        adapter.Fill(ds);
+                        cnn.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Can not open connection ! ");
+                }
+            }
+            return ds;
         }
         public HashSet<string> ConvertDTRowsToList(DataTable dt, string colname)
         {

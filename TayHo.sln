@@ -111,7 +111,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLyDuAn", "AppService\We
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{B501965D-08C4-4276-B0B8-64062C57E1DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppWFGenProject", "AppService\App\AppWFGenProject\AppWFGenProject.csproj", "{F5A7A3B6-9EA3-497A-B2DA-18065AA2AE8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWFGenProject", "AppService\App\AppWFGenProject\AppWFGenProject.csproj", "{F5A7A3B6-9EA3-497A-B2DA-18065AA2AE8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

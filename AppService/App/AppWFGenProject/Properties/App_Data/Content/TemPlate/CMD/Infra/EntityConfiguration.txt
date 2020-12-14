@@ -1,0 +1,15 @@
+﻿using {nameproject}.Domain.DomainObjects;
+using {common};
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace {nameproject}.Infrastructure.EFConfig
+{
+    public class {Entity}Configuration : IEntityTypeConfiguration<{Entity}>
+    {
+        public void Configure(EntityTypeBuilder<{Entity}> builder)
+        {
+            {builderConfig}
+        }
+    }
+}

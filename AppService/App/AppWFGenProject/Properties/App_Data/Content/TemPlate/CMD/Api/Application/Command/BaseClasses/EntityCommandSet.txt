@@ -1,0 +1,9 @@
+﻿using System;
+
+namespace {nameproject}.Api.Application.Commands
+{
+    public class {Entity}CommandSet: BaseCommandClasses
+    {
+        {builderPublic}
+    }
+}

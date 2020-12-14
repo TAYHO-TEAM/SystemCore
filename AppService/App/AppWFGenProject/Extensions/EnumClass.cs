@@ -15,7 +15,7 @@
         public static string functionCreate = "{functionCreate}";
         public static string builderProperties = "{builderProperties}";
         public static string builderBehaviours = "{builderBehaviours}";
-        public static string biulderRegister = "{biulderRegister}";
+        public static string builderRegister = "{biulderRegister}";
         public static string builderRequestParam = "{builderRequestParam}";
         public static string builderSetUpdate = "{builderSetUpdate}";
         public static string builderPublic = "{builderPublic}";

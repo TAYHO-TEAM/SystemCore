@@ -1,0 +1,14 @@
+﻿using MediatR;
+using Services.Common.DomainObjects;
+
+namespace {nameproject}.Api.Application.Commands
+{
+    public class Update{Entity}Command : {Entity}CommandSet,IRequest<MethodResult<Update{Entity}CommandResponse>>
+    {
+       
+    }
+
+    public class Update{Entity}CommandResponse : {Entity}CommandResponseDTO
+    {
+    }
+}

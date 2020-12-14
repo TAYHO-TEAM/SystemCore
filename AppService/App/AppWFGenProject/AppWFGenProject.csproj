@@ -4,24 +4,61 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Untitled.ico</ApplicationIcon>
+    <StartupObject>AppWFGenProject.Program</StartupObject>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath></OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\App_Data\Content\netcoreapp3.1\**" />
+    <EmbeddedResource Remove="Properties\App_Data\Content\netcoreapp3.1\**" />
+    <None Remove="Properties\App_Data\Content\netcoreapp3.1\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="GenProject.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="BaseClasses\" />
-    <Folder Include="Content\Config\" />
-    <Folder Include="Content\TemPlate\CMD\Api\ViewModels\" />
-    <Folder Include="Content\TemPlate\VIEW\" />
+	<Folder Include="Content\" />
+    <Folder Include="Properties\App_Data\Content\TemPlate\CMD\Api\ViewModels\" />
+    <Folder Include="Properties\App_Data\Content\TemPlate\VIEW\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="5.4.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Content Include="Content\**"> 
+		<CopyToOutputDirectory>Content</CopyToOutputDirectory> 
+	</Content> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

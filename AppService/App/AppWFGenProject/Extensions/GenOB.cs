@@ -19,7 +19,7 @@ namespace AppWFGenProject.Extensions
         public string functionCreate { get; set; }
         public string builderProperties { get; set; }
         public string builderBehaviours { get; set; }
-        public string biulderRegister { get; set; }
+        public string builderRegister { get; set; }
         public string builderRequestParam { get; set; }
         public string builderSetUpdate { get; set; }
         public string builderPublic { get; set; }

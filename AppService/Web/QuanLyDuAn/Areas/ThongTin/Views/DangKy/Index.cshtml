@@ -43,7 +43,7 @@
                     dataType: "json",
                     data: params,
                     success: function (data) {
-                        let list = data.result.items.filter(x => x.projectId == PROJECTID);
+                        let list = data.result.items;
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -191,17 +191,17 @@
                         dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
                     },//tiêu đề
                 ],
-                //rowDragging: {
-                //    allowDropInsideItem: true,
-                //    allowReordering: false,
-                //    showDragIcons: true,
-                //    onDragEnd: function (e) {
-                //        var id = e.itemData.id;
-                //        var parentId = e.component.getVisibleRows()[e.toIndex].node.key;
-                //        console.log(ajax_update(URL_API_PM_CMD + ACTION_CMD, id, { parentId: (id != parentId) ? parentId : 0 }));
-                //        e.component.refresh();
-                //    },
-                //},
+                rowDragging: {
+                    allowDropInsideItem: true,
+                    allowReordering: false,
+                    showDragIcons: true,
+                    onDragEnd: function (e) {
+                        var id = e.itemData.id;
+                        var parentId = e.component.getVisibleRows()[e.toIndex].node.key;
+                        console.log(ajax_update(URL_API_PM_CMD + ACTION_CMD, id, { parentId: (id != parentId) ? parentId : 0 }));
+                        e.component.refresh();
+                    },
+                },
                 paging: {
                     enabled: true,
                     pageSize: 20
@@ -228,7 +228,7 @@
                     allowDeleting: (e) => {
                         return e.row.data.parentId == 0;
                     }, 
-                    mode: "cell",
+                    mode: "popup",
                     useIcons: false,
                     confirmDelete: true,
                 },
@@ -266,7 +266,7 @@
                     e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
-                    if (e.rowType == "data" && e.columnIndex == 0) {
+                    if (e.rowType == "data" && e.columnIndex == 1) {
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.parentId === 0);
                     }
                 },
