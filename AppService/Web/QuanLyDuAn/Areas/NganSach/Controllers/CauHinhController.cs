@@ -20,7 +20,7 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
-        public ActionResult LoaiThau()
+        public ActionResult LoaiCongViec()
         {
             return View();
         }
@@ -28,7 +28,7 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
-        public ActionResult HopDong()
+        public ActionResult GoiThau()
         {
             return View();
         }

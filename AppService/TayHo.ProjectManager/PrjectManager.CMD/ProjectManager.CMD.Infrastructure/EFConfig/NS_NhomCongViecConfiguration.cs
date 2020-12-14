@@ -12,9 +12,8 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         {
             builder.ToTable(QuanLyDuAnConstants.NS_NhomCongViec_TABLENAME);
             builder.Property(x => x.HangMucId).HasField("_hangMucId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.LoaiThauId).HasField("_loaiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.GiaiDoanId).HasField("_giaiDoanId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.HopDongId).HasField("_hopDongId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.LoaiCongViecId).HasField("_loaiCongViecId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.GoiThauId).HasField("_goiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.NhomChiPhiId).HasField("_nhomChiPhiId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.TenNhomCongViec).HasField("_tenNhomCongViec").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").UsePropertyAccessMode(PropertyAccessMode.Field);

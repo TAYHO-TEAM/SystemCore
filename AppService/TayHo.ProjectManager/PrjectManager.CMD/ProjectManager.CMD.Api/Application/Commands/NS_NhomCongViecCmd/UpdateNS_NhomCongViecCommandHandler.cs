@@ -34,18 +34,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
-            if(existingNS_NhomCongViec.CreateBy != _user)
-            {
-                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
-                {
-                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
-                });
-            }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_NhomCongViec.SetHangMucId(request.HangMucId);
-            existingNS_NhomCongViec.SetLoaiThauId(request.LoaiThauId);
-            existingNS_NhomCongViec.SetGiaiDoanId(request.GiaiDoanId);
-            existingNS_NhomCongViec.SetHopDongId(request.HopDongId);
+            existingNS_NhomCongViec.SetLoaiCongViecId(request.LoaiCongViecId);
+            existingNS_NhomCongViec.SetGoiThauId(request.GoiThauId);
             existingNS_NhomCongViec.SetNhomChiPhiId(request.NhomChiPhiId);
             existingNS_NhomCongViec.SetTenNhomCongViec(request.TenNhomCongViec);
             existingNS_NhomCongViec.SetDienGiai(request.DienGiai);

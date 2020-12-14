@@ -2423,13 +2423,13 @@
     <Content Include="Areas\ThongTin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\ThongTin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ActionsConfig\Index.cshtml" />
-    <Content Include="Areas\NganSach\Views\CauHinh\LoaiThau.cshtml" />
+    <Content Include="Areas\NganSach\Views\CauHinh\LoaiCongViec.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\GiaiDoan.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\HangMuc.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomChiPhi.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhaThau.cshtml" />
     <Content Include="Areas\ThongTin\Views\Home\RequestRegist.cshtml" />
-    <Content Include="Areas\NganSach\Views\CauHinh\HopDong.cshtml" />
+    <Content Include="Areas\NganSach\Views\CauHinh\GoiThau.cshtml" />
     <Content Include="Areas\Admin\Views\WorkItemsConfig\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\HangMuc.cshtml" />
     <Content Include="Areas\Admin\Views\SystemConfig\Actions.cshtml" />
@@ -2443,6 +2443,7 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\PheDuyet.cshtml" />
+    <Content Include="Areas\NganSach\Views\Default\_Detail.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
