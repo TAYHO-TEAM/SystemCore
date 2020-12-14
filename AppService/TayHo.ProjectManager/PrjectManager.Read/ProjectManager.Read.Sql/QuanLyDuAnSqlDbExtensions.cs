@@ -45,8 +45,8 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<NS_NhomCongViecDTO>, DOBaseRepository<NS_NhomCongViecDTO>>();
             services.AddScoped<INS_NhomCongViecRepository<NS_NhomCongViecDTO>, NS_NhomCongViecRepository<NS_NhomCongViecDTO>>();
             services.AddScoped<IDOBaseRepository<NS_HangMucDTO>, DOBaseRepository<NS_HangMucDTO>>();
-            services.AddScoped<IDOBaseRepository<NS_HopDongDTO>, DOBaseRepository<NS_HopDongDTO>>();
-            services.AddScoped<IDOBaseRepository<NS_LoaiThauDTO>, DOBaseRepository<NS_LoaiThauDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_GoiThauDTO>, DOBaseRepository<NS_GoiThauDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_LoaiCongViecDTO>, DOBaseRepository<NS_LoaiCongViecDTO>>();
             services.AddScoped<IDOBaseRepository<NS_NhomChiPhiDTO>, DOBaseRepository<NS_NhomChiPhiDTO>>();
 
             services.AddScoped<IDOBaseRepository<RequestRegistDTO>, DOBaseRepository<RequestRegistDTO>>();
