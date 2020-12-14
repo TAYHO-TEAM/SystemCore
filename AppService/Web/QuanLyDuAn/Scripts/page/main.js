@@ -89,29 +89,6 @@ var loadingPanel = $("#loading-panel").dxLoadPanel({
     closeOnOutsideClick: false,
 }).dxLoadPanel("instance"); 
 
-var callPopup = (url, title, width, height) => $("#popup-main").dxPopup({
-    width: width,
-    height: height,
-    position: { at: 'center', of: 'document' },
-    fullScreen: (width == "100%"),
-    dragEnabled: (width!="100%"),
-    resizeEnabled: (width != "100%"),
-    showTitle: (title != null), title: title,
-    closeOnOutsideClick: true, showCloseButton: true,
-    visible: true,
-    contentTemplate: (c) => {
-        var scrollView = $("<div id='scrollView'></div>");
-        var content = $("<div/>");
-        content.load(url);
-        scrollView.append(content);
-        scrollView.dxScrollView({
-            width: '100%',
-            height: '100%'
-        });
-        return c.append(scrollView);
-    }
-}).dxPopup('instance');
-
 function isNullOrEmpty(value) {
     return value !== undefined && value !== null && value !== "";
 }
@@ -126,7 +103,7 @@ function getParamInUrl(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 } 
 
-let ajax_insert = (url, values) => {
+var ajax_insert = (url, values) => {
     var deferred = $.Deferred();
     $.ajax({
         headers: header, url: url, dataType: "json", type: "POST",
@@ -140,12 +117,12 @@ let ajax_insert = (url, values) => {
             console.log(xhr);
             deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
         },
-        timeout: 5000
+       timeout: 5000
     });
     return deferred.promise();
 }
 
-let ajax_update = (url, key, values) => {
+var ajax_update = (url, key, values) => {
     var keyObj = JSON.parse('{"id":' + key + '}');
     var deferred = $.Deferred();
     $.ajax({
@@ -163,7 +140,7 @@ let ajax_update = (url, key, values) => {
     return deferred.promise();
 }
 
-let ajax_delete = (url, key) => {
+var ajax_delete = (url, key) => {
     var deferred = $.Deferred();
     var keys = typeof (key) == 'number' ? [key] : key;
     $.ajax({

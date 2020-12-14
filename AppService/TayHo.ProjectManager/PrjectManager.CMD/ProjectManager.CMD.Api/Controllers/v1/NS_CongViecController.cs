@@ -14,7 +14,6 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         {
         }
 
-
         #region NS_CongViec
 
         /// <summary>
@@ -57,8 +56,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
-        }
-
+        } 
         #endregion NS_CongViec
     }
 }

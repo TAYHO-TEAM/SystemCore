@@ -12,9 +12,5 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
-        public ActionResult _Detail(int id)
-        {
-            return PartialView(id);
-        }
     }
 }
