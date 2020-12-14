@@ -1,7 +1,9 @@
 ﻿let checkLogin = () => (isNullOrEmpty(localStorage.getItem("userCurrent")) && isNullOrEmpty(window.localStorage.getItem("userCurrentInfo")));
 var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
+var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 var header = {};
+
 
 DevExpress.localization.locale('vi');
 
@@ -60,6 +62,7 @@ function loadMenu() {
             });
         });
 }
+
 let menuItem = (item, list) => {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
@@ -84,7 +87,30 @@ var loadingPanel = $("#loading-panel").dxLoadPanel({
     showPane: true,
     shading: true,
     closeOnOutsideClick: false,
-}).dxLoadPanel("instance");
+}).dxLoadPanel("instance"); 
+
+var callPopup = (url, title, width, height) => $("#popup-main").dxPopup({
+    width: width,
+    height: height,
+    position: { at: 'center', of: 'document' },
+    fullScreen: (width == "100%"),
+    dragEnabled: (width!="100%"),
+    resizeEnabled: (width != "100%"),
+    showTitle: (title != null), title: title,
+    closeOnOutsideClick: true, showCloseButton: true,
+    visible: true,
+    contentTemplate: (c) => {
+        var scrollView = $("<div id='scrollView'></div>");
+        var content = $("<div/>");
+        content.load(url);
+        scrollView.append(content);
+        scrollView.dxScrollView({
+            width: '100%',
+            height: '100%'
+        });
+        return c.append(scrollView);
+    }
+}).dxPopup('instance');
 
 function isNullOrEmpty(value) {
     return value !== undefined && value !== null && value !== "";
@@ -109,7 +135,9 @@ let ajax_insert = (url, values) => {
             deferred.resolve();
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
+            console.log(textStatus);
+            console.log(errorThrown);
+            console.log(xhr);
             deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
         },
         timeout: 5000

@@ -34,13 +34,6 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
-            if (existingNS_HangMuc.CreateBy != _user)
-            {
-                methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr02), new[]
-                {
-        ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
-    });
-            }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingNS_HangMuc.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_HangMuc.IsActive;
             existingNS_HangMuc.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_HangMuc.IsVisible;

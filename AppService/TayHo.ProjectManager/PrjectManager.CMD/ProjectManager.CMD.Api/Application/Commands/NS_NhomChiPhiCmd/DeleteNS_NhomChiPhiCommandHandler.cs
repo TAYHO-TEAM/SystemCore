@@ -43,13 +43,6 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             DateTime now = DateTime.Now;
             foreach (var existingAssignment in existingNS_NhomChiPhi)
             {
-                if (existingAssignment.CreateBy != _user)
-                {
-                    methodResult.AddAPIErrorMessage(nameof(ErrorCodeDelete.DErr002), new[]
-                    {
-                        ErrorHelpers.GenerateErrorResult(nameof(existingAssignment.Id),existingAssignment.Id)
-                    });
-                }
                 existingAssignment.UpdateDate = now;
                 existingAssignment.UpdateDateUTC = utc;
                 existingAssignment.IsDelete = true;
