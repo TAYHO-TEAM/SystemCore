@@ -290,6 +290,26 @@
                 //    if (!e.row.isNewRow && e.row.data.chilCount > 0)
                 //       e.editorOptions.disabled = true;
                 //}
+                onContextMenuPreparing: (e) => {
+                    if (!e.items) e.items = [];
+                    if (e.target == "content" && e.rowIndex >= 0) {
+                        e.items.push({
+                            icon: "far fa-eye",
+                            text: "Xem chi tiết",
+                            onItemClick: () => callPopup("/NganSach/Default/_Detail/" + e.row.data.id, e.row.data.tenNhomCongViec.toUpperCase(), "98%", "96%")
+                        });
+                        e.items.push({
+                            icon: "far fa-edit",
+                            text: "Cập nhật thông tin",
+                            onItemClick: () => e.component.editRow(e.rowIndex)
+                        });
+                        e.items.push({
+                            icon: "far fa-trash-alt",
+                            text: "Xóa bỏ",
+                            onItemClick: () => e.component.deleteRow(e.rowIndex)
+                        });
+                    }
+                },
             });
         }
 

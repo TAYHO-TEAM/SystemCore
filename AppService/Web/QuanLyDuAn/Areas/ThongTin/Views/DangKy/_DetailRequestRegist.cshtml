@@ -1,0 +1,160 @@
+﻿@model int
+<div id="container_detail" data-id="@Model"></div>
+<script>
+    var ACTION_RESPON = "/NS_CongViec";
+
+    var customStore_CongViec = new DevExpress.data.CustomStore({
+        key: "id",
+        load: (values) => {
+            let deferred = $.Deferred();
+            let params = {
+                'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                'FindId': 'nhomCongViecId,' + $('#container_detail').data('id') +';isActive,1;isVisible,1'
+            }
+            if (values.sort) {
+                params['SortCol'] = values.sort[0].selector;
+                params['SortADSC'] = values.sort[0].desc;
+            }
+            $.ajax({
+                headers: header, dataType: "json",
+                data: params,
+                url: URL_API_PM_READ + ACTION_CONGVIEC,
+                success: function (data) {
+                    var list = data.result.items;
+                    deferred.resolve(
+                        list,
+                        {
+                            totalCount: list.length,
+                        }
+                    );
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr.responseJSON);
+                    deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                },
+                timeout: 10000
+            });
+            return deferred.promise();
+        },
+        insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
+        update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
+        remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+    });
+
+    $(function () {
+        loadCongViec();
+    });
+
+    var loadCongViec = () => {
+        $('#container_detail').dxDataGrid({
+            dataSource: customStore_CongViec,
+            remoteOperations: {
+                paging: true,
+                sorting: true,
+            },
+            repaintChangesOnly: true,
+            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            paging: {
+                enabled: true,
+                pageSize: 20
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 40],
+                showInfo: true,
+            },
+            editing: {
+                mode: "cell",
+                allowEditing: true,
+                allowDeleting: true
+            },
+            columns: [
+                {
+                    caption: "STT", alignment: "center",
+                    cellTemplate: (c, o) => $("<div />").append(o.rowIndex + 1).appendTo(c),
+                },//STT
+                {
+                    dataField: "tenCongViec", caption: "Thông tin / nội dung công việc",
+                    dataType: "string", alignment: "left",
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        showClearButton: true,
+                    },
+                    validationRules: [{ type: "required" }]
+                },//tenCongViec
+                {
+                    dataField: "dienGiai", caption: "Diễn giải", dataType: "string", alignment: "left",
+                    cellTemplate: (c, o) => $("<div />").append((o.value == null || o.value.length == 0) ? "--" : o.value).appendTo(c),
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        showClearButton: true,
+                    },
+                },//dienGiai
+                {
+                    dataField: "donGia", caption: "Đơn giá", dataType: "number", alignment: "center",
+                    format: { type: "currency", currency: "VND" },
+                    editorType: "dxNumberBox",
+                    editorOptions: {
+                        showClearButton: true,
+                        format: "#,##0 đ",
+                        min: 1000000, step: 1000000, showSpinButtons: true,
+                    },
+                    validationRules: [{ type: "required" }],
+                },//giaTri
+                {
+                    dataField: "khoiLuong", caption: "Khối lượng", dataType: "number", alignment: "center",
+                    editorType: "dxNumberBox",
+                    editorOptions: {
+                        showClearButton: true,
+                        format: "#0",
+                        min: 1, step: 1,
+                        showSpinButtons: true,
+                    },
+                    validationRules: [{ type: "required" }],
+                },//khoiLuong
+                {
+                    dataField: "donViTinh", caption: "Đơn vị tính", dataType: "string", alignment: "center",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        showClearButton: true,
+                    },
+                },//dienGiai
+                {
+                    dataField: "isLock", width: 120, caption: "Khóa xổ",
+                    editorType: "dxSwitch", dataType: "boolean",
+                    cellTemplate: (c, o) => {
+                        if (o.value == true) $("<span />").addClass("badge badge-danger p-1").append($("<i/>").addClass("ti-lock mr-1"), "ĐÃ KHÓA").appendTo(c);
+                        else $("<span />").addClass("badge badge-info p-1").append($("<i/>").addClass("ti-unlock mr-1"), "CHƯA KHÓA").appendTo(c);
+                    }
+                },//isLock
+            ],
+            onInitNewRow: (e) => {
+                e.data.isActive = true;
+                e.data.isVisible = true;
+                e.data.nhomCongViecId = $('#container_detail').data('id');
+                e.data.giaiDoanId = 1;
+                e.data.isLock = false;
+            },
+            onToolbarPreparing: (e) => {
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before", widget: "dxButton",
+                        options: {
+                            icon: "add", text: "Công việc", stylingMode: "contained", type: "default",
+                            onClick: () => e.component.addRow()
+                        }
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => e.component.refresh()
+                        }
+                    })
+            },
+        })
+    }
+</script>
