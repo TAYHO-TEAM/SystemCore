@@ -13,5 +13,9 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public byte? NoAttachment { get; set; }
         public bool? IsApprove { get; set; }
         public byte? TypeOfResult { get; set; }
+        public bool? Insert { get; set; }
+        public bool? Update { get; set; }
+        public bool? Delate { get; set; }
+        public bool? View { get; set; }
     }
 }

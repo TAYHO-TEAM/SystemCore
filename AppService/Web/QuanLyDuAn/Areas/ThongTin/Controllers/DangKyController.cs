@@ -17,5 +17,9 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult _DetailRequestRegist(int Id)
+        {
+            return PartialView(Id);
+        }
     }
 }
