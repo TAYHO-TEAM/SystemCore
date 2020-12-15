@@ -40,6 +40,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_GiaiDoan.Status = request.Status.HasValue ? request.Status : existingNS_GiaiDoan.Status;
             existingNS_GiaiDoan.SetTenGiaiDoan(request.TenGiaiDoan);
             existingNS_GiaiDoan.SetDienGiai(request.DienGiai);
+            existingNS_GiaiDoan.SetProjectId(request.ProjectId);
+            existingNS_GiaiDoan.SetGroupId(request.GroupId);
+            existingNS_GiaiDoan.SetCapDo(request.CapDo);
             existingNS_GiaiDoan.SetUpdate(_user, 0);
             _NS_GiaiDoanRepository.Update(existingNS_GiaiDoan);
             await _NS_GiaiDoanRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

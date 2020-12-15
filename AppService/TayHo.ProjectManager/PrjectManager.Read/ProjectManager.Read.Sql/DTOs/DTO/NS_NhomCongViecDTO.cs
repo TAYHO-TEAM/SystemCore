@@ -13,7 +13,5 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? NhomChiPhiId { get; set; }
         public string TenNhomCongViec { get; set; }
         public string DienGiai { get; set; }
-        public decimal? GiaTri { get; set; }
-        public bool? isLock { get; set; }
     }
 }

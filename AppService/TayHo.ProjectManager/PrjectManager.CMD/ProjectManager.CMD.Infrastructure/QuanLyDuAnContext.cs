@@ -17,12 +17,15 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<FilesAttachment> FilesAttachment { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
         public DbSet<NS_CongViec> NS_CongViec { get; set; }
+        public DbSet<NS_CongViecDetail> NS_CongViecDetail { get; set; }
         public DbSet<NS_GiaiDoan> NS_GiaiDoan { get; set; }
         public DbSet<NS_GoiThau> NS_GoiThau { get; set; }
         public DbSet<NS_HangMuc> NS_HangMuc { get; set; }
+        public DbSet<NS_HangMucDetail> NS_HangMucDetail { get; set; }
         public DbSet<NS_LoaiCongViec> NS_LoaiCongViec { get; set; }
         public DbSet<NS_NhomChiPhi> NS_NhomChiPhi { get; set; }
         public DbSet<NS_NhomCongViec> NS_NhomCongViec { get; set; }
+        public DbSet<NS_NhomCongViecDetail> NS_NhomCongViecDetail { get; set; }
         public DbSet<OperationProcess> OperationProcess { get; set; }
         public DbSet<ProblemCategory> ProblemCategory { get; set; }
         public DbSet<Reply> Reply { get; set; }

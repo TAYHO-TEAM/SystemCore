@@ -24,10 +24,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_LoaiCongViecCommandResponse>> Handle(CreateNS_LoaiCongViecCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_LoaiCongViecCommandResponse>();
-            var newNS_LoaiCongViec = new NS_LoaiCongViec(request.ParentId,
-                request.TenLoaiCongViec,
-                request.DienGiai,
-                request.ProjectId);
+            var newNS_LoaiCongViec = new NS_LoaiCongViec(request.TenLoaiCongViec,
+request.DienGiai,
+request.KyHieu,
+request.ProjectId);
             newNS_LoaiCongViec.SetCreate(_user);
             newNS_LoaiCongViec.Status = request.Status.HasValue ? request.Status : newNS_LoaiCongViec.Status;
             newNS_LoaiCongViec.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_LoaiCongViec.IsActive;

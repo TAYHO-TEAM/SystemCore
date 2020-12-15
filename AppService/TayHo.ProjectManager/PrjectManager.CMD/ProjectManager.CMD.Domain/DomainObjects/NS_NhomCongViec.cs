@@ -14,8 +14,6 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         private int? _nhomChiPhiId;
         private string _tenNhomCongViec;
         private string _dienGiai;
-        private decimal? _giaTri;
-        private bool? _isLock;
         #endregion Fields
 
         #region Constructors
@@ -28,9 +26,7 @@ int? LoaiCongViecId,
 int? GoiThauId,
 int? NhomChiPhiId,
 string TenNhomCongViec,
-string DienGiai,
-decimal? GiaTri,
-bool? isLock) : this()
+string DienGiai) : this()
         {
             _hangMucId = HangMucId;
             _loaiCongViecId = LoaiCongViecId;
@@ -38,8 +34,6 @@ bool? isLock) : this()
             _nhomChiPhiId = NhomChiPhiId;
             _tenNhomCongViec = TenNhomCongViec;
             _dienGiai = DienGiai;
-            _giaTri = GiaTri;
-            _isLock = isLock;
         }
         #endregion Constructors
 
@@ -50,8 +44,6 @@ bool? isLock) : this()
         public int? NhomChiPhiId { get => _nhomChiPhiId; }
         [MaxLength(500, ErrorMessage = nameof(ErrorCodeInsert.IErr500))] public string TenNhomCongViec { get => _tenNhomCongViec; }
         public string DienGiai { get => _dienGiai; }
-        public decimal? GiaTri { get => _giaTri; }
-        public bool? isLock { get => _isLock; }
         #endregion Properties
 
         #region Behaviours
@@ -61,8 +53,6 @@ bool? isLock) : this()
         public void SetNhomChiPhiId(int? NhomChiPhiId) { _nhomChiPhiId = !NhomChiPhiId.HasValue ? _nhomChiPhiId : NhomChiPhiId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTenNhomCongViec(string TenNhomCongViec) { _tenNhomCongViec = TenNhomCongViec == null ? _tenNhomCongViec : TenNhomCongViec; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDienGiai(string DienGiai) { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetGiaTri(decimal? GiaTri) { _giaTri = !GiaTri.HasValue ? _giaTri : GiaTri; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetisLock(bool? isLock) { _isLock = !isLock.HasValue ? _isLock : isLock; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

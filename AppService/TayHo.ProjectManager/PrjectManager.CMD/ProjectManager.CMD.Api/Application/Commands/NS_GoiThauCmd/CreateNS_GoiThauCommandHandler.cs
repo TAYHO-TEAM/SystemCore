@@ -25,12 +25,12 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_GoiThauCommandResponse>();
             var newNS_GoiThau = new NS_GoiThau(request.ParentId,
-                request.SoHopDong,
-                request.ContractorInfoId,
-                request.NgayKy,
-                request.DienGiai,
-                request.TyLeTTTD,
-                request.GiaTri);
+request.SoHopDong,
+request.ContractorInfoId,
+request.NgayKy,
+request.DienGiai,
+request.TyLeTTTD,
+request.GiaTri);
             newNS_GoiThau.SetCreate(_user);
             newNS_GoiThau.Status = request.Status.HasValue ? request.Status : newNS_GoiThau.Status;
             newNS_GoiThau.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_GoiThau.IsActive;

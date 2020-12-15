@@ -40,13 +40,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_CongViec.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_CongViec.IsVisible;
             existingNS_CongViec.Status = request.Status.HasValue ? request.Status : existingNS_CongViec.Status;
             existingNS_CongViec.SetNhomCongViecId(request.NhomCongViecId);
-            existingNS_CongViec.SetGiaiDoanId(request.GiaiDoanId);
             existingNS_CongViec.SetTenCongViec(request.TenCongViec);
             existingNS_CongViec.SetDienGiai(request.DienGiai);
-            existingNS_CongViec.SetDonGia(request.DonGia);
-            existingNS_CongViec.SetKhoiLuong(request.KhoiLuong);
             existingNS_CongViec.SetDonViTinh(request.DonViTinh);
-            existingNS_CongViec.SetisLock(request.isLock);
             existingNS_CongViec.SetUpdate(_user,0);
             _NS_CongViecRepository.Update(existingNS_CongViec);
             await _NS_CongViecRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

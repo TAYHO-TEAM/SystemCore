@@ -146,7 +146,6 @@
                 return deferred.promise();
             },
         });
-
         let customStore_CongViec = (idNhomCongViec) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -184,6 +183,30 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+        });
+        let customStore_GiaiDoan = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = { 
+                    'SortCol':'status',
+                    'SortADSC':'0'
+                }; 
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_GIAIDOAN,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
         });
 
         $(function () {
@@ -579,9 +602,9 @@
                     },
                     onToolbarPreparing: (e) => {
                         var container = e.component;
-                        e.toolbarOptions.items.unshift(
+                        e.toolbarOptions.items.unshift(                           
                             {
-                                location: "before", widget: "dxButton",
+                                location: "after", widget: "dxButton",
                                 options: {
                                     icon: "add", text: "công việc", stylingMode: "contained", type: "default",
                                     onClick: () => container.addRow()
@@ -593,14 +616,14 @@
                                     elementAttr: {
                                         id: "btnRemoveCustome",
                                     },
-                                    disabled: true,
+                                    visible: false,
                                     icon: "remove", text: "Xóa bỏ", stylingMode: "contained", type: "danger",
                                     onClick: () => {
                                         var selectedData = container.getSelectedRowKeys();
                                         if (selectedData.length > 0) {
                                             DevExpress.ui.dialog.confirm("Bạn có chắc là xóa " + selectedData.length+" thông tin đã chọn không?", "Xác nhận thông tin").done(function (dialogResult) {
                                                 if (dialogResult) {
-                                                    d = $.Deferred();
+                                                    var d = $.Deferred();
                                                     customStore_CongViec(item.id).remove(selectedData).then(() => {
                                                         e.component.refresh().then(d.resolve, d.reject);
                                                     }, d.reject);
@@ -611,6 +634,17 @@
                                 }
                             },
                             {
+                                location: "before", widget: "dxSelectBox",
+                                options: {
+                                    stylingMode: "filled",
+                                    dataSource: customStore_GiaiDoan,
+                                    valueExpr: "id", displayExpr: "tenGiaiDoan",
+                                    searchEnabled: true, searchMode: "contains",
+                                    width: "100%", placeholder:"Chọn giai đoạn",
+                                    showClearButton: false,
+                                },
+                            },
+                            {
                                 location: "after", widget: "dxButton",
                                 options: {
                                     icon: "refresh", type: "default",
@@ -619,7 +653,7 @@
                             })
                     },
                     onSelectionChanged: (e) => {
-                        $('#btnRemoveCustome').dxButton("instance").option("disabled", e.selectedRowKeys.length <= 0);
+                        $('#btnRemoveCustome').dxButton("instance").option("visible", e.selectedRowKeys.length > 0);
                     },
                     summary: {
                         totalItems: [{

@@ -16,9 +16,12 @@ namespace ProjectManager.Common
         public const string ContractorInfo_TABLENAME = "ContractorInfo";
 
         public const string NS_CongViec_TABLENAME = "NS_CongViec";
+        public const string NS_CongViecDetail_TABLENAME = "NS_CongViecDetail";
         public const string NS_GiaiDoan_TABLENAME = "NS_GiaiDoan";
         public const string NS_NhomCongViec_TABLENAME = "NS_NhomCongViec";
+        public const string NS_NhomCongViecDetail_TABLENAME = "NS_NhomCongViecDetail";
         public const string NS_HangMuc_TABLENAME = "NS_HangMuc";
+        public const string NS_HangMucDetail_TABLENAME = "NS_HangMucDetail";
         public const string NS_GoiThau_TABLENAME = "NS_GoiThau";
         public const string NS_LoaiCongViec_TABLENAME = "NS_LoaiCongViec";
         public const string NS_NhomChiPhi_TABLENAME = "NS_NhomChiPhi";

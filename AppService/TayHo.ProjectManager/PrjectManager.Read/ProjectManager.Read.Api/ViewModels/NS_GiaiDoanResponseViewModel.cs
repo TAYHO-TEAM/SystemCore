@@ -6,5 +6,8 @@ namespace ProjectManager.Read.Api.ViewModels
     {
         public string TenGiaiDoan { get; set; }
         public string DienGiai { get; set; }
+        public int? ProjectId { get; set; }
+        public int? GroupId { get; set; }
+        public string CapDo { get; set; }
     }
 }

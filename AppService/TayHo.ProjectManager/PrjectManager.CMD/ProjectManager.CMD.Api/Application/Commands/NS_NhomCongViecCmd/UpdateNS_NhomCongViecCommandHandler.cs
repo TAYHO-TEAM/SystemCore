@@ -35,14 +35,15 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 });
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
+            existingNS_NhomCongViec.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_NhomCongViec.IsActive;
+            existingNS_NhomCongViec.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_NhomCongViec.IsVisible;
+            existingNS_NhomCongViec.Status = request.Status.HasValue ? request.Status : existingNS_NhomCongViec.Status;
             existingNS_NhomCongViec.SetHangMucId(request.HangMucId);
             existingNS_NhomCongViec.SetLoaiCongViecId(request.LoaiCongViecId);
             existingNS_NhomCongViec.SetGoiThauId(request.GoiThauId);
             existingNS_NhomCongViec.SetNhomChiPhiId(request.NhomChiPhiId);
             existingNS_NhomCongViec.SetTenNhomCongViec(request.TenNhomCongViec);
             existingNS_NhomCongViec.SetDienGiai(request.DienGiai);
-            existingNS_NhomCongViec.SetGiaTri(request.GiaTri);
-            existingNS_NhomCongViec.SetisLock(request.isLock);
             existingNS_NhomCongViec.SetUpdate(_user,0);
             _NS_NhomCongViecRepository.Update(existingNS_NhomCongViec);
             await _NS_NhomCongViecRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -38,9 +38,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_LoaiCongViec.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_LoaiCongViec.IsActive;
             existingNS_LoaiCongViec.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_LoaiCongViec.IsVisible;
             existingNS_LoaiCongViec.Status = request.Status.HasValue ? request.Status : existingNS_LoaiCongViec.Status;
-            existingNS_LoaiCongViec.SetParentId(request.ParentId);
             existingNS_LoaiCongViec.SetTenLoaiCongViec(request.TenLoaiCongViec);
             existingNS_LoaiCongViec.SetDienGiai(request.DienGiai);
+            existingNS_LoaiCongViec.SetKyHieu(request.KyHieu);
             existingNS_LoaiCongViec.SetProjectId(request.ProjectId);
             existingNS_LoaiCongViec.SetUpdate(_user,0);
             _NS_LoaiCongViecRepository.Update(existingNS_LoaiCongViec);

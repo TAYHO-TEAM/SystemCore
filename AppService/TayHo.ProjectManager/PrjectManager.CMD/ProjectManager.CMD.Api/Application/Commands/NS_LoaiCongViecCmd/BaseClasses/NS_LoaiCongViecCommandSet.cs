@@ -2,9 +2,9 @@
 {
     public class NS_LoaiCongViecCommandSet : BaseCommandClasses
     {
-        public int? ParentId { get; set; }
         public string TenLoaiCongViec { get; set; }
         public string DienGiai { get; set; }
+        public string KyHieu { get; set; }
         public int? ProjectId { get; set; }
     }
 }

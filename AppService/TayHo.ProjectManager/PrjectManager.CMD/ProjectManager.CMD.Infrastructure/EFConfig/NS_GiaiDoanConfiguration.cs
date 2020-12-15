@@ -13,6 +13,9 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
             builder.ToTable(QuanLyDuAnConstants.NS_GiaiDoan_TABLENAME);
             builder.Property(x => x.TenGiaiDoan).HasField("_tenGiaiDoan").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.GroupId).HasField("_groupId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.CapDo).HasField("_capDo").HasMaxLength(10).UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

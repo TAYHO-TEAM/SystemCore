@@ -11,9 +11,9 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         public void Configure(EntityTypeBuilder<NS_LoaiCongViec> builder)
         {
             builder.ToTable(QuanLyDuAnConstants.NS_LoaiCongViec_TABLENAME);
-            builder.Property(x => x.ParentId).HasField("_parentId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.TenLoaiCongViec).HasField("_tenLoaiCongViec").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.KyHieu).HasField("_kyHieu").HasMaxLength(50).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }

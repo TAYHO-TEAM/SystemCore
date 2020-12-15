@@ -58,7 +58,6 @@ decimal? GiaTri) : this()
         public void SetDienGiai(string DienGiai) { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTyLeTTTD(double? TyLeTTTD) { _tyLeTTTD = !TyLeTTTD.HasValue ? _tyLeTTTD : TyLeTTTD; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetGiaTri(decimal? GiaTri) { _giaTri = !GiaTri.HasValue ? _giaTri : GiaTri; if (!IsValid()) throw new DomainException(_errorMessages); }
-
         public sealed override bool IsValid()
         {
             return base.IsValid();

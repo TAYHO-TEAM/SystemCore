@@ -25,13 +25,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_CongViecCommandResponse>();
             var newNS_CongViec = new NS_CongViec(request.NhomCongViecId,
-                request.GiaiDoanId,
                 request.TenCongViec,
                 request.DienGiai,
-                request.DonGia,
-                request.KhoiLuong,
-                request.DonViTinh,
-                request.isLock);
+                request.DonViTinh);
             newNS_CongViec.SetCreate(_user);
             newNS_CongViec.Status = request.Status.HasValue ? request.Status : newNS_CongViec.Status;
             newNS_CongViec.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_CongViec.IsActive;
