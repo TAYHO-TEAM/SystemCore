@@ -25,4 +25,10 @@ const listSexs = [
     {value: 1, text:"Nam"},
     {value: 2, text:"Khác"},
 ];
+const typeApprove = [
+    { value: 1, text: "Đồng ý" },
+    { value: 2, text: "Đồng ý kèm ý kiến" },
+    { value: 3, text: "Từ chối" },
+    { value: 4, text: "Trả lại" },
+];
  
