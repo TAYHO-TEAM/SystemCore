@@ -189,19 +189,32 @@
                     {
                         dataField: "rev", caption: "REV",
                         dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
-                    },//tiêu đề
+                    },//rev
+                    {
+                        dataField: "createBy", caption: "Người đệ trình",
+                        dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
+                    },//account
+                    {
+                        dataField: "createDate", caption: "Ngày đệ trình",
+                        dataType: "date", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
+                        format: "dd/MM/yyyy",
+                    },//date
+                    {
+                        dataField: "createDate", caption: "Ngày đệ trình",
+                        visible :"false"
+                    },//mieu tả
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    allowReordering: false,
-                    showDragIcons: true,
-                    onDragEnd: function (e) {
-                        var id = e.itemData.id;
-                        var parentId = e.component.getVisibleRows()[e.toIndex].node.key;
-                        console.log(ajax_update(URL_API_PM_CMD + ACTION_CMD, id, { parentId: (id != parentId) ? parentId : 0 }));
-                        e.component.refresh();
-                    },
-                },
+                //rowDragging: {
+                //    allowDropInsideItem: true,
+                //    allowReordering: false,
+                //    showDragIcons: true,
+                //    onDragEnd: function (e) {
+                //        var id = e.itemData.id;
+                //        var parentId = e.component.getVisibleRows()[e.toIndex].node.key;
+                //        console.log(ajax_update(URL_API_PM_CMD + ACTION_CMD, id, { parentId: (id != parentId) ? parentId : 0 }));
+                //        e.component.refresh();
+                //    },
+                //},
                 paging: {
                     enabled: true,
                     pageSize: 20
@@ -266,17 +279,37 @@
                     e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
-                    if (e.rowType == "data" && e.columnIndex == 1) {
+                    if (e.rowType == "data" && e.columnIndex ===0) {
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.parentId === 0);
                     }
                 },
-                onEditorPreparing: function (e) {
-                    if (e.parentType === "dataRow" && e.dataField !== "title") {
-                        return;
+                //onEditorPreparing: function (e) {
+                //    if (e.parentType === "dataRow" && e.dataField !== "title") {
+                //        return;
+                //    }
+                //    if (!e.row.isNewRow && e.row.data.chilCount > 0)
+                //       e.editorOptions.disabled = true;
+                //}
+                onContextMenuPreparing: (e) => {
+                    if (!e.items) e.items = [];
+                    if (e.target == "content" && e.rowIndex >= 0) {
+                        e.items.push({
+                            icon: "far fa-eye",
+                            text: "Xem chi tiết",
+                            onItemClick: () => callPopup("/NganSach/Default/_Detail/" + e.row.data.id, e.row.data.tenNhomCongViec.toUpperCase(), "98%", "96%")
+                        });
+                        e.items.push({
+                            icon: "far fa-edit",
+                            text: "Cập nhật thông tin",
+                            onItemClick: () => e.component.editRow(e.rowIndex)
+                        });
+                        e.items.push({
+                            icon: "far fa-trash-alt",
+                            text: "Xóa bỏ",
+                            onItemClick: () => e.component.deleteRow(e.rowIndex)
+                        });
                     }
-                    //if (!e.row.isNewRow && e.row.data.chilCount > 0)
-                       e.editorOptions.disabled = true;
-                }
+                },
             });
         }
 

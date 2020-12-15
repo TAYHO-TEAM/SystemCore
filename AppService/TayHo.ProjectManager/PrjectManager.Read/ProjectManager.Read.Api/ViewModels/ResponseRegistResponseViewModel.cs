@@ -16,5 +16,10 @@ namespace ProjectManager.Read.Api.ViewModels
         public int? WorkItemId { get; set; }
         public int? DocumentTypeId { get; set; }
         public int? Rev { get; set; }
+        public string AccountName { get; set; }
+        public bool? Insert { get; set; }
+        public bool? Update { get; set; }
+        public bool? Delate { get; set; }
+        public bool? View { get; set; }
     }
 }
