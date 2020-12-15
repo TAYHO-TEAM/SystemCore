@@ -41,26 +41,30 @@ namespace ProjectManager.CMD.Api.Application.Commands
             else if (!request.ParentId.HasValue || request.ParentId == 0)
             {
                 request.ParentId =request.Rev= request.Level = 0;
-                request.Title = await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
-                request.Code = request.Title.Replace("-","");
+
+                request.Code =(await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)request.ProjectId, (int)request.WorkItemId, _user, (int)request.DocumentTypeId).ConfigureAwait(false)).Replace("-","");
             }
             else
             {
-                request.Title = !string.IsNullOrEmpty(parentRequestRegist.Title)? parentRequestRegist.Title: await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
+                //request.Title = !string.IsNullOrEmpty(parentRequestRegist.Title)? parentRequestRegist.Title: await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
+                request.ProjectId = (int)parentRequestRegist.ProjectId;
+                request.WorkItemId = (int)parentRequestRegist.WorkItemId;
+                request.DocumentTypeId = (int)parentRequestRegist.DocumentTypeId;
                 request.Level = (parentRequestRegist.Level.HasValue ? ((int)parentRequestRegist.Level + 1) : 0);
                 request.Rev = lastRequestRegistsRev.HasValue? lastRequestRegistsRev + 1:1;
-                request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : parentRequestRegist.Title.Remove('-');
+                request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : "0";
             }
             var newRequestRegist = new RequestRegist(request.Code,
                                                         request.BarCode,
                                                         request.Title,
                                                         request.Descriptions,
+                                                        request.Note,
                                                         request.ParentId,
                                                         request.Level,
                                                         request.NoAttachment,
-                                                        request.ProjectId,
-                                                        request.WorkItemId,
-                                                        request.DocumentTypeId,
+                                                        (int)request.ProjectId,
+                                                        (int)request.WorkItemId,
+                                                        (int)request.DocumentTypeId,
                                                         request.Rev);
             newRequestRegist.SetCreate(_user);
             newRequestRegist.Status = request.Status.HasValue ? request.Status : newRequestRegist.Status;

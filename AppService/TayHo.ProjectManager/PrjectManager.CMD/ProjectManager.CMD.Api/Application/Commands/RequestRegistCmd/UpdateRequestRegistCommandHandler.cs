@@ -38,7 +38,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestRegist.IsActive = request.IsActive.HasValue ? request.IsActive : existingRequestRegist.IsActive;
             existingRequestRegist.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingRequestRegist.IsVisible;
             existingRequestRegist.Status = request.Status.HasValue ? request.Status : existingRequestRegist.Status;
-            existingRequestRegist.SetCode(request.Code);
+            
             existingRequestRegist.SetBarCode(request.BarCode);
             existingRequestRegist.SetTitle(request.Title);
             existingRequestRegist.SetDescriptions(request.Descriptions);
@@ -49,6 +49,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestRegist.SetWorkItemId(request.WorkItemId);
             existingRequestRegist.SetDocumentTypeId(request.DocumentTypeId);
             existingRequestRegist.SetRev(request.Rev);
+            existingRequestRegist.SetCode((await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)existingRequestRegist.ProjectId, (int)existingRequestRegist.WorkItemId, _user, (int)existingRequestRegist.DocumentTypeId).ConfigureAwait(false)).Replace("-", ""));
+
             existingRequestRegist.SetUpdate(_user,0);
             _requestRegistRepository.Update(existingRequestRegist);
             await _requestRegistRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

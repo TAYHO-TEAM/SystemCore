@@ -13,6 +13,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         private string _barCode;
         private string _title;
         private string _descriptions;
+        private string _note;
         private int? _parentId;
         private int? _level;
         private byte? _noAttachment;
@@ -31,6 +32,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
                             string BarCode,
                             string Title,
                             string Descriptions,
+                            string Note,
                             int? ParentId,
                             int? Level,
                             byte? NoAttachment,
@@ -43,6 +45,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             _barCode = BarCode;
             _title = Title;
             _descriptions = Descriptions;
+            _note = Note;
             _parentId = ParentId;
             _level = Level;
             _noAttachment = NoAttachment;
@@ -60,6 +63,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         [MaxLength(128, ErrorMessage = nameof(ErrorCodeInsert.IErr128))] public string BarCode { get => _barCode; }
         [MaxLength(256, ErrorMessage = nameof(ErrorCodeInsert.IErr256))] public string Title { get => _title; }
         public string Descriptions { get => _descriptions; }
+        public string Note { get => _note; }
         public int? ParentId { get => _parentId; }
         public int? Level { get => _level; }
         public byte? NoAttachment { get => _noAttachment; }
@@ -74,6 +78,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public void SetBarCode(string BarCode) { _barCode = string.IsNullOrEmpty(BarCode) ? _barCode : BarCode; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTitle(string Title) { _title = Title == null ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDescriptions(string Descriptions) { _descriptions = Descriptions == null ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetNote(string Note) { _note = Note == null ? _note : Note; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetParentId(int? ParentId) { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetLevel(int? Level) { _level = !Level.HasValue ? _level : Level; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNoAttachment(byte? NoAttachment) { _noAttachment = !NoAttachment.HasValue ? _noAttachment : NoAttachment; if (!IsValid()) throw new DomainException(_errorMessages); }

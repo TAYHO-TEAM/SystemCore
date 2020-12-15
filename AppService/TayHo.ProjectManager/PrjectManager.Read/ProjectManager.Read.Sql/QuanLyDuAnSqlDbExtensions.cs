@@ -55,6 +55,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<WorkItemsDTO>, DOBaseRepository<WorkItemsDTO>>();
             services.AddScoped<IRequestRegistRepository<RequestRegistDTO>, RequestRegistRepository<RequestRegistDTO>>();
             services.AddScoped<IRequestRegistRepository<RequestRegistDetailDTO>, RequestRegistRepository<RequestRegistDetailDTO>>();
+            services.AddScoped<IResponseRegistRepository<ResponseRegistDTO>, ResponseRegistRepository<ResponseRegistDTO>>();
 
             return services;
         }

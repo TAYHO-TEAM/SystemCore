@@ -19,10 +19,12 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class ResponseRegistController : APIControllerBase
     {
         private readonly IDOBaseRepository<ResponseRegistDTO> _dOBaseRepository;
-
-        public ResponseRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ResponseRegistDTO> dOBaseRepository) : base(mapper, httpContextAccessor)
+        private readonly IResponseRegistRepository<ResponseRegistDTO> _responseRegistRepository;
+        private const string getByAccount = nameof(getByAccount);
+        public ResponseRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<ResponseRegistDTO> dOBaseRepository, IResponseRegistRepository<ResponseRegistDTO> responseRegistRepository) : base(mapper, httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _responseRegistRepository = responseRegistRepository;
         }
         /// <summary>
         /// Get List of ResponseRegist.
@@ -46,6 +48,28 @@ namespace ProjectManager.Read.Api.Controllers.v1
             };
             return Ok(methodResult);
         }
-
+        /// <summary>
+        /// Get List of ResponseRegist get by accoutn.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(getByAccount)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ResponseRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetResponseRegistByAccountAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<ResponseRegistResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.ResponseRegist_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _responseRegistRepository.GetAllWithAccountAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<ResponseRegistResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<ResponseRegistResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
     }
 }
