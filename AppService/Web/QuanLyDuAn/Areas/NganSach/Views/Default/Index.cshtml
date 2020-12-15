@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Theo dõi ngân sách";
-} 
+}
 
 <div class="row">
     <div class="col-4">
@@ -14,12 +14,14 @@
 </div>
 
 @section script{
-    <script> 
+    <script>
+
         const ACTION_PROJECT = "/Projects";
         const ACTION_HANGMUC = "/NS_HangMuc";
         const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
-        const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec"; 
+        const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
         const ACTION_CONGVIEC = "/NS_CongViec";
+        const ACTION_GIAIDOAN = "/NS_GiaiDoan";
 
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -83,12 +85,12 @@
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                     'FindId': 'hangMucId,' + iDHangMuc
-                } 
+                }
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
                 }
-                 
+
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION_NHOMCONGVIEC,
@@ -221,7 +223,7 @@
                     e.toolbarOptions.items.unshift(
                         {
                             location: "before", widget: "dxSelectBox",
-                            options: { 
+                            options: {
                                 dataSource: customStore_Projects,
                                 valueExpr: "id", displayExpr: "title",
                                 searchEnabled: true,
@@ -354,7 +356,7 @@
                         },
                         cellTemplate: (c, o) => $("<div>").append(o.text, (o.data.chilCount > 0 ? $("<span />").addClass("float-right badge bg-info").append(o.data.chilCount + " chi tiết") : null)).appendTo(c),
                         validationRules: [{ type: "required" }]
-                    },//loaiCongViecId 
+                    },//loaiCongViecId
                     {
                         dataField: "dienGiai", caption: "Diễn giải", dataType: "string", alignment: "left",
                         cellTemplate: (c, o) => $("<div />").append((o.value == null || o.value.length == 0) ? "--" : o.value).appendTo(c),
@@ -438,7 +440,7 @@
                         })
                 },
                 onContextMenuPreparing: (e) => {
-                    if (!e.items) e.items = []; 
+                    if (!e.items) e.items = [];
                     if (e.target == "content" && e.rowIndex >= 0) {
                         e.items.push({
                             icon: "far fa-eye",
@@ -458,10 +460,10 @@
                     }
                 }
             });
-        };  
+        };
 
         let loadCongViec = (item) => $("#popup-main").dxPopup({
-            width: "95%", height: "95%",
+            width: "98%", height: "95%",
             fullScreen: false,
             dragEnabled: true,
             resizeEnabled: true,
@@ -478,7 +480,7 @@
                         sorting: true,
                     },
                     repaintChangesOnly: true,
-                    showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                    showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                     showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                     paging: {
                         enabled: true,
@@ -488,12 +490,6 @@
                         showPageSizeSelector: true,
                         allowedPageSizes: [10, 20, 40],
                         showInfo: true,
-                    },
-                    editing: {
-                        mode: "batch",
-                        allowAdding: true,
-                        allowDeleting: true,
-                        allowUpdating: true,
                     },
                     columns: [
                         {
@@ -548,9 +544,9 @@
                             validationRules: [{ type: "required" }],
                         },//khoiLuong
                         {
-                            caption: "Thành tiền", dataType: "number", alignment: "center",
+                            dataField:"thanhTien",caption: "Thành tiền", dataType: "number", alignment: "center",
                             format: { type: "currency", currency: "VND" },
-                            calculateCellValue: (rowData) => rowData.donGia * rowData.khoiLuong
+                            calculateCellValue: (data) => data.donGia * data.khoiLuong
                         },//donGia
                         {
                             dataField: "isLock", width: 120, caption: "Khóa xổ",
@@ -561,6 +557,17 @@
                             }
                         },//isLock
                     ],
+                    selection: {
+                        mode: "multiple",
+                        selectAllMode: "page",
+                        showCheckBoxesMode: "always"
+                    },
+                    editing: {
+                        mode: "batch",
+                        allowAdding: false,
+                        allowDeleting: true,
+                        allowUpdating: true,
+                    },
                     onInitNewRow: (e) => {
                         e.data.isActive = true;
                         e.data.isVisible = true;
@@ -570,6 +577,57 @@
                         e.data.khoiLuong = 1;
                         e.data.isLock = false;
                     },
+                    onToolbarPreparing: (e) => {
+                        var container = e.component;
+                        e.toolbarOptions.items.unshift(
+                            {
+                                location: "before", widget: "dxButton",
+                                options: {
+                                    icon: "add", text: "công việc", stylingMode: "contained", type: "default",
+                                    onClick: () => container.addRow()
+                                }
+                            },
+                            {
+                                location: "before", widget: "dxButton",
+                                options: {
+                                    elementAttr: {
+                                        id: "btnRemoveCustome",
+                                    },
+                                    disabled: true,
+                                    icon: "remove", text: "Xóa bỏ", stylingMode: "contained", type: "danger",
+                                    onClick: () => {
+                                        var selectedData = container.getSelectedRowKeys();
+                                        if (selectedData.length > 0) {
+                                            DevExpress.ui.dialog.confirm("Bạn có chắc là xóa " + selectedData.length+" thông tin đã chọn không?", "Xác nhận thông tin").done(function (dialogResult) {
+                                                if (dialogResult) {
+                                                    d = $.Deferred();
+                                                    customStore_CongViec(item.id).remove(selectedData).then(() => {
+                                                        e.component.refresh().then(d.resolve, d.reject);
+                                                    }, d.reject);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                location: "after", widget: "dxButton",
+                                options: {
+                                    icon: "refresh", type: "default",
+                                    onClick: () => container.refresh()
+                                }
+                            })
+                    },
+                    onSelectionChanged: (e) => {
+                        $('#btnRemoveCustome').dxButton("instance").option("disabled", e.selectedRowKeys.length <= 0);
+                    },
+                    summary: {
+                        totalItems: [{
+                            column: "thanhTien",
+                            summaryType: "sum",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        } ]
+                    }
                 });
                 scrollView.append(content);
                 scrollView.dxScrollView({

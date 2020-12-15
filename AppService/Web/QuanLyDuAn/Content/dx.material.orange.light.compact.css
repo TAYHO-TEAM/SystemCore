@@ -8510,10 +8510,10 @@
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-command-select,
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content).dx-command-select {
   overflow: visible;
-  width: 28px;
-  min-width: 28px;
+  width: 40px;
+  min-width: 40px;
   padding-left: 10px;
-  padding-right: 2px;
+  padding-right: 10px;
   line-height: 1;
 }
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-cell-modified:not(.dx-field-item-content).dx-command-edit,
@@ -8724,6 +8724,9 @@
   background-color: #f88d2b;
   left: 0;
   right: 1px;
+}
+.dx-row-inserted {
+    background-color: rgba(248,141,43,.4);
 }
 .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row):not(.dx-row-focused) > .dx-datagrid-readonly .dx-texteditor .dx-texteditor-input {
   background-color: rgba(0,0,0,.04);
