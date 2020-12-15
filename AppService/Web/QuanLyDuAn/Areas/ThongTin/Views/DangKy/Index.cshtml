@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -145,8 +144,21 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "title", caption: "Tiêu đề",
-                        dataType: "string", width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
+                        dataField: "code",
+                        caption: "Mã",
+                        dataType: "string",
+                        width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
+                        editorOptions: {
+                            readOnly: true,
+                            placeholder: "auto gen",
+                        }
+                    },//tiêu đề
+                    {
+                        dataField: "title",
+                        caption: "Tiêu đề",
+                        dataType: "string",
+                        width: (WIDTH_CONTAINER < 900) ? 200 : "100%",
+                       
                     },//tiêu đề
                     {
                         dataField: "workItemId", caption: "Hạng mục",
@@ -203,6 +215,28 @@
                         dataField: "createDate", caption: "Ngày đệ trình",
                         visible :"false"
                     },//mieu tả
+                    {
+                        type: "buttons",
+                        width: 110,
+                        buttons: ["edit", "delete", {
+                            icon: "add",
+                            visible: function (e) {
+                                console.log('1');
+                                console.log(e);
+                                return e.row.data.parentId === 0 && e.row.data.insert;
+                            },
+                            onClick: function (e) {
+                                console.log(e);
+                                var obj = e.row.data;
+                                obj['parentId'] = e.row.data.id;
+                                var d = $.Deferred();
+                                customStore.insert(obj).then(() => {
+                                    e.component.refresh().then(d.resolve, d.reject);
+                                }, d.reject);
+                                e.event.preventDefault();
+                            }
+                        }]
+                    },
                 ],
                 //rowDragging: {
                 //    allowDropInsideItem: true,
@@ -231,18 +265,17 @@
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
+                    allowUpdating: (e) => {
+                        return e.row.data.parentId == 0 && e.row.data.update;
+                    },
+                    allowDeleting: (e) => {
+                        return e.row.data.parentId == 0 && e.row.data.delate;
+                    }, 
                     allowAdding: (e) => {
                         return e.row.data.parentId == 0;
                     }, 
-                    allowUpdating: (e) => {
-                        console.log(e);
-                        return e.row.data.parentId == 0;
-                    },
-                    allowDeleting: (e) => {
-                        return e.row.data.parentId == 0;
-                    }, 
                     mode: "popup",
-                    useIcons: false,
+                    useIcons: true,
                     confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
@@ -287,9 +320,8 @@
                 //    if (e.parentType === "dataRow" && e.dataField !== "title") {
                 //        return;
                 //    }
-                //    if (!e.row.isNewRow && e.row.data.chilCount > 0)
-                //       e.editorOptions.disabled = true;
-                //}
+
+                //},
                 onContextMenuPreparing: (e) => {
                     if (!e.items) e.items = [];
                     if (e.target == "content" && e.rowIndex >= 0) {

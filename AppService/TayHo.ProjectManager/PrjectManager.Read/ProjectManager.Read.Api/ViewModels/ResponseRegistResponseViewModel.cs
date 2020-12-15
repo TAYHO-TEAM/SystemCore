@@ -1,5 +1,7 @@
 ﻿using ProjectManager.Read.Api.ViewModels.BaseClasses;
+using ProjectManager.Read.Sql.DTOs.DTO;
 using System;
+using System.Collections.Generic;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
@@ -21,5 +23,12 @@ namespace ProjectManager.Read.Api.ViewModels
         public bool? Update { get; set; }
         public bool? Delate { get; set; }
         public bool? View { get; set; }
+        
+    }
+    public class ResponseRegistResponseDetailViewModel : ResponseRegistResponseViewModel
+    {
+      
+        public List<ResponseRegistDTO> ResponseRegistDTOs { get; set; }
+
     }
 }
