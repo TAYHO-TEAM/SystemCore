@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Sql.Interfaces
 {
-    public interface IRequestRegistRepository<T> where T : class
+    public interface IResponseRegistRepository<T> where T : class
     {
         //Task<PagingItems<T>> GetWithPaggingAsync(RequestBaseFilterParam requetsBaseFilterParam);GetWithDetailAsync
-        Task<PagingItems<T>> GetWithPaggingStepPermistionAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
-        Task<PagingItems<RequestRegistDetailDTO>> GetWithDetailAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
+        Task<PagingItems<T>> GetAllWithAccountAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
     }
 }
 

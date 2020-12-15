@@ -20,11 +20,14 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<RequestRegistDTO> _dOBaseRepository;
         private readonly IRequestRegistRepository<RequestRegistDTO> _requestRegistRepository;
+        private readonly IRequestRegistRepository<RequestRegistDetailDTO> _requestRegistDetailRepository;
         private const string GetByAccountID= nameof(GetByAccountID);
-        public RequestRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<RequestRegistDTO> dOBaseRepository, IRequestRegistRepository<RequestRegistDTO> requestRegistRepository) : base(mapper,httpContextAccessor)
+        private const string GetDetail = nameof(GetDetail);
+        public RequestRegistController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<RequestRegistDTO> dOBaseRepository, IRequestRegistRepository<RequestRegistDTO> requestRegistRepository, IRequestRegistRepository<RequestRegistDetailDTO> requestRegistDetailRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
             _requestRegistRepository=requestRegistRepository;
+            _requestRegistDetailRepository = requestRegistDetailRepository;
         }
         /// <summary>
         /// Get List of RequestRegist.
@@ -49,7 +52,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
             return Ok(methodResult);
         }
         /// <summary>
-        /// Get List of RequestRegistƯithAccont.
+        /// Get List of RequestRegistWithAccontId.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -68,6 +71,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<ResponseRegistResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of RequestRegistDetail.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetDetail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<ResponseRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetRequestRegisDetailAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<ResponseRegistResponseDetailViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.RequestRegist_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _requestRegistDetailRepository.GetWithDetailAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<ResponseRegistResponseDetailViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<ResponseRegistResponseDetailViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

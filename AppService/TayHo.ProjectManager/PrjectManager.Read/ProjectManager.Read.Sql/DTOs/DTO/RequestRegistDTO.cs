@@ -21,6 +21,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public bool? Update { get; set; }
         public bool? Delate { get; set; }
         public bool? View { get; set; }
+        public string AccountName { get; set; }
     }
     public class RequestRegistDetailDTO : DTOChilCountBase
     {
@@ -39,6 +40,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public bool? Update { get; set; }
         public bool? Delate { get; set; }
         public bool? View { get; set; }
+        public string AccountName { get; set; }
         public List<ResponseRegistDTO> ResponseRegistDTOs { get; set; }
     }
 }

@@ -1,16 +1,17 @@
 ﻿@model int
 <div id="container_detail" data-id="@Model"></div>
 <script>
-    var ACTION_RESPON = "/NS_CongViec";
+    var ACTION_MAIN = "/RequestRegist";
+    var ACTION_REQUESTDETAIL = "/RequestRegist/GetDetail";
 
-    var customStore_CongViec = new DevExpress.data.CustomStore({
+    var customStore_RequestDetail = new DevExpress.data.CustomStore({
         key: "id",
         load: (values) => {
             let deferred = $.Deferred();
             let params = {
                 'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                 'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                'FindId': 'nhomCongViecId,' + $('#container_detail').data('id') +';isActive,1;isVisible,1'
+                'FindId': + $('#container_detail').data('id') +';isActive,1;isVisible,1'
             }
             if (values.sort) {
                 params['SortCol'] = values.sort[0].selector;
@@ -19,7 +20,7 @@
             $.ajax({
                 headers: header, dataType: "json",
                 data: params,
-                url: URL_API_PM_READ + ACTION_CONGVIEC,
+                url: URL_API_PM_READ + ACTION_REQUESTDETAIL,
                 success: function (data) {
                     var list = data.result.items;
                     deferred.resolve(
@@ -37,18 +38,18 @@
             });
             return deferred.promise();
         },
-        insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
-        update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
-        remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+        insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_MAIN, values),
+        update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_MAIN, key, values),
+        remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_MAIN, key),
     });
 
     $(function () {
-        loadCongViec();
+        loadMain();
     });
 
-    var loadCongViec = () => {
+    var loadMain = () => {
         $('#container_detail').dxDataGrid({
-            dataSource: customStore_CongViec,
+            dataSource: customStore_RequestDetail,
             remoteOperations: {
                 paging: true,
                 sorting: true,
@@ -76,17 +77,12 @@
                     cellTemplate: (c, o) => $("<div />").append(o.rowIndex + 1).appendTo(c),
                 },//STT
                 {
-                    dataField: "tenCongViec", caption: "Thông tin / nội dung công việc",
+                    dataField: "code", caption: "Mã",
                     dataType: "string", alignment: "left",
-                    editorType: "dxTextBox",
-                    editorOptions: {
-                        placeholder: "Vui lòng nhập...",
-                        showClearButton: true,
-                    },
                     validationRules: [{ type: "required" }]
-                },//tenCongViec
+                },//code
                 {
-                    dataField: "dienGiai", caption: "Diễn giải", dataType: "string", alignment: "left",
+                    dataField: "title", caption: "Tên ", dataType: "string", alignment: "left",
                     cellTemplate: (c, o) => $("<div />").append((o.value == null || o.value.length == 0) ? "--" : o.value).appendTo(c),
                     editorOptions: {
                         placeholder: "Vui lòng nhập...",
