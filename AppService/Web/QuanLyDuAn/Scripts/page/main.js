@@ -38,8 +38,7 @@ function loadMenu() {
     };
 
     $.ajax({
-        headers: header,
-        url: url, dataType: "json", data: params,
+        headers: header, url: url, dataType: "json", data: params, async: false,
         success: function (data) { 
             if (data.isOk) {
                 container.html(null);
@@ -60,12 +59,35 @@ function loadMenu() {
                 var aTarget = $(this).find('a');
                 $(this).toggleClass("menu-open", window.location.pathname.includes(aTarget.attr('href')));
                 if (window.location.pathname == aTarget.attr('href')) {
+
+                    
+
                     PermitInAction['id'] = aTarget.data('id');
                     console.log(PermitInAction);
+                    checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active', true);
                 }
                 
             });
+        },
+    }); 
+}
+
+let checkPermitInAction = (id, url) => {
+    var params = { FindId: id };
+    $.ajax({
+        headers: header, url: url, dataType: "json", data: params,
+        success: function (data) {
+            if (data.isOk) {
+                console.log(data);
+            } else {
+                DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
+                console.log(data);
+            }
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
+            console.log(xhr);
         },
     });
 }
