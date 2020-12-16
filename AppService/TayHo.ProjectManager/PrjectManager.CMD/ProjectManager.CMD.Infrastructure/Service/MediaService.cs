@@ -2,23 +2,20 @@
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Acc.Cmd.Domain.Services;
 using Services.Common.Media;
 using Services.Common.Utilities;
 using System.IO;
 using System.IO.Compression;
 using Services.Common.Options;
 using Microsoft.AspNetCore.Hosting;
+using ProjectManager.CMD.Domain.IService;
 
-namespace Acc.Cmd.Infrastructure.Services
+namespace ProjectManager.CMD.Infrastructure.Service
 {
     public class MediaService : IMediaService
     {
@@ -32,37 +29,37 @@ namespace Acc.Cmd.Infrastructure.Services
             _env = env;
         }
 
-        public async Task<List<MediaResponse>> UploadFileAsync(IEnumerable<IFormFile> formFiles)
-        {
-            if (formFiles == null || !formFiles.Any()) return default;
-            var listOfMediaResponse = new List<MediaResponse>();
-            var fileType = new FileType();
-            var client = _clientFactory.CreateClient();
-            int i = 0;
+        //public async Task<List<MediaResponse>> UploadFileAsync(IEnumerable<IFormFile> formFiles)
+        //{
+        //    if (formFiles == null || !formFiles.Any()) return default;
+        //    var listOfMediaResponse = new List<MediaResponse>();
+        //    var fileType = new FileType();
+        //    var client = _clientFactory.CreateClient();
+        //    int i = 0;
 
-            foreach (var formFile in formFiles)
-            {
-                var fileTypeVerifyResult = await fileType.ProcessFormFile(formFile, _mediaOptions.PermittedExtensions, _mediaOptions.SizeLimit);
-                HandleFileErrorCode(fileTypeVerifyResult);
-                MultipartFormDataContent content = new MultipartFormDataContent();
-                StringContent strFolderName = new StringContent(_mediaOptions.FolderForWeb);
-                ByteArrayContent byteArrayContent = new ByteArrayContent(fileTypeVerifyResult.Result);
+        //    foreach (var formFile in formFiles)
+        //    {
+        //        var fileTypeVerifyResult = await fileType.ProcessFormFile(formFile, _mediaOptions.PermittedExtensions, _mediaOptions.SizeLimit);
+        //        HandleFileErrorCode(fileTypeVerifyResult);
+        //        MultipartFormDataContent content = new MultipartFormDataContent();
+        //        StringContent strFolderName = new StringContent(_mediaOptions.FolderForWeb);
+        //        ByteArrayContent byteArrayContent = new ByteArrayContent(fileTypeVerifyResult.Result);
 
-                content.Add(strFolderName, "pFolder");
-                content.Add(byteArrayContent, "File" + i, Uri.EscapeDataString(formFile.FileName));
+        //        content.Add(strFolderName, "pFolder");
+        //        content.Add(byteArrayContent, "File" + i, Uri.EscapeDataString(formFile.FileName));
 
-                var response = await client.PostAsync(new Uri(string.Concat(_mediaOptions.MediaUploadUrl.ToString())), content);
-                var resultApi = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(resultApi))
-                {
-                    var lstOfMediaIntegrationResponse = JsonConvert.DeserializeObject<List<MediaIntegrationResponse>>(resultApi);
-                    if (lstOfMediaIntegrationResponse != null && lstOfMediaIntegrationResponse.Any())
-                        listOfMediaResponse.AddRange(lstOfMediaIntegrationResponse.Select(x => new MediaResponse(x.TenFile, x.DuongDan, x.DungLuong)));
-                }
-                i++;
-            }
-            return listOfMediaResponse;
-        }
+        //        var response = await client.PostAsync(new Uri(string.Concat(_mediaOptions.MediaUploadUrl.ToString())), content);
+        //        var resultApi = await response.Content.ReadAsStringAsync();
+        //        if (!string.IsNullOrEmpty(resultApi))
+        //        {
+        //            var lstOfMediaIntegrationResponse = JsonConvert.DeserializeObject<List<MediaIntegrationResponse>>(resultApi);
+        //            if (lstOfMediaIntegrationResponse != null && lstOfMediaIntegrationResponse.Any())
+        //                listOfMediaResponse.AddRange(lstOfMediaIntegrationResponse.Select(x => new MediaResponse(x.TenFile, x.DuongDan, x.DungLuong)));
+        //        }
+        //        i++;
+        //    }
+        //    return listOfMediaResponse;
+        //}
 
         private void HandleFileErrorCode(FileTypeVerifyResult fileTypeVerifyResult)
         {
@@ -102,28 +99,15 @@ namespace Acc.Cmd.Infrastructure.Services
             }
         }
 
-
-
-
-        public async Task<int> SaveFile(IFormFileCollection files)
+        public async Task<int> SaveFile(IFormFileCollection files,string localtion, string filename,string fullname)
         {
-            //subDirectory = subDirectory ?? string.Empty;
             int result = 0;
-            //foreach (var file in files)
-            //{
-            //    if (file.Length <= 0) return 0;
-            //    //    var filePath = Path.Combine(target, file.FileName);
-            //    //    using (var stream = new FileStream(filePath, FileMode.Create))
-            //    //    {
-            //    //        await file.CopyToAsync(stream);
-            //    //    }
-            //}
             try
             {
-                var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads"); 
-                Directory.CreateDirectory(uploadPath);
-                var provider = new MultipartFormDataStreamProvider(uploadPath);
-                var target = Path.Combine(@"f:\upload\");
+                //var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads");
+                //Directory.CreateDirectory(uploadPath);
+                //var provider = new MultipartFormDataStreamProvider(uploadPath);
+                var target = Path.Combine(localtion);
 
                 Directory.CreateDirectory(target);
                 foreach (var file in files)
@@ -138,9 +122,9 @@ namespace Acc.Cmd.Infrastructure.Services
             }
             catch
             {
-                result=  0;
+                result = 0;
             }
-            return  result;
+            return result;
         }
 
         public async Task<FileResponse> FetechFiles(string subDirectory)

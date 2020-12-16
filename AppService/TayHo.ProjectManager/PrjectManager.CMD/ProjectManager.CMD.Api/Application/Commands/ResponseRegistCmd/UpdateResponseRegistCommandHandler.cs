@@ -46,7 +46,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingResponseRegist.SetGroupId(request.GroupId);
             existingResponseRegist.SetReplyId(request.ReplyId);
             existingResponseRegist.SetNoAttachment(request.NoAttachment);
-            existingResponseRegist.SetIsApprove(request.IsApprove);
+            existingResponseRegist.SetIsApprove( true);
             existingResponseRegist.SetTypeOfResult(request.TypeOfResult);
 
             existingResponseRegist.SetUpdate(_user,0);
