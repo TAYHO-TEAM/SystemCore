@@ -7,10 +7,36 @@
     <style>
     </style>
 }
-
+<div id="popup-main-sub"></div>
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+<div class="dx-viewport demo-container">
+    <div id="fileuploader">
+        <div class="widget-container">
+            <div id="file-uploader"></div>
+            <div class="content" id="selected-files">
+                <div>
+                    <h4>Selected Files</h4>
+                </div>
+            </div>
+        </div>
+        <div class="options">
+            <div class="caption">Options</div>
+            <div class="option">
+                <span>File types</span>
+                <div id="accept-option"></div>
+            </div>
+            <div class="option">
+                <span>Upload mode</span>
+                <div id="upload-option"></div>
+            </div>
+            <div class="option">
+                <div id="multiple-option"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -261,7 +287,8 @@
                         dataField: "documentTypeId", caption: "Loại tài liệu",
                         lookup: {
                             dataSource: customStore_DocumetnType,
-                            valueExpr: "id", displayExpr: "title",
+                            valueExpr: "id",
+                            displayExpr: "title",
                         },
                         editorType: "dxLookup",
                         editorOptions: {
@@ -465,6 +492,9 @@
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div/>");
                 content.dxDataGrid({
+                    elementAttr: {
+                        id: "dxDataGrid_detail"
+                    },
                     dataSource: customStore_Detail(item.id),
                     remoteOperations: {
                         paging: true,
@@ -554,12 +584,21 @@
                             })
                     },
                     masterDetail: {
+
                         enabled: true,
                         template: function (container, options) {
                             console.log(options);
                             var data = options.data;
                             $("<div>")
                                 .dxDataGrid({
+                                    showBorders: true,
+                                    showColumnHeaders: true,
+                                    showColumnLines: false,
+                                    hoverStateEnabled: true,
+                                    showRowLines: true,
+                                    columnAutoWidth: true,
+                                    wordWrapEnabled: true,
+                                    rowAlternationEnabled: true,
                                     dataSource: data.responseRegistDTOs,
                                     columnAutoWidth: true,
                                     columns: [{
@@ -577,8 +616,13 @@
                                         //validationRules: [{ type: "required" }]
                                     },//tenCo
                                     {
-                                        dataField: "isApprove", caption: "Kết quả đánh giá",
-                                        dataType: "string", alignment: "left",
+                                        dataField: "typeOfResult",
+                                        caption: "Kết quả đánh giá",
+                                        dataType: "number",
+                                        alignment: "left",
+                                        cellTemplate: (container, options) => {
+                                            container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
+                                        },
                                         //editorType: "dxTextBox",
                                         //editorOptions: {
                                         //    placeholder: "Vui lòng nhập...",
@@ -591,8 +635,10 @@
                                         dataType: "string", alignment: "left",
                                     },
                                     {
-                                        dataField: "descriptions", caption: "Mô tả",
-                                        dataType: "string", alignment: "left",
+                                        dataField: "description",
+                                        caption: "Nhận xét",
+                                        dataType: "string",
+                                        alignment: "left",
                                     },
                                     {
                                         dataField: "noAttachment", caption: "File đính kèm",
@@ -602,6 +648,10 @@
                                         type: "buttons",
                                         buttons: [{
                                             icon: "add",
+                                            visible: function (e) {
+                                                console.log(e);
+                                                return e.row.data.update;
+                                            },
                                             onClick: function (e) {
                                                 loadRate(e.row.data);
                                             }
@@ -623,7 +673,7 @@
             }
         });
         /// Load Popup Rate
-        let loadRate = (item) => $("#popup-main").dxPopup({
+        let loadRate = (item) => $("#popup-main-sub").dxPopup({
             width: "80%", height: "60%",
             fullScreen: false,
             dragEnabled: true,
@@ -642,8 +692,14 @@
                         sorting: true,
                     },
                     repaintChangesOnly: true,
-                    showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                    showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                    showBorders: true,
+                    showColumnHeaders: true,
+                    showColumnLines: false,
+                    hoverStateEnabled: true,
+                    showRowLines: true,
+                    columnAutoWidth: true,
+                    wordWrapEnabled: true,
+                    rowAlternationEnabled: true,
                     paging: {
                         enabled: true,
                         pageSize: 20
@@ -652,6 +708,7 @@
                         showPageSizeSelector: true,
                         allowedPageSizes: [10, 20, 40],
                         showInfo: true,
+
                     },
                     columns: [
                         {
@@ -677,10 +734,11 @@
                         },//rev
                         {
                             dataField: "typeOfResult",
-                            caption: "Kết quả ",
+                            caption: "Kết quả",
                             dataType: "number",
+                            alignment: "left",
                             cellTemplate: (container, options) => {
-                                container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại':'')
+                                container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
                             },
                             editorOptions: {
                                 dataSource: typeApprove,
@@ -739,9 +797,71 @@
                 });
                 c.append(scrollView);
                 return c;
+            },
+            onHidden: (c) => {
+                $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
             }
         });
 
+        $(function () {
+            var fileUploader = $("#file-uploader").dxFileUploader({
+                multiple: false,
+                accept: "*",
+                value: [],
+                uploadMode: "instantly",
+                uploadUrl: "https://js.devexpress.com/Demos/NetCore/FileUploader/Upload",
+                onValueChanged: function (e) {
+                    var files = e.value;
+                    if (files.length > 0) {
+                        $("#selected-files .selected-item").remove();
+                        $.each(files, function (i, file) {
+                            var $selectedItem = $("<div />").addClass("selected-item");
+                            $selectedItem.append(
+                                $("<span />").html("Name: " + file.name + "<br/>"),
+                                $("<span />").html("Size " + file.size + " bytes" + "<br/>"),
+                                $("<span />").html("Type " + file.type + "<br/>"),
+                                $("<span />").html("Last Modified Date: " + file.lastModifiedDate)
+                            );
+                            $selectedItem.appendTo($("#selected-files"));
+                        });
+                        $("#selected-files").show();
+                    }
+                    else
+                        $("#selected-files").hide();
+                }
+            }).dxFileUploader("instance");
 
+            $("#accept-option").dxSelectBox({
+                dataSource: [
+                    { name: "All types", value: "*" },
+                    { name: "Images", value: "image/*" },
+                    { name: "Videos", value: "video/*" }
+                ],
+                valueExpr: "value",
+                displayExpr: "name",
+                value: "*",
+                onValueChanged: function (e) {
+                    fileUploader.option("accept", e.value);
+                }
+            });
+
+
+            $("#upload-option").dxSelectBox({
+                items: ["instantly", "useButtons"],
+                value: "instantly",
+                onValueChanged: function (e) {
+                    fileUploader.option("uploadMode", e.value);
+                }
+            });
+
+
+            $("#multiple-option").dxCheckBox({
+                value: false,
+                text: "Allow multiple files selection",
+                onValueChanged: function (e) {
+                    fileUploader.option("multiple", e.value);
+                }
+            });
+        });
     </script>
 }
