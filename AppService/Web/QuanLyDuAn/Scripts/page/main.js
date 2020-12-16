@@ -3,7 +3,7 @@ var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
 var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 var header = {};
-
+var PermitInAction = { id:0, view: false, insert: false, update: false, delete: false }
 
 DevExpress.localization.locale('vi');
 
@@ -31,18 +31,17 @@ function loadMenu() {
     $('.user-panel div.info a').html(UserCurrentInfo.userName);
     $('.user-panel div.info span').html(UserCurrentInfo.title);
     //LoadMenu
-    var rs = "", url = URL_API_ACC_READ + "/Actions";
+    var rs = "", url = URL_API_ACC_READ + "/Actions/getMenuOfUser";
     var container = $(".list-menu-left");
-    var params = {
-        PageSize: 0,
-        PageNumber: 0,
-        SortCol: "priority",
-        SortADSC: 1
+    var params = { 
+        FindParentId: 5
     };
 
-    $.getJSON(url, params)
-        .done(function (data, textStatus, jqXHR) {
-            if (textStatus == "success" && data.isOk) {
+    $.ajax({
+        headers: header,
+        url: url, dataType: "json", data: params,
+        success: function (data) { 
+            if (data.isOk) {
                 container.html(null);
                 var listMenu = data.result.items;
                 listMenu.filter(e => e.parentId === 0).forEach(x => rs += menuItem(x, listMenu));
@@ -50,23 +49,31 @@ function loadMenu() {
                 DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy danh sách menu", "error", 3000);
                 console.log(jqXHR);
             }
-        })
-        .fail(function (jqxhr, settings, ex) {
+        },
+        error: function (xhr, textStatus, errorThrown) {
             DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy danh sách menu", "error", 3000);
-            console.log(ex);
-        }).always(function () {
+            console.log(xhr);
+        },
+        complete: function () {
             container.html(rs);
             $.each($('.nav').find('li'), function () {
-                $(this).toggleClass("menu-open", window.location.pathname.includes($(this).find('a').attr('href')));
-                $(this).children(".nav-link").toggleClass('active', window.location.pathname == ($(this).find('a').attr('href')));
+                var aTarget = $(this).find('a');
+                $(this).toggleClass("menu-open", window.location.pathname.includes(aTarget.attr('href')));
+                if (window.location.pathname == aTarget.attr('href')) {
+                    PermitInAction['id'] = aTarget.data('id');
+                    console.log(PermitInAction);
+                    $(this).children(".nav-link").addClass('active', true);
+                }
+                
             });
-        });
+        },
+    });
 }
 
 let menuItem = (item, list) => {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
-        <a class='nav-link' href='" + item.url + "'>\
+        <a class='nav-link' data-id='"+ item.id+"' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
         </a>";

@@ -8755,7 +8755,7 @@
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort,
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort-indicator,
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td:hover .dx-datagrid-text-content {
-  color: rgba(0,0,0,.87);
+  color: white !important;
 }
 .dx-datagrid-headers .dx-datagrid-table .dx-row > td:hover .dx-sort {
   color: rgba(0,0,0,.38);

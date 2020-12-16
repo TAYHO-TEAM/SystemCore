@@ -2,7 +2,7 @@
 
 namespace ProjectManager.Read.Api.ViewModels
 {
-    public class NS_GiaiDoanResponseViewModel : BaseResponseViewModel
+    public class NS_GiaiDoanResponseViewModel : BaseResponseChilCountViewModel
     {
         public string TenGiaiDoan { get; set; }
         public string DienGiai { get; set; }

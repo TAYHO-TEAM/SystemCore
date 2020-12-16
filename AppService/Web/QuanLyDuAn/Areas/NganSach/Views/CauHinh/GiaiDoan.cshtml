@@ -15,14 +15,19 @@
 @section script{
     <script>
         const ACTION = "/NS_GiaiDoan";
-        var WIDTH_CONTAINER = $("#container").width();
+        const ACTION_GROUP = "/Groups";
+        const ACTION_PROJECT = "/Projects"; 
+        var capDoList = [
+            { value: "HM", text: "Hạng mục" },
+            { value: "NCV", text: "Nhóm công việc" },
+            { value: "CV", text: "Công việc" }] 
 
-        let customStore = new DevExpress.data.CustomStore({
+        var customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                let deferred = $.Deferred(), params = {};
-
-                params = {
+                let deferred = $.Deferred(); 
+                var params = {
+                    'FindId': 'projectId,' + PROJECTID,
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                 };
@@ -37,12 +42,7 @@
                     dataType: "json",
                     data: params,
                     success: function (data) {
-                        deferred.resolve(
-                            data.result.items,
-                            {
-                                totalCount: data.result.pagingInfo.totalItems,
-                            }
-                        );
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems});
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -56,6 +56,51 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
+        var customStore_Groups = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_ACC_READ + ACTION_GROUP,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Groups'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        }); 
+
 
         $(function () {
             loadData(customStore);
@@ -68,6 +113,7 @@
                 remoteOperations: {
                     paging: true,
                     sorting: true,
+                    filtering: true,
                 },              
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
@@ -78,11 +124,12 @@
                         editorType: "dxNumberBox",
                         editorOptions: { 
                             min: 1, step: 1, showSpinButtons: true,
-                        }, sortOrder: "desc"
+                        }, sortOrder: "desc",
+                        cellTemplate:(c,o)=>c.append(o.rowIndex+1)
                     },
                     {
                         dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataType: "string", cssClass:"font-weight-bold",
                         editorOptions: {
                             placeholder: "Vui lòng nhập...",
                             showClearButton: true
@@ -91,21 +138,49 @@
                     },
                     {
                         dataField: "dienGiai", caption: "Diễn giải",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataType: "string",
                         editorOptions: {
                             placeholder: "Vui lòng nhập(nếu có)...",
                             showClearButton: true
                         },
                     },
                     {
+                        dataField: "capDo", caption: "Cấp tương tác",
+                        dataType: "string", alignment:"center",
+                        editorType: "dxSelectBox",
+                        lookup: {
+                            dataSource: capDoList,
+                            valueExpr: "value", displayExpr: "text",
+                        },
+                        editorOptions: {
+                            dataSource: capDoList,
+                            valueExpr: "value", displayExpr: "text", 
+                            placeholder: "Vui lòng chọn...",  
+                        },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "groupId", caption: "Nhóm tương tác",
+                        lookup: {
+                            dataSource: customStore_Groups,
+                            valueExpr: "id", displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox", 
+                        editorOptions: {
+                            dataSource: customStore_Groups,
+                            valueExpr: "id", displayExpr: "title", 
+                            placeholder: "Vui lòng chọn...",  
+                        },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
                         dataField: "isActive", width: 100,
                         editorType: "dxSwitch",
-                    },
-
+                    }, 
                     {
                         dataField: "isVisible", width: 100,
                         editorType: "dxSwitch",
-                    },  
+                    }, 
                 ],
                 paging: {
                     enabled: true,
@@ -120,7 +195,7 @@
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
                     searchVisibleColumnsOnly: true,
-                    visible: WIDTH_CONTAINER > 350
+                    visible: true
                 },
                 editing: {
                     allowAdding: true,
@@ -129,13 +204,30 @@
                     mode: "cell",
                     useIcons: false, confirmDelete: true,
                 }, 
-                onToolbarPreparing: (e) => {
+                onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift( 
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "before", widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_Projects,
+                                valueExpr: "id", displayExpr: "title",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: PROJECTID,
+                                onValueChanged: function (data) {
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
                         {
                             location: "after", widget: "dxButton",
                             options: {
-                                icon: "refresh",  
+                                icon: "refresh", tylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
                             }
                         })
