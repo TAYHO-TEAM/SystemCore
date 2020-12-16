@@ -183,6 +183,7 @@
     <Compile Include="Areas\Admin\Controllers\WorkItemsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\HangMucController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
     <Compile Include="Areas\ThongTin\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\DangKyController.cs" />
@@ -2444,6 +2445,7 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\PheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_DetailRequestRegist.cshtml" />
+    <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

@@ -35,7 +35,7 @@ function loadMenu() {
     var container = $(".list-menu-left");
 
     $.ajax({
-        headers: header, url: url, dataType: "json", data: { FindParentId: 5 },
+        headers: header, url: url, dataType: "json", data: { FindParentId: 5 }, async: false,
         success: function (data) { 
             if (data.isOk) {
                 container.html(null);
