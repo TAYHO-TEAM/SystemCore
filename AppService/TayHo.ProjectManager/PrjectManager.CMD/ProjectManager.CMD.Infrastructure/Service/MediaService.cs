@@ -14,6 +14,7 @@ using System.IO.Compression;
 using Services.Common.Options;
 using Microsoft.AspNetCore.Hosting;
 using ProjectManager.CMD.Domain.IService;
+using System.Net.Http.Headers;
 
 namespace ProjectManager.CMD.Infrastructure.Service
 {
@@ -101,6 +102,8 @@ namespace ProjectManager.CMD.Infrastructure.Service
 
         public async Task<int> SaveFile(IFormFileCollection files,string localtion, string filename,string fullname)
         {
+            var folderName = Path.Combine("Resources", "Images");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             int result = 0;
             try
             {
@@ -112,7 +115,10 @@ namespace ProjectManager.CMD.Infrastructure.Service
                 Directory.CreateDirectory(target);
                 foreach (var file in files)
                 {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
                     if (file.Length <= 0) return 0;
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
                     var filePath = Path.Combine(target, file.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
