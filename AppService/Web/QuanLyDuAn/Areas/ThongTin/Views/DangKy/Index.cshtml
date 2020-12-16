@@ -650,7 +650,7 @@
                                             icon: "add",
                                             visible: function (e) {
                                                 console.log(e);
-                                                return e.row.data.update;
+                                                return e.row.data.update && !e.row.data.isApprove ;
                                             },
                                             onClick: function (e) {
                                                 loadRate(e.row.data);
@@ -746,6 +746,7 @@
                                 valueExpr: "value",
                             },
                             editorType: "dxSelectBox",
+                            validationRules: [{ type: "required" }],
                         },//account
                         //{
                         //    dataField: "descriptions", caption: "Mô tả",
