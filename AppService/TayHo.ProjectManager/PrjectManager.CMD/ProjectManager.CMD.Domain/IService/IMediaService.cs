@@ -7,7 +7,7 @@ namespace ProjectManager.CMD.Domain.IService
     public interface IMediaService
     {
         //Task<List<MediaResponse>> UploadFileAsync(IEnumerable<IFormFile> formFiles);
-        Task<int> SaveFile(IFormFileCollection files);
+        Task<int> SaveFile(IFormFileCollection files, string localtion, string filename, string fullname);
         Task<FileResponse> FetechFiles(string subDirectory);
     }
 }
