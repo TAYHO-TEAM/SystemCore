@@ -13,6 +13,7 @@ using Services.Common.Paging;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
@@ -38,7 +39,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
             var methodResult = new MethodResult<PagingItems<NS_GiaiDoanResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.NS_GiaiDoan_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<NS_GiaiDoanResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
