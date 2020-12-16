@@ -3,7 +3,7 @@ var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
 var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 var header = {};
-var PermitInAction = { id:0, view: false, insert: false, update: false, delete: false }
+var PermitInAction = { id: 0, view: false, insert: false, update: false, delete: false, readonly: false };
 
 DevExpress.localization.locale('vi');
 
@@ -33,12 +33,9 @@ function loadMenu() {
     //LoadMenu
     var rs = "", url = URL_API_ACC_READ + "/Actions/getMenuOfUser";
     var container = $(".list-menu-left");
-    var params = { 
-        FindParentId: 5
-    };
 
     $.ajax({
-        headers: header, url: url, dataType: "json", data: params, async: false,
+        headers: header, url: url, dataType: "json", data: { FindParentId: 5 },
         success: function (data) { 
             if (data.isOk) {
                 container.html(null);
@@ -59,36 +56,45 @@ function loadMenu() {
                 var aTarget = $(this).find('a');
                 $(this).toggleClass("menu-open", window.location.pathname.includes(aTarget.attr('href')));
                 if (window.location.pathname == aTarget.attr('href')) {
-
-                    
-
-                    PermitInAction['id'] = aTarget.data('id');
-                    console.log(PermitInAction);
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active', true);
+                } else if (window.location.pathname == "/" && aTarget.attr('href') == "/Home") { 
+                    checkPermitInAction(aTarget.data('id'), url);
+                    $(this).children(".nav-link").addClass('active');
                 }
-                
             });
         },
     }); 
 }
 
-let checkPermitInAction = (id, url) => {
-    var params = { FindId: id };
+var checkPermitInAction=(id, url) => { 
     $.ajax({
-        headers: header, url: url, dataType: "json", data: params,
-        success: function (data) {
-            if (data.isOk) {
-                console.log(data);
+        headers: header, url: url, dataType: "json", data: { FindId: id }, async: false,
+        success: (data) =>  {
+            if (data && data.isOk && data.result && data.result.items.length>0) {
+                var list = data.result.items;
+                PermitInAction = {
+                    id: id,
+                    readonly: list.filter(x => x.permistionId == 1).length > 0,
+                    insert: list.filter(x => x.permistionId == 2).length > 0,
+                    update: list.filter(x => x.permistionId == 3).length > 0,
+                    delete: list.filter(x => x.permistionId ==4).length > 0,
+                    view: list.filter(x => x.permistionId == 5).length > 0,
+                }; 
             } else {
                 DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
                 console.log(data);
             }
         },
-        error: function (xhr, textStatus, errorThrown) {
+        error: (xhr, textStatus, errorThrown) => {
             DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
             console.log(xhr);
-        },
+        }, 
+        complete: () => {
+            console.log(PermitInAction);
+            if (!PermitInAction['view'])
+                window.location = "/Account/NoAuthentication";
+        }
     });
 }
 
@@ -150,7 +156,6 @@ var ajax_insert = (url, values) => {
     });
     return deferred.promise();
 }
-
 var ajax_update = (url, key, values) => {
     var keyObj = JSON.parse('{"id":' + key + '}');
     var deferred = $.Deferred();
@@ -168,7 +173,6 @@ var ajax_update = (url, key, values) => {
     });
     return deferred.promise();
 }
-
 var ajax_delete = (url, key) => {
     var deferred = $.Deferred();
     var keys = typeof (key) == 'number' ? [key] : key;

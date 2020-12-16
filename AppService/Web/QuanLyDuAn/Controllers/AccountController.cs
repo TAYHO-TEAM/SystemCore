@@ -12,5 +12,9 @@ namespace QuanLyDuAn.Controllers
         {
             return View();
         }
+        public ActionResult NoAuthentication()
+        {
+            return View();
+        }
     }
 }
