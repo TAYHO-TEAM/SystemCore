@@ -19,11 +19,14 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class NS_HangMucController : APIControllerBase
     {
         private readonly IDOBaseRepository<NS_HangMucDTO> _dOBaseRepository;
+        private readonly INS_HangMucRepository<NS_HangMuc_HangMucDetailDTO> _nS_HangMucRepository;
         private const string Treelist = nameof(Treelist);
+        private const string HangMucDetail = nameof(HangMucDetail);
 
-        public NS_HangMucController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_HangMucDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public NS_HangMucController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<NS_HangMucDTO> dOBaseRepository, INS_HangMucRepository<NS_HangMuc_HangMucDetailDTO> nS_HangMucRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _nS_HangMucRepository = nS_HangMucRepository;
         }
 
         /// <summary>
@@ -66,6 +69,28 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<NS_HangMucResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of NS_HangMuc.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(HangMucDetail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_HangMuc_HangMucDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetNS_HangMuc_HangMucDetailAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<NS_HangMuc_HangMucDetailResponseViewModel>>();
+            RequestBaseFilterParam  requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.NS_HangMuc_TABLENAME;
+            var queryResult = await _nS_HangMucRepository.GetHangMuc_HangMucDetailAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_HangMuc_HangMucDetailResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<NS_HangMuc_HangMucDetailResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

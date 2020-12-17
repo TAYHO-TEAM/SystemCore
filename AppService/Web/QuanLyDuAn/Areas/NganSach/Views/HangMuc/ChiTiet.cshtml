@@ -5,18 +5,18 @@
 }
 
 <div class="row">
-    <div class="col-4"> 
+    <div class="col-12"> 
         <div id="container_hangmuc" class="elevation-2"></div>
     </div>
-    <div class="col-8"> 
+    @*<div class="col-8"> 
         <div id="container_hangmuc_detail" class="elevation-2"></div>
-    </div>
+    </div>*@
 </div>
 
 
 @section script{
     <script>
-        var GIAIDOANID = isNullOrEmpty(localStorage.getItem("giaiDoanIdCurrent")) ? parseInt(localStorage.getItem("giaiDoanIdCurrent")) : 0;
+        //var GIAIDOANID = isNullOrEmpty(localStorage.getItem("giaiDoanIdCurrent")) ? parseInt(localStorage.getItem("giaiDoanIdCurrent")) : 0;
 
         const ACTION_PROJECT = "/Projects";
         const ACTION_HANGMUC = "/NS_HangMuc";
@@ -89,7 +89,7 @@
                 $.ajax({
                     headers: header, dataType: "json",
                     data: params,
-                    url: URL_API_PM_READ + ACTION_HANGMUC,
+                    url: URL_API_PM_READ + ACTION_HANGMUC+'/HangMucDetail',
                     success: function (data) {
                         deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
@@ -101,35 +101,62 @@
                 });
                 return deferred.promise();
             },
-        });
-        var customStore_HangMucDetail = (id) => new DevExpress.data.CustomStore({
-            key: "id", 
-            load: (values) => { 
-                let deferred = $.Deferred();
-                var params = {
-                    'FindId': 'hangMucId,'+id,
-                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                };
-                if (values.sort) {
-                    params['SortCol'] = values.sort[0].selector;
-                    params['SortADSC'] = values.sort[0].desc;
-                }
+            update: (key, values) => {
+                console.log(key);
+                console.log(values);
+                var deferred = $.Deferred();
                 $.ajax({
-                    headers: header, dataType: "json",
-                    data: params,
+                    headers: header,
                     url: URL_API_PM_READ + ACTION_HANGMUCDETAIL,
-                    success: function (data) {
-                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    dataType: "json", type: "GET", async: false,
+                    data: {
+                        FindId: 'hangMucId,' + key + ';giaiDoanId,' + values.giaiDoanId
+                    },
+                    success: function (rs) {
+                        if (rs.isOk) {
+                            if (rs.result && rs.result.items.length > 0) {
+                                //UPDATE
+                                //customStore_HangMucDetail.update(values.hangMucDetailId,
+                                //    { 
+                                //        "giaiDoanId": values.giaiDoanId,
+                                //        "giaTri": values.giaTri
+                                //    }
+                                //).then(() => {
+                                //    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                                //}, deferred.reject);
+                            } else {
+                                //CREATE
+                                customStore_HangMucDetail.insert(
+                                    {
+                                        "hangMucId": key,
+                                        "giaiDoanId": values.giaiDoanId,
+                                        "giaTri": values.giaTri,
+                                        "isActive": true,
+                                        "isVisible": true
+                                    }
+                                ).then(() => {
+                                    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                                }, deferred.reject);
+                            }
+                            deferred.resolve();
+                        } else {
+                            console.log(rs);
+                            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+                        }
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
+                        deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
                     },
                     timeout: 10000
                 });
                 return deferred.promise();
-            },
+            }
+        });
+        var customStore_HangMucDetail = new DevExpress.data.CustomStore({
+            key: "id", 
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, key, values),
         });
         $(function () {
             loadHangMuc();
@@ -149,20 +176,59 @@
                 },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
-                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        dataField: "tenHangMuc", caption: "hạng mục", dataType: "string",
+                        dataField: "tenHangMuc", caption: "Thông tin hạng mục", dataType: "string",
+                        allowEditing: false,
                     },
                     {
                         dataField: "kyHieu", caption: "Ký hiệu", dataType: "string", alignment: "center",
+                        allowEditing: false,
                         cellTemplate: (c, o) => $("<div />").append((isNullOrEmpty(o.data.kyHieu) ? o.data.kyHieu : '--')).appendTo(c)
                     },
                     {
-                        dataField: "status", dataType: "number", sortOrder: "desc", visible: false
+                        dataField: "giaiDoanId", caption: "Giai đoạn", alignment: "center",
+                        allowEditing: true,
+                        lookup: {
+                            dataSource: customStore_GiaiDoan,
+                            valueExpr: "id", displayExpr: "tenGiaiDoan",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            placeholder: "Vui lòng chọn giai đoạn...",
+                            showClearButton: true,
+                        },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "center",
+                        allowEditing: true,
+                        format: { type: "currency", currency: "VND" },
+                        editorType: "dxNumberBox",
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập giá trị...",
+                            showClearButton: true,
+                            format: "#,##0 đ",
+                            min: 1000000, step: 1000000, showSpinButtons: true,
+                        },
+                        validationRules: [{ type: "required" }]
+                    },//giaTri
+                    {
+                        dataField: "hangMucDetailId", dataType: "number", visible: false,
+                        allowEditing: true,
+                    },
+                    {
+                        dataField: "status", dataType: "number", sortOrder: "desc", visible: false,
+                        allowEditing: false,
                     },
                 ],
+                onRowUpdating(options) { 
+                    if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId; 
+                    options.newData['hangMucDetailId'] = options.oldData.hangMucDetailId; 
+                    options.newData = options.newData;
+                },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
@@ -183,53 +249,59 @@
                                 },
                             },
                         },
-                        {
-                            location: "after", widget: "dxSelectBox",
-                            options: {
-                                dataSource: customStore_GiaiDoan,
-                                valueExpr: "id", displayExpr: "tenGiaiDoan",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: GIAIDOANID,
-                                onValueChanged: function (data) {
-                                    GIAIDOANID = data.value;
-                                    localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID); 
-                                },
-                            },
-                        },
                         //{
-                        //    location: "after", widget: "dxButton",
+                        //    location: "after", widget: "dxSelectBox",
                         //    options: {
-                        //        icon: "refresh", tylingMode: "filled", type: "default",
-                        //        onClick: () => container.refresh()
-                        //    }
-                        //}
+                        //        dataSource: customStore_GiaiDoan,
+                        //        valueExpr: "id", displayExpr: "tenGiaiDoan",
+                        //        searchEnabled: true,
+                        //        searchMode: "contains",
+                        //        width: "100%",
+                        //        showClearButton: false,
+                        //        value: GIAIDOANID,
+                        //        onValueChanged: function (data) {
+                        //            GIAIDOANID = data.value;
+                        //            localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID); 
+                        //        },
+                        //    },
+                        //},
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+                            }
+                        }
                     )
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 0)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
-                onSelectionChanged: (e) => {
-                    if (e.selectedRowsData != null && e.selectedRowsData.length > 0 && e.selectedRowsData[0] != null) {
-                        if (e.selectedRowsData[0].chilCount == 0) {
-                            var id = e.selectedRowsData[0].id;
-                            loadHangMucDetail(id);
-                            $("#container_hangmuc_detail").fadeIn("fast");
-                        }
-                        else $("#container_hangmuc_detail").fadeOut("fast");
+                editing: {
+                    mode: "row",
+                    allowUpdating: function (e) { 
+                        return e.row.data.chilCount==0;
                     }
-                },
-                stateStoring: {
-                    enabled: true,
-                    storageKey: "ngansach-hangmuc-chitiet-localStorage",
-                    type: "localStorage"
-                },
+                }
+                //onSelectionChanged: (e) => {
+                //    if (e.selectedRowsData != null && e.selectedRowsData.length > 0 && e.selectedRowsData[0] != null) {
+                //        if (e.selectedRowsData[0].chilCount == 0) {
+                //            var id = e.selectedRowsData[0].id;
+                //            loadHangMucDetail(id);
+                //            $("#container_hangmuc_detail").fadeIn("fast");
+                //        }
+                //        else $("#container_hangmuc_detail").fadeOut("fast");
+                //    }
+                //},
+                //stateStoring: {
+                //    enabled: true,
+                //    storageKey: "ngansach-hangmuc-chitiet-localStorage",
+                //    type: "localStorage"
+                //},
             });
         };
-
+        /*
         var loadHangMucDetail = (iDHangMuc) => {
             $("#container_hangmuc_detail").dxDataGrid({
                 height: heightScreen,
@@ -276,7 +348,6 @@
                         validationRules: [{ type: "required" }],
                     },//giaTri
                 ],
-                /*
                 editing: {
                     mode: "popup",
                     popup: {
@@ -331,8 +402,9 @@
                             }
                         })
                 },
-                */
+                
             });
         };
+        */
     </script>
 }
