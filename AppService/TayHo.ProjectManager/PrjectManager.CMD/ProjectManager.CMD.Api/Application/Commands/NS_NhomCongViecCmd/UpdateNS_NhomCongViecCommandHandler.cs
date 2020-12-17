@@ -42,6 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_NhomCongViec.SetLoaiCongViecId(request.LoaiCongViecId);
             existingNS_NhomCongViec.SetGoiThauId(request.GoiThauId);
             existingNS_NhomCongViec.SetNhomChiPhiId(request.NhomChiPhiId);
+            existingNS_NhomCongViec.SetProjectId(request.ProjectId);
             existingNS_NhomCongViec.SetTenNhomCongViec(request.TenNhomCongViec);
             existingNS_NhomCongViec.SetDienGiai(request.DienGiai);
             existingNS_NhomCongViec.SetUpdate(_user,0);

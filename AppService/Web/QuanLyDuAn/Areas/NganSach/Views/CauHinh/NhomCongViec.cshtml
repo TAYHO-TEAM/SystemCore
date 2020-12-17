@@ -1,0 +1,331 @@
+﻿
+@{
+    ViewBag.Title = "Danh mục nhóm công việc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        const ACTION_PROJECT = "/Projects";
+        const ACTION_HANGMUC = "/NS_HangMuc";
+        const ACTION_GIAIDOAN = "/NS_GiaiDoan";
+        const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
+        const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
+        const ACTION_GOITHAU = "/NS_GoiThau";
+        const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
+
+        var customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_HangMuc = (projectId)=> new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'projectId,' + projectId + ';isActive,1;isVisible,1'
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_HANGMUC,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_LoaiCongViec = (projectId)=> new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'projectId,' + projectId + ';isActive,1;isVisible,1'
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_LOAICONGVIEC,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_NhomChiPhi = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = { };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_NHOMCHIPHI,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_NhomCongViec = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_NHOMCONGVIEC,
+                    success: function (data) {
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+
+        $(function () {
+            loadNhomCongViec();
+        });
+
+        var loadNhomCongViec = () => $("#container").dxDataGrid({
+            height: heightScreen,
+            dataSource: customStore_NhomCongViec,
+            remoteOperations: {
+                paging: true,
+                sorting: true,
+                filtering: true,
+            },
+            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            onToolbarPreparing: function (e) {
+                var container = e.component;
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before", widget: "dxSelectBox",
+                        options: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                            searchEnabled: true,
+                            searchMode: "contains",
+                            width: "100%",
+                            showClearButton: false,
+                            value: PROJECTID,
+                            onValueChanged: function (data) {
+                                PROJECTID = data.value;
+                                localStorage.setItem('projectIdCurrent', PROJECTID);
+                                loadNhomCongViec();
+                            },
+                        },
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", tylingMode: "filled", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    }
+                )
+            },
+            columns: [
+                {
+                    caption: "STT", width: 100, alignment:"center",
+                    cellTemplate: (c, o) => {
+                        c.append(o.rowIndex + 1);
+                    }
+                },
+                {
+                    dataField: "tenNhomCongViec", caption: "Tên nhóm", dataType: "string",
+                    validationRules: [{ type: "required" }],
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        showClearButton: true, placeholder: "Vui lòng nhập..."
+                    }
+                },
+                {
+                    dataField: "dienGiai", caption: "diễn giải", dataType: "string",
+                    editorOptions: {
+                        showClearButton: true, placeholder:"Vui lòng nhập(nếu có)..."
+                    }
+                },
+                {
+                    dataField: "hangMucId", caption: "Hạng mục", dataType: "string",
+                    validationRules: [{ type: "required" }],
+                    lookup: {
+                        dataSource: customStore_HangMuc(PROJECTID),
+                        valueExpr: "id", displayExpr: "tenHangMuc",
+                    },
+                    editorType: "dxDropDownBox",
+                    editorOptions: {
+                        dataSource: customStore_HangMuc(PROJECTID),
+                        valueExpr: "id", displayExpr: "tenHangMuc",
+                        placeholder: "Vui lòng chọn...",
+                        searchEnabled: true, showClearButton: true,
+                        contentTemplate: function (e) {
+                            var value = e.component.option("value"),
+                                $treeView = $("<div>").dxTreeView({
+                                    dataSource: e.component.getDataSource(),
+                                    dataStructure: "plain",
+                                    keyExpr: "id", displayExpr: "tenHangMuc",
+                                    parentIdExpr: "parentId",
+                                    selectionMode: "single",
+                                    selectByClick: true,
+                                    expandAllEnabled: false,
+                                    searchEnabled: true,
+                                    focusStateEnabled: true,
+                                    onContentReady: function (args) {
+                                        if (!value) {
+                                            args.component.unselectAll();
+                                        } else {
+                                            args.component.selectItem(value);
+                                        }
+                                    },
+                                    selectNodesRecursive: false,
+                                    onItemSelectionChanged: function (args) {
+                                        e.component.option("value", args.node.key);
+                                        e.component.close();
+                                    },
+                                    itemTemplate: function (data) {
+                                        return $("<div>").append($("<b>").append(data.tenHangMuc).addClass("mr-1"), $("<em>").append(data.kyHieu));
+                                    },
+                                });
+                            treeView = $treeView.dxTreeView("instance");
+                            e.component.on("valueChanged", function (args) {
+                                if (!value) {
+                                    treeView.unselectAll();
+                                } else {
+                                    treeView.selectItem(value);
+                                }
+                            });
+                            return $treeView;
+                        },
+                    },
+                },
+                {
+                    dataField: "loaiCongViecId", caption: "Loại công việc", dataType: "string",
+                    validationRules: [{ type: "required" }],
+                    lookup: {
+                        dataSource: customStore_LoaiCongViec(PROJECTID),
+                        valueExpr: "id", displayExpr: "tenLoaiCongViec",
+                    },
+                    editorType: "dxLookup",
+                    editorOptions: {
+                        placeholder: "Vui lòng chọn...",
+                        searchEnabled: true, showClearButton: true,
+                        itemTemplate: function (data) {
+                            return $("<div>").append($("<b>").append(data.tenLoaiCongViec).addClass("mr-1"), $("<em>").append(data.dienGiai));
+                        },
+                    },
+                },
+                //{
+                //    dataField: "goiThauId", caption: "Gói thầu", dataType: "string",
+                //    lookup: {
+                //        dataSource: customStore_GoiThau,
+                //        valueExpr: "id", displayExpr: "soHopDong",
+                //    }
+                //},
+                {
+                    dataField: "nhomChiPhiId", caption: "Nhóm chi phí", dataType: "string",
+                    lookup: {
+                        dataSource: customStore_NhomChiPhi,
+                        valueExpr: "id", displayExpr: "tenNhomChiPhi",
+                    }
+                },
+                {
+                    dataField: "isActive", width: 100,
+                    editorType: "dxSwitch",
+                },
+                {
+                    dataField: "isVisible", width: 100,
+                    editorType: "dxSwitch",
+                },
+            ],
+            editing: {
+                allowAdding: true,
+                allowUpdating: PermitInAction["update"] ? true : null,
+                allowDeleting: PermitInAction["delete"] ? true : null,
+                mode: "popup", useIcons: false, confirmDelete: true,
+                popup: {
+                    width: 600, height: "auto",
+                    showTitle: true, title:"NHÓM CÔNG VIỆC",
+                    closeOnOutsideClick: false, showCloseButton: true,
+                },
+                form: {
+                    labelLocation: "left", itemType: "group", colCount: 1,
+                }
+            },
+            onInitNewRow: (e) => {
+                e.data.isActive = true;
+                e.data.isVisible = true;
+                e.data.projectId = PROJECTID;
+            },
+        });
+    </script>
+}
