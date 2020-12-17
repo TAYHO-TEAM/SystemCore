@@ -14,16 +14,16 @@
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
-<form id="form" method="post" action="" enctype="multipart/form-data">
+<form id="form" method="post" action="https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile" enctype="multipart/form-data">
     <h3>Profile Settings</h3>
     <div class="dx-fieldset">
         <div class="dx-field">
             <div class="dx-field-label">First Name:</div>
-            <div class="dx-field-value" id="first-name"></div>
+            <div class="dx-field-value" id="OwnerById"></div>
         </div>
         <div class="dx-field">
             <div class="dx-field-label">Last Name:</div>
-            <div class="dx-field-value" id="last-name"></div>
+            <div class="dx-field-value" id="OwnerByTable"></div>
         </div>
     </div>
     <div id="fileuploader-container">
@@ -31,10 +31,45 @@
     </div>
     <div id="button"></div>
 </form>
+@*<div style="padding: 10px;">
+    <div id="widget"></div>
+</div>*@
 
 
 @section script{
     <script>
+        $(function () {
+            $("#OwnerById").dxTextBox({
+                value: "1",
+                name: "OwnerById"
+            });
+
+            $("#OwnerByTable").dxTextBox({
+                value: "Smith",
+                name: "OwnerByTable"
+            });
+
+            $("#file-uploader").dxFileUploader({
+                selectButtonText: "Select photo",
+                //multiple: false,
+                labelText: "",
+                accept: "*/*",
+                uploadMode: "useForm",
+                //uploadCustomData: {
+                //    OwnerById: 1
+                //},
+                //uploadUrl: "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile",
+            });
+
+            $("#button").dxButton({
+                text: "Update profile",
+                type: "success",
+                onClick: function () {
+                    //DevExpress.ui.dialog.alert("Uncomment the line to enable sending a form to the server.", "Click Handler");
+                    $("#form").submit();
+                }
+            });
+        });
         const ACTION = "/RequestRegist/GetByAccountID";
         const ACTION_DETAIL = "/RequestRegist/GetDetail";
         const ACTION_RESPONSEBYACC = "/ResponseRegist/getByAccount";
@@ -959,18 +994,27 @@
                     },
                 });
 
-                content_Upload.append(
-                    $("<div>").dxFileUploader({
-                        uploadCustomData: {
-                            ownerById: 1
-                        },
-                        //multiple: true,
-                        uploadMethod: "POST",
-                        uploadMode: "useForm",
-                        uploadUrl: "/", 
+                //content_Upload.append(
+                //    $("<div>").dxFileUploader({
+                //        uploadCustomData: {
+                //            ownerById: 1
+                //        },
+                //        multiple: true,
+                //        uploadMethod: "POST",
+                //        uploadMode: "useForm",
+                //        uploadUrl: "/", 
                      
-                    })
-                );
+                //    })
+                //);
+                //new DevExpress.ui.dxFileUploader(document.getElementById("widget"), {
+                //    "chunkSize": 200000000,
+                //    "uploadCustomData": {
+                //        "ownerById": 1
+                //    },
+                //    "uploadMode": "useButtons",
+                //    "uploadUrl": "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile",
+                //});
+
                 //new DevExpress.ui.dxFileUploader(content_Upload, {
                 //    "uploadMethod": "POST",
                 //    "uploadCustomData": {
