@@ -10,13 +10,20 @@ using ProjectManager.CMD.Domain;
 using Services.Common.Utilities;
 using System.Linq;
 using System.Collections.Generic;
+using ProjectManager.CMD.Domain.IService;
+using ProjectManager.Common;
+using System;
 
 namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateRequestRegistCommandHandler : RequestRegistCommandHandler, IRequestHandler<CreateRequestRegistCommand, MethodResult<CreateRequestRegistCommandResponse>>
     {
-        public CreateRequestRegistCommandHandler(IMapper mapper, IRequestRegistRepository RequestRegistRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, RequestRegistRepository, httpContextAccessor)
+        private readonly IMediaService _mediaService;
+        private readonly IFilesAttachmentRepository _filesAttachmentRepository;
+        public CreateRequestRegistCommandHandler(IMapper mapper, IRequestRegistRepository RequestRegistRepository, IHttpContextAccessor httpContextAccessor, IFilesAttachmentRepository filesAttachmentRepository, IMediaService mediaService) : base(mapper, RequestRegistRepository, httpContextAccessor)
         {
+            _filesAttachmentRepository = filesAttachmentRepository;
+            _mediaService = mediaService;
         }
 
         /// <summary>
@@ -74,6 +81,10 @@ namespace ProjectManager.CMD.Api.Application.Commands
           
             await _requestRegistRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             var isRequestRegist = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)newRequestRegist.DocumentTypeId, (int)newRequestRegist.CreateBy, newRequestRegist.Id).ConfigureAwait(false);
+            await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", "test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png", @"D:\duan\Content\Upload" + "\test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png");
+            var newfileAttachment = new FilesAttachment((int)newRequestRegist.Id, QuanLyDuAnConstants.ResponseRegist_TABLENAME, "", "test", "png", "@@", "", "", @"D:\duan\Content\Upload");
+            await _filesAttachmentRepository.AddAsync(newfileAttachment);
+            await _filesAttachmentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             //if (!isRequestRegist)
             //{
             //    methodResult.AddErrorMessage(nameof(ErrorCodeInsert.IErrN4), new[]

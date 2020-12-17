@@ -13,6 +13,14 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public string Host { get; set; }
         public string Type { get; set; }
         public string Direct { get; set; }
-        IFormFileCollection FormFiles { get;set; }
+        private IFormFileCollection _formFiles { get; set; }
+        public void setFile(IFormFileCollection FormFiles )
+        {
+            _formFiles = FormFiles;
+        }
+        public IFormFileCollection getFile()
+        {
+           return _formFiles;
+        }
     }
 }

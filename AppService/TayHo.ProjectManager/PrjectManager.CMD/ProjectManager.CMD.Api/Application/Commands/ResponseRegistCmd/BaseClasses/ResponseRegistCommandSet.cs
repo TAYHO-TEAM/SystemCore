@@ -1,4 +1,6 @@
-﻿namespace ProjectManager.CMD.Api.Application.Commands
+﻿using Microsoft.AspNetCore.Http;
+
+namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class ResponseRegistCommandSet : BaseCommandClasses
     {
@@ -11,5 +13,6 @@
         public byte? NoAttachment { get; set; }
         public bool? IsApprove { get; set; }
         public byte? TypeOfResult { get; set; }
+        public IFormFileCollection FormFiles { get; set; }
     }
 }

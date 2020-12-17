@@ -1,4 +1,6 @@
-﻿namespace ProjectManager.CMD.Api.Application.Commands
+﻿using Microsoft.AspNetCore.Http;
+
+namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class RequestRegistCommandSet : BaseCommandClasses
     {
@@ -14,5 +16,14 @@
         public int? WorkItemId { get; set; }
         public int? DocumentTypeId { get; set; }
         public int? Rev { get; set; }
+        private IFormFileCollection _formFiles { get; set; }
+        public void setFile(IFormFileCollection FormFiles)
+        {
+            _formFiles = FormFiles;
+        }
+        public IFormFileCollection getFile()
+        {
+            return _formFiles;
+        }
     }
 }

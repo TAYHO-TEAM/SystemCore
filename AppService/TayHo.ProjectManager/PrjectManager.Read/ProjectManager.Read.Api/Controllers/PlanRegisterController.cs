@@ -16,33 +16,33 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
-    public class WorkItemsController : APIControllerBase
+    public class PlanRegisterController : APIControllerBase
     {
-        private readonly IDOBaseRepository<WorkItemsDTO> _dOBaseRepository;
+        private readonly IDOBaseRepository<PlanRegisterDTO> _dOBaseRepository;
 
-        public WorkItemsController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<WorkItemsDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public PlanRegisterController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanRegisterDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
         }
 
         /// <summary>
-        /// Get List of WorkItems.
+        /// Get List of PlanRegister.
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<WorkItemsResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<PlanRegisterResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetWorkItemsAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetPlanRegisterAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<WorkItemsResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<PlanRegisterResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.WorkItems_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<WorkItemsResponseViewModel>
+            requestFilter.TableName = QuanLyDuAnConstants.PlanRegister_TABLENAME;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<PlanRegisterResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<WorkItemsResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<PlanRegisterResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

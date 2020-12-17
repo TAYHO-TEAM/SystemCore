@@ -2,8 +2,9 @@
 using MediatR;
 using ProjectManager.CMD.Api.Application.Behaviors;
 using ProjectManager.CMD.Domain.IRepositories;
+using ProjectManager.CMD.Domain.IService;
 using ProjectManager.CMD.Infrastructure.Repositories;
-
+using ProjectManager.CMD.Infrastructure.Service;
 
 namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
 {
@@ -14,6 +15,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             // register services
             builder.RegisterGeneric(typeof(LoggingBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
             builder.RegisterGeneric(typeof(RequestPerformanceBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
+            builder.RegisterType<MediaService>().As<IMediaService>().InstancePerLifetimeScope();
 
             // register repositories
             builder.RegisterType<StagesRepository>().As<IStagesRepository>().InstancePerLifetimeScope();
@@ -41,6 +43,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<RequestRegistRepository>().As<IRequestRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanRegisterRepository>().As<IPlanRegisterRepository>().InstancePerLifetimeScope();
         }
     }
 }

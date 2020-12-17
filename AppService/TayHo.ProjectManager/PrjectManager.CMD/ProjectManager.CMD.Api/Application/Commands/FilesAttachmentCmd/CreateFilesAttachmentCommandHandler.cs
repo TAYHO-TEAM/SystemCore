@@ -6,13 +6,16 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using ProjectManager.CMD.Domain.IService;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateFilesAttachmentCommandHandler : FilesAttachmentCommandHandler, IRequestHandler<CreateFilesAttachmentCommand, MethodResult<CreateFilesAttachmentCommandResponse>>
     {
-        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
+        private readonly IMediaService _mediaService;
+        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor, IMediaService mediaService) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
         {
+            _mediaService= mediaService;
         }
 
         /// <summary>
@@ -39,6 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
             await _FilesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", request.FileName, @"D:\duan\Content\Upload"+ request.FileName);
             methodResult.Result = _mapper.Map<CreateFilesAttachmentCommandResponse>(newFilesAttachment);
             return methodResult;
         }

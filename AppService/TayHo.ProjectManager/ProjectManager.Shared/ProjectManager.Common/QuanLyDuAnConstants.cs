@@ -42,5 +42,6 @@ namespace ProjectManager.Common
         public const string StepsProcess_TABLENAME = "StepsProcess";
         public const string ResponseRegist_TABLENAME = "ResponseRegist";
         public const string WorkItems_TABLENAME = "WorkItems";
+        public const string PlanRegister_TABLENAME = "PlanRegister";
     }
 }

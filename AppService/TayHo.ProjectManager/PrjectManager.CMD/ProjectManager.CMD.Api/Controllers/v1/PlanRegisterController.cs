@@ -8,57 +8,57 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.CMD.Api.Controllers.v1
 {
-    public class RequestRegistController : APIControllerBase
+    public class PlanRegisterController : APIControllerBase
     {
-        public RequestRegistController(IMediator mediator) : base(mediator)
+        public PlanRegisterController(IMediator mediator) : base(mediator)
         {
         }
 
 
-        #region RequestRegist
+        #region PlanRegister
 
         /// <summary>
-        /// Create a new RequestRegist.
+        /// Create a new PlanRegister.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreatePlanRegisterCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateRequestRegistAsync([FromForm] CreateRequestRegistCommand command)
+        public async Task<IActionResult> CreatePlanRegisterAsync([FromBody] CreatePlanRegisterCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Update a existing RequestRegist.
+        /// Update a existing PlanRegister.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(MethodResult<UpdateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<UpdatePlanRegisterCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateRequestRegistAsync([FromBody] UpdateRequestRegistCommand command)
+        public async Task<IActionResult> UpdatePlanRegisterAsync([FromBody] UpdatePlanRegisterCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Delete a existing RequestRegist.
+        /// Delete a existing PlanRegister.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpDelete]
-        [ProducesResponseType(typeof(MethodResult<DeleteRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<DeletePlanRegisterCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteRequestRegistAsync([FromBody] DeleteRequestRegistCommand command)
+        public async Task<IActionResult> DeletePlanRegisterAsync([FromBody] DeletePlanRegisterCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
-        #endregion RequestRegist
+        #endregion PlanRegister
     }
 }
