@@ -31,14 +31,15 @@ namespace ProjectManager.Read.Api.Controllers.v1
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<PlanRegisterResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<RequestRegistResponseViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetPlanRegisterAsync([FromQuery]BaseRequestViewModel request)
+        public async Task<IActionResult> GetPlanRegistAsync([FromQuery] BaseRequestViewModel request)
         {
             var methodResult = new MethodResult<PagingItems<PlanRegisterResponseViewModel>>();
-            RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.PlanRegister_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            requestFilter.AccountId = _user;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAccountFKAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<PlanRegisterResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,

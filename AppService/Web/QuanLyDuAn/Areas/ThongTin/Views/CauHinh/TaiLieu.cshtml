@@ -61,7 +61,7 @@
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_ACC_READ + ACTION_PROJECT,
+                    url: URL_API_PM_READ + ACTION_PROJECT,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
                         if (PROJECTID == 0) {
@@ -201,7 +201,7 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "title", caption: "Tên hạng mục",
+                        dataField: "title", caption: "Tên tài liệu",
                         dataType: "string",
                     },
                     {
@@ -209,12 +209,36 @@
                         dataType: "string",
                     },
                     {
-                        dataField: "descriptions", caption: "Mô tả",
+                        dataField: "descriptions",
+                        caption: "Mô tả",
                         dataType: "string",
                     },
                     {
-                        dataField: "status", caption: "Sắp xếp",
-                        dataType: "number", width: 110, alignment: "center",
+                        dataField: "operationProcessId",
+                        caption: "Quy trình",
+                        dataType: "number",
+                        lookup: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>"));
+                            },
+                        }
+                    },
+                    {
+                        dataField: "status",
+                        caption: "Sắp xếp",
+                        dataType: "number",
+                        width: 110,
+                        alignment: "center",
                         editorType: "dxNumberBox",
                         editorOptions: {
                             min: 1, step: 1, showSpinButtons: true,
@@ -234,19 +258,19 @@
                         buttons: ["add", "edit", "delete"]
                     }
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    allowReordering: false,
-                    dropFeedbackMode: "push",
-                    onDragEnd: function (e) {
-                        var source = e.itemData,
-                            target = e.component.getVisibleRows()[e.toIndex].data,
-                            d = $.Deferred();
-                        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                            e.component.refresh().then(d.resolve, d.reject);
-                        }, d.reject);
-                    },
-                },
+                //rowDragging: {
+                //    allowDropInsideItem: true,
+                //    allowReordering: false,
+                //    dropFeedbackMode: "push",
+                //    onDragEnd: function (e) {
+                //        var source = e.itemData,
+                //            target = e.component.getVisibleRows()[e.toIndex].data,
+                //            d = $.Deferred();
+                //        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                //            e.component.refresh().then(d.resolve, d.reject);
+                //        }, d.reject);
+                //    },
+                //},
                 paging: {
                     enabled: true,
                     pageSize: 20

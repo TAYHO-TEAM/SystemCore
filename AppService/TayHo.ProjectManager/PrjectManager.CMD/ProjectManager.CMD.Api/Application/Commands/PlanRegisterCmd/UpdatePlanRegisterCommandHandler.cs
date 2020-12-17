@@ -45,6 +45,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             existingPlanRegister.SetDescription(request.Description);
             existingPlanRegister.SetFromDate(request.FromDate);
             existingPlanRegister.SetToDate(request.ToDate);
+            existingPlanRegister.SetParentId(request.ParentId);
             existingPlanRegister.SetExpectFromDate(request.ExpectFromDate);
             existingPlanRegister.SetExpectToDate(request.ExpectToDate);
             existingPlanRegister.SetUpdate(_user, 0);

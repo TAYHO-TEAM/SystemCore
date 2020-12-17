@@ -11,6 +11,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public string Title { get; set; }
         public string Descriptions { get; set; }
         public int? ParentId { get; set; }
+        public int? PlanRegisterId { get; set; }
         public int? Level { get; set; }
         public byte? NoAttachment { get; set; }
         public int? ProjectId { get; set; }
@@ -25,7 +26,11 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     }
     public class RequestRegistDetailDTO : RequestRegistDTO
     {
-      
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public DateTime? ExpectFromDate { get; set; }
+        public DateTime? ExpectToDate { get; set; }
+        public DateTime? CreatePlanDate { get; set; }
         public List<ResponseRegistDTO> ResponseRegistDTOs { get; set; }
     }
 }

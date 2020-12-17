@@ -1,5 +1,6 @@
 ﻿using ProjectManager.Read.Api.ViewModels.BaseClasses;
 using ProjectManager.Read.Sql.DTOs.DTO;
+using System;
 using System.Collections.Generic;
 
 namespace ProjectManager.Read.Api.ViewModels
@@ -11,6 +12,7 @@ namespace ProjectManager.Read.Api.ViewModels
         public string Title { get; set; }
         public string Descriptions { get; set; }
         public int? ParentId { get; set; }
+        public int? PlanRegisterId { get; set; }
         public int? Level { get; set; }
         public byte? NoAttachment { get; set; }
         public int? ProjectId { get; set; }
@@ -26,6 +28,11 @@ namespace ProjectManager.Read.Api.ViewModels
 
     public class RequestRegistResponseDetailViewModel : RequestRegistResponseViewModel
     {
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public DateTime? ExpectFromDate { get; set; }
+        public DateTime? ExpectToDate { get; set; }
+        public DateTime? CreatePlanDate { get; set; }
         public List<ResponseRegistDTO> ResponseRegistDTOs { get; set; }
     }
 }

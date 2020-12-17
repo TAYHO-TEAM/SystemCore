@@ -11,6 +11,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public string Description { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public int? ParentId { get; set; }
         public DateTime? ExpectFromDate { get; set; }
         public DateTime? ExpectToDate { get; set; }
     }

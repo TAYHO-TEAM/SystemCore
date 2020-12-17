@@ -61,12 +61,13 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 request.Rev = lastRequestRegistsRev.HasValue? lastRequestRegistsRev + 1:1;
                 request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : "0";
             }
-            var newRequestRegist = new RequestRegist(request.Code,
+            var newRequestRegist = new RequestRegist((int)request.PlanRegisterId,
+                                                        request.Code,
                                                         request.BarCode,
                                                         request.Title,
                                                         request.Descriptions,
                                                         request.Note,
-                                                        request.ParentId,
+                                                        (int)request.ParentId,
                                                         request.Level,
                                                         request.NoAttachment,
                                                         (int)request.ProjectId,

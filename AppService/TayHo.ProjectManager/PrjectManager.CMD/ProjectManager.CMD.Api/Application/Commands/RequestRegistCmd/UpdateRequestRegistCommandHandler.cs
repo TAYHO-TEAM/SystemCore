@@ -38,10 +38,12 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestRegist.IsActive = request.IsActive.HasValue ? request.IsActive : existingRequestRegist.IsActive;
             existingRequestRegist.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingRequestRegist.IsVisible;
             existingRequestRegist.Status = request.Status.HasValue ? request.Status : existingRequestRegist.Status;
-            
+
+            existingRequestRegist.SetPlanRegisterId(request.PlanRegisterId);
             existingRequestRegist.SetBarCode(request.BarCode);
             existingRequestRegist.SetTitle(request.Title);
             existingRequestRegist.SetDescriptions(request.Descriptions);
+            existingRequestRegist.SetNote(request.Note);
             existingRequestRegist.SetParentId(request.ParentId);
             existingRequestRegist.SetLevel(request.Level);
             existingRequestRegist.SetNoAttachment(request.NoAttachment);
@@ -49,7 +51,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingRequestRegist.SetWorkItemId(request.WorkItemId);
             existingRequestRegist.SetDocumentTypeId(request.DocumentTypeId);
             existingRequestRegist.SetRev(request.Rev);
-            existingRequestRegist.SetCode((await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)existingRequestRegist.ProjectId, (int)existingRequestRegist.WorkItemId, _user, (int)existingRequestRegist.DocumentTypeId).ConfigureAwait(false)).Replace("-", ""));
+
+            //existingRequestRegist.SetCode((await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)existingRequestRegist.ProjectId, (int)existingRequestRegist.WorkItemId, _user, (int)existingRequestRegist.DocumentTypeId).ConfigureAwait(false)).Replace("-", ""));
 
             existingRequestRegist.SetUpdate(_user,0);
             _requestRegistRepository.Update(existingRequestRegist);
