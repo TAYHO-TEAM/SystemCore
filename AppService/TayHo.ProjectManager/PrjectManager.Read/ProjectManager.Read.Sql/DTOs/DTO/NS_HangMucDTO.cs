@@ -12,4 +12,11 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public string KyHieu { get; set; }
         public int? ProjectId { get; set; }
     }
+    
+    public class NS_HangMuc_HangMucDetailDTO: NS_HangMucDTO
+    {
+        public int? HangMucDetailId { get; set; }
+        public decimal? GiaTri { get; set; }
+        public int? GiaiDoanId { get; set; }
+    }
 }

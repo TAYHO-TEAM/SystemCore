@@ -78,11 +78,12 @@
                         editorType: "dxNumberBox",
                         editorOptions: {
                             min: 1, step: 1, showSpinButtons: true,
-                        }, sortOrder: "desc"
+                        }, sortOrder: "desc",
+                        cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                     },
                     {
                         dataField: "tenNhomChiPhi", caption: "Tên nhóm",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataType: "string", cssClass:"font-weight-bold",
                         editorOptions: {
                             placeholder: "Nhập tên giai đoạn...",
                             showClearButton: true
@@ -95,8 +96,7 @@
                         ]
                     },
                     {
-                        dataField: "dienGiai", caption: "Diễn giải",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataField: "dienGiai", caption: "Diễn giải", dataType: "string",
                         editorOptions: {
                             placeholder: "Nhập nội dung diễn giải...",
                             showClearButton: true
@@ -125,15 +125,22 @@
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    allowUpdating: PermitInAction["update"] ?true: null,
+                    allowDeleting: PermitInAction["delete"] ?true: null,
                     mode: "cell",
                     useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                visible: PermitInAction["insert"],
+                                text: "Nhóm chi phí", icon: "add", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -147,8 +154,10 @@
                     e.data.isVisible = true;
                 },
                 rowDragging: {
-                    allowReordering: true,
+                    allowReordering: PermitInAction["update"],
                     showDragIcons: true,
+                    dropFeedbackMode: "push",
+                    dragDirection: "vertical",
                     onDragEnd: function (e) {
                         var source = e.itemData;
                         var target = e.component.getVisibleRows()[e.toIndex].data;

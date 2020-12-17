@@ -15,14 +15,12 @@
 @section script{
     <script>
         const ACTION = "/NS_HangMuc"; 
-        const ACTION_PROJECT = "/Projects"; 
-
-        var WIDTH_CONTAINER = $("#container").width();
+        const ACTION_PROJECT = "/Projects";  
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                let deferred = $.Deferred(), params = {};
+                let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID};
                 if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -35,8 +33,7 @@
                     dataType: "json",
                     data: params,
                     success: function (data) {
-                        let list = data.result.items.filter(x => x.projectId == PROJECTID);
-                        deferred.resolve(list);
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -50,8 +47,7 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
-        });
-         
+        });         
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
@@ -128,7 +124,6 @@
                 ],
                 rowDragging: {
                     allowDropInsideItem: true,
-                    allowReordering: false, 
                     dropFeedbackMode: "push",
                     onDragEnd: function (e) { 
                         var source = e.itemData,
@@ -152,15 +147,12 @@
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
                     searchVisibleColumnsOnly: true,
-                    visible: WIDTH_CONTAINER > 350
+                    visible: true
                 },
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false,
-                    confirmDelete: true, 
+                editing: { 
+                    allowUpdating: PermitInAction["update"] ? true : null,
+                    allowDeleting: PermitInAction["delete"] ? true : null,
+                    mode: "cell", useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -185,7 +177,15 @@
                         {
                             location: "after", widget: "dxButton",
                             options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
+                                visible: PermitInAction["insert"],
+                                text: "Hạng mục", icon: "add", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", type: "default",
                                 onClick: () => container.refresh()
                             }
                         })

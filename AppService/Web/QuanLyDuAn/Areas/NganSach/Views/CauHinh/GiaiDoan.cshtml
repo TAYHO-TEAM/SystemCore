@@ -99,13 +99,11 @@
                 });
                 return deferred.promise();
             },
-        }); 
-
+        });
 
         $(function () {
             loadData(customStore);
         });
-
         let loadData = (dataSource) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
@@ -197,12 +195,10 @@
                     searchVisibleColumnsOnly: true,
                     visible: true
                 },
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false, confirmDelete: true,
+                editing: { 
+                    allowUpdating: PermitInAction["update"] ? true : null,
+                    allowDeleting: PermitInAction["delete"] ? true : null,
+                    mode: "cell", useIcons: false, confirmDelete: true,
                 }, 
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -227,7 +223,15 @@
                         {
                             location: "after", widget: "dxButton",
                             options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
+                                visible: PermitInAction["insert"],
+                                text:"Giai đoạn", icon: "add", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", type: "default",
                                 onClick: () => container.refresh()
                             }
                         })
@@ -237,7 +241,7 @@
                     e.data.isVisible = true;
                 },
                 rowDragging: {
-                    allowReordering: true,
+                    allowReordering: PermitInAction["update"],
                     showDragIcons: true,
                     dropFeedbackMode: "push",
                     dragDirection: "vertical",
