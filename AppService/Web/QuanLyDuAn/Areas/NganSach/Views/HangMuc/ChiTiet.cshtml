@@ -105,51 +105,75 @@
                 console.log(key);
                 console.log(values);
                 var deferred = $.Deferred();
-                $.ajax({
-                    headers: header,
-                    url: URL_API_PM_READ + ACTION_HANGMUCDETAIL,
-                    dataType: "json", type: "GET", async: false,
-                    data: {
-                        FindId: 'hangMucId,' + key + ';giaiDoanId,' + values.giaiDoanId
-                    },
-                    success: function (rs) {
-                        if (rs.isOk) {
-                            if (rs.result && rs.result.items.length > 0) {
-                                //UPDATE
-                                //customStore_HangMucDetail.update(values.hangMucDetailId,
-                                //    { 
-                                //        "giaiDoanId": values.giaiDoanId,
-                                //        "giaTri": values.giaTri
-                                //    }
-                                //).then(() => {
-                                //    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
-                                //}, deferred.reject);
-                            } else {
-                                //CREATE
-                                customStore_HangMucDetail.insert(
-                                    {
-                                        "hangMucId": key,
-                                        "giaiDoanId": values.giaiDoanId,
-                                        "giaTri": values.giaTri,
-                                        "isActive": true,
-                                        "isVisible": true
-                                    }
-                                ).then(() => {
-                                    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
-                                }, deferred.reject);
-                            }
-                            deferred.resolve();
-                        } else {
-                            console.log(rs);
-                            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+                if (values.hangMucDetailId == null) {
+                    customStore_HangMucDetail.insert(
+                        {
+                            "hangMucId": key,
+                            "giaiDoanId": values.giaiDoanId,
+                            "giaTri": values.giaTri,
+                            "isActive": true,
+                            "isVisible": true
                         }
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000
-                });
+                    ).then(() => {
+                        $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                    }, deferred.reject);
+                } else {
+                    var params = {};
+                    if (values.giaiDoanId && values.giaiDoanId != null) params["giaiDoanId"] = values.giaiDoanId;
+                    if (values.giaTri && values.giaTri != null) params["giaTri"] = values.giaTri;
+                    customStore_HangMucDetail.update(
+                        values.hangMucDetailId,
+                        params
+                    ).then(() => {
+                        $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                    }, deferred.reject);
+                }
+                //
+                //$.ajax({
+                //    headers: header,
+                //    url: URL_API_PM_READ + ACTION_HANGMUCDETAIL,
+                //    dataType: "json", type: "GET", async: false,
+                //    data: {
+                //        FindId: 'hangMucId,' + key + ';giaiDoanId,' + values.giaiDoanId
+                //    },
+                //    success: function (rs) {
+                //        if (rs.isOk) {
+                //            if (rs.result && rs.result.items.length > 0) {
+                //                //UPDATE
+                //                //customStore_HangMucDetail.update(values.hangMucDetailId,
+                //                //    { 
+                //                //        "giaiDoanId": values.giaiDoanId,
+                //                //        "giaTri": values.giaTri
+                //                //    }
+                //                //).then(() => {
+                //                //    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                //                //}, deferred.reject);
+                //            } else {
+                //                //CREATE
+                //                customStore_HangMucDetail.insert(
+                //                    {
+                //                        "hangMucId": key,
+                //                        "giaiDoanId": values.giaiDoanId,
+                //                        "giaTri": values.giaTri,
+                //                        "isActive": true,
+                //                        "isVisible": true
+                //                    }
+                //                ).then(() => {
+                //                    $("#container_hangmuc").dxTreeList('instance').refresh().then(deferred.resolve, deferred.reject);
+                //                }, deferred.reject);
+                //            }
+                //            deferred.resolve();
+                //        } else {
+                //            console.log(rs);
+                //            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+                //        }
+                //    },
+                //    error: function (xhr, textStatus, errorThrown) {
+                //        console.log(xhr.responseJSON);
+                //        deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+                //    },
+                //    timeout: 10000
+                //});
                 return deferred.promise();
             }
         });
@@ -279,7 +303,7 @@
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
                 editing: {
-                    mode: "row",
+                    mode: "cell",
                     allowUpdating: function (e) { 
                         return e.row.data.chilCount==0;
                     }
