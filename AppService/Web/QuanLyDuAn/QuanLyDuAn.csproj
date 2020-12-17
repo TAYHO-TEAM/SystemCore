@@ -2444,6 +2444,8 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\PheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_DetailRequestRegist.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\KeHoachDeTrinh.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\TaiLieu.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

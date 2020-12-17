@@ -25,5 +25,13 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult KeHoachDeTrinh()
+        {
+            return View();
+        }
+        public ActionResult TaiLieu()
+        {
+            return View();
+        }
     }
 }
