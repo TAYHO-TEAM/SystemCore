@@ -27,6 +27,7 @@ namespace Acc.Read.Sql
 
         private static IServiceCollection AddSqlRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IActionsRepository<ActionsDTOCC>, ActionsRepository<ActionsDTOCC>>();
             services.AddScoped<IDOBaseRepository<ActionsDTO>, DOBaseRepository<ActionsDTO>>();
             services.AddScoped<IDOBaseRepository<AccountsDTO>, DOBaseRepository<AccountsDTO>>();
             services.AddScoped<IDOBaseRepository<CategorysDTO>, DOBaseRepository<CategorysDTO>>();
@@ -37,12 +38,16 @@ namespace Acc.Read.Sql
             services.AddScoped<IDOBaseRepository<GroupActionDTO>, DOBaseRepository<GroupActionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupFunctionDTO>, DOBaseRepository<GroupFunctionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupPermistionDTO>, DOBaseRepository<GroupPermistionDTO>>();
+            services.AddScoped<IDOBaseRepository<GroupActionPermistionDTO>, DOBaseRepository<GroupActionPermistionDTO>>();
             services.AddScoped<IDOBaseRepository<GroupsDTO>, DOBaseRepository<GroupsDTO>>();
             services.AddScoped<IDOBaseRepository<LogEventDTO>, DOBaseRepository<LogEventDTO>>();
             services.AddScoped<IDOBaseRepository<PermistionsDTO>, DOBaseRepository<PermistionsDTO>>();
             services.AddScoped<IDOBaseRepository<ProjectsDTO>, DOBaseRepository<ProjectsDTO>>();
             services.AddScoped<IDOBaseRepository<RelationTableDTO>, DOBaseRepository<RelationTableDTO>>();
             services.AddScoped<IDOBaseRepository<UserInfoDTO>, DOBaseRepository<UserInfoDTO>>();
+            services.AddScoped<IDOBaseRepository<WorkItemsDTO>, DOBaseRepository<WorkItemsDTO>>();
+            services.AddScoped<IDOBaseRepository<GroupStepProcessPermistionDTO>, DOBaseRepository<GroupStepProcessPermistionDTO>>();
+            services.AddScoped<IDOBaseRepository<OperationProcessDTO>, DOBaseRepository<OperationProcessDTO>>();
             return services;
         }
 

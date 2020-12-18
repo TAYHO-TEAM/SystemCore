@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateStagesCommandHandler : StagesCommandHandler,IRequestHandler<UpdateStagesCommand, MethodResult<UpdateStagesCommandResponse>>
     {
-        public UpdateStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository) : base(mapper, StagesRepository)
+        public UpdateStagesCommandHandler(IMapper mapper, IStagesRepository StagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, StagesRepository,httpContextAccessor)
         {
         }
 
@@ -35,12 +36,12 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingStage.IsActive = request.IsActive.HasValue ? request.IsActive : existingStage.IsActive;
-            existingStage.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingStage.IsVisible;
+            existingStage.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingStage.IsVisible;
             existingStage.Status = request.Status.HasValue ? request.Status : existingStage.Status;
             existingStage.SetCode(request.Code);
             existingStage.SetDescription(request.Descriptions);
             existingStage.SetTitle(request.Title);
-            existingStage.SetUpdate(0,0);
+            existingStage.SetUpdate(_user,0);
             _StagesRepository.Update(existingStage);
             await _StagesRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateStagesCommandResponse>(existingStage);

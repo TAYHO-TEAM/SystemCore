@@ -2838,9 +2838,9 @@
   color: #e91e63;
 }
 .dx-invalid-message > .dx-overlay-content {
-  background-color: transparent;
-  color: #e91e63;
-  padding: 4px 0 0;
+  background-color: red;
+  color: white;
+  padding: 5px 7px;
 }
 .dx-validationsummary > .dx-validationsummary-item:not(:last-child) {
   margin-bottom: 6px;
@@ -8510,10 +8510,10 @@
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-command-select,
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content).dx-command-select {
   overflow: visible;
-  width: 28px;
-  min-width: 28px;
+  width: 40px;
+  min-width: 40px;
   padding-left: 10px;
-  padding-right: 2px;
+  padding-right: 10px;
   line-height: 1;
 }
 .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-cell-modified:not(.dx-field-item-content).dx-command-edit,
@@ -8725,6 +8725,9 @@
   left: 0;
   right: 1px;
 }
+.dx-row-inserted {
+    background-color: rgba(248,141,43,.4);
+}
 .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row):not(.dx-row-focused) > .dx-datagrid-readonly .dx-texteditor .dx-texteditor-input {
   background-color: rgba(0,0,0,.04);
   color: rgba(0,0,0,.87);
@@ -8752,7 +8755,7 @@
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort,
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort-indicator,
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td:hover .dx-datagrid-text-content {
-  color: rgba(0,0,0,.87);
+  color: white !important;
 }
 .dx-datagrid-headers .dx-datagrid-table .dx-row > td:hover .dx-sort {
   color: rgba(0,0,0,.38);
@@ -11405,8 +11408,9 @@
 .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused) > tr > td,
 .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover > td,
 .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover > tr > td {
-  background-color: rgba(255,87,34,.04);
-  color: rgba(0,0,0,.87);
+    background-color: rgba(248, 141, 43,0.35);
+    color: rgba(0,0,0,.87);
+    font-weight: bold;
 }
 .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused) > td.dx-treelist-group-space,
 .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused) > tr > td.dx-treelist-group-space,
@@ -17082,4 +17086,8 @@
   border-color: rgba(255,87,34,.5);
   -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.1),0 6px 8px rgba(0,0,0,.2);
   box-shadow: 0 1px 3px rgba(0,0,0,.1),0 6px 8px rgba(0,0,0,.2);
+}
+.dx-field-item-label-text {
+    color: rgb(248,141,43);
+    text-transform: uppercase;
 }

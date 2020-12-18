@@ -1,0 +1,64 @@
+﻿using {nameproject}.Api.Application.Commands;
+using {nameproject}.Api.Controllers.{version}.BaseClasses;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Services.Common.DomainObjects;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace {nameproject}.Api.Controllers.{version}
+{
+    public class {Entity}Controller : APIControllerBase
+    {
+        public {Entity}Controller(IMediator mediator) : base(mediator)
+        {
+        }
+
+
+        #region {Entity}
+
+        /// <summary>
+        /// Create a new {Entity}.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<Create{Entity}CommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Create{Entity}Async([FromBody] Create{Entity}Command command)
+        {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update a existing {Entity}.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(MethodResult<Update{Entity}CommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Update{Entity}Async([FromBody] Update{Entity}Command command)
+        {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Delete a existing {Entity}.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [ProducesResponseType(typeof(MethodResult<Delete{Entity}CommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Delete{Entity}Async([FromBody]Delete{Entity}Command command)
+        {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+
+        #endregion {Entity}
+    }
+}

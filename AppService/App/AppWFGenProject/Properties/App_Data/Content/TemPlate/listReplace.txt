@@ -1,0 +1,17 @@
+﻿{nameproject}
+{common}
+{db}
+{Entity}
+{entity}
+{_entity}
+{version}
+{builderConfig}  -- EFConfig
+{builderFields}  -- DomainObjects,Fields
+{paramCreate}    -- DomainObjects,Fields
+{functionCreate} -- DomainObjects,Fields
+{builderProperties} -- DomainObjects,Properties
+{builderBehaviours} -- DomainObjects,Behaviours
+{biulderRegister} -- Infrastructure,AutofacModules
+{builderRequestParam} -- Commands,CreateCommand
+{builderSetUpdate} -- Commands,UpdateCommand
+{builderPublic}  -- DTOs

@@ -1,0 +1,10 @@
+﻿using {nameproject}.Sql.DTOs.BaseClasses;
+using System;
+
+namespace {nameproject}.Sql.DTOs
+{
+    public class {Entity}DTO : DTOBase
+    {
+        {builderPublic}
+    }
+}

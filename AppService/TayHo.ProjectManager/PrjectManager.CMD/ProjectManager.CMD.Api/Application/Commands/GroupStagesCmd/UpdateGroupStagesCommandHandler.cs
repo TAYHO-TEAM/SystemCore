@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateGroupStagesCommandHandler : GroupStagesCommandHandler, IRequestHandler<UpdateGroupStagesCommand, MethodResult<UpdateGroupStagesCommandResponse>>
     {
-        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository) : base(mapper, GroupStagesRepository)
+        public UpdateGroupStagesCommandHandler(IMapper mapper, IGroupStagesRepository GroupStagesRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, GroupStagesRepository,httpContextAccessor)
         {
         }
 
@@ -35,7 +36,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupStages.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupStages.IsActive;
-            existingGroupStages.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupStages.IsVisible;
+            existingGroupStages.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingGroupStages.IsVisible;
             existingGroupStages.Status = request.Status.HasValue ? request.Status : existingGroupStages.Status;
             existingGroupStages.SetGroupId(request.GroupId);
             existingGroupStages.SetStageId(request.StageId);

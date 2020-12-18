@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateRelationTableCommandHandler : RelationTableCommandHandler, IRequestHandler<CreateRelationTableCommand, MethodResult<CreateRelationTableCommandResponse>>
     {
-        public CreateRelationTableCommandHandler(IMapper mapper, IRelationTableRepository RelationTableRepository) : base(mapper, RelationTableRepository)
+        public CreateRelationTableCommandHandler(IMapper mapper, IRelationTableRepository RelationTableRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, RelationTableRepository)
         {
         }
 
@@ -27,9 +27,10 @@ namespace  Acc.Cmd.Api.Application.Commands
                                                         request.PrimaryKey,
                                                         request.ForeignTable,
                                                         request.ForeignKey);
+            newRelationTable.SetCreate(_user);
             newRelationTable.Status = request.Status.HasValue ? request.Status : newRelationTable.Status;
             newRelationTable.IsActive = request.IsActive.HasValue ? request.IsActive : newRelationTable.IsActive;
-            newRelationTable.IsVisible = request.IsActive.HasValue ? request.IsVisible : newRelationTable.IsVisible;
+            newRelationTable.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newRelationTable.IsVisible;
             await _RelationTableRepository.AddAsync(newRelationTable).ConfigureAwait(false);
             await _RelationTableRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateRelationTableCommandResponse>(newRelationTable);

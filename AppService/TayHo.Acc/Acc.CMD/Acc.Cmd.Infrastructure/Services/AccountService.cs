@@ -53,7 +53,7 @@ namespace Acc.Cmd.Infrastructure.Services
         {
             if (_httpContextAccessor.HttpContext.Items.Any(x => (string)x.Key == ClaimsTypeName.ACCOUNT_ID))
             {
-                int userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
+                int? userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
                 Accounts existingAccount = await _accountRepository.SingleOrDefaultAsync(x => x.Id == userId).ConfigureAwait(false);
         
                 if (existingAccount != null)
@@ -103,6 +103,7 @@ namespace Acc.Cmd.Infrastructure.Services
                 errorResults.Add(new ErrorResult
                 {
                     ErrorCode = nameof(ErrorCodeLogin.LErr001),
+                   
                     ErrorMessage = AccExtensions.GetErrorMessage( nameof(ErrorCodeLogin.LErr001)),
                     ErrorValues = new List<string> { ErrorHelpers.GenerateErrorResult(nameof(userName), userName) }
                 });
@@ -126,6 +127,7 @@ namespace Acc.Cmd.Infrastructure.Services
                     tokenResult.Title = existingStaffTaHo.Title;
                     tokenResult.AvatarImg = existingStaffTaHo.AvatarImg;
                     tokenResult.UserName = existingStaffTaHo.UserName;
+                    tokenResult.AccountId = existingAccount.Id;
                 }     
             }    
            
@@ -136,7 +138,7 @@ namespace Acc.Cmd.Infrastructure.Services
             if (_httpContextAccessor.HttpContext.Items.Any(x => (string)x.Key == ClaimsTypeName.ACCOUNT_ID) && !string.IsNullOrEmpty(refreshToken))
             {
                 List<ErrorResult> errorResults = new List<ErrorResult>();
-                int userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
+                int? userId = (int)_httpContextAccessor.HttpContext.Items[ClaimsTypeName.ACCOUNT_ID];
                 Accounts existingAccount = await _accountRepository.SingleOrDefaultAsync(x => x.Id == userId && x.IsDelete == false).ConfigureAwait(false);
                 if (existingAccount == null)
                 {

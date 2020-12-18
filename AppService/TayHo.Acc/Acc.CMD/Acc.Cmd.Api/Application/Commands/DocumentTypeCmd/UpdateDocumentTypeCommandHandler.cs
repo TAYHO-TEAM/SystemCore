@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateDocumentTypeCommandHandler : DocumentTypeCommandHandler,IRequestHandler<UpdateDocumentTypeCommand, MethodResult<UpdateDocumentTypeCommandResponse>>
     {
-        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,12 +37,13 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingDocumentType.IsActive = request.IsActive.HasValue ? request.IsActive : existingDocumentType.IsActive;
-            existingDocumentType.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingDocumentType.IsVisible;
+            existingDocumentType.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingDocumentType.IsVisible;
             existingDocumentType.Status = request.Status.HasValue ? request.Status : existingDocumentType.Status;
             existingDocumentType.SetCode(request.Code);
             existingDocumentType.SetTitle(request.Title);
-            existingDocumentType.SetDescription(request.Descriptions);
-            existingDocumentType.SetUpdate(0,0);
+            existingDocumentType.SetDescriptions(request.Descriptions);
+            existingDocumentType.SetOperationProcessId(request.OperationProcessId);
+            existingDocumentType.SetUpdate(_user,null);
             _DocumentTypeRepository.Update(existingDocumentType);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateDocumentTypeCommandResponse>(existingDocumentType);

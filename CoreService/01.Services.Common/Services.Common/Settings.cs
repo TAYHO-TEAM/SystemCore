@@ -9,7 +9,7 @@
 
         public const string CommonErrorPrefix = "ERR_COM_";
         public const int PageSizeMax = 100;
-        public const int DefaultPageSize = 10;
+        public const int DefaultPageSize = 100;
 
         // Url
         public const string APIQueryRoute = "api/[controller]";

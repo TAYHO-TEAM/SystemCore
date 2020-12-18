@@ -1,0 +1,36 @@
+using {nameproject}.Domain.DomainObjects.BaseClasses;
+using Services.Common.DomainObjects.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
+
+namespace {nameproject}.Domain.DomainObjects
+{
+    public class {Entity} : DOBase
+    {
+        #region Fields
+        {builderFields}
+        #endregion Fields
+        #region Constructors
+
+        private {Entity}()
+        {
+        }
+
+        public {Entity}({paramCreate}) : this()
+        {
+           {functionCreate}
+        }
+        #endregion Constructors
+        #region Properties
+        {builderProperties}
+
+        #region Behaviours
+        {builderBehaviours}
+       
+        public sealed override bool IsValid()
+        {
+            return base.IsValid();
+        }
+        #endregion Behaviours
+    }
+}

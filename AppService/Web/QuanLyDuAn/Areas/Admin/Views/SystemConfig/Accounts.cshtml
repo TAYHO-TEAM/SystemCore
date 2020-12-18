@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        const ACTION = "/Accounts";
+        var WIDTH_CONTAINER = $("#container").width();
+
+        let customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred(), params = {};
+
+                params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_ACC_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems,
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
+        });
+
+        $(function () {
+            loadData(customStore);
+        });
+
+        let loadData = (dataSource) => {
+            $("#container").dxDataGrid({
+                height: heightScreen,
+                dataSource: dataSource,
+                remoteOperations: {
+                    paging: true,
+                    sorting: true,
+                },
+                repaintChangesOnly: true,
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                columns: [
+                    {
+                        caption: "STT",
+                        width: 80, alignment: "center",
+                        allowEditting: false,
+                        cellTemplate: (container, options) => {
+                            console.log(options)
+                            container.append(options.rowIndex + 1);
+                        },
+                    },
+                    {
+                        dataField: "accountName", caption: "Tên tài khoản",
+                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập...",
+                            showClearButton: true
+                        },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "isActive", width: 100,
+                        editorType: "dxSwitch",
+                    },
+
+                    {
+                        dataField: "isVisible", width: 100,
+                        editorType: "dxSwitch",
+                    },
+                ],
+                paging: {
+                    enabled: true,
+                    pageSize: 20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
+                editing: {
+                    allowAdding: true,
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    mode: "cell",
+                    useIcons: false,
+                    confirmDelete: true, refreshMode: "full"
+                },
+                onToolbarPreparing: function (e) {
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh",
+                                onClick: () => container.refresh()
+                            }
+                        })
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                }
+            });
+        }
+
+    </script>
+}
+

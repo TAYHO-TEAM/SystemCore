@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupFunctionCommandHandler : GroupFunctionCommandHandler,IRequestHandler<UpdateGroupFunctionCommand, MethodResult<UpdateGroupFunctionCommandResponse>>
     {
-        public UpdateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository FunctionRepository) : base(mapper, FunctionRepository)
+        public UpdateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository FunctionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, FunctionRepository)
         {
         }
 
@@ -36,12 +36,12 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupFunction.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupFunction.IsActive;
-            existingGroupFunction.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupFunction.IsVisible;
+            existingGroupFunction.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroupFunction.IsVisible;
             existingGroupFunction.Status = request.Status.HasValue ? request.Status : existingGroupFunction.Status;
             existingGroupFunction.SetFunctionId(request.FunctionId);
             existingGroupFunction.SetGroupId(request.GroupId);
 
-            existingGroupFunction.SetUpdate(0,0);
+            existingGroupFunction.SetUpdate(_user,null);
             _GroupFunctionRepository.Update(existingGroupFunction);
             await _GroupFunctionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupFunctionCommandResponse>(existingGroupFunction);

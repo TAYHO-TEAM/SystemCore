@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupsCommandHandler : GroupsCommandHandler,IRequestHandler<UpdateGroupsCommand, MethodResult<UpdateGroupsCommandResponse>>
     {
-        public UpdateGroupsCommandHandler(IMapper mapper, IGroupsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateGroupsCommandHandler(IMapper mapper, IGroupsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,13 +37,13 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroups.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroups.IsActive;
-            existingGroups.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroups.IsVisible;
+            existingGroups.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroups.IsVisible;
             existingGroups.Status = request.Status.HasValue ? request.Status : existingGroups.Status;
             existingGroups.SetTitle(request.Title);
             existingGroups.SetDescriptions(request.Descriptions);
             existingGroups.SetType(request.Type);
 
-            existingGroups.SetUpdate(0,0);
+            existingGroups.SetUpdate(_user,null);
             _GroupsRepository.Update(existingGroups);
             await _GroupsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupsCommandResponse>(existingGroups);

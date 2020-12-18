@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateGroupPermistionCommandHandler : GroupPermistionCommandHandler,IRequestHandler<UpdateGroupPermistionCommand, MethodResult<UpdateGroupPermistionCommandResponse>>
     {
-        public UpdateGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository PermistionRepository) : base(mapper, PermistionRepository)
+        public UpdateGroupPermistionCommandHandler(IMapper mapper, IGroupPermistionRepository PermistionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, PermistionRepository)
         {
         }
 
@@ -36,12 +36,12 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingGroupPermistion.IsActive = request.IsActive.HasValue ? request.IsActive : existingGroupPermistion.IsActive;
-            existingGroupPermistion.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingGroupPermistion.IsVisible;
+            existingGroupPermistion.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingGroupPermistion.IsVisible;
             existingGroupPermistion.Status = request.Status.HasValue ? request.Status : existingGroupPermistion.Status;
             existingGroupPermistion.SetPermistionId(request.PermistionId);
             existingGroupPermistion.SetGroupId(request.GroupId);
 
-            existingGroupPermistion.SetUpdate(0,0);
+            existingGroupPermistion.SetUpdate(_user,null);
             _GroupPermistionRepository.Update(existingGroupPermistion);
             await _GroupPermistionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateGroupPermistionCommandResponse>(existingGroupPermistion);

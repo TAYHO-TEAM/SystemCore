@@ -8,7 +8,7 @@ namespace Services.Common.DomainObjects.Extensions
 {
     public static class MediatorExtension
     {
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, IEnumerable<Entity> domainEntities)
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, IEnumerable<EntityDO> domainEntities)
         {
             var domainEvents = domainEntities
                 .SelectMany(x => x.DomainEvents)

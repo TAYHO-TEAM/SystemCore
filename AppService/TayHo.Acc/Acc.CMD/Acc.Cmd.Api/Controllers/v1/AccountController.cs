@@ -4,10 +4,13 @@ using Acc.Cmd.Api.ViewModels;
 using Acc.Cmd.Domain.Repositories;
 using Acc.Cmd.Domain.Services;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Common.DomainObjects;
 using Services.Common.Security;
+using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Acc.Cmd.Api.Controllers.V1
@@ -18,12 +21,11 @@ namespace Acc.Cmd.Api.Controllers.V1
         private const string Logout = nameof(Logout);
         private const string RefreshToken = "Refresh-Token";
         private readonly IAccountService _accountService;
-        private readonly IAccountsRepository _accountsRepository;
+
         #region login
-        public AccountController(IMediator mediator, IAccountService accountService, IAccountsRepository accountsRepository) : base(mediator)
+        public AccountController(IMediator mediator, IAccountService accountService) : base(mediator)
         {
             _accountService = accountService;
-            _accountsRepository = accountsRepository;
         }
         ///// <summary>
         /////  Logging Account.
@@ -48,7 +50,7 @@ namespace Acc.Cmd.Api.Controllers.V1
         [Route(Login)]
         [ProducesResponseType(typeof(MethodResult<TokenAccountResult>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> LoginAsync([FromBody]LoginRequestViewModel command)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestViewModel command)
         {
             var methodResult = new MethodResult<TokenAccountResult>();
             methodResult.Result = await _accountService.LoginAsync(command.UserName, command.Password).ConfigureAwait(false);
@@ -80,6 +82,7 @@ namespace Acc.Cmd.Api.Controllers.V1
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> RefreshTokenAsync(RefreshTokenRequestViewModel command)
         {
+            var a = User.Identity.Name;
             var methodResult = new MethodResult<TokenAccountResult>();
             methodResult.Result = await _accountService.RefreshTokenAsync(command.RefreshToken).ConfigureAwait(false);
             return Ok(methodResult);
@@ -97,6 +100,7 @@ namespace Acc.Cmd.Api.Controllers.V1
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateAccountAsync([FromBody] CreateAccountsCommand command)
         {
+
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }

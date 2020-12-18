@@ -1,0 +1,213 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Danh sách loại thầu";
+}
+
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        const ACTION = "/NS_LoaiCongViec";
+        const ACTION_PROJECT = "/Projects";
+        var customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                var params = {
+                    'FindId': 'projectId,' + PROJECTID,
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        });
+        let customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+
+        $(function () {
+            loadData(customStore);
+        });
+
+        let loadData = (dataSource) => $("#container").dxDataGrid({
+            height: heightScreen,
+            dataSource: customStore,
+            repaintChangesOnly: true,
+            remoteOperations: {
+                paging: true,
+                sorting: true,
+                filtering: true,
+            },
+            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            columns: [
+                {
+                    dataField: "status", caption: "STT",
+                    dataType: "number", width: 100, alignment: "center",
+                    editorType: "dxNumberBox",
+                    editorOptions: {
+                        min: 1, step: 1, showSpinButtons: true,
+                    }, sortOrder: "desc",
+                    cellTemplate: (c, o) => c.append(o.rowIndex + 1)
+                },
+                {
+                    dataField: "tenLoaiCongViec", caption: "Tên loại công việc",
+                    dataType: "string", alignment: "left",
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        showClearButton: true,
+                    },
+                    validationRules: [{ type: "required" }]
+                },
+                {
+                    dataField: "kyHieu", caption: "Ký Hiệu",
+                    dataType: "string", customizeText: (e) => (e.value != null ? e.value : '--'),
+                }, 
+                {
+                    dataField: "dienGiai", caption: "Diễn giải",
+                    dataType: "string", alignment: "left",
+                    customizeText: (e) => (e.value != null ? e.value : '--'),
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập (nếu có)...", showClearButton: true,
+                    },
+                },
+                {
+                    dataField: "isActive", width: 100, alignment: "center",
+                    editorType: "dxSwitch",
+                },
+                {
+                    dataField: "isVisible", width: 100, alignment: "center",
+                    editorType: "dxSwitch",
+                }
+            ],
+            paging: {
+                enabled: true,
+                pageSize: 20
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 40],
+                showInfo: true,
+            },
+            searchPanel: {
+                highlightCaseSensitive: true,
+                highlightSearchText: true,
+                searchVisibleColumnsOnly: true,
+                visible: true
+            },
+            editing: {
+                allowUpdating: PermitInAction["update"] ? true : null,
+                allowDeleting: PermitInAction["delete"] ? true : null,
+                mode: "cell", useIcons: false, confirmDelete: true,
+            },
+            onToolbarPreparing: function (e) {
+                var container = e.component;
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before", widget: "dxSelectBox",
+                        options: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                            searchEnabled: true,
+                            searchMode: "contains",
+                            width: "100%",
+                            showClearButton: false,
+                            value: PROJECTID,
+                            onValueChanged: function (data) {
+                                PROJECTID = data.value;
+                                localStorage.setItem('projectIdCurrent', PROJECTID);
+                                loadData(customStore);
+                            },
+                        },
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            visible: PermitInAction["insert"],
+                            text: "Giai đoạn", icon: "add", stylingMode: "filled", type: "default",
+                            onClick: () => container.addRow()
+                        }
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    })
+            },
+            onInitNewRow: (e) => {
+                e.data.isActive = true;
+                e.data.isVisible = true;
+            },
+            rowDragging: {
+                allowReordering: PermitInAction["update"],
+                showDragIcons: true,
+                dropFeedbackMode: "push",
+                dragDirection: "vertical",
+                onDragEnd: function (e) {
+                    var source = e.itemData,
+                        target = e.component.getVisibleRows()[e.toIndex].data,
+                        d = $.Deferred();
+                    if (source.id != target.id) {
+                        customStore.update(source.id, { status: target.status }).then(() => {
+                            e.component.refresh().then(d.resolve, d.reject);
+                        }, d.reject);
+                    }
+                },
+            },
+        });
+    </script>
+}

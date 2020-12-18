@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
-using ProjectManager.CMD.Domain.Repositories;
+using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteContractorInfoCommandHandler : ContractorInfoCommandHandler, IRequestHandler<DeleteContractorInfoCommand, MethodResult<DeleteContractorInfoCommandResponse>>
     {
-        public DeleteContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository) : base(mapper, ContractorInfoRepository)
+        public DeleteContractorInfoCommandHandler(IMapper mapper, IContractorInfoRepository ContractorInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ContractorInfoRepository,httpContextAccessor)
         {
         }
 

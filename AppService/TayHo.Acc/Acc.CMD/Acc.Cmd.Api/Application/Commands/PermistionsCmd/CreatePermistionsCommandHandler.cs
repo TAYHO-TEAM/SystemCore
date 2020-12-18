@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreatePermistionsCommandHandler : PermistionsCommandHandler, IRequestHandler<CreatePermistionsCommand, MethodResult<CreatePermistionsCommandResponse>>
     {
-        public CreatePermistionsCommandHandler(IMapper mapper, IPermistionsRepository PermistionsRepository) : base(mapper, PermistionsRepository)
+        public CreatePermistionsCommandHandler(IMapper mapper, IPermistionsRepository PermistionsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, PermistionsRepository)
         {
         }
 
@@ -28,7 +28,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                                                 request.Descriptions);
             newPermistions.Status = request.Status.HasValue ? request.Status : newPermistions.Status;
             newPermistions.IsActive = request.IsActive.HasValue ? request.IsActive : newPermistions.IsActive;
-            newPermistions.IsVisible = request.IsActive.HasValue ? request.IsVisible : newPermistions.IsVisible;
+            newPermistions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newPermistions.IsVisible;
             await _PermistionsRepository.AddAsync(newPermistions).ConfigureAwait(false);
             await _PermistionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreatePermistionsCommandResponse>(newPermistions);

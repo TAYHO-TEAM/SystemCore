@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Acc.Common
+﻿namespace Acc.Common
 {
     public class QuanLyDuAnConstants
     {
@@ -20,6 +18,11 @@ namespace Acc.Common
         public const string RelationTable_TABLENAME = "RelationTable";
         public const string GroupFunction_TABLENAME = "GroupFunction";
         public const string StaffTayHo_TABLENAME = "StaffTayHo";
+        public const string GroupActionPermistion_TABLENAME = "GroupActionPermistion";
+        public const string OperationProcess_TABLENAME = "OperationProcess";
+        public const string GroupStepProcessPermistion_TABLENAME = "GroupStepProcessPermistion";
+        public const string StepsProcess_TABLENAME = "StepsProcess";
+        public const string WorkItems_TABLENAME = "WorkItems";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";
@@ -31,5 +34,6 @@ namespace Acc.Common
         public const string Assignments_TABLENAME = "Assignments";
         public const string Projects_TABLENAME = "Projects";
         public const string Reply_TABLENAME = "Reply";
+
     }
 }

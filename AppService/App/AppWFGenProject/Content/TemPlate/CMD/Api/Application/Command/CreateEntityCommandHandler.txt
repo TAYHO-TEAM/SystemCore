@@ -1,0 +1,37 @@
+﻿using {nameproject}.Domain.DomainObjects;
+using {nameproject}.Domain.Repositories;
+using AutoMapper;using Microsoft.AspNetCore.Http;
+using MediatR;
+using Services.Common.DomainObjects;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace  {nameproject}.Api.Application.Commands
+{
+    public class Create{Entity}CommandHandler : {Entity}CommandHandler, IRequestHandler<Create{Entity}Command, MethodResult<Create{Entity}CommandResponse>>
+    {
+        public Create{Entity}CommandHandler(IMapper mapper,IHttpContextAccessor httpContextAccessor,, I{Entity}Repository {entity}Repository) : base(mapper, httpContextAccessor, {entity}Repository)
+        {
+        }
+
+        /// <summary>
+        /// Handle for creating a new {Entity}
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<MethodResult<Create{Entity}CommandResponse>> Handle(Create{Entity}Command request, CancellationToken cancellationToken)
+        {
+            var methodResult = new MethodResult<Create{Entity}CommandResponse>();
+            var new{Entity} = new {Entity}({builderRequestParam});
+            new{Entity}.SetCreate(_user);
+            new{Entity}.Status = request.Status.HasValue ? request.Status : new{Entity}.Status;
+            new{Entity}.IsActive = request.IsActive.HasValue ? request.IsActive : new{Entity}.IsActive;
+            new{Entity}.IsVisible = request.IsVisible.HasValue ? request.IsVisible : new{Entity}.IsVisible;
+            await {_entity}Repository.AddAsync(new{Entity}).ConfigureAwait(false);
+            await {_entity}Repository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            methodResult.Result = _mapper.Map<Create{Entity}CommandResponse>(new{Entity});
+            return methodResult;
+        }
+    }
+}

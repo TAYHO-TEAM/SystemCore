@@ -13,7 +13,7 @@ namespace QuanLyDuAn.Areas.NganSach
         }
 
         public override void RegisterArea(AreaRegistrationContext context) 
-        {
+        {  
             context.MapRoute(
                 "NganSach_default",
                 "NganSach/{controller}/{action}/{id}",

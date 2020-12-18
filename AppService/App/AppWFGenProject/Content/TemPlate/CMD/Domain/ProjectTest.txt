@@ -1,0 +1,36 @@
+using {nameproject}.Domain.DomainObjects.BaseClasses;
+using Services.Common.DomainObjects.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
+
+namespace {nameproject}.Domain.DomainObjects
+{
+    public class {Entity} : DOBase
+    {
+        #region Fields
+        private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private int? _parentId;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private int? _parentId;private int? _nodeLevel;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private int? _parentId;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _code;private string _code;private string _barCode;private string _code;private string _code;private string _barCode;private string _title;private string _descriptions;private int? _parentId;private int? _nodeLevel;private int? _oldId;
+        #endregion Fields
+        #region Constructors
+
+        private {Entity}()
+        {
+        }
+
+        public {Entity}({paramCreate}) : this()
+        {
+           {functionCreate}
+        }
+        #endregion Constructors
+        #region Properties
+        {builderProperties}
+
+        #region Behaviours
+        {builderBehaviours}
+       
+        public sealed override bool IsValid()
+        {
+            return base.IsValid();
+        }
+        #endregion Behaviours
+    }
+}

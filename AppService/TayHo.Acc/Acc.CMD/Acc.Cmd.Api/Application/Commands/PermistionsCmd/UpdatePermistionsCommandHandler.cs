@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdatePermistionsCommandHandler : PermistionsCommandHandler,IRequestHandler<UpdatePermistionsCommand, MethodResult<UpdatePermistionsCommandResponse>>
     {
-        public UpdatePermistionsCommandHandler(IMapper mapper, IPermistionsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdatePermistionsCommandHandler(IMapper mapper, IPermistionsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,13 +36,13 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingPermistions.IsActive = request.IsActive.HasValue ? request.IsActive : existingPermistions.IsActive;
-            existingPermistions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingPermistions.IsVisible;
+            existingPermistions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingPermistions.IsVisible;
             existingPermistions.Status = request.Status.HasValue ? request.Status : existingPermistions.Status;
             existingPermistions.SetType(request.Type);
             existingPermistions.SetTitle(request.Title);
             existingPermistions.SetDescriptions(request.Descriptions);
 
-            existingPermistions.SetUpdate(0,0);
+            existingPermistions.SetUpdate(_user,null);
             _PermistionsRepository.Update(existingPermistions);
             await _PermistionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdatePermistionsCommandResponse>(existingPermistions);

@@ -12,10 +12,11 @@ namespace Acc.Cmd.Api.Controllers.v1.BaseClasses
     public class APIControllerBase : ControllerBase
     {
         protected readonly IMediator _mediator;
-
+        
         public APIControllerBase(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            
         }
     }
 }

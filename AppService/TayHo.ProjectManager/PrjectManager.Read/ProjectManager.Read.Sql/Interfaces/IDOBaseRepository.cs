@@ -7,6 +7,9 @@ namespace ProjectManager.Read.Sql.Interfaces
     public interface IDOBaseRepository<T> where T : class
     {
         Task<PagingItems<T>> GetWithPaggingAsync(RequestBaseFilterParam requetsBaseFilterParam);
+        Task<PagingItems<T>> GetWithPaggingFKAsync(RequestBaseFilterParam requetsBaseFilterParam);
+        Task<PagingItems<T>> GetWithPaggingAccountFKAsync(RequestHasAccountIdFilterParam requestHasAccountIdFilterParam);
+        Task<PagingItems<T>> GetTreeListWithPaggingFKAsync(RequestTreeListBaseFilterParam requestTreeListBaseFilterParam); 
     }
 
 }

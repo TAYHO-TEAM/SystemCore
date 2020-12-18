@@ -32,10 +32,12 @@
         IErrN0,
         IErrN1,
         IErrN2,
+        IErrN3,
     }
     public enum ErrorCodeUpdate
     {
         UErr01,
+        UErr02,
     }
     public enum ErrorCodeDelete
     {

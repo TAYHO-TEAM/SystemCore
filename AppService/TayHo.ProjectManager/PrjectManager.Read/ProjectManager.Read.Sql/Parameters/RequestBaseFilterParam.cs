@@ -5,6 +5,7 @@ namespace ProjectManager.Read.Sql.Parameters
 {
     public class RequestBaseFilterParam : QueryPaging
     {
+        public string FindParentId { get; set; }
         public string FindId { get; set; }
         public string TableName { get; set; }
         public string SortCol { get; set; }
@@ -12,4 +13,9 @@ namespace ProjectManager.Read.Sql.Parameters
         public string KeyWord { get; set; }
         public string ColumName { get; set; }
     }
+    public class RequestTreeListBaseFilterParam : RequestBaseFilterParam
+    {
+        public int? TypeStore { get; set; }
+    }
+    
 }

@@ -5,12 +5,13 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateProjectsCommandHandler : ProjectsCommandHandler, IRequestHandler<CreateProjectsCommand, MethodResult<CreateProjectsCommandResponse>>
     {
-        public CreateProjectsCommandHandler(IMapper mapper, IProjectsRepository ProjectsRepository) : base(mapper, ProjectsRepository)
+        public CreateProjectsCommandHandler(IMapper mapper, IProjectsRepository ProjectsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, ProjectsRepository)
         {
         }
 
@@ -30,9 +31,10 @@ namespace  Acc.Cmd.Api.Application.Commands
                                             request.ParentId,
                                             request.NodeLevel,
                                             request.OldId);
+            newProjects.SetCreate(_user);
             newProjects.Status = request.Status.HasValue ? request.Status : newProjects.Status;
             newProjects.IsActive = request.IsActive.HasValue ? request.IsActive : newProjects.IsActive;
-            newProjects.IsVisible = request.IsActive.HasValue ? request.IsVisible : newProjects.IsVisible;
+            newProjects.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newProjects.IsVisible;
             await _ProjectsRepository.AddAsync(newProjects).ConfigureAwait(false);
             await _ProjectsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateProjectsCommandResponse>(newProjects);

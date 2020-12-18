@@ -22,7 +22,7 @@
     }
 }(this, function(localization) {
     localization.loadMessages({
-        vi: {
+        vi: { 
             Yes: "C\xf3",
             No: "Kh\xf4ng",
             Cancel: "H\u1ee7y",

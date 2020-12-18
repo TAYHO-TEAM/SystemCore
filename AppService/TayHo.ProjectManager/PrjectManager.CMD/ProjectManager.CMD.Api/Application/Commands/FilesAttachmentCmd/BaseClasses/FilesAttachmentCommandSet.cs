@@ -1,4 +1,6 @@
-﻿namespace ProjectManager.CMD.Api.Application.Commands
+﻿using Microsoft.AspNetCore.Http;
+
+namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class FilesAttachmentCommandSet : BaseCommandClasses
     {
@@ -11,5 +13,14 @@
         public string Host { get; set; }
         public string Type { get; set; }
         public string Direct { get; set; }
+        private IFormFile _formFiles { get; set; }
+        public void setFile(IFormFile FormFiles )
+        {
+            _formFiles = FormFiles;
+        }
+        public IFormFile getFile()
+        {
+           return _formFiles;
+        }
     }
 }

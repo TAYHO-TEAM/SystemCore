@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain.DomainObjects;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class CreateGroupFunctionCommandHandler : GroupFunctionCommandHandler, IRequestHandler<CreateGroupFunctionCommand, MethodResult<CreateGroupFunctionCommandResponse>>
     {
-        public CreateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository GroupFunctionRepository) : base(mapper, GroupFunctionRepository)
+        public CreateGroupFunctionCommandHandler(IMapper mapper, IGroupFunctionRepository GroupFunctionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupFunctionRepository)
         {
         }
 
@@ -25,9 +25,10 @@ namespace  Acc.Cmd.Api.Application.Commands
             var methodResult = new MethodResult<CreateGroupFunctionCommandResponse>();
             var newGroupFunction = new GroupFunction(request.FunctionId,
                                                     request.GroupId);
+            newGroupFunction.SetCreate(_user);
             newGroupFunction.Status = request.Status.HasValue ? request.Status : newGroupFunction.Status;
             newGroupFunction.IsActive = request.IsActive.HasValue ? request.IsActive : newGroupFunction.IsActive;
-            newGroupFunction.IsVisible = request.IsActive.HasValue ? request.IsVisible : newGroupFunction.IsVisible;
+            newGroupFunction.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newGroupFunction.IsVisible;
             await _GroupFunctionRepository.AddAsync(newGroupFunction).ConfigureAwait(false);
             await _GroupFunctionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<CreateGroupFunctionCommandResponse>(newGroupFunction);

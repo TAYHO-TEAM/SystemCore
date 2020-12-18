@@ -7,6 +7,7 @@
         IErr002,
         IErr10,
         IErr32,
+        IErr50,
         IErr64,
         IErr100,
         IErr128,
@@ -21,10 +22,13 @@
         IErrN0,
         IErrN1,
         IErrN2,
+        IErrN3,
+        IErrN4,
     }
     public enum ErrorCodeUpdate
     {
         UErr01,
+        UErr02,
     }
     public enum ErrorCodeDelete
     {

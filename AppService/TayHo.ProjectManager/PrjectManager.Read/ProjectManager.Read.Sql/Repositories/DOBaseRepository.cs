@@ -2,6 +2,7 @@
 using Dapper.Common;
 using ProjectManager.Read.Sql.Interfaces;
 using ProjectManager.Read.Sql.Parameters;
+using Services.Common.DomainObjects;
 using Services.Common.Paging;
 using System;
 using System.Data;
@@ -21,7 +22,7 @@ namespace ProjectManager.Read.Sql.Repositories
 
         public async Task<PagingItems<T>> GetWithPaggingAsync(RequestBaseFilterParam requestBaseFilterParam)
         {
-            requestBaseFilterParam.ColumName = GetColumnTableName();
+            requestBaseFilterParam.ColumName = new GetColumName<T>().GetColumnTableName();
             var result = new PagingItems<T>
             {
                 PagingInfo = new PagingInfo
@@ -37,10 +38,59 @@ namespace ProjectManager.Read.Sql.Repositories
 
             return result;
         }
-        public string GetColumnTableName()
+        public async Task<PagingItems<T>> GetWithPaggingFKAsync(RequestBaseFilterParam requestBaseFilterParam)
         {
-            var properties = typeof(T).GetProperties();
-            return string.Join(",", properties.Select(x => x.Name));
+            requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName?? "*" ;//GetColumnTableName();
+            var result = new PagingItems<T>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestBaseFilterParam.PageNumber,
+                    PageSize = requestBaseFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_GetDataTableSS_WithPage_FK", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+
+            return result;
         }
+        public async Task<PagingItems<T>> GetTreeListWithPaggingFKAsync(RequestTreeListBaseFilterParam requestBaseFilterParam)
+        {
+            requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName?? "*" ;//GetColumnTableName();
+            var result = new PagingItems<T>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestBaseFilterParam.PageNumber,
+                    PageSize = requestBaseFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_GetTreeList_WithPage_FK", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+
+            return result;
+        }
+        public async Task<PagingItems<T>> GetWithPaggingAccountFKAsync(RequestHasAccountIdFilterParam requestHasAccountIdFilterParam)
+        {
+            requestHasAccountIdFilterParam.ColumName = requestHasAccountIdFilterParam.ColumName ?? "*";//GetColumnTableName();
+            var result = new PagingItems<T>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestHasAccountIdFilterParam.PageNumber,
+                    PageSize = requestHasAccountIdFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_GetDataTableSS_WithPage_AccountID_FK", requestHasAccountIdFilterParam, commandType: CommandType.StoredProcedure).Result;
+            result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+
+            return result;
+        } 
     }
 }

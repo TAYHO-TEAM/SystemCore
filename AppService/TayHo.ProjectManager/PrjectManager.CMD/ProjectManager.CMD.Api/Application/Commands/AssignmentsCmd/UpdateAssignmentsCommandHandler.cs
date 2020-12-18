@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateAssignmentsCommandHandler : AssignmentsCommandHandler,IRequestHandler<UpdateAssignmentsCommand, MethodResult<UpdateAssignmentsCommandResponse>>
     {
-        public UpdateAssignmentsCommandHandler(IMapper mapper, IAssignmentsRepository AssignmentsRepository) : base(mapper, AssignmentsRepository)
+        public UpdateAssignmentsCommandHandler(IMapper mapper, IAssignmentsRepository AssignmentsRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, AssignmentsRepository,httpContextAccessor)
         {
         }
 
@@ -35,11 +36,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingAssignments.IsActive = request.IsActive.HasValue ? request.IsActive : existingAssignments.IsActive;
-            existingAssignments.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingAssignments.IsVisible;
+            existingAssignments.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingAssignments.IsVisible;
             existingAssignments.Status = request.Status.HasValue ? request.Status : existingAssignments.Status;
             existingAssignments.SetRequestId(request.RequestId);
             existingAssignments.SetRequestDetailId(request.RequestDetailId);
-            existingAssignments.SetUpdate(0,0);
+            existingAssignments.SetUpdate(_user,0);
             _AssignmentsRepository.Update(existingAssignments);
             await _AssignmentsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateAssignmentsCommandResponse>(existingAssignments);

@@ -10,6 +10,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
 {
     public class FilesAttachmentController : APIControllerBase
     {
+        private const string UploadFile = nameof(UploadFile);
         public FilesAttachmentController(IMediator mediator) : base(mediator)
         {
         }
@@ -55,6 +56,25 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteFilesAttachmentAsync([FromBody] DeleteFilesAttachmentCommand command)
         {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+        /// <summary>
+        /// Create a new FilesAttachment With Upload FIle.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(UploadFile)]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateFilesAttachmentCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateFilesAttachmentWithFileAsync([FromForm] CreateFilesAttachmentCommand command)
+        {
+            var files = Request.Form.Files;
+            if(files != null)
+            {
+                command.setFile(files[0]);
+            }    
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }

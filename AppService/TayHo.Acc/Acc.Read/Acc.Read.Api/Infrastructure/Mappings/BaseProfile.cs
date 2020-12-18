@@ -9,6 +9,9 @@ namespace Acc.Read.Api.Infrastructure.Mappings
         public BaseProfile()
         {
             CreateMap<BaseRequestViewModel, RequestBaseFilterParam>();
+            CreateMap<BaseRequestParentViewModel, RequestParentBaseFilterParam>();
+            CreateMap<BaseRequestViewModel, RequestHasAccountIdFilterParam>();
+            CreateMap<BaseRequestParentViewModel, RequestHasAccountIdFilterParam>();
         }
     }
 }

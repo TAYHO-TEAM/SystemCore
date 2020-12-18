@@ -1,17 +1,21 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using ProjectManager.CMD.Domain.IService;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateFilesAttachmentCommandHandler : FilesAttachmentCommandHandler, IRequestHandler<CreateFilesAttachmentCommand, MethodResult<CreateFilesAttachmentCommandResponse>>
     {
-        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository) : base(mapper, FilesAttachmentRepository)
+        private readonly IMediaService _mediaService;
+        public CreateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor, IMediaService mediaService) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
         {
+            _mediaService= mediaService;
         }
 
         /// <summary>
@@ -27,17 +31,24 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.OwnerByTable,
                                                         request.Code,
                                                         request.FileName,
-                                                        request.Tail,
-                                                        request.Url,
-                                                        request.Host,
+                                                        "",
+                                                        "",
+                                                        "",
                                                         request.Type,
                                                         request.Direct);
-            newFilesAttachment.SetCreateAccount(0);
+            newFilesAttachment.SetCreate(_user);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
-            newFilesAttachment.IsVisible = request.IsActive.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+            newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+            var result = await _mediaService.SaveFile(request.getFile(), request.OwnerByTable, request.Code);
+            newFilesAttachment.SetFileName(result.Item1);
+            newFilesAttachment.SetHost(result.Item2);
+            newFilesAttachment.SetUrl(result.Item3);
+            newFilesAttachment.SetDirect(result.Item4);
+            newFilesAttachment.SetTail(result.Item5);
             await _FilesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            
             methodResult.Result = _mapper.Map<CreateFilesAttachmentCommandResponse>(newFilesAttachment);
             return methodResult;
         }

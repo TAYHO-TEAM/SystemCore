@@ -32,7 +32,7 @@ namespace Services.Common.APIs.Infrastructure
             try
             {
                 var jwtOptions = _optionsBuilder.ReadJwtOptionsSettings();
-                if (!string.IsNullOrEmpty(jwtOptions.SecretKey)) return;
+                //if (!string.IsNullOrEmpty(jwtOptions.SecretKey)) return;
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(jwtOptions.SecretKey);
                 tokenHandler.ValidateToken(token, new TokenValidationParameters

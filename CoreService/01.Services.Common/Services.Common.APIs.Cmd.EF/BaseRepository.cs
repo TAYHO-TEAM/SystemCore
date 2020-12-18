@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Services.Common.APIs.Cmd.EF
 {
-    public class BaseRepository<T> : ICmdRepository<T> where T : EntityBase
+    public class BaseRepository<T> : ICmdRepository<T> where T : EntityDO
     {
         public BaseRepository(BaseDbContext dbContext)
         {
@@ -226,7 +228,24 @@ namespace Services.Common.APIs.Cmd.EF
             return queryable.SingleOrDefaultAsync();
         }
         #endregion Get
+        #region Store Procedure
+        //public virtual Task<Object> ExecuteSQLDefaultAsync(string StoreProcedure, List<SqlParameter> Parameters)
+        //{
+        //    var cmd = _dbContext.Database.GetDbConnection().CreateCommand());
 
+        //    cmd.Connection.OpenAsync();
+        //    cmd.CommandText = StoreProcedure;
+        //    cmd.CommandType = CommandType.StoredProcedure;
+        //    foreach (var parameter in Parameters)
+        //    {
+        //        cmd.Parameters.Add(parameter);
+        //    }
+
+        //    return await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+
+        //    //return queryable.SingleOrDefaultAsync();
+        //}
+        #endregion Store Procedure
         #region Any
 
         public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)

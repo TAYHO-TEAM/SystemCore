@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateReplyCommandHandler : ReplyCommandHandler,IRequestHandler<UpdateReplyCommand, MethodResult<UpdateReplyCommandResponse>>
     {
-        public UpdateReplyCommandHandler(IMapper mapper, IReplyRepository ReplyRepository) : base(mapper, ReplyRepository)
+        public UpdateReplyCommandHandler(IMapper mapper, IReplyRepository ReplyRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ReplyRepository,httpContextAccessor)
         {
         }
 
@@ -35,13 +36,13 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingReply.IsActive = request.IsActive.HasValue ? request.IsActive : existingReply.IsActive;
-            existingReply.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingReply.IsVisible;
+            existingReply.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingReply.IsVisible;
             existingReply.Status = request.Status.HasValue ? request.Status : existingReply.Status;
             existingReply.SetRequestDetailId(request.RequestDetailId);
             existingReply.SetTitle(request.Title);
             existingReply.SetNoAttachment(request.NoAttachment);
             existingReply.SetContent(request.Content);
-            existingReply.SetUpdate(0,0);
+            existingReply.SetUpdate(_user,0);
             _ReplyRepository.Update(existingReply);
             await _ReplyRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateReplyCommandResponse>(existingReply);

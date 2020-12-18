@@ -8,12 +8,13 @@ using Services.Common.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateProjectsCommandHandler : ProjectsCommandHandler,IRequestHandler<UpdateProjectsCommand, MethodResult<UpdateProjectsCommandResponse>>
     {
-        public UpdateProjectsCommandHandler(IMapper mapper, IProjectsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateProjectsCommandHandler(IMapper mapper, IProjectsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,7 +37,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingProjects.IsActive = request.IsActive.HasValue ? request.IsActive : existingProjects.IsActive;
-            existingProjects.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingProjects.IsVisible;
+            existingProjects.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingProjects.IsVisible;
             existingProjects.Status = request.Status.HasValue ? request.Status : existingProjects.Status;
             existingProjects.SetCode(request.Code);
             existingProjects.SetBarCode(request.BarCode);
@@ -46,7 +47,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingProjects.SetNodeLevel(request.NodeLevel);
             existingProjects.SetOldId(request.OldId);
 
-            existingProjects.SetUpdate(0,0);
+            existingProjects.SetUpdate(_user,null);
             _ProjectsRepository.Update(existingProjects);
             await _ProjectsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateProjectsCommandResponse>(existingProjects);

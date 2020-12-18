@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateCategorysCommandHandler : CategorysCommandHandler,IRequestHandler<UpdateCategorysCommand, MethodResult<UpdateCategorysCommandResponse>>
     {
-        public UpdateCategorysCommandHandler(IMapper mapper, ICategorysRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateCategorysCommandHandler(IMapper mapper, ICategorysRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingCategorys.IsActive = request.IsActive.HasValue ? request.IsActive : existingCategorys.IsActive;
-            existingCategorys.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingCategorys.IsVisible;
+            existingCategorys.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingCategorys.IsVisible;
             existingCategorys.Status = request.Status.HasValue ? request.Status : existingCategorys.Status;
             existingCategorys.SetTitle(request.Title);
             existingCategorys.SetDescriptions(request.Descriptions);

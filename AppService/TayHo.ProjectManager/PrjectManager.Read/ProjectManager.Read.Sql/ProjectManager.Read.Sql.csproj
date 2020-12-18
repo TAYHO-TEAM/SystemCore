@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common.DomainObjects\Services.Common.DomainObjects.csproj" />
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\..\..\..\CoreService\05.Database.Common\Dapper.Common\Dapper.Common.csproj" />
   </ItemGroup>

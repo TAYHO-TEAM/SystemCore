@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -12,7 +13,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class UpdateFilesAttachmentCommandHandler : FilesAttachmentCommandHandler,IRequestHandler<UpdateFilesAttachmentCommand, MethodResult<UpdateFilesAttachmentCommandResponse>>
     {
-        public UpdateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository) : base(mapper, FilesAttachmentRepository)
+        public UpdateFilesAttachmentCommandHandler(IMapper mapper, IFilesAttachmentRepository FilesAttachmentRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, FilesAttachmentRepository,httpContextAccessor)
         {
         }
 
@@ -35,7 +36,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : existingFilesAttachment.IsActive;
-            existingFilesAttachment.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingFilesAttachment.IsVisible;
+            existingFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : existingFilesAttachment.IsVisible;
             existingFilesAttachment.Status = request.Status.HasValue ? request.Status : existingFilesAttachment.Status;
             existingFilesAttachment.SetOwnerById(request.OwnerById);
             existingFilesAttachment.SetOwnerByTable(request.OwnerByTable);
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingFilesAttachment.SetHost(request.Host);
             existingFilesAttachment.SetType(request.Type);
             existingFilesAttachment.SetDirect(request.Direct);
-            existingFilesAttachment.SetUpdate(0,0);
+            existingFilesAttachment.SetUpdate(_user,0);
             _FilesAttachmentRepository.Update(existingFilesAttachment);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateFilesAttachmentCommandResponse>(existingFilesAttachment);

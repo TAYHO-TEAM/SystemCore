@@ -17,6 +17,7 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterGeneric(typeof(RequestPerformanceBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
             builder.RegisterType<AccountService>().As<IAccountService>().InstancePerLifetimeScope();
             builder.RegisterType<TokenManager>().As<ITokenManager>().InstancePerLifetimeScope();
+            builder.RegisterType<MediaService>().As<IMediaService>().InstancePerLifetimeScope();
             //builder.RegisterType<UserBlackListCacheManager>().As<IUserBlackListCacheManager>().InstancePerLifetimeScope();
             // register repositories
             builder.RegisterType<AccountsRepository>().As<IAccountsRepository>().InstancePerLifetimeScope();
@@ -29,6 +30,7 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterType<FunctionsRepository>().As<IFunctionsRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupAccountRepository>().As<IGroupAccountRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupActionRepository>().As<IGroupActionRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<GroupActionPermistionRepository>().As<IGroupActionPermistionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupFunctionRepository>().As<IGroupFunctionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupPermistionRepository>().As<IGroupPermistionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupsRepository>().As<IGroupsRepository>().InstancePerLifetimeScope();
@@ -37,6 +39,9 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterType<ProjectsRepository>().As<IProjectsRepository>().InstancePerLifetimeScope();
             builder.RegisterType<RelationTableRepository>().As<IRelationTableRepository>().InstancePerLifetimeScope();
             builder.RegisterType<StaffTayHoRepository>().As<IStaffTayHoRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<StepsProcessRepository>().As<IStepsProcessRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<GroupStepProcessPermistionRepository>().As<IGroupStepProcessPermistionRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<WorkItemsRepository>().As<IWorkItemsRepository>().InstancePerLifetimeScope();
         }
     }
 }

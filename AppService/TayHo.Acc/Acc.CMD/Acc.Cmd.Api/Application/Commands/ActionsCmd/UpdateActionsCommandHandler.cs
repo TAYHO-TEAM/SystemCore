@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateActionsCommandHandler : ActionsCommandHandler,IRequestHandler<UpdateActionsCommand, MethodResult<UpdateActionsCommandResponse>>
     {
-        public UpdateActionsCommandHandler(IMapper mapper, IActionsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateActionsCommandHandler(IMapper mapper, IActionsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -34,18 +34,25 @@ namespace  Acc.Cmd.Api.Application.Commands
                     ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
                 });
             }
+            var parentActions = await _actionsRepository.SingleOrDefaultAsync(x => x.Id == existingActions.ParentId && x.IsDelete == false).ConfigureAwait(false);
+            if (parentActions == null)
+            {
+              
+            }
+
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingActions.IsActive = request.IsActive.HasValue ? request.IsActive : existingActions.IsActive;
-            existingActions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingActions.IsVisible;
+            existingActions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingActions.IsVisible;
             existingActions.Status = request.Status.HasValue ? request.Status : existingActions.Status;
-            existingActions.SetParentId(request.ParentId);
+            existingActions.SetParentId(parentActions== null? 0:parentActions.Id );
             existingActions.SetTitle(request.Title);
             existingActions.SetDescriptions(request.Descriptions);
             existingActions.SetIcon(request.Icon);
             existingActions.SetUrl(request.Url);
             existingActions.SetCategoryId(request.CategoryId);
-            existingActions.SetLevel(request.Level);
-            existingActions.SetUpdate(0,0);
+            existingActions.SetLevel((parentActions != null && parentActions.Level.HasValue )? parentActions.Level +1 : 0);
+            existingActions.SetPriority(request.Priority);
+            existingActions.SetUpdate(_user,null);
             _actionsRepository.Update(existingActions);
             await _actionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateActionsCommandResponse>(existingActions);

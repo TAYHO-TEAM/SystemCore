@@ -1,6 +1,7 @@
 ﻿using ProjectManager.CMD.Domain;
 using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -15,7 +16,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteReplyCommandHandler : ReplyCommandHandler, IRequestHandler<DeleteReplyCommand, MethodResult<DeleteReplyCommandResponse>>
     {
-        public DeleteReplyCommandHandler(IMapper mapper, IReplyRepository ReplyRepository) : base(mapper, ReplyRepository)
+        public DeleteReplyCommandHandler(IMapper mapper, IReplyRepository ReplyRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, ReplyRepository,httpContextAccessor)
         {
         }
 
@@ -46,7 +47,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                 existingReply.UpdateDateUTC = utc;
                 existingReply.IsDelete = true;
                 existingReply.ModifyBy = 0;
-                existingReply.SetUpdate(0,0);
+                existingReply.SetUpdate(_user,0);
             }
             _ReplyRepository.UpdateRange(existingReplys);
             await _ReplyRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

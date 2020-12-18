@@ -40,10 +40,10 @@ namespace Acc.Cmd.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
-        public void SetPrimaryTable(string PrimaryTable) { _primaryTable = !string.IsNullOrEmpty(PrimaryTable) ? _primaryTable : PrimaryTable; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetPrimaryKey(string PrimaryKey) { _primaryKey = !string.IsNullOrEmpty(PrimaryKey) ? _primaryKey : PrimaryKey; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetForeignTable(string ForeignTable) { _foreignTable = !string.IsNullOrEmpty(ForeignTable) ? _foreignTable : ForeignTable; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetForeignKey(string ForeignKey) { _foreignKey = !string.IsNullOrEmpty(ForeignKey) ? _foreignKey : ForeignKey; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetPrimaryTable(string PrimaryTable) { _primaryTable = string.IsNullOrEmpty(PrimaryTable) ? _primaryTable : PrimaryTable; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetPrimaryKey(string PrimaryKey) { _primaryKey = string.IsNullOrEmpty(PrimaryKey) ? _primaryKey : PrimaryKey; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetForeignTable(string ForeignTable) { _foreignTable = string.IsNullOrEmpty(ForeignTable) ? _foreignTable : ForeignTable; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetForeignKey(string ForeignKey) { _foreignKey = string.IsNullOrEmpty(ForeignKey) ? _foreignKey : ForeignKey; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
             return base.IsValid();

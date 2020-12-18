@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
     public class DeleteGroupActionCommandHandler : GroupActionCommandHandler, IRequestHandler<DeleteGroupActionCommand, MethodResult<DeleteGroupActionCommandResponse>>
     {
-        public DeleteGroupActionCommandHandler(IMapper mapper, IGroupActionRepository GroupActionRepository) : base(mapper, GroupActionRepository)
+        public DeleteGroupActionCommandHandler(IMapper mapper, IGroupActionRepository GroupActionRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, GroupActionRepository)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingGroupAction.UpdateDate = now;
                 existingGroupAction.UpdateDateUTC = utc;
                 existingGroupAction.IsDelete = true;
-                
+                existingGroupAction.SetUpdate(_user, null);
             }
             _GroupActionRepository.UpdateRange(existingGroupActions);
             await _GroupActionRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

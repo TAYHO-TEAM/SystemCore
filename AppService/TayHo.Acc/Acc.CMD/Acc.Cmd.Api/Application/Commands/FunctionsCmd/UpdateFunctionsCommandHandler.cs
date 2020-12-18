@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateFunctionsCommandHandler : FunctionsCommandHandler,IRequestHandler<UpdateFunctionsCommand, MethodResult<UpdateFunctionsCommandResponse>>
     {
-        public UpdateFunctionsCommandHandler(IMapper mapper, IFunctionsRepository accountRepository) : base(mapper, accountRepository)
+        public UpdateFunctionsCommandHandler(IMapper mapper, IFunctionsRepository accountRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, accountRepository)
         {
         }
 
@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingFunctions.IsActive = request.IsActive.HasValue ? request.IsActive : existingFunctions.IsActive;
-            existingFunctions.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingFunctions.IsVisible;
+            existingFunctions.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingFunctions.IsVisible;
             existingFunctions.Status = request.Status.HasValue ? request.Status : existingFunctions.Status;
             existingFunctions.SetActionId(request.ActionId);
             existingFunctions.SetParentId(request.ParentId);
@@ -47,7 +47,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingFunctions.SetCategoryId(request.CategoryId);
             existingFunctions.SetLevel(request.Level);
 
-            existingFunctions.SetUpdate(0,0);
+            existingFunctions.SetUpdate(_user,null);
             _FunctionsRepository.Update(existingFunctions);
             await _FunctionsRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateFunctionsCommandResponse>(existingFunctions);

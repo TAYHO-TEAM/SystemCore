@@ -11821,10 +11821,11 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
   padding-left: 0.3rem;
 }
 
-.user-panel img {
-  height: auto;
-  width: 3rem;
-}
+    .user-panel img {
+        object-fit: cover;
+        height: 3rem;
+        width: 3rem;
+    }
 
 .user-panel .info {
   display: inline-block;
@@ -31321,12 +31322,12 @@ a.text-muted:hover {
 }
 
 
-.dx-datagrid-headers > .dx-datagrid-content > .dx-datagrid-table > tbody > tr > td {
+.dx-datagrid-headers > .dx-datagrid-content > .dx-datagrid-table > tbody > tr > td,
+.dx-treelist-headers > .dx-treelist-content > .dx-treelist-table > tbody > tr > td {
     font-weight: bold;
     color: white !important;
     background-color: rgb(248,141,43) !important;
-    vertical-align: middle !important;
-    text-align: center !important;
+    vertical-align: middle !important; 
     font-size: 13px !important;
     text-transform: uppercase !important;
 } 

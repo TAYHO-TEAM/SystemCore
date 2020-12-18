@@ -1,0 +1,14 @@
+﻿using {nameproject}.Domain.DomainObjects;
+using {nameproject}.Domain.Repositories;
+using Services.Common.APIs.Cmd.EF;
+
+
+namespace {nameproject}.Infrastructure.Repositories
+{
+    public class {Entity}Repository : BaseRepository<{Entity}>, I{Entity}Repository
+    {
+        public {Entity}Repository({db}Context dbContext) : base(dbContext)
+        {
+        }
+    }
+}

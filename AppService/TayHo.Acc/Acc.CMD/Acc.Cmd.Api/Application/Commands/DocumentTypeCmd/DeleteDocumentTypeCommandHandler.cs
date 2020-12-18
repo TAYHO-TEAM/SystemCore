@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace  Acc.Cmd.Api.Application.Commands
+namespace Acc.Cmd.Api.Application.Commands
 {
     public class DeleteDocumentTypeCommandHandler : DocumentTypeCommandHandler, IRequestHandler<DeleteDocumentTypeCommand, MethodResult<DeleteDocumentTypeCommandResponse>>
     {
-        public DeleteDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository) : base(mapper, DocumentTypeRepository)
+        public DeleteDocumentTypeCommandHandler(IMapper mapper, IDocumentTypeRepository DocumentTypeRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, DocumentTypeRepository)
         {
         }
 
@@ -45,7 +46,7 @@ namespace  Acc.Cmd.Api.Application.Commands
                 existingDocumentType.UpdateDate = now;
                 existingDocumentType.UpdateDateUTC = utc;
                 existingDocumentType.IsDelete = true;
-               
+                existingDocumentType.SetUpdate(_user, null);
             }
             _DocumentTypeRepository.UpdateRange(existingDocumentTypes);
             await _DocumentTypeRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,6 @@
 ﻿using Acc.Cmd.Domain;
 using Acc.Cmd.Domain.Repositories;
-using AutoMapper;
+using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;
 using Services.Common.DomainObjects.Exceptions;
@@ -13,7 +13,7 @@ namespace  Acc.Cmd.Api.Application.Commands
 {
     public class UpdateUserInfoCommandHandler : UserInfoCommandHandler,IRequestHandler<UpdateUserInfoCommand, MethodResult<UpdateUserInfoCommandResponse>>
     {
-        public UpdateUserInfoCommandHandler(IMapper mapper, IUserInfoRepository UserInfoRepository) : base(mapper, UserInfoRepository)
+        public UpdateUserInfoCommandHandler(IMapper mapper, IUserInfoRepository UserInfoRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, UserInfoRepository)
         {
         }
 
@@ -36,7 +36,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingUserInfo.IsActive = request.IsActive.HasValue ? request.IsActive : existingUserInfo.IsActive;
-            existingUserInfo.IsVisible = request.IsActive.HasValue ? request.IsVisible : existingUserInfo.IsVisible;
+            existingUserInfo.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingUserInfo.IsVisible;
             existingUserInfo.Status = request.Status.HasValue ? request.Status : existingUserInfo.Status;
             existingUserInfo.SetAddress(request.Address);
             existingUserInfo.SetCity(request.City);
@@ -48,7 +48,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingUserInfo.SetLastName(request.LastName);
             existingUserInfo.SetSex(request.Sex);
             existingUserInfo.SetPhone(request.Phone);
-            existingUserInfo.SetUpdate(0,0);
+            existingUserInfo.SetUpdate(_user,null);
             _UserInfoRepository.Update(existingUserInfo);
             await _UserInfoRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateUserInfoCommandResponse>(existingUserInfo);

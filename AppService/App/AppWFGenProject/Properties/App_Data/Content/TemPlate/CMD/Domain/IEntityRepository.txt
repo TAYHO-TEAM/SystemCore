@@ -1,0 +1,11 @@
+﻿using {nameproject}.Domain.DomainObjects;
+using Services.Common.DomainObjects.Interfaces;
+
+namespace {nameproject}.Domain.Repositories
+{
+    public interface I{Entity}Repository :  ICmdRepository<{Entity}>
+    {
+      
+    }
+}
+    

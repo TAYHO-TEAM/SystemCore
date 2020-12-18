@@ -23,6 +23,7 @@ namespace Acc.Cmd.Infrastructure
         public DbSet<GroupAction> GroupAction { get; set; }
         public DbSet<GroupFunction> GroupFunction { get; set; }
         public DbSet<GroupPermistion> GroupPermistion { get; set; }
+        public DbSet<GroupActionPermistion> GroupActionPermistion { get; set; }
         public DbSet<Groups> Groups { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
         public DbSet<Permistions> Permistions { get; set; }
@@ -31,7 +32,8 @@ namespace Acc.Cmd.Infrastructure
         public DbSet<RelationTable> RelationTable { get; set; }
         public DbSet<StaffTayHo> StaffTayHo { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
-
+        public DbSet<OperationProcess> OperationProcess { get; set; }
+        public DbSet<StepsProcess> StepsProcess { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

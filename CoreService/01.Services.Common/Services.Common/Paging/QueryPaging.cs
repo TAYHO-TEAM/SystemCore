@@ -15,7 +15,7 @@ namespace Services.Common.Paging
             {
                 _pageSize = value;
                 if (_pageSize > Settings.PageSizeMax) _pageSize = Settings.PageSizeMax;
-                if (_pageSize <= 0) _pageSize = Settings.DefaultPageSize;
+                if (_pageSize < 0) _pageSize = Settings.DefaultPageSize;
             }
         }
 
@@ -26,7 +26,7 @@ namespace Services.Common.Paging
             set
             {
                 _pageNumber = value;
-                if (_pageNumber <= 0) _pageNumber = 1;
+                if (_pageNumber < 0) _pageNumber = 1;
             }
         }
 
