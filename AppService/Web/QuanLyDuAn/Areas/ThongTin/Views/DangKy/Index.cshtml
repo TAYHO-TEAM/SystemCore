@@ -19,7 +19,6 @@
 @section script{
     <script>
 
-
         const ACTION = "/RequestRegist/GetByAccountID";
         const ACTION_DETAIL = "/RequestRegist/GetDetail";
         const ACTION_RESPONSEBYACC = "/ResponseRegist/getByAccount";
@@ -1007,7 +1006,6 @@
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div/>");
                 var content_Upload = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form").append('<div id = "fileuploader-container" ><div id="file-uploader"></div></div ><div id="button"></div>');
-                var content_Upload_submit = $("<div/>");
                 content.dxDataGrid({
                     dataSource: customStore_File(table, item),
                     remoteOperations: {
@@ -1053,8 +1051,8 @@
                     editing: {
                         mode: "batch",
                         allowAdding: false,
-                        allowDeleting: true,
-                        allowUpdating: true,
+                        allowDeleting: false,
+                        allowUpdating: false,
                     },
                     //onInitNewRow: (e) => {
                     //    e.data.isActive = true;

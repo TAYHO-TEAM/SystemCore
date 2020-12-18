@@ -82,7 +82,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
           
             await _requestRegistRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             var isRequestRegist = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)newRequestRegist.DocumentTypeId, (int)newRequestRegist.CreateBy, newRequestRegist.Id).ConfigureAwait(false);
-            await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", "test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png", @"D:\duan\Content\Upload" + "\test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png");
+            //await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", "test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png", @"D:\duan\Content\Upload" + "\test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png");
             var newfileAttachment = new FilesAttachment((int)newRequestRegist.Id, QuanLyDuAnConstants.ResponseRegist_TABLENAME, "", "test", "png", "@@", "", "", @"D:\duan\Content\Upload");
             await _filesAttachmentRepository.AddAsync(newfileAttachment);
             await _filesAttachmentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

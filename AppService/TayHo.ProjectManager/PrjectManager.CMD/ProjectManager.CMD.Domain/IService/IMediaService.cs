@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Services.Common.Media;
+using System;
 using System.Threading.Tasks;
 
 namespace ProjectManager.CMD.Domain.IService
@@ -7,7 +8,7 @@ namespace ProjectManager.CMD.Domain.IService
     public interface IMediaService
     {
         //Task<List<MediaResponse>> UploadFileAsync(IEnumerable<IFormFile> formFiles);
-        Task<int> SaveFile(IFormFileCollection files, string localtion, string filename, string fullname);
+        Task<Tuple<string, string, string>> SaveFile(IFormFile files, string Folder, string filename);
         Task<FileResponse> FetechFiles(string subDirectory);
     }
 }
