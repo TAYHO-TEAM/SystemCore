@@ -3,7 +3,7 @@ using System;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
-    public class PlanRegisterDTO : DTOBase
+    public class PlanRegisterDTO : DTOChilCountBase
     {
         public string Code { get; set; }
         public string Title { get; set; }

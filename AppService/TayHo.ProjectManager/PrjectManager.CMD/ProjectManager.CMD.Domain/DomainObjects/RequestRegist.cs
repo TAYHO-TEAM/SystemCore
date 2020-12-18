@@ -9,6 +9,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
     public class RequestRegist : DOBase
     {
         #region Fields
+        private int? _planRegisterId;
         private string _code;
         private string _barCode;
         private string _title;
@@ -28,19 +29,21 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         }
 
-        public RequestRegist(string Code,
-                            string BarCode,
-                            string Title,
-                            string Descriptions,
-                            string Note,
-                            int? ParentId,
-                            int? Level,
-                            byte? NoAttachment,
-                            int? ProjectId,
-                            int? WorkItemId,
-                            int? DocumentTypeId,
-                            int? Rev) : this()
+        public RequestRegist(int? PlanRegisterId,
+                                string Code,
+                                string BarCode,
+                                string Title,
+                                string Descriptions,
+                                string Note,
+                                int? ParentId,
+                                int? Level,
+                                byte? NoAttachment,
+                                int? ProjectId,
+                                int? WorkItemId,
+                                int? DocumentTypeId,
+                                int? Rev) : this()
         {
+            _planRegisterId = PlanRegisterId;
             _code = Code;
             _barCode = BarCode;
             _title = Title;
@@ -59,6 +62,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
         #endregion Constructors
         #region Properties
+        public int? PlanRegisterId { get => _planRegisterId; }
         [MaxLength(64, ErrorMessage = nameof(ErrorCodeInsert.IErr64))] public string Code { get => _code; }
         [MaxLength(128, ErrorMessage = nameof(ErrorCodeInsert.IErr128))] public string BarCode { get => _barCode; }
         [MaxLength(256, ErrorMessage = nameof(ErrorCodeInsert.IErr256))] public string Title { get => _title; }
@@ -74,8 +78,9 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         #endregion Properties
 
         #region Behaviours
-        public void SetCode(string Code) { _code = string.IsNullOrEmpty(Code) ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetBarCode(string BarCode) { _barCode = string.IsNullOrEmpty(BarCode) ? _barCode : BarCode; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetPlanRegisterId(int? PlanRegisterId) { _planRegisterId = !PlanRegisterId.HasValue ? _planRegisterId : PlanRegisterId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCode(string Code) { _code = Code == null ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetBarCode(string BarCode) { _barCode = BarCode == null ? _barCode : BarCode; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTitle(string Title) { _title = Title == null ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDescriptions(string Descriptions) { _descriptions = Descriptions == null ? _descriptions : Descriptions; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNote(string Note) { _note = Note == null ? _note : Note; if (!IsValid()) throw new DomainException(_errorMessages); }

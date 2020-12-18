@@ -73,7 +73,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
             var files = Request.Form.Files;
             if(files != null)
             {
-                command.setFile(files);
+                command.setFile(files[0]);
             }    
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);

@@ -25,7 +25,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         [HttpPost]
         [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateRequestRegistAsync([FromForm] CreateRequestRegistCommand command)
+        public async Task<IActionResult> CreateRequestRegistAsync([FromBody] CreateRequestRegistCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);

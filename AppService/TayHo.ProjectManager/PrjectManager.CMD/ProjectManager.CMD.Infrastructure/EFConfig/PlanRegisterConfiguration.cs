@@ -18,6 +18,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
             builder.Property(x => x.Description).HasField("_description").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.FromDate).HasField("_fromDate").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ToDate).HasField("_toDate").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ParentId).HasField("_parentId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ExpectFromDate).HasField("_expectFromDate").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.ExpectToDate).HasField("_expectToDate").UsePropertyAccessMode(PropertyAccessMode.Field);
         }

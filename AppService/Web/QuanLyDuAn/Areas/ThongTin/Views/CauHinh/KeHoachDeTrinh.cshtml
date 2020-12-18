@@ -4,5 +4,263 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>KeHoachDeTrinh</h2>
+
+@section style{   }
+
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        const ACTION = "/PlanRegister";
+        const ACTION_PROJECT = "/Projects";
+        const ACTION_CONTRACTORINFO = "/ContractorInfo";
+        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+
+        var WIDTH_CONTAINER = $("#container").width();
+
+        let customStore = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                console.log(values)
+                let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
+                //if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                //params = { 'FindId': 'ProjectId,' + PROJECTID },
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        let list = data.result.items;
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000//10 giây
+                });
+
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        });
+
+
+        let customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        let customStore_ContractorInfo = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_CONTRACTORINFO,
+                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible == true)),
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            byKey: (key) => { return key; }
+        });
+        $(function () {
+            loadData(customStore);
+        });
+
+        let loadData = (dataSource) => {
+            $("#container").dxTreeList({
+                height: heightScreen,
+                dataSource: dataSource,
+                repaintChangesOnly: true,
+                remoteOperations: {
+                    filtering: true,
+                    sorting: true,
+                    grouping: false
+                },
+                scrolling: { mode: "standard" },
+                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                columns: [
+                    {
+                        dataField: "title", caption: "Tên hạng mục",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "code", caption: "Ký Hiệu",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "contractorInfoId", caption: "Nhà thầu", width: 250,
+                        lookup: {
+                            dataSource: customStore_ContractorInfo,
+                            valueExpr: "id", displayExpr: "name",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_ContractorInfo,
+                            valueExpr: "id", displayExpr: "name",
+                            noDataText: "Không tìm thấy dữ liệu",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<b>").append(data.name).addClass("mr-1"), $("<em>").append(data.Descriptions));
+                            },
+                        },
+                        validationRules: [{ type: "required" }]
+                    },//contractorInfoId
+                    {
+                        dataField: "fromDate", caption: "Từ ngày", dataType: "date",
+                        width: 150, alignment: "center", format: "dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "toDate",
+                        caption: "Đến ngày",
+                        dataType: "date",
+                        width: 150,
+                        alignment: "center",
+                        format: "dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "expectFromDate", caption: "Ngày dự kiến từ", dataType: "date",
+                        width: 150, alignment: "center", format: "dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "expectToDate", caption: "Đến ngày dự kiến", dataType: "date",
+                        width: 150, alignment: "center", format: "dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "isActive",
+                        caption: "Kích hoạt",
+                        width: 100,
+                        alignment: "center",
+                        editorType: "dxSwitch",
+                    },
+                    {
+                        dataField: "isVisible",
+                        caption: "Ẩn",
+                        width: 100,
+                        alignment: "center",
+                        editorType: "dxSwitch",
+                    },
+                    {
+                        type: "buttons", caption: "Tác vụ",
+                        width: 120, alignment: "center",
+                        buttons: ["add", "edit", "delete"]
+                    }
+                ],
+                rowDragging: {
+                    allowDropInsideItem: true,
+                    allowReordering: false,
+                    dropFeedbackMode: "push",
+                    onDragEnd: function (e) {
+                        var source = e.itemData,
+                            target = e.component.getVisibleRows()[e.toIndex].data,
+                            d = $.Deferred();
+                        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                            e.component.refresh().then(d.resolve, d.reject);
+                        }, d.reject);
+                    },
+                },
+                paging: {
+                    enabled: true,
+                    pageSize: 20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
+                editing: {
+                    allowAdding: true,
+                    allowUpdating: true,
+                    allowDeleting: true,
+                    mode: "cell",
+                    useIcons: false,
+                    confirmDelete: true,
+                },
+                onToolbarPreparing: function (e) {
+                    var container = e.component;
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "before", widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_Projects,
+                                valueExpr: "id", displayExpr: "title",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: PROJECTID,
+                                onValueChanged: function (data) {
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+                            }
+                        })
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                    e.data.ProjectId = PROJECTID;
+                },
+                onCellPrepared: (e) => {
+                    if (e.rowType == "data" && e.columnIndex == 1)
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
+                }
+            });
+        }
+    </script>
+}
+
 

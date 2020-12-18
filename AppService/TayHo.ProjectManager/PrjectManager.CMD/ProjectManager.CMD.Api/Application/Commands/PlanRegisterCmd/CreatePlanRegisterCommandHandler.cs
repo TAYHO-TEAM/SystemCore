@@ -31,6 +31,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                     request.Description,
                                                     request.FromDate,
                                                     request.ToDate,
+                                                    request.ParentId,
                                                     request.ExpectFromDate,
                                                     request.ExpectToDate);
             newPlanRegister.SetCreate(_user);

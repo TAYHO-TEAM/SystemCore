@@ -15,6 +15,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         private string _description;
         private DateTime? _fromDate;
         private DateTime? _toDate;
+        private int? _parentId;
         private DateTime? _expectFromDate;
         private DateTime? _expectToDate;
         #endregion Fields
@@ -31,6 +32,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
                             string Description,
                             DateTime? FromDate,
                             DateTime? ToDate,
+                            int? ParentId,
                             DateTime? ExpectFromDate,
                             DateTime? ExpectToDate) : this()
         {
@@ -41,6 +43,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             _description = Description;
             _fromDate = FromDate;
             _toDate = ToDate;
+            _parentId = ParentId;
             _expectFromDate = ExpectFromDate;
             _expectToDate = ExpectToDate;
             if (!IsValid()) throw new DomainException(_errorMessages);
@@ -54,11 +57,13 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public string Description { get => _description; }
         public DateTime? FromDate { get => _fromDate; }
         public DateTime? ToDate { get => _toDate; }
+        public int? ParentId { get => _parentId; }
         public DateTime? ExpectFromDate { get => _expectFromDate; }
         public DateTime? ExpectToDate { get => _expectToDate; }
         #endregion Properties
 
         #region Behaviours
+
         public void SetCode(string Code) { _code = Code == null ? _code : Code; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTitle(string Title) { _title = Title == null ? _title : Title; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetProjectId(int? ProjectId) { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
@@ -66,6 +71,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public void SetDescription(string Description) { _description = Description == null ? _description : Description; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetFromDate(DateTime? FromDate) { _fromDate = !FromDate.HasValue ? _fromDate : FromDate; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetToDate(DateTime? ToDate) { _toDate = !ToDate.HasValue ? _toDate : ToDate; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetParentId(int? ParentId) { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetExpectFromDate(DateTime? ExpectFromDate) { _expectFromDate = !ExpectFromDate.HasValue ? _expectFromDate : ExpectFromDate; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetExpectToDate(DateTime? ExpectToDate) { _expectToDate = !ExpectToDate.HasValue ? _expectToDate : ExpectToDate; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()

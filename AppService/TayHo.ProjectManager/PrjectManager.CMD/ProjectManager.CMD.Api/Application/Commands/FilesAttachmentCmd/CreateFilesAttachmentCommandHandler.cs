@@ -31,18 +31,24 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.OwnerByTable,
                                                         request.Code,
                                                         request.FileName,
-                                                        request.Tail,
-                                                        request.Url,
-                                                        request.Host,
+                                                        "",
+                                                        "",
+                                                        "",
                                                         request.Type,
                                                         request.Direct);
             newFilesAttachment.SetCreate(_user);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
             newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+            var result = await _mediaService.SaveFile(request.getFile(), request.OwnerByTable, request.Code);
+            newFilesAttachment.SetFileName(result.Item1);
+            newFilesAttachment.SetHost(result.Item2);
+            newFilesAttachment.SetUrl(result.Item3);
+            newFilesAttachment.SetDirect(result.Item4);
+            newFilesAttachment.SetTail(result.Item5);
             await _FilesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
-            await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", request.FileName, @"D:\duan\Content\Upload"+ request.FileName);
+            
             methodResult.Result = _mapper.Map<CreateFilesAttachmentCommandResponse>(newFilesAttachment);
             return methodResult;
         }

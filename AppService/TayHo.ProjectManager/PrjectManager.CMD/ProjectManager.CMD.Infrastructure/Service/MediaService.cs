@@ -15,6 +15,7 @@ using Services.Common.Options;
 using Microsoft.AspNetCore.Hosting;
 using ProjectManager.CMD.Domain.IService;
 using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace ProjectManager.CMD.Infrastructure.Service
 {
@@ -99,9 +100,44 @@ namespace ProjectManager.CMD.Infrastructure.Service
                     break;
             }
         }
-
-        public async Task<int> SaveFile(IFormFileCollection files,string localtion, string filename,string fullname)
+        public async Task<Tuple<string,string,string,string,string>> SaveFile(IFormFile file, string Folder, string filename)
         {
+            if (file == null ) return default;
+            var fileType = new FileType();
+            try
+            {
+                //var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads");
+                //Directory.CreateDirectory(uploadPath);
+                //var provider = new MultipartFormDataStreamProvider(uploadPath);
+                var target = Path.Combine(_mediaOptions.LocalUploadUrl + _mediaOptions.FolderForWeb + Folder);
+
+                Directory.CreateDirectory(target);
+
+                filename = string.Format("{0}-{1}{2}"
+                                , Path.GetFileNameWithoutExtension(filename)
+                                , Guid.NewGuid().ToString("N")
+                                , Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
+                var fileTypeVerifyResult = await fileType.ProcessFormFile(file, _mediaOptions.PermittedExtensions, _mediaOptions.SizeLimit);
+                HandleFileErrorCode(fileTypeVerifyResult);
+                if (file.Length <= 0) return default;
+                var filePath = Path.Combine(target, filename);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                return new Tuple<string, string, string,string,string>(filename, _mediaOptions.Host,_mediaOptions.LocalUploadUrl + _mediaOptions.FolderForWeb + Folder, filePath, Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
+            }
+            catch
+            {
+                return default;
+            }
+        }
+        public async Task<int> SaveFile(IFormFileCollection files,string Folder,string filename)
+        {
+            if (files == null || !files.Any()) return default;
+            var listOfMediaResponse = new List<MediaResponse>();
+            var fileType = new FileType();
+            var client = _clientFactory.CreateClient();
             var folderName = Path.Combine("Resources", "Images");
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             int result = 0;
@@ -110,16 +146,19 @@ namespace ProjectManager.CMD.Infrastructure.Service
                 //var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads");
                 //Directory.CreateDirectory(uploadPath);
                 //var provider = new MultipartFormDataStreamProvider(uploadPath);
-                var target = Path.Combine(localtion);
+                var target = Path.Combine(_mediaOptions.LocalUploadUrl+ _mediaOptions.FolderForWeb+ Folder);
 
                 Directory.CreateDirectory(target);
                 foreach (var file in files)
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    filename = string.Format("{0}-{1}{2}"
+                                    , Path.GetFileNameWithoutExtension(filename)
+                                    , Guid.NewGuid().ToString("N")
+                                    , Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
+                    var fileTypeVerifyResult = await fileType.ProcessFormFile(file, _mediaOptions.PermittedExtensions, _mediaOptions.SizeLimit);
+                    HandleFileErrorCode(fileTypeVerifyResult);
                     if (file.Length <= 0) return 0;
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    var filePath = Path.Combine(target, file.FileName);
+                    var filePath = Path.Combine(target, filename);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
