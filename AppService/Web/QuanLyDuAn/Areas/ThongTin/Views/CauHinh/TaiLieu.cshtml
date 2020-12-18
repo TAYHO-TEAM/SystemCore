@@ -1,10 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Hạng Mục";
+    ViewBag.Title = "TaiLieu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section style{   }
 
 <div class="row">
     <div class="col-12">
@@ -14,9 +13,9 @@
 
 @section script{
     <script>
-        const ACTION = "/WorkItems";
+        const ACTION = "/DocumentType";
         //const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
-        const ACTION_PROJECT = "/Projects";
+        const ACTION_PROJECT = "/OperationProcess";
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
@@ -31,7 +30,7 @@
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
                 }
-                params = { 'FindId': 'ProjectId,' + PROJECTID },
+                params = { 'FindId': 'OperationProcessId,' + PROJECTID },
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION,
@@ -55,14 +54,14 @@
             remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
         });
 
-       
+
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
                     headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    url: URL_API_ACC_READ + ACTION_PROJECT,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
                         if (PROJECTID == 0) {
@@ -207,6 +206,10 @@
                     },
                     {
                         dataField: "code", caption: "Ký Hiệu",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "descriptions", caption: "Mô tả",
                         dataType: "string",
                     },
                     {
