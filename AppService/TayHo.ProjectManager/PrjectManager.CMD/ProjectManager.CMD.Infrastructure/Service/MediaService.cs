@@ -100,14 +100,10 @@ namespace ProjectManager.CMD.Infrastructure.Service
                     break;
             }
         }
-        public async Task<Tuple<string,string,string>> SaveFile(IFormFile file, string Folder, string filename)
+        public async Task<Tuple<string,string,string,string,string>> SaveFile(IFormFile file, string Folder, string filename)
         {
             if (file == null ) return default;
-            var listOfMediaResponse = new List<MediaResponse>();
             var fileType = new FileType();
-            var client = _clientFactory.CreateClient();
-            var folderName = Path.Combine("Resources", "Images");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             try
             {
                 //var uploadPath = Path.Combine(_env.ContentRootPath, "/Uploads");
@@ -129,7 +125,7 @@ namespace ProjectManager.CMD.Infrastructure.Service
                 {
                     await file.CopyToAsync(stream);
                 }
-                return new Tuple<string, string, string>(filename,filePath,_mediaOptions.Host);
+                return new Tuple<string, string, string,string,string>(filename, _mediaOptions.Host,_mediaOptions.LocalUploadUrl + _mediaOptions.FolderForWeb + Folder, filePath, Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
             }
             catch
             {
