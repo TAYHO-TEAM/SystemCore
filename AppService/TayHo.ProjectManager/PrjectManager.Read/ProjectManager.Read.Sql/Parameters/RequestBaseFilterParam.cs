@@ -15,7 +15,7 @@ namespace ProjectManager.Read.Sql.Parameters
     }
     public class RequestTreeListBaseFilterParam : RequestBaseFilterParam
     {
-        public byte? TypeStore { get; set; }
+        public int? TypeStore { get; set; }
     }
     
 }

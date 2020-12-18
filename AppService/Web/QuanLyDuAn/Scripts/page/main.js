@@ -2,6 +2,7 @@
 var UserCurrent = localStorage.getItem("userCurrent");
 var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
 var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+var GIAIDOANID = isNullOrEmpty(localStorage.getItem("giaiDoanIdCurrent")) ? parseInt(localStorage.getItem("giaiDoanIdCurrent")) : 0;
 var header = {};
 var PermitInAction = { id: 0, view: false, insert: false, update: false, delete: false, readonly: false };
 
@@ -125,7 +126,7 @@ var loadingPanel = $("#loading-panel").dxLoadPanel({
 }).dxLoadPanel("instance"); 
 
 function isNullOrEmpty(value) {
-    return value !== undefined && value !== null && value !== "";
+    return value !== undefined && value !== null && value !== "" && value !== "null";
 }
 
 function getParamInUrl(name, url) {

@@ -109,6 +109,12 @@
                         }, sortOrder: "desc"
                     },
                     {
+                        dataField: "id", caption: "ID", width: 100, alignment: "center",
+                    },
+                    {
+                        dataField: "parentId", caption: "Parent ID", width: 100, alignment: "center",
+                    }, 
+                    {
                         dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
@@ -122,18 +128,18 @@
                         buttons: ["add", "edit", "delete"]
                     }
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    dropFeedbackMode: "push",
-                    onDragEnd: function (e) { 
-                        var source = e.itemData,
-                            target = e.component.getVisibleRows()[e.toIndex].data,
-                            d = $.Deferred();
-                        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                            e.component.refresh().then(d.resolve, d.reject);
-                        }, d.reject);
-                    },
-                },
+                //rowDragging: {
+                //    allowDropInsideItem: true,
+                //    dropFeedbackMode: "push",
+                //    onDragEnd: function (e) { 
+                //        var source = e.itemData,
+                //            target = e.component.getVisibleRows()[e.toIndex].data,
+                //            d = $.Deferred();
+                //        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                //            e.component.refresh().then(d.resolve, d.reject);
+                //        }, d.reject);
+                //    },
+                //},
                 paging: {
                     enabled: true,
                     pageSize: 20
@@ -150,6 +156,7 @@
                     visible: true
                 },
                 editing: { 
+                    allowAdding: PermitInAction["insert"] ? true : null,
                     allowUpdating: PermitInAction["update"] ? true : null,
                     allowDeleting: PermitInAction["delete"] ? true : null,
                     mode: "cell", useIcons: false, confirmDelete: true,
@@ -157,38 +164,29 @@
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift( 
-                        {
-                            location: "before", widget: "dxSelectBox",
-                            options: {
-                                dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: PROJECTID,
-                                onValueChanged: function (data) {
-                                    PROJECTID = data.value;
-                                    localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
-                                },
+                    {
+                        location: "before", widget: "dxSelectBox",
+                        options: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id", displayExpr: "title",
+                            searchEnabled: true, searchMode: "contains",
+                            width: "100%",
+                            showClearButton: false,
+                            value: PROJECTID,
+                            onValueChanged: function (data) {
+                                PROJECTID = data.value;
+                                localStorage.setItem('projectIdCurrent', PROJECTID);
+                                loadData(customStore);
                             },
                         },
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                visible: PermitInAction["insert"],
-                                text: "Hạng mục", icon: "add", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                icon: "refresh", type: "default",
-                                onClick: () => container.refresh()
-                            }
-                        })
+                    }, 
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    })
                 },
                 onInitNewRow: (e) => { 
                     e.data.isActive = true;
@@ -196,8 +194,8 @@
                     e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
-                    if (e.rowType == "data" && e.columnIndex == 1)
-                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
+                    if (e.rowType == "data" && e.column.dataField == "tenHangMuc")
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
                 }
             });
         }

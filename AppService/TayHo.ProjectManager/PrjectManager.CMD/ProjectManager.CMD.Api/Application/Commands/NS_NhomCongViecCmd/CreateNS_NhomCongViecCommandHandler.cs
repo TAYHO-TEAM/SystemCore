@@ -24,12 +24,14 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_NhomCongViecCommandResponse>> Handle(CreateNS_NhomCongViecCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_NhomCongViecCommandResponse>();
-            var newNS_NhomCongViec = new NS_NhomCongViec(request.HangMucId,
-request.LoaiCongViecId,
-request.GoiThauId,
-request.NhomChiPhiId,
-request.TenNhomCongViec,
-request.DienGiai);
+            var newNS_NhomCongViec = new NS_NhomCongViec(
+                request.HangMucId,
+                request.LoaiCongViecId,
+                request.GoiThauId,
+                request.NhomChiPhiId,
+                request.ProjectId,
+                request.TenNhomCongViec,
+                request.DienGiai);
             newNS_NhomCongViec.SetCreate(_user);
             newNS_NhomCongViec.Status = request.Status.HasValue ? request.Status : newNS_NhomCongViec.Status;
             newNS_NhomCongViec.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NhomCongViec.IsActive;

@@ -32,5 +32,10 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
+
+        public ActionResult NhomCongViec()
+        {
+            return View();
+        }
     }
 }
