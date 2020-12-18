@@ -14,21 +14,12 @@
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
-@*<form id="form" method="post" action="" enctype="multipart/form-data" name="fileinfo">
-    <div id="fileuploader-container">
-        <div id="file-uploader"></div>
-    </div>
-    <div id="button"></div>
-</form>*@
-@*<div style="padding: 10px;">
-        <div id="widget"></div>
-    </div>*@
 
 
 @section script{
     <script>
-        var formUpload = '<form id="form-upload" method="post" action="" enctype="multipart/form-data"> <div id = "fileuploader-container" ><div id="file-uploader"></div></div ><div id="button"></div> </form>';
-        
+
+
         const ACTION = "/RequestRegist/GetByAccountID";
         const ACTION_DETAIL = "/RequestRegist/GetDetail";
         const ACTION_RESPONSEBYACC = "/ResponseRegist/getByAccount";
@@ -243,15 +234,16 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
             //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
         });
-        let customStore_File = (table, id) => new DevExpress.data.CustomStore({
+        let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
+
                 var deferred = $.Deferred();
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindParentId': 'RequestRegist',
-                    'FindId': id
+                    'FindParentId': table,
+                    'FindId': item.id,
                 }
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -279,8 +271,8 @@
                 return deferred.promise();
             },
             //insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
-            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
-            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+            //update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
+            //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
         });
         $(function () {
             loadData(customStore);
@@ -415,10 +407,11 @@
                     {
                         dataField: "noAttachment",
                         caption: "File đính kèm",
-                        dataType: "string",
+                        dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
-                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.value = null ? "đang có " + options.value + "fiels" : "chưa có file nào"));
+                            console.log(options);
+                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
                         },
                     },
                     //{
@@ -478,7 +471,7 @@
                 ],
                 onCellClick: function (e) {
                     if (e.column.dataField === "noAttachment") {
-                        loadUpload("", e.row.data);
+                        loadUpload("RequestRegist", e.row.data);
                     }
                 },
                 //rowDragging: {
@@ -694,10 +687,13 @@
                         {
                             dataField: "noAttachment",
                             caption: "File đính kèm",
-                            dataType: "string",
+                            dataType: "number",
                             alignment: "left",
-
-                        },///file đính kèm
+                            cellTemplate: (container, options) => {
+                                console.log(options);
+                                container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
+                            },
+                        },
                     ],
                     editing: {
                         mode: "batch",
@@ -815,8 +811,14 @@
                                         format: "dd/MM/yyyy",
                                     },
                                     {
-                                        dataField: "noAttachment", caption: "File đính kèm",
-                                        dataType: "string", alignment: "left",
+                                        dataField: "noAttachment",
+                                        caption: "File đính kèm",
+                                        dataType: "number",
+                                        alignment: "left",
+                                        cellTemplate: (container, options) => {
+                                            console.log(options);
+                                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
+                                        },
                                     },
                                     {
                                         type: "buttons",
@@ -991,7 +993,7 @@
             }
         });
         ///// Load Popup Upload file
-        let loadUpload = (item) => $("#popup-main-upload").dxPopup({
+        let loadUpload = (table, item) => $("#popup-main-upload").dxPopup({
             width: "70%", height: "50%",
             fullScreen: false,
             dragEnabled: true,
@@ -1001,12 +1003,13 @@
             showCloseButton: true, closeOnOutsideClick: true,
             visible: true,
             contentTemplate: (c) => {
+                console.log(c);
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div/>");
                 var content_Upload = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form").append('<div id = "fileuploader-container" ><div id="file-uploader"></div></div ><div id="button"></div>');
                 var content_Upload_submit = $("<div/>");
                 content.dxDataGrid({
-                    dataSource: customStore_File(item.id),
+                    dataSource: customStore_File(table, item),
                     remoteOperations: {
                         paging: true,
                         sorting: true,
@@ -1080,6 +1083,7 @@
                     height: '100%'
                 });
                 $(function () {
+
                     //$("#form").append("OwnerById",1);
                     $("#file-uploader").dxFileUploader({
                         selectButtonText: "Select photo",
@@ -1087,33 +1091,16 @@
                         //labelText: "",
                         accept: "*",
                         uploadMode: "useForm",
-                        uploadUrl: "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile",
-                        //onValueChanged: function (e) {
-                        //    var url = e.component.option("uploadUrl");
-                        //    url = updateQueryStringParameter(url, "OwnerById", 1);
-                        //    e.component.option("uploadUrl", url);
-                        //}
-                        uploadCustomData: {
-                            OwnerById: 1
-                        },
-                        //uploadUrl: "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile",
                     });
 
                     $("#button").dxButton({
                         text: "Update profile",
                         type: "success",
                         onClick: function () {
-                            //DevExpress.ui.dialog.alert("Uncomment the line to enable sending a form to the server.", "Click Handler");
-                            //$("#form").submit();
                             var fd = $("#form")[0];
                             var formData = new FormData(fd);
-                            console.log(item.id);
-                            //formData.append('file', $('input[type=file]')[0].files[0]);
                             formData.append("OwnerById", item.id);
-                            formData.append("OwnerByTable", "RequestRegist");
-                            formData.append("OwnerByTable", "RequestRegist");
-                            formData.append("OwnerByTable", "RequestRegist");
-
+                            formData.append("OwnerByTable", table);
                             $.ajax({
                                 url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',
                                 type: 'POST',
