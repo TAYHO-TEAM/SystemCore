@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Sql.Repositories
 {
-    public class NS_HangMucRepository<T> : INS_HangMucRepository<T> where T : class
+    public class NS_NhomCongViecRepository<T> : INS_NhomCongViecRepository<T> where T : class
     {
         protected readonly ISqlConnectionFactory _connectionFactory;
 
-        public NS_HangMucRepository(ISqlConnectionFactory connectionFactory)
+        public NS_NhomCongViecRepository(ISqlConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
-        public async Task<PagingItems<T>> GetHangMuc_HangMucDetailAsync(RequestTreeListBaseFilterParam requestBaseFilterParam)
+        public async Task<PagingItems<T>> GetNhomCongViec_NhomCongViecDetailAsync(RequestTreeListBaseFilterParam requestBaseFilterParam)
         {
             requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName ?? "*";
             var result = new PagingItems<T>
@@ -33,7 +33,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 }
             };
             using var conn = await _connectionFactory.CreateConnectionAsync();
-            using var rs = conn.QueryMultipleAsync("sp_HangMuc_HangMucDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            using var rs = conn.QueryMultipleAsync("sp_NhomCongViec_NhomCongViecDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
             result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
             result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
 

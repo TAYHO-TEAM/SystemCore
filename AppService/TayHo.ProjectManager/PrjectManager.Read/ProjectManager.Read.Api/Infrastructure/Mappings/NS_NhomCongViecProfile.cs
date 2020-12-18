@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public NS_NhomCongViecProfile()
         {
             CreateMap<NS_NhomCongViecDTO, NS_NhomCongViecResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<NS_NhomCongViec_NhomCongViecDetailDTO, NS_NhomCongViec_NhomCongViecDetailResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

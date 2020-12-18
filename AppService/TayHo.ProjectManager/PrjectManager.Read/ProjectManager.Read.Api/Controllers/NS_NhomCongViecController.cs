@@ -19,14 +19,19 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class NS_NhomCongViecController : APIControllerBase
     {
         private readonly IDOBaseRepository<NS_NhomCongViecDTO> _dOBaseRepository;
+        private readonly INS_NhomCongViecRepository<NS_NhomCongViec_NhomCongViecDetailDTO> _nS_NhomCongViecRepository;
+        private const string Detail = nameof(Detail); 
+        private const string tableName = QuanLyDuAnConstants.NS_NhomCongViec_TABLENAME;
 
         public NS_NhomCongViecController(
             IMapper mapper, 
             IHttpContextAccessor httpContextAccessor, 
-            IDOBaseRepository<NS_NhomCongViecDTO> dOBaseRepository
+            IDOBaseRepository<NS_NhomCongViecDTO> dOBaseRepository,
+            INS_NhomCongViecRepository<NS_NhomCongViec_NhomCongViecDetailDTO> nS_NhomCongViecRepository
         ) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _nS_NhomCongViecRepository = nS_NhomCongViecRepository;
         }
 
         /// <summary>
@@ -41,7 +46,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         {
             var methodResult = new MethodResult<PagingItems<NS_NhomCongViecResponseViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
-            requestFilter.TableName = QuanLyDuAnConstants.NS_NhomCongViec_TABLENAME;
+            requestFilter.TableName = tableName;
             var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<NS_NhomCongViecResponseViewModel>
             {
@@ -49,6 +54,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
                 Items = _mapper.Map<IEnumerable<NS_NhomCongViecResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
-        } 
+        }
+
+        /// <summary>
+        /// Get List of NS_NhomCongViec.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Detail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NhomCongViec_NhomCongViecDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetNS_NhomCongViec_NhomCongViecDetailAsync([FromQuery] BaseTreeRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<NS_NhomCongViec_NhomCongViecDetailResponseViewModel>>();
+            RequestTreeListBaseFilterParam requestFilter = _mapper.Map<RequestTreeListBaseFilterParam>(request);
+            requestFilter.TableName = tableName;
+            var queryResult = await _nS_NhomCongViecRepository.GetNhomCongViec_NhomCongViecDetailAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_NhomCongViec_NhomCongViecDetailResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<NS_NhomCongViec_NhomCongViecDetailResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
     }
 }

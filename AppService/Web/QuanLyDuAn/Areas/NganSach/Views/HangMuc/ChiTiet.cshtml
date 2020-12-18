@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-12"> 
-        <div id="container_hangmuc" class="elevation-2"></div>
+        <div id="container" class="elevation-2"></div>
     </div> 
 </div>
 
@@ -78,7 +78,8 @@
             load: (values) => {
                 let deferred = $.Deferred();
                 let params = {
-                    'findId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1',
+                    'TypeStore': GIAIDOANID
                 };
                 if (values.filter && values.filter[0] == "parentId")
                     params['FindParentId'] = values.filter[2];
@@ -89,7 +90,7 @@
                 $.ajax({
                     headers: header, dataType: "json",
                     data: params,
-                    url: URL_API_PM_READ + ACTION_HANGMUC+'/HangMucDetail',
+                    url: URL_API_PM_READ + ACTION_HANGMUC+'/Detail',
                     success: function (data) {
                         deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
@@ -104,12 +105,10 @@
         });
         var customStore_HangMucDetail = new DevExpress.data.CustomStore({
             key: "id",
-            //insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, values),
-            insert: (values) => {
-                console.log(values);
-            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, key),
+            reshapeOnPush: true,
         });
 
         $(function () {
@@ -117,7 +116,7 @@
         });
 
         var loadHangMuc = () => {
-            $("#container_hangmuc").dxTreeList({
+            $("#container").dxTreeList({
                 height: heightScreen,
                 dataSource: customStore_HangMuc,
                 remoteOperations: {
@@ -125,9 +124,13 @@
                     sorting: true,
                     grouping: false
                 }, 
+                searchPanel: {
+                    highlightCaseSensitive: true, highlightSearchText: true, 
+                    searchVisibleColumnsOnly: false, visible: true, 
+                },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
-                showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
@@ -177,7 +180,7 @@
                                             var deferred = $.Deferred();
                                             customStore_HangMucDetail.remove(e.row.data.hangMucDetailId).then(() => {
                                                 DevExpress.ui.notify("Hủy bỏ giá trị hạng mục thành công", "success", 3000);
-                                                $("#container_hangmuc").dxTreeList('instance').refresh();
+                                                $("#container").dxTreeList('instance').refresh();
                                             }, deferred.reject);
                                             return deferred.promise();
                                         }
@@ -200,34 +203,32 @@
                             options: {
                                 dataSource: customStore_Projects,
                                 valueExpr: "id", displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
+                                width: "100%", searchEnabled: true, searchMode: "contains",
+                                showClearButton: false, stylingMode: "filled",
                                 value: PROJECTID,
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadHangMuc();
+                                    container.refresh();
                                 },
                             },
                         },
-                        //{
-                        //    location: "after", widget: "dxSelectBox",
-                        //    options: {
-                        //        dataSource: customStore_GiaiDoan,
-                        //        valueExpr: "id", displayExpr: "tenGiaiDoan",
-                        //        searchEnabled: true,
-                        //        searchMode: "contains",
-                        //        width: "100%",
-                        //        showClearButton: false,
-                        //        value: GIAIDOANID,
-                        //        onValueChanged: function (data) {
-                        //            GIAIDOANID = data.value;
-                        //            localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID); 
-                        //        },
-                        //    },
-                        //},
+                        {
+                            location: "before", widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_GiaiDoan(0),
+                                placeholder:"Xem theo giai đoạn...",
+                                valueExpr: "id", displayExpr: "tenGiaiDoan",  
+                                width: "100%", searchEnabled: true, searchMode: "contains",
+                                stylingMode: "filled", showClearButton: true,
+                                value: GIAIDOANID,
+                                onValueChanged: function (data) {
+                                    GIAIDOANID = data.value;
+                                    localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID);
+                                    container.refresh();
+                                },
+                            },
+                        },
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -241,47 +242,11 @@
                     if (e.rowType == "data" && e.columnIndex == 0)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
-                //onContextMenuPreparing: (e) => {
-                //    if (!e.items) e.items = [];
-                //    if (e.target == "content" && e.rowIndex >= 0 && e.row && e.row.rowType=="data") {
-                //        if (e.row.data && e.row.data.chilCount == 0) {
-                //            console.log(e.row.data);
-                //            e.items.push({
-                //                visible: PermitInAction["insert"],
-                //                icon: "add", text: "Thêm giá trị hạng mục",
-                //                onItemClick: () => genUpdateForm(e.row.data, true)
-                //            });
-                //            if (e.row.data.hangMucDetailId != null) {
-                //                e.items.push({
-                //                    visible: PermitInAction["update"],
-                //                    icon: "edit", text: "Cập nhật giá trị hạng mục",
-                //                    onItemClick: () => genUpdateForm(e.row.data, false)
-                //                });
-                //                e.items.push({
-                //                    visible: PermitInAction["delete"],
-                //                    icon: "remove", text: "Hủy bỏ giá trị hạng mục",
-                //                    onItemClick: () => {
-                //                        var deferred = $.Deferred();
-                //                        customStore_HangMucDetail.remove(e.row.data.hangMucDetailId).then(() => {
-                //                            DevExpress.ui.notify("Hủy bỏ giá trị hạng mục thành công", "success", 3000);
-                //                            $("#container_hangmuc").dxTreeList('instance').refresh();
-                //                        }, deferred.reject);
-                //                    }
-                //                });
-                //            }
-                //        }
-                //    }
-                //}
-                //onSelectionChanged: (e) => {
-                //    if (e.selectedRowsData != null && e.selectedRowsData.length > 0 && e.selectedRowsData[0] != null) {
-                //        if (e.selectedRowsData[0].chilCount == 0) {
-                //            var id = e.selectedRowsData[0].id;
-                //            loadHangMucDetail(id);
-                //            $("#container_hangmuc_detail").fadeIn("fast");
-                //        }
-                //        else $("#container_hangmuc_detail").fadeOut("fast");
-                //    }
-                //},
+                onRowPrepared: (e) => {
+                    if (e.rowType == "data" && e.data.chilCount > 0) {
+                        e.rowElement.attr("style","font-weight:bold !important")
+                    }
+                }, 
                 stateStoring: {
                     enabled: true,
                     storageKey: "ngansach-hangmuc-localStorage",
@@ -298,7 +263,7 @@
             showTitle: true, title: type?"Thêm giá trị hang mục theo giai đoạn":"Cập nhật giá trị hạng mục" ,
             showCloseButton: true, closeOnOutsideClick: false,
             visible: true,
-            contentTemplate: (c) => { 
+            contentTemplate: (c) => {
                 formData = type ? {
                     "giaiDoanId": "",
                     "hangMucId": data.id,
@@ -309,10 +274,9 @@
                         "id": data.hangMucDetailId,
                         "giaiDoanId": data.giaiDoanId,
                         "giaTri": data.giaTri,
-                    };
+                    }; 
                 var scrollView = $("<div id='scrollView'></div>");
-                var content = $("<form />").attr("id", "form-container").data("type",type);
-                console.log(data);
+                var content = $("<form />").attr("id", "form-container").data("type",type); 
                 content.dxForm({
                     formData: formData,
                     labelLocation: "left", requiredMark: "(*)",
@@ -326,7 +290,7 @@
                                 editorType: "dxLookup",
                                 editorOptions: { 
                                     disabled: !type,
-                                    dataSource: customStore_GiaiDoan(data.giaiDoanId == null ? 0 : data.giaiDoanId),
+                                    dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId):0),
                                     valueExpr: "id", displayExpr: "tenGiaiDoan",
                                     placeholder: "Vui lòng chọn...",
                                     searchEnabled: true, showClearButton: true,
@@ -368,7 +332,7 @@
                 c.append(scrollView);
                 return c;
             },
-            onHiding: () => $("#container_hangmuc").dxTreeList('instance').refresh(),
+            onHiding: () => $("#container").dxTreeList('instance').refresh(),
         });
         $(document).on('submit', '#form-container', function (e) {
             var form = $(this);

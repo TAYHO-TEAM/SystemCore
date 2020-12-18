@@ -15,4 +15,10 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public string TenNhomCongViec { get; set; }
         public string DienGiai { get; set; }
     }
+    public class NS_NhomCongViec_NhomCongViecDetailDTO : NS_NhomCongViecDTO
+    {
+        public int? NhomCongViecDetailId { get; set; }
+        public decimal? GiaTri { get; set; }
+        public int? GiaiDoanId { get; set; }
+    }
 }

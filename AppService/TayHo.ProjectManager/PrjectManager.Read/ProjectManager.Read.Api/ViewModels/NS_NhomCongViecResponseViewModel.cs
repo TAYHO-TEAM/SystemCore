@@ -12,4 +12,11 @@ namespace ProjectManager.Read.Api.ViewModels
         public string TenNhomCongViec { get; set; }
         public string DienGiai { get; set; }
     }
+
+    public class NS_NhomCongViec_NhomCongViecDetailResponseViewModel : NS_NhomCongViecResponseViewModel
+    {
+        public int? NhomCongViecDetailId { get; set; }
+        public decimal? GiaTri { get; set; }
+        public int? GiaiDoanId { get; set; }
+    }
 }

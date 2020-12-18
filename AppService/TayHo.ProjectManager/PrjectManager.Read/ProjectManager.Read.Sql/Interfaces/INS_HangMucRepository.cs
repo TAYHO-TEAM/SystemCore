@@ -6,7 +6,7 @@ namespace ProjectManager.Read.Sql.Interfaces
 {
     public interface INS_HangMucRepository<T> where T : class
     {
-        Task<PagingItems<T>> GetHangMuc_HangMucDetailAsync(RequestBaseFilterParam requetsBaseFilterParam); 
+        Task<PagingItems<T>> GetHangMuc_HangMucDetailAsync(RequestTreeListBaseFilterParam requetsBaseFilterParam); 
     }
 
 }
