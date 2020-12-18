@@ -194,13 +194,7 @@
                     }
                 )
             },
-            columns: [
-                {
-                    caption: "STT", width: 100, alignment:"center",
-                    cellTemplate: (c, o) => {
-                        c.append(o.rowIndex + 1);
-                    }
-                },
+            columns: [ 
                 {
                     dataField: "tenNhomCongViec", caption: "Tên nhóm", dataType: "string",
                     validationRules: [{ type: "required" }],
