@@ -14,13 +14,13 @@
 
 @section script{
     <script>
-        const ACTION = "/NS_HangMuc"; 
-        const ACTION_PROJECT = "/Projects";  
+        const ACTION = "/NS_HangMuc";
+        const ACTION_PROJECT = "/Projects";
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID};
+                let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
                 if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -47,7 +47,7 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
-        });         
+        });
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
@@ -71,7 +71,7 @@
                 });
                 return deferred.promise();
             },
-        }); 
+        });
 
         $(function () {
             loadData(customStore);
@@ -86,7 +86,7 @@
                     filtering: true,
                     sorting: true,
                     grouping: false
-                }, 
+                },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
@@ -95,11 +95,18 @@
                     {
                         dataField: "tenHangMuc", caption: "Tên hạng mục",
                         dataType: "string",
+                        editorOptions: {
+                            placeholder:"Vui lòng nhập..."
+                        },
+                        validationRules: [{ type: "required" }]
                     },
                     {
                         dataField: "kyHieu", caption: "Ký Hiệu",
                         dataType: "string",
-                    }, 
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập..."
+                        }
+                    },
                     {
                         dataField: "status", caption: "Sắp xếp",
                         dataType: "number", width: 110, alignment: "center",
@@ -109,29 +116,39 @@
                         }, sortOrder: "desc"
                     },
                     {
-                        dataField: "id", caption: "ID", width: 100, alignment: "center",
+                        dataField: "id", caption: "ID",
+                        width: 100, alignment: "center",
                     },
                     {
-                        dataField: "parentId", caption: "Parent ID", width: 100, alignment: "center",
-                    }, 
+                        dataField: "parentId", caption: "Parent ID",
+                        width: 100, alignment: "center",
+                    },
                     {
-                        dataField: "isActive", width: 100, alignment: "center",
+                        dataField: "isActive",
+                        width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
                     {
-                        dataField: "isVisible", width: 100, alignment: "center",
+                        dataField: "isVisible",
+                        width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
                     {
                         type: "buttons", caption: "Tác vụ",
                         width: 120, alignment: "center",
-                        buttons: ["add", "edit", "delete"]
+                        buttons: [{
+                            text: "Thêm",
+                            visible: function (e) {
+                                //Kiểm tra có giá trị nhập ở 
+                                return true;
+                            }
+                        }, "edit", "delete"]
                     }
                 ],
                 //rowDragging: {
                 //    allowDropInsideItem: true,
                 //    dropFeedbackMode: "push",
-                //    onDragEnd: function (e) { 
+                //    onDragEnd: function (e) {
                 //        var source = e.itemData,
                 //            target = e.component.getVisibleRows()[e.toIndex].data,
                 //            d = $.Deferred();
@@ -155,42 +172,51 @@
                     searchVisibleColumnsOnly: true,
                     visible: true
                 },
-                editing: { 
-                    allowAdding: PermitInAction["insert"] ? true : null,
+                editing: {
+                    //allowAdding: PermitInAction["insert"] ? true : null,
                     allowUpdating: PermitInAction["update"] ? true : null,
                     allowDeleting: PermitInAction["delete"] ? true : null,
-                    mode: "cell", useIcons: false, confirmDelete: true,
+                    mode: "row", useIcons: false, confirmDelete: true,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-                    e.toolbarOptions.items.unshift( 
-                    {
-                        location: "before", widget: "dxSelectBox",
-                        options: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                            searchEnabled: true, searchMode: "contains",
-                            width: "100%",
-                            showClearButton: false,
-                            value: PROJECTID,
-                            onValueChanged: function (data) {
-                                PROJECTID = data.value;
-                                localStorage.setItem('projectIdCurrent', PROJECTID);
-                                loadData(customStore);
+                    e.toolbarOptions.items.unshift(
+                        {
+                            location: "before", widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_Projects,
+                                valueExpr: "id", displayExpr: "title",
+                                searchEnabled: true, searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: PROJECTID,
+                                onValueChanged: function (data) {
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
                             },
                         },
-                    }, 
-                    {
-                        location: "after", widget: "dxButton",
-                        options: {
-                            icon: "refresh", type: "default",
-                            onClick: () => container.refresh()
-                        }
-                    })
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                visible: PermitInAction["insert"],
+                                text: "Hạng mục", icon: "add", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", type: "default",
+                                onClick: () => container.refresh()
+                            }
+                        })
                 },
-                onInitNewRow: (e) => { 
+                onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
+                    e.data.status = 0;
                     e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {

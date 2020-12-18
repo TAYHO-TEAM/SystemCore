@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Danh sách loại thầu";
+    ViewBag.Title = "Danh sách loại công việc";
 }
 
 @section style{   }
@@ -92,12 +92,8 @@
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
             columns: [
                 {
-                    dataField: "status", caption: "STT",
+                    caption: "STT", dataField: "status", sortOrder: "desc",
                     dataType: "number", width: 100, alignment: "center",
-                    editorType: "dxNumberBox",
-                    editorOptions: {
-                        min: 1, step: 1, showSpinButtons: true,
-                    }, sortOrder: "desc",
                     cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                 },
                 {
@@ -176,7 +172,7 @@
                         location: "after", widget: "dxButton",
                         options: {
                             visible: PermitInAction["insert"],
-                            text: "Giai đoạn", icon: "add", stylingMode: "filled", type: "default",
+                            text: "Loại công việc", icon: "add", stylingMode: "filled", type: "default",
                             onClick: () => container.addRow()
                         }
                     },
@@ -191,6 +187,7 @@
             onInitNewRow: (e) => {
                 e.data.isActive = true;
                 e.data.isVisible = true;
+                e.data.projectId = PROJECTID;
             },
             rowDragging: {
                 allowReordering: PermitInAction["update"],

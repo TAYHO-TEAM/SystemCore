@@ -112,17 +112,13 @@
                     paging: true,
                     sorting: true,
                     filtering: true,
-                },              
+                },
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
-                        dataField: "status", caption: "STT",
-                        dataType: "number", width: 100, alignment: "center",
-                        editorType: "dxNumberBox",
-                        editorOptions: { 
-                            min: 1, step: 1, showSpinButtons: true,
-                        }, sortOrder: "desc",
+                        caption: "STT", dataField: "status", sortOrder: "desc",
+                        dataType: "number", width: 100, alignment: "center", 
                         cellTemplate:(c,o)=>c.append(o.rowIndex+1)
                     },
                     {
@@ -143,8 +139,7 @@
                         },
                     },
                     {
-                        dataField: "capDo", caption: "Cấp tương tác",
-                        dataType: "string", alignment:"center",
+                        dataField: "capDo", caption: "Cấp tương tác", dataType: "string", 
                         editorType: "dxSelectBox",
                         lookup: {
                             dataSource: capDoList,
@@ -158,7 +153,7 @@
                         validationRules: [{ type: "required" }]
                     },
                     {
-                        dataField: "groupId", caption: "Nhóm tương tác",
+                        dataField: "groupId", caption: "Nhóm nhập liệu",
                         lookup: {
                             dataSource: customStore_Groups,
                             valueExpr: "id", displayExpr: "title",
@@ -198,7 +193,7 @@
                 editing: { 
                     allowUpdating: PermitInAction["update"] ? true : null,
                     allowDeleting: PermitInAction["delete"] ? true : null,
-                    mode: "cell", useIcons: false, confirmDelete: true,
+                    mode: "cell", useIcons: false, confirmDelete: true, 
                 }, 
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -239,6 +234,8 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
+                    e.data.status = 0;
+                    e.data.projectId = PROJECTID; 
                 },
                 rowDragging: {
                     allowReordering: PermitInAction["update"],
