@@ -513,6 +513,14 @@
                     mode: "popup",
                     useIcons: true,
                     confirmDelete: true,
+                    popup: {
+                        width: 600, height: "auto",
+                        showTitle: true, title: "Trình duyệt",
+                        closeOnOutsideClick: false, showCloseButton: true,
+                    },
+                    form: {
+                        labelLocation: "left", itemType: "group", colCount: 1,
+                    }
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -700,6 +708,11 @@
                         allowDeleting: false,
                         allowUpdating: false,
                     },
+                    onCellClick: function (e) {
+                        if (e.column.dataField === "noAttachment") {
+                            loadUpload("RequestRegist", e.row.data);
+                        }
+                    },
                     //onInitNewRow: (e) => {
                     //    e.data.isActive = true;
                     //    e.data.isVisible = true;
@@ -745,6 +758,7 @@
                     //            }
                     //        })
                     //},
+                    
                     masterDetail: {
                         enabled: true,
                         template: function (container, options) {
@@ -938,6 +952,11 @@
 
                         //},///file đính kèm
                     ],
+                    onCellClick: function (e) {
+                        if (e.column.dataField === "noAttachment") {
+                            loadUpload("ResponseRegist", e.row.data);
+                        }
+                    },
                     editing: {
                         mode: "batch",
                         allowAdding: false,
@@ -1036,16 +1055,31 @@
                         {
                             caption: "STT", alignment: "center",
                             cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
+                            width: '10%',
                         },
                         {
                             dataField: "fileName",
                             caption: "Tên file",
                             dataType: "string",
+                            width: '50%',
                         },//rev
                         {
-                            dataField: "url",
-                            caption: "Đường dẫn",
+                            
+                            caption: "File",
                             dataType: "string",
+                            cellTemplate: (c, o) => {
+                                var x = (o.data.host + "\\" + o.data.url + "\\" + o.data.fileName).replaceAll('/', '\\');
+                                if (['.png', '.jpg', '.jpge'].includes(o.data.tail.toLowerCase(x))) {
+                                    console
+                                    $("<a/>").append($("<img/>").attr("src", x).attr("style", "max-width :150px;").attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")).appendTo(c);
+                                }
+                                else if (['.pdf'].includes(o.data.tail.toLowerCase(x))) {
+                                    $("<a/>").attr("href", x).addClass("far fa-file-pdf").appendTo(c);
+                                }
+                                else {
+                                }
+
+                            },
                         }, //url
                     ],
                     editing: {
@@ -1098,6 +1132,7 @@
                             var fd = $("#form")[0];
                             var formData = new FormData(fd);
                             formData.append("OwnerById", item.id);
+                            formData.append("Code", item.code);
                             formData.append("OwnerByTable", table);
                             $.ajax({
                                 url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',

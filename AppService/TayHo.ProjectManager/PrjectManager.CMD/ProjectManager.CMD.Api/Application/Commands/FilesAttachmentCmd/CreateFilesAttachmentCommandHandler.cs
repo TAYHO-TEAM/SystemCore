@@ -27,25 +27,21 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateFilesAttachmentCommandResponse>> Handle(CreateFilesAttachmentCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateFilesAttachmentCommandResponse>();
+            var result = await _mediaService.SaveFile(request.getFile(), request.OwnerByTable, request.Code);
             var newFilesAttachment = new FilesAttachment(request.OwnerById,
                                                         request.OwnerByTable,
                                                         request.Code,
-                                                        request.FileName,
-                                                        "",
-                                                        "",
-                                                        "",
+                                                        result.Item1,
+                                                        result.Item5,
+                                                        result.Item3,
+                                                        result.Item2,
                                                         request.Type,
-                                                        request.Direct);
+                                                        result.Item4);
             newFilesAttachment.SetCreate(_user);
             newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
             newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
             newFilesAttachment.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
-            var result = await _mediaService.SaveFile(request.getFile(), request.OwnerByTable, request.Code);
-            newFilesAttachment.SetFileName(result.Item1);
-            newFilesAttachment.SetHost(result.Item2);
-            newFilesAttachment.SetUrl(result.Item3);
-            newFilesAttachment.SetDirect(result.Item4);
-            newFilesAttachment.SetTail(result.Item5);
+            
             await _FilesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
             await _FilesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             

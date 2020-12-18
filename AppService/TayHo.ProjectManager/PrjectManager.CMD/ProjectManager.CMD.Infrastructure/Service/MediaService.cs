@@ -125,7 +125,7 @@ namespace ProjectManager.CMD.Infrastructure.Service
                 {
                     await file.CopyToAsync(stream);
                 }
-                return new Tuple<string, string, string,string,string>(filename, _mediaOptions.Host,_mediaOptions.LocalUploadUrl + _mediaOptions.FolderForWeb + Folder, filePath, Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
+                return new Tuple<string, string, string,string,string>(filename, _mediaOptions.Host,_mediaOptions.FolderForWeb + Folder, filePath, Path.GetExtension(ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"')));
             }
             catch
             {
