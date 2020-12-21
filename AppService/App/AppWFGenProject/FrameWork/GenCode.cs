@@ -1,8 +1,6 @@
 ﻿using AppWFGenProject.Extensions;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
-using System.Reflection;
 
 namespace AppWFGenProject.FrameWork
 {
@@ -16,7 +14,7 @@ namespace AppWFGenProject.FrameWork
             FileHelper fileHelper = new FileHelper();
 
             /// gen entity 
-            string pathentitytxt = @"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\CMD\Domain\Entity.txt";
+            string pathentitytxt = @"F:\TayHo\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\CMD\Domain\Entity.txt";
             string entitytxt = readTemplate.ReadTxtAll(pathentitytxt);
             fileHelper.CompileFile(pathentitytxt, "Entity", GenOB.Entity);
 
@@ -27,15 +25,17 @@ namespace AppWFGenProject.FrameWork
                 GenOB.builderFields += GenOB.paramCreate + row["PublicParameter"].ToString();
                 GenOB.builderFields += GenOB.functionCreate + row["FunctionPublic"].ToString() + "\r\n";
                 GenOB.builderFields += GenOB.builderFields + row["PropertiesOBJ"].ToString() + "\r\n";
-                GenOB.builderFields += GenOB.builderFields + row["FunctionBehavior"].ToString() + "\r\n";
+                //GenOB.builderFields += GenOB.builderFields + row["FunctionBehavior"].ToString() + "\r\n";
             }
-            
-            fileHelper.ReplaceLine(pathentitytxt, "{nameproject}", GenOB.nameproject);
-            fileHelper.ReplaceLine(pathentitytxt, "{Entity}", GenOB.Entity);
-            fileHelper.ReplaceLine(pathentitytxt, "{paramCreate}", GenOB.paramCreate.Remove(GenOB.paramCreate.Length-1));
-            fileHelper.ReplaceLine(pathentitytxt, "{functionCreate}", GenOB.functionCreate);
-            fileHelper.ReplaceLine(pathentitytxt, "{builderProperties}", GenOB.builderProperties);
-            fileHelper.ReplaceLine(pathentitytxt, "{builderBehaviours}", GenOB.builderBehaviours);
+            Dictionary<string, string> getDic = new Dictionary<string, string>(GenOB.getDictionatyChange());
+            var abc = getDic.Keys;
+
+            fileHelper.ReplaceLine(pathentitytxt.Replace("Entity", GenOB.Entity), getDic);
+            //fileHelper.ReplaceLine(pathentitytxt, "{Entity}", GenOB.Entity);
+            //fileHelper.ReplaceLine(pathentitytxt, "{paramCreate}", GenOB.paramCreate.Remove(GenOB.paramCreate.Length-1));
+            //fileHelper.ReplaceLine(pathentitytxt, "{functionCreate}", GenOB.functionCreate);
+            //fileHelper.ReplaceLine(pathentitytxt, "{builderProperties}", GenOB.builderProperties);
+            //fileHelper.ReplaceLine(pathentitytxt, "{builderBehaviours}", GenOB.builderBehaviours);
 
             return GenOB;
         }
