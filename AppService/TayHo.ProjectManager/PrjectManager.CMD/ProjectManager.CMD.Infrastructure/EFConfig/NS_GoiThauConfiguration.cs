@@ -16,7 +16,11 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
             builder.Property(x => x.ContractorInfoId).HasField("_contractorInfoId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.NgayKy).HasField("_ngayKy").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.TyLeTTTD).HasField("_tyLeTTTD").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ThoiGianBaoHanh).HasField("_thoiGianBaoHanh").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ThoiGianGiuBaoHanh).HasField("_thoiGianGiuBaoHanh").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.TyLeTamUng).HasField("_tyLeTamUng").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.TyLeGiuLai).HasField("_tyLeGiuLai").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.TyLeThanhToanToiDa).HasField("_tyLeThanhToanToiDa").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GiaTri).HasField("_giaTri").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
