@@ -1,10 +1,41 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace AppWFGenProject.FrameWork
 {
     public class FileHelper
     {
+        public bool ReplaceLine(string txtFile, Dictionary<string,string> dicGenOB)
+        {
+            if (File.Exists(txtFile))
+            {
+                using (var sourceFile = File.OpenText(txtFile))
+                {
+                    // Open a stream for the temporary file
+                    using (var tempFileStream = new StreamWriter(txtFile))
+                    {
+                        string line;
+                        // read lines while the file has them
+                        while ((line = sourceFile.ReadLine()) != null)
+                        {
+                            foreach(var item in dicGenOB)
+                            {
+                                // Do the word replacement
+                                line = line.Replace(item.Key, item.Value); 
+                            }
+                            // Write the modified line to the new file
+                            tempFileStream.WriteLine(line);
+                        }
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public bool ReplaceLine(string txtFile, string sourcetxt,string destxt)
         {
             if (File.Exists(txtFile))
@@ -116,6 +147,15 @@ namespace AppWFGenProject.FrameWork
             {
                 return false;
             }
+        }
+        public void ChangeFileTemp(string pathOld , string pathNew)
+        {
+            if (File.Exists(pathOld))
+            {
+                File.Delete(pathOld);
+            }
+
+            File.Move(pathOld, pathNew);
         }
         private static bool DestroyFile(string path)
         {

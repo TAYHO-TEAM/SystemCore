@@ -23,5 +23,28 @@ namespace AppWFGenProject.Extensions
         public string builderRequestParam { get; set; }
         public string builderSetUpdate { get; set; }
         public string builderPublic { get; set; }
+        public Dictionary<string, string> getDictionatyChange() 
+        {
+            Dictionary<string, string> _dictionary = new Dictionary<string, string>();
+            _dictionary.Add(EnumClass.nameproject, nameproject);
+            _dictionary.Add(EnumClass.common, common);
+            _dictionary.Add(EnumClass.db, db);
+            _dictionary.Add(EnumClass.Entity, Entity);
+            _dictionary.Add(EnumClass.entity, entity);
+            _dictionary.Add(EnumClass._entity, _entity);
+            _dictionary.Add(EnumClass.version, version);
+            _dictionary.Add(EnumClass.builderConfig, builderConfig);
+            _dictionary.Add(EnumClass.builderFields, builderFields);
+            _dictionary.Add(EnumClass.paramCreate, paramCreate);
+            _dictionary.Add(EnumClass.functionCreate, functionCreate);
+            _dictionary.Add(EnumClass.builderProperties, builderProperties);
+            _dictionary.Add(EnumClass.builderBehaviours, builderBehaviours);
+            _dictionary.Add(EnumClass.builderRegister, builderRegister);
+            _dictionary.Add(EnumClass.builderRequestParam, builderRequestParam);
+            _dictionary.Add(EnumClass.builderSetUpdate, builderSetUpdate);
+            _dictionary.Add(EnumClass.builderPublic, builderPublic);
+            return _dictionary;
+        }
     }
+  
 }
