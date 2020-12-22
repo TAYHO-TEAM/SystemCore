@@ -140,14 +140,18 @@ function getParamInUrl(name, url) {
 } 
 
 var ajax_insert = (url, values) => {
+
+    loadingPanel.show();
     var deferred = $.Deferred();
     $.ajax({
         headers: header, url: url, dataType: "json", type: "POST",
         data: JSON.stringify(values),
         success: function (data) {
+            loadingPanel.hide();
             deferred.resolve();
         },
         error: function (xhr, textStatus, errorThrown) {
+            loadingPanel.hide();
             console.log(textStatus);
             console.log(errorThrown);
             console.log(xhr);
@@ -158,16 +162,21 @@ var ajax_insert = (url, values) => {
     return deferred.promise();
 }
 var ajax_update = (url, key, values) => {
+    loadingPanel.show();
     var keyObj = JSON.parse('{"id":' + key + '}');
     var deferred = $.Deferred();
     $.ajax({
         headers: header, url: url, dataType: "json", type: "PUT",
         data: JSON.stringify($.extend(keyObj, values)),
         success: function (data) {
+            loadingPanel.hide();
             deferred.resolve();
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
+            loadingPanel.hide();
+            console.log(textStatus);
+            console.log(errorThrown);
+            console.log(xhr);
             deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
         },
         timeout: 5000
@@ -175,16 +184,21 @@ var ajax_update = (url, key, values) => {
     return deferred.promise();
 }
 var ajax_delete = (url, key) => {
+    loadingPanel.show();
     var deferred = $.Deferred();
     var keys = typeof (key) == 'number' ? [key] : key;
     $.ajax({
         headers: header, url: url, dataType: "json", type: "DELETE",
         data: JSON.stringify({ "ids": keys}),
         success: function (data) {
+            loadingPanel.hide();
             deferred.resolve();
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.log(xhr.responseJSON);
+            loadingPanel.hide();
+            console.log(textStatus);
+            console.log(errorThrown);
+            console.log(xhr);
             deferred.reject("Có lỗi xảy ra trong quá trình xóa dữ liệu. Mở Console để xem chi tiết.");
         },
         timeout: 5000

@@ -17,6 +17,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<FilesAttachment> FilesAttachment { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
         public DbSet<NS_CongViec> NS_CongViec { get; set; }
+        public DbSet<NS_Reason> NS_Reason { get; set; }
         public DbSet<NS_CongViecDetail> NS_CongViecDetail { get; set; }
         public DbSet<NS_GiaiDoan> NS_GiaiDoan { get; set; }
         public DbSet<NS_GoiThau> NS_GoiThau { get; set; }

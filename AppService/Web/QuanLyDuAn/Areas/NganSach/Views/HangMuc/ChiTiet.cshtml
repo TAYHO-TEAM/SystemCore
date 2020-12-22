@@ -57,7 +57,7 @@
                     data: params,
                     url: URL_API_PM_READ + ACTION_GIAIDOAN,
                     success: function (rs) { 
-                        var data = rs.result.items;
+                        var data = rs.result.items.filter(x => x.capDo =='HM');
                         if (id != 0) { 
                             var statusCurrent = data.filter(x => x.id == id)[0].status;
                             data = data.filter(x => x.status > statusCurrent); 

@@ -25,6 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_CongViecCommandResponse>();
             var newNS_CongViec = new NS_CongViec(request.NhomCongViecId,
+                request.ReasonId,
                 request.TenCongViec,
                 request.DienGiai,
                 request.DonViTinh);

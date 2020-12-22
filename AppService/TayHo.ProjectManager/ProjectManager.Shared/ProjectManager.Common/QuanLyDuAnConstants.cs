@@ -25,6 +25,7 @@ namespace ProjectManager.Common
         public const string NS_GoiThau_TABLENAME = "NS_GoiThau";
         public const string NS_LoaiCongViec_TABLENAME = "NS_LoaiCongViec";
         public const string NS_NhomChiPhi_TABLENAME = "NS_NhomChiPhi";
+        public const string NS_Reason_TABLENAME = "NS_Reason";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";

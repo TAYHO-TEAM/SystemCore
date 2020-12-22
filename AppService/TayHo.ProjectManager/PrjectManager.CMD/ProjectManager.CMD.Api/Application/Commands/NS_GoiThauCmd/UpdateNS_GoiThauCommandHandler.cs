@@ -43,7 +43,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_GoiThau.SetContractorInfoId(request.ContractorInfoId);
             existingNS_GoiThau.SetNgayKy(request.NgayKy);
             existingNS_GoiThau.SetDienGiai(request.DienGiai);
-            existingNS_GoiThau.SetTyLeTTTD(request.TyLeTTTD);
+            existingNS_GoiThau.SetThoiGianBaoHanh(request.ThoiGianBaoHanh);
+            existingNS_GoiThau.SetThoiGianGiuBaoHanh(request.ThoiGianGiuBaoHanh);
+            existingNS_GoiThau.SetTyLeTamUng(request.TyLeTamUng);
+            existingNS_GoiThau.SetTyLeGiuLai(request.TyLeGiuLai);
+            existingNS_GoiThau.SetTyLeThanhToanToiDa(request.TyLeThanhToanToiDa);
             existingNS_GoiThau.SetGiaTri(request.GiaTri);
             existingNS_GoiThau.SetUpdate(_user,0);
             _NS_GoiThauRepository.Update(existingNS_GoiThau);
