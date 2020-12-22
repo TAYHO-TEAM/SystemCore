@@ -321,11 +321,16 @@
                         }
                     },//mã
                     {
-                        dataField: "title",
-                        caption: "Tiêu đề",
+                        dataField: "rev",
+                        caption: "REV",
                         dataType: "string",
-
-                    },//tiêu đề
+                        allowEditing: false,
+                        editorOptions: {
+                            readOnly: true,
+                            //visible: false,
+                            placeholder: "auto gen",
+                        },
+                    },//rev
                     {
                         dataField: "workItemId", caption: "Hạng mục",
                         lookup: {
@@ -344,6 +349,12 @@
                         },
                         validationRules: [{ type: "required" }],
                     },//hangMucId
+                    {
+                        dataField: "title",
+                        caption: "Tiêu đề",
+                        dataType: "string",
+
+                    },//tiêu đề
                     {
                         dataField: "documentTypeId", caption: "Loại tài liệu",
                         lookup: {
@@ -388,17 +399,6 @@
 
                     },//hangMucId
                     {
-                        dataField: "rev",
-                        caption: "REV",
-                        dataType: "string",
-                        allowEditing: false,
-                        editorOptions: {
-                            readOnly: true,
-                            //visible: false,
-                            placeholder: "auto gen",
-                        },
-                    },//rev
-                    {
                         dataField: "AccountName",
                         caption: "Người đệ trình",
                         dataType: "string",
@@ -435,6 +435,14 @@
                             container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
                         },
                     },
+                    {
+                        dataField: "status",
+                        caption: "Trang thái",
+                        dataType: "number",
+                        cellTemplate: (container, options) => {
+                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã xem' : options.value == 2 ? 'Ban đã xem' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
+                        },
+                    },//rev
                     {
                         type: "buttons",
                         width: 110,
