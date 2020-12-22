@@ -8,58 +8,57 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.CMD.Api.Controllers.v1
 {
-    public class RequestRegistController : APIControllerBase
+    public class DocumentReleasedController : APIControllerBase
     {
-        private int Action = 27;
-        public RequestRegistController(IMediator mediator) : base(mediator)
+        public DocumentReleasedController(IMediator mediator) : base(mediator)
         {
         }
 
 
-        #region RequestRegist
+        #region DocumentReleased
 
         /// <summary>
-        /// Create a new RequestRegist.
+        /// Create a new DocumentReleased.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateDocumentReleasedCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateRequestRegistAsync([FromBody] CreateRequestRegistCommand command)
+        public async Task<IActionResult> CreateDocumentReleasedAsync([FromBody] CreateDocumentReleasedCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Update a existing RequestRegist.
+        /// Update a existing DocumentReleased.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(MethodResult<UpdateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<UpdateDocumentReleasedCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateRequestRegistAsync([FromBody] UpdateRequestRegistCommand command)
+        public async Task<IActionResult> UpdateDocumentReleasedAsync([FromBody] UpdateDocumentReleasedCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Delete a existing RequestRegist.
+        /// Delete a existing DocumentReleased.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpDelete]
-        [ProducesResponseType(typeof(MethodResult<DeleteRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<DeleteDocumentReleasedCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteRequestRegistAsync([FromBody] DeleteRequestRegistCommand command)
+        public async Task<IActionResult> DeleteDocumentReleasedAsync([FromBody] DeleteDocumentReleasedCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
-        #endregion RequestRegist
+        #endregion DocumentReleased
     }
 }

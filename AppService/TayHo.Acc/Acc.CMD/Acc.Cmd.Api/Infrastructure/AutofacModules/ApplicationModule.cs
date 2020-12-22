@@ -31,7 +31,7 @@ namespace Acc.Cmd.Api.Infrastructure.AutofacModules
             builder.RegisterType<GroupAccountRepository>().As<IGroupAccountRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupActionRepository>().As<IGroupActionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupActionPermistionRepository>().As<IGroupActionPermistionRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<GroupFunctionRepository>().As<IGroupFunctionRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<GroupFunctionPermistionRepository>().As<IGroupFunctionPermistionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupPermistionRepository>().As<IGroupPermistionRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupsRepository>().As<IGroupsRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupStagesRepository>().As<IGroupStagesRepository>().InstancePerLifetimeScope();

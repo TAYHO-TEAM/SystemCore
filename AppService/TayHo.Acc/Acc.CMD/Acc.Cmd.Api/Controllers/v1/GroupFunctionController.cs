@@ -8,57 +8,57 @@ using System.Threading.Tasks;
 
 namespace Acc.Cmd.Api.Controllers.v1
 {
-    public class GroupFunctionController : APIControllerBase
+    public class GroupFunctionPermistionController : APIControllerBase
     {
-        public GroupFunctionController(IMediator mediator) : base(mediator)
+        public GroupFunctionPermistionController(IMediator mediator) : base(mediator)
         {
         }
 
 
-        #region GroupFunction
+        #region GroupFunctionPermistion
 
         /// <summary>
-        /// Create a new GroupFunction.
+        /// Create a new GroupFunctionPermistion.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateGroupFunctionCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateGroupFunctionPermistionCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateGroupFunctionAsync([FromBody] CreateGroupFunctionCommand command)
+        public async Task<IActionResult> CreateGroupFunctionPermistionAsync([FromBody] CreateGroupFunctionPermistionCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Update a existing GroupFunction.
+        /// Update a existing GroupFunctionPermistion.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(MethodResult<UpdateGroupFunctionCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<UpdateGroupFunctionPermistionCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateGroupFunctionAsync([FromBody] UpdateGroupFunctionCommand command)
+        public async Task<IActionResult> UpdateGroupFunctionPermistionAsync([FromBody] UpdateGroupFunctionPermistionCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Delete a existing GroupFunction.
+        /// Delete a existing GroupFunctionPermistion.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpDelete]
-        [ProducesResponseType(typeof(MethodResult<DeleteGroupFunctionCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<DeleteGroupFunctionPermistionCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteGroupFunctionAsync([FromBody]DeleteGroupFunctionCommand command)
+        public async Task<IActionResult> DeleteGroupFunctionPermistionAsync([FromBody]DeleteGroupFunctionPermistionCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
-        #endregion GroupFunction
+        #endregion GroupFunctionPermistion
     }
 }

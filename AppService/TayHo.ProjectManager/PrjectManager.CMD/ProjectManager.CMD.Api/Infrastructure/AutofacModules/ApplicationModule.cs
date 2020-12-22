@@ -45,6 +45,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PlanRegisterRepository>().As<IPlanRegisterRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<DocumentReleasedLogRepository>().As<IDocumentReleasedLogRepository>().InstancePerLifetimeScope();
         }
     }
 }

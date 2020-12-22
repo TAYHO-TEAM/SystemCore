@@ -1,65 +1,64 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using ProjectManager.CMD.Api.Application.Commands;
+﻿using ProjectManager.CMD.Api.Application.Commands;
 using ProjectManager.CMD.Api.Controllers.v1.BaseClasses;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Services.Common.DomainObjects;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace ProjectManager.CMD.Api.Controllers.v1
 {
-    public class RequestRegistController : APIControllerBase
+    public class StepsProcessController : APIControllerBase
     {
-        private int Action = 27;
-        public RequestRegistController(IMediator mediator) : base(mediator)
+        public StepsProcessController(IMediator mediator) : base(mediator)
         {
         }
 
 
-        #region RequestRegist
+        #region StepsProcess
 
         /// <summary>
-        /// Create a new RequestRegist.
+        /// Create a new StepsProcess.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateStepsProcessCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateRequestRegistAsync([FromBody] CreateRequestRegistCommand command)
+        public async Task<IActionResult> CreateStepsProcessAsync([FromBody] CreateStepsProcessCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Update a existing RequestRegist.
+        /// Update a existing StepsProcess.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPut]
-        [ProducesResponseType(typeof(MethodResult<UpdateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<UpdateStepsProcessCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdateRequestRegistAsync([FromBody] UpdateRequestRegistCommand command)
+        public async Task<IActionResult> UpdateStepsProcessAsync([FromBody] UpdateStepsProcessCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
         /// <summary>
-        /// Delete a existing RequestRegist.
+        /// Delete a existing StepsProcess.
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpDelete]
-        [ProducesResponseType(typeof(MethodResult<DeleteRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<DeleteStepsProcessCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> DeleteRequestRegistAsync([FromBody] DeleteRequestRegistCommand command)
+        public async Task<IActionResult> DeleteStepsProcessAsync([FromBody]DeleteStepsProcessCommand command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
 
-        #endregion RequestRegist
+        #endregion StepsProcess
     }
 }
