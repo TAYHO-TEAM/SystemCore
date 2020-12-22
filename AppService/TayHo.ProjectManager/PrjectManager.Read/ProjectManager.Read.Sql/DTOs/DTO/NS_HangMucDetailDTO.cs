@@ -1,7 +1,4 @@
 ﻿using ProjectManager.Read.Sql.DTOs.BaseClasses;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {

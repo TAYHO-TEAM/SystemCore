@@ -96,7 +96,7 @@
                         dataField: "tenHangMuc", caption: "Tên hạng mục",
                         dataType: "string",
                         editorOptions: {
-                            placeholder:"Vui lòng nhập..."
+                            placeholder: "Vui lòng nhập..."
                         },
                         validationRules: [{ type: "required" }]
                     },
@@ -140,7 +140,7 @@
                         buttons: [{
                             text: "Thêm",
                             visible: PermitInAction["insert"],
-                            onClick: function (e) { 
+                            onClick: function (e) {
                                 $.ajax({
                                     async: false,
                                     headers: header, dataType: "json",

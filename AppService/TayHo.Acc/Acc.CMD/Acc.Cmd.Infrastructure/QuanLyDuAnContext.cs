@@ -21,7 +21,7 @@ namespace Acc.Cmd.Infrastructure
         public DbSet<Functions> Functions { get; set; }
         public DbSet<GroupAccount> GroupAccount { get; set; }
         public DbSet<GroupAction> GroupAction { get; set; }
-        public DbSet<GroupFunction> GroupFunction { get; set; }
+        public DbSet<GroupFunctionPermistion> GroupFunctionPermistion { get; set; }
         public DbSet<GroupPermistion> GroupPermistion { get; set; }
         public DbSet<GroupActionPermistion> GroupActionPermistion { get; set; }
         public DbSet<Groups> Groups { get; set; }

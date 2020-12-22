@@ -9,11 +9,11 @@ using Services.Common.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace  ProjectManager.CMD.Api.Application.Commands
+namespace ProjectManager.CMD.Api.Application.Commands
 {
-    public class UpdateNS_HangMucDetailCommandHandler : NS_HangMucDetailCommandHandler,IRequestHandler<UpdateNS_HangMucDetailCommand, MethodResult<UpdateNS_HangMucDetailCommandResponse>>
+    public class UpdateNS_HangMucDetailCommandHandler : NS_HangMucDetailCommandHandler, IRequestHandler<UpdateNS_HangMucDetailCommand, MethodResult<UpdateNS_HangMucDetailCommandResponse>>
     {
-        public UpdateNS_HangMucDetailCommandHandler(IMapper mapper, INS_HangMucDetailRepository NS_HangMucDetailRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HangMucDetailRepository,httpContextAccessor)
+        public UpdateNS_HangMucDetailCommandHandler(IMapper mapper, INS_HangMucDetailRepository NS_HangMucDetailRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, NS_HangMucDetailRepository, httpContextAccessor)
         {
         }
 
@@ -42,7 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HangMucDetail.SetProjectId(request.ProjectId);
             existingNS_HangMucDetail.SetGiaiDoanId(request.GiaiDoanId);
             existingNS_HangMucDetail.SetGiaTri(request.GiaTri);
-            existingNS_HangMucDetail.SetUpdate(_user,0);
+            existingNS_HangMucDetail.SetUpdate(_user, 0);
             _NS_HangMucDetailRepository.Update(existingNS_HangMucDetail);
             await _NS_HangMucDetailRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             methodResult.Result = _mapper.Map<UpdateNS_HangMucDetailCommandResponse>(existingNS_HangMucDetail);

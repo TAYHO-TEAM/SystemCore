@@ -36,7 +36,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                         request.ToDate,
                                                         request.NoAttachment);
             newRequestDetail.SetCreate(_user);
-            newRequestDetail.Status = request.Status.HasValue ? request.Status : newRequestDetail.Status;
+            newRequestDetail.Status = request.Status.HasValue ? request.Status : 0;
             newRequestDetail.IsActive = request.IsActive.HasValue ? request.IsActive : newRequestDetail.IsActive;
             newRequestDetail.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newRequestDetail.IsVisible;
             await _RequestDetailRepository.AddAsync(newRequestDetail).ConfigureAwait(false);

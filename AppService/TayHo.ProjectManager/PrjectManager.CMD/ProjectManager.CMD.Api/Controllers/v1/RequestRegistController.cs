@@ -10,6 +10,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
 {
     public class RequestRegistController : APIControllerBase
     {
+        private int Action = 27;
         public RequestRegistController(IMediator mediator) : base(mediator)
         {
         }

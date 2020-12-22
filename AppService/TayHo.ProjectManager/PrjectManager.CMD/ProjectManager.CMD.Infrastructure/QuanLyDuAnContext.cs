@@ -37,6 +37,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<ResponseRegistReply> ResponseRegistReply { get; set; }
         public DbSet<Stages> Stages { get; set; }
         public DbSet<StepsProcess> StepsProcess { get; set; }
+        public DbSet<DocumentReleasedLog> DocumentReleasedLog { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

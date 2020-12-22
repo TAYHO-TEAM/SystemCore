@@ -19,7 +19,7 @@
 
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => { 
+            load: (values) => {
                 let deferred = $.Deferred(), params = {};
                 if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {
@@ -32,7 +32,7 @@
                     url: URL_API_PM_READ + ACTION,
                     dataType: "json",
                     data: params,
-                    success: function (data) { 
+                    success: function (data) {
                         deferred.resolve(data.result.items);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -55,7 +55,7 @@
                 $.ajax({
                     headers: header, dataType: "json",
                     url: URL_API_PM_READ + ACTION_CONTRACTORINFO,
-                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible==true)),
+                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible == true)),
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
@@ -63,7 +63,7 @@
                     timeout: 5000
                 });
                 return deferred.promise();
-            }, 
+            },
         });
 
         $(function () {
@@ -84,7 +84,7 @@
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                columns: [ 
+                columns: [
                     {
                         dataField: "soHopDong", caption: "Số HĐ/PLHĐ", dataType: "string", width: 200,
                         cellTemplate: (c, o) => $("<div>").addClass("font-weight-bold").append(o.value).appendTo(c),
@@ -92,7 +92,7 @@
                             placeholder: "Vui lòng nhập..."
                         },
                         validationRules: [{ type: "required" }],
-                    },//soHopDong 
+                    },//soHopDong
 
                     //{
                     //    type: "buttons", caption: "Tác vụ",
@@ -126,14 +126,14 @@
                         editorType: "dxNumberBox",
                         editorOptions: {
                             format: "###,### đ",
-                            placeholder: "Vui lòng chọn...", 
+                            placeholder: "Vui lòng chọn...",
                         },
                         validationRules: [{ type: "required" }]
                     },//giaTri
                     {
-                        dataField: "ngayKy", caption: "Ngày ký", dataType: "date", alignment: "center", format: "dd/MM/yyyy", width: 150,                   
+                        dataField: "ngayKy", caption: "Ngày ký", dataType: "date", alignment: "center", format: "dd/MM/yyyy", width: 150,
                         editorType: "dxDateBox",
-                        editorOptions: { 
+                        editorOptions: {
                             placeholder: "Vui lòng chọn...",
                         },
                         validationRules: [{ type: "required" }]
@@ -150,9 +150,9 @@
                         columns: [
                             {
                                 dataField: "tyLeTamUng", caption: "Tạm ứng", dataType: "number",
-                                alignment: "center", width: 100, 
+                                alignment: "center", width: 100,
                                 editorType: "dxNumberBox",
-                                editorOptions: { 
+                                editorOptions: {
                                     placeholder: "Vui lòng nhập...",
                                     min: 0, max: 100
                                 }, validationRules: [{ type: "required" }]
@@ -161,7 +161,7 @@
                                 dataField: "tyLeGiuLai", caption: "Giữ lại", dataType: "number",
                                 alignment: "center", width: 100,
                                 editorType: "dxNumberBox",
-                                editorOptions: { 
+                                editorOptions: {
                                     placeholder: "Vui lòng nhập...",
                                     min: 0, max: 100
                                 }, validationRules: [{ type: "required" }]
@@ -170,7 +170,7 @@
                                 dataField: "tyLeThanhToanToiDa", caption: "TT tối da", dataType: "number",
                                 alignment: "center", width: 100,
                                 editorType: "dxNumberBox",
-                                editorOptions: { 
+                                editorOptions: {
                                     placeholder: "Vui lòng nhập...",
                                     min: 0, max: 100
                                 }, validationRules: [{ type: "required" }]
@@ -197,10 +197,10 @@
                                     placeholder: "Vui lòng nhập...",
                                     min: 0, max: 120
                                 }
-                            },//thoiGianGiuBaoHanh 
+                            },//thoiGianGiuBaoHanh
                         ]
                     },
-                    
+
                     {
                         dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
@@ -234,8 +234,8 @@
                         showTitle: false, fullScreen: $(document).width() <= 700, closeOnOutsideClick: true,
                     },
                     form: {
-                        labelLocation: "top", itemType: "group", colCount:12,
-                        showRequiredMark: true, requiredMark: "(*)", 
+                        labelLocation: "top", itemType: "group", colCount: 12,
+                        showRequiredMark: true, requiredMark: "(*)",
                         items: [
                             {
                                 colSpan: 6, dataField: "contractorInfoId",
@@ -247,10 +247,10 @@
                                 colSpan: 4, dataField: "soHopDong",
                             },
                             {
-                                colSpan: 4, dataField: "giaTri", 
+                                colSpan: 4, dataField: "giaTri",
                             },
                             {
-                                colSpan: 4, dataField: "ngayKy", 
+                                colSpan: 4, dataField: "ngayKy",
                             },
                             {
                                 colSpan: 4, dataField: "tyLeTamUng", label: { text: "Tỷ lệ tạm ứng", },
@@ -271,7 +271,7 @@
                                 colSpan: 6, dataField: "isActive",
                             },
                             {
-                                colSpan: 6, dataField: "isVisible", 
+                                colSpan: 6, dataField: "isVisible",
                             },
                         ]
                     }
@@ -300,7 +300,7 @@
                     if (e.target == "content" && e.row.rowType == "data") {
                         var dataGrid = e.component;
                         if (!e.items) e.items = [];
-                        if (PermitInAction["insert"] && e.row.data.parentId==0) {
+                        if (PermitInAction["insert"] && e.row.data.parentId == 0) {
                             e.items.push({
                                 icon: "add", text: "Thêm phụ lục",
                                 onItemClick: () => dataGrid.addRow(e.row.data.id)
@@ -320,7 +320,7 @@
                         }
                     }
                 },
-                onInitNewRow: (e) => {  
+                onInitNewRow: (e) => {
                     e.data.thoiGianBaoHanh = 0;
                     e.data.thoiGianGiuBaoHanh = 0;
                     e.data.tyLeTamUng = 0;
@@ -328,7 +328,7 @@
                     e.data.tyLeThanhToanToiDa = 0;
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                }, 
+                },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.column.dataField == "soHopDong")
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);

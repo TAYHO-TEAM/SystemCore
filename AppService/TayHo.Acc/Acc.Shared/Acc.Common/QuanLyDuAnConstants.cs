@@ -19,6 +19,7 @@
         public const string GroupFunction_TABLENAME = "GroupFunction";
         public const string StaffTayHo_TABLENAME = "StaffTayHo";
         public const string GroupActionPermistion_TABLENAME = "GroupActionPermistion";
+        public const string GroupFunctionPermistion_TABLENAME = "GroupFunctionPermistion";
         public const string OperationProcess_TABLENAME = "OperationProcess";
         public const string GroupStepProcessPermistion_TABLENAME = "GroupStepProcessPermistion";
         public const string StepsProcess_TABLENAME = "StepsProcess";

@@ -5,13 +5,13 @@ using AutoMapper;
 
 namespace Acc.Cmd.Api.Infrastructure.Mappings
 {
-    public class GroupFunctionProfile : Profile 
+    public class GroupFunctionPermistionProfile : Profile 
     {
-        public GroupFunctionProfile()
+        public GroupFunctionPermistionProfile()
         {
-            CreateMap<GroupFunction, GroupFunctionCommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
-            CreateMap<GroupFunction, CreateGroupFunctionCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
-            CreateMap<GroupFunction, UpdateGroupFunctionCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<GroupFunctionPermistion, GroupFunctionPermistionCommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<GroupFunctionPermistion, CreateGroupFunctionPermistionCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<GroupFunctionPermistion, UpdateGroupFunctionPermistionCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
         }
     }
 }

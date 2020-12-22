@@ -5,14 +5,14 @@
 }
 
 <div class="row">
-    <div class="col-12"> 
+    <div class="col-12">
         <div id="container" class="elevation-2"></div>
-    </div> 
+    </div>
 </div>
 
 
 @section script{
-    <script> 
+    <script>
         const ACTION_PROJECT = "/Projects";
         const ACTION_HANGMUC = "/NS_HangMuc";
         const ACTION_HANGMUCDETAIL = "/NS_HangMucDetail";
@@ -42,7 +42,7 @@
                 return deferred.promise();
             },
         });
-        var customStore_GiaiDoan = (id)=> new DevExpress.data.CustomStore({
+        var customStore_GiaiDoan = (id) => new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
                 let deferred = $.Deferred();
@@ -56,11 +56,11 @@
                     headers: header, dataType: "json",
                     data: params,
                     url: URL_API_PM_READ + ACTION_GIAIDOAN,
-                    success: function (rs) { 
-                        var data = rs.result.items.filter(x => x.capDo =='HM');
-                        if (id != 0) { 
+                    success: function (rs) {
+                        var data = rs.result.items.filter(x => x.capDo == 'HM');
+                        if (id != 0) {
                             var statusCurrent = data.filter(x => x.id == id)[0].status;
-                            data = data.filter(x => x.status > statusCurrent); 
+                            data = data.filter(x => x.status > statusCurrent);
                         }
                         deferred.resolve(data);
                     },
@@ -90,7 +90,7 @@
                 $.ajax({
                     headers: header, dataType: "json",
                     data: params,
-                    url: URL_API_PM_READ + ACTION_HANGMUC+'/Detail',
+                    url: URL_API_PM_READ + ACTION_HANGMUC + '/Detail',
                     success: function (data) {
                         deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
@@ -101,7 +101,7 @@
                     timeout: 10000
                 });
                 return deferred.promise();
-            }, 
+            },
         });
         var customStore_HangMucDetail = new DevExpress.data.CustomStore({
             key: "id",
@@ -123,10 +123,10 @@
                     filtering: true,
                     sorting: true,
                     grouping: false
-                }, 
+                },
                 searchPanel: {
-                    highlightCaseSensitive: true, highlightSearchText: true, 
-                    searchVisibleColumnsOnly: false, visible: true, 
+                    highlightCaseSensitive: true, highlightSearchText: true,
+                    searchVisibleColumnsOnly: false, visible: true,
                 },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
@@ -149,7 +149,7 @@
                     },
                     {
                         dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "center",
-                        format: { type: "currency", currency: "VND" },                        
+                        format: { type: "currency", currency: "VND" },
                     },//giaTri
                     {
                         dataField: "hangMucDetailId", dataType: "number", visible: false,
@@ -189,9 +189,9 @@
                         ]
                     }
                 ],
-                onRowUpdating(options) { 
-                    if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId; 
-                    options.newData['hangMucDetailId'] = options.oldData.hangMucDetailId; 
+                onRowUpdating(options) {
+                    if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId;
+                    options.newData['hangMucDetailId'] = options.oldData.hangMucDetailId;
                     options.newData = options.newData;
                 },
                 onToolbarPreparing: function (e) {
@@ -216,8 +216,8 @@
                             location: "before", widget: "dxSelectBox",
                             options: {
                                 dataSource: customStore_GiaiDoan(0),
-                                placeholder:"Xem theo giai đoạn...",
-                                valueExpr: "id", displayExpr: "tenGiaiDoan",  
+                                placeholder: "Xem theo giai đoạn...",
+                                valueExpr: "id", displayExpr: "tenGiaiDoan",
                                 width: "100%", searchEnabled: true, searchMode: "contains",
                                 stylingMode: "filled", showClearButton: true,
                                 value: GIAIDOANID,
@@ -245,7 +245,7 @@
                     if (e.rowType == "data" && e.data.chilCount > 0) {
                         e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                     }
-                }, 
+                },
                 stateStoring: {
                     enabled: true,
                     storageKey: "ngansach-hangmuc-localStorage",
@@ -259,7 +259,7 @@
             width: 500, height: "auto",
             fullScreen: $(window).width() <= 500,
             dragEnabled: true, resizeEnabled: false,
-            showTitle: true, title: type?"Thêm giá trị hang mục theo giai đoạn":"Cập nhật giá trị hạng mục" ,
+            showTitle: true, title: type ? "Thêm giá trị hang mục theo giai đoạn" : "Cập nhật giá trị hạng mục",
             showCloseButton: true, closeOnOutsideClick: false,
             visible: true,
             contentTemplate: (c) => {
@@ -274,9 +274,9 @@
                         "id": data.hangMucDetailId,
                         "giaiDoanId": data.giaiDoanId,
                         "giaTri": data.giaTri,
-                    }; 
+                    };
                 var scrollView = $("<div id='scrollView'></div>");
-                var content = $("<form />").attr("id", "form-container").data("type",type); 
+                var content = $("<form />").attr("id", "form-container").data("type", type);
                 content.dxForm({
                     formData: formData,
                     labelLocation: "left", requiredMark: "(*)",
@@ -288,9 +288,9 @@
                                 dataField: "giaiDoanId",
                                 label: { text: "Giai đoạn" },
                                 editorType: "dxLookup",
-                                editorOptions: { 
+                                editorOptions: {
                                     disabled: !type,
-                                    dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId):0),
+                                    dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId) : 0),
                                     valueExpr: "id", displayExpr: "tenGiaiDoan",
                                     placeholder: "Vui lòng chọn...",
                                     searchEnabled: true, showClearButton: true,
@@ -354,6 +354,6 @@
             }
             e.preventDefault();
             return deferred.promise();
-        }); 
+        });
     </script>
 }
