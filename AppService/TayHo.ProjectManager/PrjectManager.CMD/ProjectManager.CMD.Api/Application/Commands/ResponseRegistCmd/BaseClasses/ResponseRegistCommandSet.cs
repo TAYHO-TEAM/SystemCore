@@ -13,6 +13,6 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public byte? NoAttachment { get; set; }
         public bool? IsApprove { get; set; }
         public byte? TypeOfResult { get; set; }
-        public IFormFileCollection FormFiles { get; set; }
+        private IFormFileCollection? FormFiles { get; set; }
     }
 }

@@ -16,13 +16,39 @@
         .dx-form-group-caption {
             font-size: 25px;
         }
+
+
+        .popup-priority-1 {
+            z-index: 1501;
+        }
+
+        .popup-priority-2 {
+            z-index: 1503;
+        }
+
+        #popup-main {
+        }
+
+            #popup-main > .dx-overlay-wrapper {
+                z-index: 1500 !important;
+            }
+
+        /*   #popup-main .dx-overlay-wrapper .dx-popup-wrapper .dx-overlay-modal .dx-overlay-shader {
+            z-index: 1501 !important;
+        }*/
+        .dx-overlay-wrapper .dx-popup-wrapper .dx-overlay-modal .dx-overlay-shader {
+            z-index: 1600 !important;
+        }
     </style>
 }
+<div id="popup-main-upload"></div>
 <div id="popup-main-sub"></div>
-<div id="popup-main-upload" style="z-index:99"></div>
+
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
+
+        @*<div id="popup-main"></div>*@
     </div>
 </div>
 
@@ -41,7 +67,7 @@
         const ACTION_HANGMUC = "/WorkItems";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_REPLY = "/ResponseRegistReply";
-
+        var code = "";
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
@@ -247,7 +273,9 @@
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-
+                console.log(values);
+                console.log(table);
+                console.log(item);
                 var deferred = $.Deferred();
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
@@ -467,8 +495,7 @@
                 ],
                 onCellClick: function (e) {
                     if (e.column.dataField === "noAttachment") {
-                        console.log(e);
-                        loadUpload("RequestRegist", e.row.data, e.data.noAttachment > 0 ? false:true);
+                        loadUpload("RequestRegist", e.row.data, e.data.noAttachment > 0 ? false : true);
                     }
                 },
                 paging: {
@@ -601,9 +628,14 @@
             fullScreen: false,
             dragEnabled: true,
             resizeEnabled: true,
-            showTitle: true, title: item.title.toUpperCase(),
-            showCloseButton: true, closeOnOutsideClick: true,
+            showTitle: true,
+            title: item.title.toUpperCase(),
+            showCloseButton: true,
+            closeOnOutsideClick: true,
             visible: true,
+            elementAttr: {
+                class: "popup-priority-1",
+            },
             contentTemplate: (c) => {
                 var scrollView = $("<div id='scrollView-detail'></div>");
                 var content = $("<div/>");
@@ -612,9 +644,10 @@
                 var d = $.Deferred();
                 customStore_Detail(item.id).load().then((items) => {
                     var masterItiem = items[0];
+                    code = masterItiem.code;
                     $('#div_dxForm_Main').dxForm({
                         elementAttr: {
-                            id: "dxForm_Main"
+                            id: "dxForm_Main",
                         },
                         readOnly: true,
                         formData: masterItiem,
@@ -703,7 +736,6 @@
                     }).appendTo(content_main);
                     var $i = 1;
                     $.each(masterItiem.responseRegistDTOs, function (key, value) {
-                        console.log(value.modifyBy < 1 ? 1 : 2);
                         var formSub = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form_Sub" + key).data('id', key).addClass("form-submit").append('<div></div>');
                         formSub.dxForm({
                             elementAttr: {
@@ -744,7 +776,7 @@
                                     },//AttachmentisApprove
                                     {
                                         colSpan: 12,
-                                        dataField: "descriptions",
+                                        dataField: "description",
                                         label: { text: "Ý kiến" },
                                         //editorType: "dxTextArea",
 
@@ -754,9 +786,9 @@
                                         dataField: "noAttachment",
                                         label: { text: "Files" },
                                         template: (container) => {
-                                            console.log(1);
-                                            console.log(value);
-                                            return $('<a>').click(function () { loadFileAttachment("ResponseRegist", value.id); }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
+                                            return $('<a>').click(function () {
+                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.noAttachment == null || value.noAttachment < 1) ? true : false) : false);
+                                            }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                         },
                                     },
                                     {
@@ -768,8 +800,15 @@
                                             //useSubmitBehavior: true,
                                             visible: ((value.modifyBy < 1) ? (value.update = true ? true : false) : false),
                                             onClick: function () {
-                                                console.log(1);
-                                                alert(1);
+                                                //console.log(value);
+                                                var request = {
+                                                    'id': value.id,
+                                                    'description': value.description,
+                                                    'typeOfResult': value.typeOfResult
+                                                };
+                                                console.log(request);
+                                                console.log(value);
+                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
                                             },
                                         },
                                     }]
@@ -913,7 +952,7 @@
                 c.append(scrollView);
                 return c;
             }
-        });
+        }).addClass("popup-priority-1");
         ///// Load Popup Rate
         //let loadRate = (item) => $("#popup-main-sub").dxPopup({
         //    width: "80%", height: "60%",
@@ -1029,6 +1068,7 @@
         //    }
         //});
         ///// Load Popup Upload file
+
         let loadUpload = (table, item, isUpload) => $("#popup-main-upload").dxPopup({
             width: "70%",
             height: "50%",
@@ -1039,6 +1079,9 @@
             title: item.title && item.title.toUpperCase(),
             showCloseButton: true, closeOnOutsideClick: true,
             visible: true,
+            //elementAttr: {
+            //    class: "popup-priority-2",
+            //},
             contentTemplate: (c) => {
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div/>");
@@ -1140,6 +1183,12 @@
                                 var fd = $("#form")[0];
                                 var formData = new FormData(fd);
                                 formData.append("OwnerById", item.id);
+                                if ('code' in item) {
+                                    formData.append("Code", item.code);
+                                }
+                                else {
+                                    formData.append("Code", code);
+                                }
                                 formData.append("Code", item.code);
                                 formData.append("OwnerByTable", table);
                                 $.ajax({
@@ -1165,12 +1214,11 @@
             //onHidden: (c) => {
             //    $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
             //},
-        });
-        function loadFileAttachment(table, id, isUpload) {
-            loadUpload(table, id);
-
+        }).addClass("popup-priority-2");
+        function loadFileAttachment(table, item, isUpload) {
+            console.log(isUpload);
+            loadUpload(table, item, isUpload);
         }
-
 
     </script>
 }
