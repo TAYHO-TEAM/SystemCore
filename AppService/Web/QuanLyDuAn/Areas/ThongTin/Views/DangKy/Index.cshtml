@@ -368,9 +368,11 @@
                         editorType: "dxLookup",
                         editorOptions: {
                             dataSource: customStore_HangMuc,
-                            valueExpr: "id", displayExpr: "title",
+                            valueExpr: "id",
+                            displayExpr: "title",
                             placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
+                            searchEnabled: true,
+                            showClearButton: true,
                             itemTemplate: function (data) {
                                 return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
                             },
@@ -581,7 +583,8 @@
                             widget: "dxSelectBox",
                             options: {
                                 dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
+                                valueExpr: "id",
+                                displayExpr: "title",
                                 searchEnabled: true,
                                 searchMode: "contains",
                                 width: "100%",
@@ -597,7 +600,7 @@
                         {
                             location: "after", widget: "dxButton",
                             options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
+                                icon: "refresh", stylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
                             }
                         })

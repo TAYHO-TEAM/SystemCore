@@ -41,6 +41,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<ContractorInfoDTO>, DOBaseRepository<ContractorInfoDTO>>();
             services.AddScoped<IDOBaseRepository<PlanRegisterDTO>, DOBaseRepository<PlanRegisterDTO>>();
             services.AddScoped<IDOBaseRepository<OperationProcessDTO>, DOBaseRepository<OperationProcessDTO>>();
+            services.AddScoped<IDOBaseRepository<StepsProcessDTO>, DOBaseRepository<StepsProcessDTO>>();
 
             services.AddScoped<IDOBaseRepository<NS_CongViecDTO>, DOBaseRepository<NS_CongViecDTO>>();
             services.AddScoped<IDOBaseRepository<NS_CongViecDetailDTO>, DOBaseRepository<NS_CongViecDetailDTO>>();
