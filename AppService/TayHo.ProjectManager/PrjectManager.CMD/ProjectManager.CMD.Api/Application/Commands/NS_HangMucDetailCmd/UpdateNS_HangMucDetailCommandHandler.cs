@@ -39,6 +39,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_HangMucDetail.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_HangMucDetail.IsVisible;
             existingNS_HangMucDetail.Status = request.Status.HasValue ? request.Status : existingNS_HangMucDetail.Status;
             existingNS_HangMucDetail.SetHangMucId(request.HangMucId);
+            existingNS_HangMucDetail.SetProjectId(request.ProjectId);
             existingNS_HangMucDetail.SetGiaiDoanId(request.GiaiDoanId);
             existingNS_HangMucDetail.SetGiaTri(request.GiaTri);
             existingNS_HangMucDetail.SetUpdate(_user,0);

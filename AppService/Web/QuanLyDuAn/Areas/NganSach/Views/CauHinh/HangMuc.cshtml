@@ -112,7 +112,8 @@
                         dataType: "number", width: 110, alignment: "center",
                         editorType: "dxNumberBox",
                         editorOptions: {
-                            min: 1, step: 1, showSpinButtons: true,
+                            min: 1, step: 1,
+                            showSpinButtons: true,
                         }, sortOrder: "desc"
                     },
                     {
@@ -138,9 +139,22 @@
                         width: 120, alignment: "center",
                         buttons: [{
                             text: "Thêm",
-                            visible: function (e) {
-                                //Kiểm tra có giá trị nhập ở 
-                                return true;
+                            visible: PermitInAction["insert"],
+                            onClick: function (e) { 
+                                $.ajax({
+                                    async: false,
+                                    headers: header, dataType: "json",
+                                    url: URL_API_PM_READ + "/NS_HangMucDetail",
+                                    data: { FindId: "hangMucId," + e.row.data.id + ";projectId," + PROJECTID },
+                                    success: function (rs) {
+                                        if (rs.isOk == true && rs.result.pagingInfo.totalItems > 0) {
+                                            DevExpress.ui.notify("Không thể thêm hạng mục con vì hạng mục này đã được cập nhật giá trị", "error", 3000);
+                                        } else e.component.addRow(e.row.data.id);
+                                    },
+                                    error: function (xhr, textStatus, errorThrown) {
+                                        console.log(xhr.responseJSON);
+                                    },
+                                });
                             }
                         }, "edit", "delete"]
                     }

@@ -149,8 +149,7 @@
                     },
                     {
                         dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "center",
-                        format: { type: "currency", currency: "VND" },
-                        
+                        format: { type: "currency", currency: "VND" },                        
                     },//giaTri
                     {
                         dataField: "hangMucDetailId", dataType: "number", visible: false,
@@ -244,7 +243,7 @@
                 },
                 onRowPrepared: (e) => {
                     if (e.rowType == "data" && e.data.chilCount > 0) {
-                        e.rowElement.attr("style","font-weight:bold !important")
+                        e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                     }
                 }, 
                 stateStoring: {
@@ -266,6 +265,7 @@
             contentTemplate: (c) => {
                 formData = type ? {
                     "giaiDoanId": "",
+                    "projectId": PROJECTID,
                     "hangMucId": data.id,
                     "giaTri": "",
                     "isActive": true,

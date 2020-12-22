@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     {
         public int? HangMucId { get; set; }
         public int? GiaiDoanId { get; set; }
+        public int? ProjectId { get; set; }
         public decimal? GiaTri { get; set; }
     }
 }
