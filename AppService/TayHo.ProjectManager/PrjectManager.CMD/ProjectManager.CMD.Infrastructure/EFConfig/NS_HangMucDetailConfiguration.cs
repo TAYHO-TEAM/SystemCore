@@ -12,6 +12,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         {
             builder.ToTable(QuanLyDuAnConstants.NS_HangMucDetail_TABLENAME);
             builder.Property(x => x.HangMucId).HasField("_hangMucId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GiaiDoanId).HasField("_giaiDoanId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GiaTri).HasField("_giaTri").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
