@@ -68,7 +68,7 @@
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_REPLY = "/ResponseRegistReply";
         var code = "";
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+        //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -312,6 +312,7 @@
             //update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
             //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
         });
+
         $(function () {
             loadData(customStore);
         });
