@@ -8,6 +8,19 @@ namespace AppWFGenProject.FrameWork
     {
         public bool ReplaceLine(string txtFile, Dictionary<string,string> dicGenOB)
         {
+
+            //    StreamReader reader = new StreamReader(directory + fileName);
+            //    string input = reader.ReadToEnd();
+
+            //    using (StreamWriter writer = new StreamWriter(directory + saveFileName, true))
+            //    {
+            //        {
+            //            string output = input.Replace(word, replacement);
+            //            writer.Write(output);
+            //        }
+            //        writer.Close();
+            //    }
+
             if (File.Exists(txtFile))
             {
                 using (var sourceFile = File.OpenText(txtFile))
