@@ -9,6 +9,7 @@
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
+        <div id="container-detail" class="elevation-2"></div>
     </div>
 </div>
 
@@ -21,10 +22,10 @@
         const ACTION_FILEGET = "/FilesAttachment/getBy";
         const ACTION_GROUPS = "/Groups";
         //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
-        var DOCUMENTTYPEID = isNullOrEmpty(localStorage.getItem("documentTypeIdCurrent")) ? parseInt(localStorage.getItem("documentTypeIdCurrent")) :7;
+        var DOCUMENTTYPEID = isNullOrEmpty(localStorage.getItem("documentTypeIdCurrent")) ? parseInt(localStorage.getItem("documentTypeIdCurrent")) : 7;
 
         var WIDTH_CONTAINER = $("#container").width();
-        
+
 
         //..........................Get data -------------------------------------------------------------
         let customStore = new DevExpress.data.CustomStore({
@@ -66,7 +67,7 @@
                     headers: header, dataType: "json",
                     url: URL_API_PM_READ + ACTION_DOCUMENTTYPE,
                     success: function (data) {
-                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true && x.status==2);
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true && x.status == 2);
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -118,8 +119,45 @@
             },
 
         });
-       
-       
+        let customStore_Detail = (item) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                console.log(item);
+                var deferred = $.Deferred();
+                var params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    'FindId':'documentReleasedId,'+ item.id
+                }
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_DOCUMENTACC,
+                    success: function (data) {
+                        var list = data.result.items;
+                        deferred.resolve(
+                            list,
+                            {
+                                totalCount: list.length,
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+
+        });
+
+
         //..........................  Load View -------------------------------------------------------------
         $(function () {
             loadData(customStore);
@@ -128,16 +166,13 @@
             $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
-                repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
                     sorting: true,
                     grouping: false
                 },
-                scrolling: { mode: "standard" },
-                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
                 columns: [
                     {
                         dataField: "title", caption: "Tên tài liệu",
@@ -148,7 +183,7 @@
                         dataType: "string",
                     },
                     {
-                        dataField: "documentTypeId", caption: "Mô tả",
+                        dataField: "documentTypeId", caption: "Loại tài liệu",
                         dataType: "number",
                         lookup: {
                             dataSource: customStore_DocumetnType,
@@ -182,23 +217,7 @@
                         buttons: ["add", "edit", "delete"]
                     }
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    allowReordering: false,
-                    dropFeedbackMode: "push",
-                    onDragEnd: function (e) {
-                        var source = e.itemData,
-                            target = e.component.getVisibleRows()[e.toIndex].data,
-                            d = $.Deferred();
-                        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                            e.component.refresh().then(d.resolve, d.reject);
-                        }, d.reject);
-                    },
-                },
-                paging: {
-                    enabled: true,
-                    pageSize: 20
-                },
+                paging: { enabled: true, pageSize: 20 },
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [10, 20, 40],
@@ -214,9 +233,39 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false,
+                    mode: "popup",
+                    useIcons: true,
                     confirmDelete: true,
+                    popup: {
+                        width: 600, height: "auto",
+                        showTitle: true, title: "Trình duyệt",
+                        closeOnOutsideClick: false, showCloseButton: true,
+                    },
+                    form: {
+                        labelLocation: "left",
+                        itemType: "group", colCount: 12,
+                        showRequiredMark: true,
+                        requiredMark: "(*)",
+                        items: [
+                            {
+                                colSpan: 12,
+                                dataField: "title",
+                                label: { text: "Tên" },
+                            },
+                            {
+                                colSpan: 12,
+                                dataField: "documentTypeId",
+                                label: { text: "Loại tài liệu" },
+                            },
+                            {
+                                colSpan: 12,
+                                dataField: "description",
+                                label: { text: "Mô tả" },
+                                editorType: "dxTextArea",
+                            },
+                        ],
+
+                    },
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -246,11 +295,6 @@
                             }
                         })
                 },
-                onCellClick: function (e) {
-                    if (e.column.dataField === "noAttachment") {
-                        loadUpload("DocumentReleased", e.row.data, e.data.noAttachment > 0 ? false : true);
-                    }
-                },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
@@ -259,9 +303,44 @@
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
-                }
+                },
+                onCellClick: function (e) {
+                    if (e.column.dataField === "noAttachment") {
+                        loadUpload("DocumentReleased", e.row.data, e.data.noAttachment > 0 ? false : true);
+                    }
+                },
+                masterDetail: {
+                    autoExpandAll: false,
+                    component: null,
+                    enabled: true,
+                    render: null,
+                    template: function (container, options) {
+                        console.log(options);
+                        $("<div>").dxDataGrid({
+                            alignment:'center',
+                            showBorders: false,
+                            showColumnHeaders: true,
+                            showColumnLines: false,
+                            hoverStateEnabled: true,
+                            showRowLines: true,
+                            columnAutoWidth: true,
+                            wordWrapEnabled: true,
+                            rowAlternationEnabled: true,
+                            width:'90%',
+                            columnAutoWidth: true,
+                            showBorders: true,
+                            dataSource: customStore_Detail(options.data),
+                            columns: [{
+                                dataField: "accountId",
+                                caption: "Tên tài liệu",
+                                dataType: "string",
+                            },],
+                        }).appendTo(container);
+                    },
+                },
             });
         };
+
 
         let loadUpload = (table, item, isUpload) => $("#popup-main-upload").dxPopup({
             width: "70%",
@@ -409,7 +488,7 @@
             //    $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
             //},
         }).addClass("popup-priority-2");
-       
+
     </script>
 }
 
