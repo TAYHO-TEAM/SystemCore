@@ -27290,6 +27290,13 @@ select.form-control-sm ~ .select2-container--default .select2-selection--multipl
   width: 32px;
 }
 
+.img-size-30 {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid #ffffff
+}
+
 .size-32,
 .size-40,
 .size-50 {

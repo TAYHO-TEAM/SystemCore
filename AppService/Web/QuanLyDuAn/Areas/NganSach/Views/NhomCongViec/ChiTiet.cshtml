@@ -17,6 +17,8 @@
         const ACTION_GIAIDOAN = "/NS_GiaiDoan";
         const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
         const ACTION_NHOMCONGVIECDETAIL = "/NS_NhomCongViecDetail";
+        const ACTION_HANGMUC = "/NS_HangMuc";
+        const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
 
         var customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -49,19 +51,44 @@
                 let params = {
                     'SortCol': 'status',
                     'SortADSC': '1',
-                    'isActive': 1,
-                    'isVisible': 1
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
                 };
                 $.ajax({
                     headers: header, dataType: "json",
                     data: params,
                     url: URL_API_PM_READ + ACTION_GIAIDOAN,
                     success: function (rs) {
-                        var data = rs.result.items;
+                        var data = rs.result.items.filter(x => x.capDo == 'NCV');
                         if (id != 0) {
                             var statusCurrent = data.filter(x => x.id == id)[0].status;
                             data = data.filter(x => x.status > statusCurrent);
                         }
+                        deferred.resolve(data);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_HangMuc = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'SortCol': 'status',
+                    'SortADSC': '1',
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
+                };
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_HANGMUC,
+                    success: function (rs) {
+                        var data = rs.result.items; 
                         deferred.resolve(data);
                     },
                     error: function (xhr, textStatus, errorThrown) {
@@ -111,6 +138,32 @@
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIECDETAIL, key),
             reshapeOnPush: true,
         });
+        var customStore_LoaiCongViec = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'SortCol': 'status',
+                    'SortADSC': '1',
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
+                };
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_LOAICONGVIEC,
+                    success: function (rs) {
+                        var data = rs.result.items;
+                        deferred.resolve(data);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Loại công việc'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
 
         $(function () {
             loadData();
@@ -141,14 +194,30 @@
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
             columns: [
                 {
-                    dataField: "tenNhomCongViec", caption: "Tên nhóm công việc", dataType: "string",
+                    caption: "STT", width: 80, alignment: "center",
+                    cellTemplate: (c, o) => c.append($("<b>").append(o.rowIndex+1))
+                },
+                {
+                    dataField: "tenNhomCongViec", caption: "Tên nhóm công việc", dataType: "string",  
+                    cellTemplate: (c, o) => c.append(
+                        $("<b>").addClass("font-weight-bold").append(o.value),
+                        o.data.dienGiai!=null? $("<em />").addClass("mt-1 ml-1").append("- "+o.data.dienGiai):null
+                    )
                 },
                 {
                     dataField: "hangMucId", caption: "Hạng mục", dataType: "string",
+                    lookup: {
+                        dataSource: customStore_HangMuc,
+                        valueExpr: "id", displayExpr: "tenHangMuc",
+                    },
                 },
                 {
-                    dataField: "loaiCongViecId", caption: "Loại công việc", dataType: "string",
-                },
+                    dataField: "loaiCongViecId", caption: "Loại công việc", dataType: "string", 
+                    lookup: {
+                        dataSource: customStore_LoaiCongViec,
+                        valueExpr: "id", displayExpr: "tenLoaiCongViec",
+                    },
+                }, 
                 {
                     dataField: "giaiDoanId", caption: "Giai đoạn", alignment: "center",
                     lookup: {
@@ -196,6 +265,15 @@
                     ]
                 }
             ],
+            summary: {
+                totalItems: [
+                    {
+                        column: "giaTri",
+                        summaryType: "sum",
+                        valueFormat: { type: "currency", currency: "VND" },
+                    }, 
+                ]
+            },
             onRowUpdating(options) {
                 if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId;
                 options.newData['nhomCongViecDetailId'] = options.oldData.nhomCongViecDetailId;

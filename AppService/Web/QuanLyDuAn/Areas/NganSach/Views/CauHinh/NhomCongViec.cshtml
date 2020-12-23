@@ -185,14 +185,28 @@
                             },
                         },
                     },
-                    {
-                        location: "after", widget: "dxButton",
-                        options: {
-                            icon: "refresh", tylingMode: "filled", type: "default",
-                            onClick: () => container.refresh()
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                visible: PermitInAction["insert"],
+                                text: "Nhóm công việc", icon: "add", stylingMode: "filled", type: "default",
+                                onClick: () => container.addRow()
+                            }
+                        },
+                        {
+                            location: "after", widget: "dxButton",
+                            options: {
+                                icon: "refresh", tylingMode: "filled", type: "default",
+                                onClick: () => container.refresh()
+                            }
                         }
-                    }
                 )
+            },
+            searchPanel: {
+                highlightCaseSensitive: true,
+                highlightSearchText: true,
+                searchVisibleColumnsOnly: true,
+                visible: true
             },
             columns: [ 
                 {
@@ -243,8 +257,10 @@
                                     },
                                     selectNodesRecursive: false,
                                     onItemSelectionChanged: function (args) {
-                                        e.component.option("value", args.node.key);
-                                        e.component.close();
+                                        if (args.itemData.chilCount == 0) { 
+                                            e.component.option("value", args.node.key);
+                                            e.component.close();
+                                        }
                                     },
                                     itemTemplate: function (data) {
                                         return $("<div>").append($("<b>").append(data.tenHangMuc).addClass("mr-1"), $("<em>").append(data.kyHieu));
@@ -277,14 +293,7 @@
                             return $("<div>").append($("<b>").append(data.tenLoaiCongViec).addClass("mr-1"), $("<em>").append(data.dienGiai));
                         },
                     },
-                },
-                //{
-                //    dataField: "goiThauId", caption: "Gói thầu", dataType: "string",
-                //    lookup: {
-                //        dataSource: customStore_GoiThau,
-                //        valueExpr: "id", displayExpr: "soHopDong",
-                //    }
-                //},
+                }, 
                 {
                     dataField: "nhomChiPhiId", caption: "Nhóm chi phí", dataType: "string",
                     lookup: {
@@ -301,8 +310,7 @@
                     editorType: "dxSwitch",
                 },
             ],
-            editing: {
-                allowAdding: true,
+            editing: { 
                 allowUpdating: PermitInAction["update"] ? true : null,
                 allowDeleting: PermitInAction["delete"] ? true : null,
                 mode: "popup", useIcons: false, confirmDelete: true,

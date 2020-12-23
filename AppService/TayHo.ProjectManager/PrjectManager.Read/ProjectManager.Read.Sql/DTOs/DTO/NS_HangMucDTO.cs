@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
-    public class NS_HangMucDTO: DTOChilCountBase
+    public class NS_HangMucDTO: DTOAccountInfoBase
     {
         public int? ParentId { get; set; }
         public string TenHangMuc { get; set; }
