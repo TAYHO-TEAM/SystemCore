@@ -8,4 +8,17 @@ namespace ProjectManager.Read.Api.ViewModels.BaseClasses
     public class BaseResponseChilCountViewModel : DTOChilCountBase
     {
     }
+
+    public class BaseResponseAccountInfoViewModel : BaseResponseChilCountViewModel
+    {
+        public string CreateBy_Name { get; set; }
+        public byte[] CreateBy_Avartar { get; set; }
+        public string CreateBy_Title { get; set; }
+        public string CreateBy_Department { get; set; }
+
+        public string ModifyBy_Name { get; set; }
+        public byte[] ModifyBy_Avartar { get; set; }
+        public string ModifyBy_Title { get; set; }
+        public string ModifyBy_Department { get; set; }
+    }
 }

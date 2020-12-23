@@ -49,8 +49,7 @@
                 let params = {
                     'SortCol': 'status',
                     'SortADSC': '1',
-                    'isActive': 1,
-                    'isVisible': 1
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
                 };
                 $.ajax({
                     headers: header, dataType: "json",
@@ -92,7 +91,9 @@
                     data: params,
                     url: URL_API_PM_READ + ACTION_HANGMUC + '/Detail',
                     success: function (data) {
-                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                        deferred.resolve(data.result.items, {
+                            totalCount: data.result.pagingInfo.totalItems
+                        });
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -132,7 +133,7 @@
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
-                columns: [
+                columns: [ 
                     {
                         dataField: "tenHangMuc", caption: "Thông tin hạng mục", dataType: "string",
                     },
@@ -150,7 +151,32 @@
                     {
                         dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "center",
                         format: { type: "currency", currency: "VND" },
-                    },//giaTri
+                    },
+                    {
+                        caption: "Tương tác",
+                        alignment: "center", width: 100,
+                        cellTemplate: (c, o) => {
+                            if (o.data.createBy_Name != null) {
+                                $("<div />").attr('id', "popover-target-" + o.key).append(
+                                    $("<img />").attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30"),
+                                    (o.data.modifyBy_Name != null && o.data.modifyBy_Name != o.data.createBy_Name) ? $("<img />").attr("src", "data:image/png;base64," + o.data.modifyBy_Avartar).addClass("img-circle elevation-2 img-size-30").attr("style", "margin-left: -15px !important") : null
+                                ).appendTo(c);
+                                $("<div />").attr('id', "popover-detail-" + o.key).append(
+                                    "<div><b>" + o.data.createBy_Name + "</b></div><em>" + o.data.createBy_Title + ' - ' + o.data.createBy_Department + "</em><div>" + "(Đã tạo cách đây " + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>",
+                                    (o.data.modifyBy_Name != null) ? "<br/><div><b>" + o.data.modifyBy_Name + "</b></div><em>" + o.data.modifyBy_Title + ' - ' + o.data.modifyBy_Department + "</em><div>" + "(Đã cập nhật cách đây " + moment(o.data.updateDate).locale("vi").fromNow() + ")" + "</div>" : null
+                                ).appendTo(c);
+                                $("#popover-detail-" + o.key).dxPopover({
+                                    target: "#popover-target-" + o.key,
+                                    showEvent: "mouseenter", hideEvent: "mouseleave",
+                                    position: "bottom",
+                                    animation: {
+                                        show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
+                                        hide: { type: "fade", from: 1, to: 0 }
+                                    }
+                                });
+                            }
+                        }
+                    }, 
                     {
                         dataField: "hangMucDetailId", dataType: "number", visible: false,
                     },
@@ -245,7 +271,7 @@
                     if (e.rowType == "data" && e.data.chilCount > 0) {
                         e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                     }
-                },
+                }, 
                 stateStoring: {
                     enabled: true,
                     storageKey: "ngansach-hangmuc-localStorage",
@@ -289,6 +315,7 @@
                                 label: { text: "Giai đoạn" },
                                 editorType: "dxLookup",
                                 editorOptions: {
+                                    value: GIAIDOANID,
                                     disabled: !type,
                                     dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId) : 0),
                                     valueExpr: "id", displayExpr: "tenGiaiDoan",
