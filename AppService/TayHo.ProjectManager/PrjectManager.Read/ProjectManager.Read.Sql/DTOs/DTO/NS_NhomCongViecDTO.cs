@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
-    public class NS_NhomCongViecDTO : DTOChilCountBase
+    public class NS_NhomCongViecDTO : DTOAccountInfoBase
     {
         public int? HangMucId { get; set; }
         public int? LoaiCongViecId { get; set; }

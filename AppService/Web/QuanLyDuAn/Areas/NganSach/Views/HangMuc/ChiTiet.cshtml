@@ -290,7 +290,7 @@
             visible: true,
             contentTemplate: (c) => {
                 formData = type ? {
-                    "giaiDoanId": "",
+                    "giaiDoanId": GIAIDOANID,
                     "projectId": PROJECTID,
                     "hangMucId": data.id,
                     "giaTri": "",
@@ -315,7 +315,6 @@
                                 label: { text: "Giai đoạn" },
                                 editorType: "dxLookup",
                                 editorOptions: {
-                                    value: GIAIDOANID,
                                     disabled: !type,
                                     dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId) : 0),
                                     valueExpr: "id", displayExpr: "tenGiaiDoan",
