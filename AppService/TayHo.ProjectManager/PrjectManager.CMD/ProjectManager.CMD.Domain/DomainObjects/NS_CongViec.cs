@@ -9,7 +9,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
     {
         #region Fields
         private int? _nhomCongViecId;
-        private int? _reasonId;
+        private string _nhom;
         private string _tenCongViec;
         private string _dienGiai;
         private string _donViTinh;
@@ -21,13 +21,13 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
 
         public NS_CongViec(int? NhomCongViecId,
-            int? ReasonId,
+            string Nhom,
             string TenCongViec,
             string DienGiai,
             string DonViTinh) : this()
         {
             _nhomCongViecId = NhomCongViecId;
-            _reasonId = ReasonId;
+            _nhom = Nhom;
             _tenCongViec = TenCongViec;
             _dienGiai = DienGiai;
             _donViTinh = DonViTinh;
@@ -36,7 +36,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Properties
         [Required(ErrorMessage = nameof(ErrorCodeInsert.IErr000))] public int? NhomCongViecId { get => _nhomCongViecId; }
-        public int? ReasonId { get => _reasonId; }
+        [MaxLength(500, ErrorMessage = nameof(ErrorCodeInsert.IErr500))] public string Nhom { get => _nhom; }
         [MaxLength(500, ErrorMessage = nameof(ErrorCodeInsert.IErr500))] public string TenCongViec { get => _tenCongViec; }
         public string DienGiai { get => _dienGiai; }
         [MaxLength(500, ErrorMessage = nameof(ErrorCodeInsert.IErr500))] public string DonViTinh { get => _donViTinh; }
@@ -44,7 +44,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetNhomCongViecId(int? NhomCongViecId) { _nhomCongViecId = !NhomCongViecId.HasValue ? _nhomCongViecId : NhomCongViecId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetReasonId(int? ReasonId) { _reasonId = !ReasonId.HasValue ? _reasonId : ReasonId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetNhom(string Nhom) { _nhom = Nhom == null ? _nhom : Nhom; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTenCongViec(string TenCongViec) { _tenCongViec = TenCongViec == null ? _tenCongViec : TenCongViec; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDienGiai(string DienGiai) { _dienGiai = DienGiai == null ? _dienGiai : DienGiai; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetDonViTinh(string DonViTinh) { _donViTinh = DonViTinh == null ? _donViTinh : DonViTinh; if (!IsValid()) throw new DomainException(_errorMessages); }

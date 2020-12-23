@@ -40,6 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_CongViecDetail.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_CongViecDetail.IsVisible;
             existingNS_CongViecDetail.Status = request.Status.HasValue ? request.Status : existingNS_CongViecDetail.Status;
             existingNS_CongViecDetail.SetCongViecId(request.CongViecId);
+            existingNS_CongViecDetail.SetReasonId(request.ReasonId);
             existingNS_CongViecDetail.SetGiaiDoanId(request.GiaiDoanId);
             existingNS_CongViecDetail.SetDonGia(request.DonGia);
             existingNS_CongViecDetail.SetKhoiLuong(request.KhoiLuong);
