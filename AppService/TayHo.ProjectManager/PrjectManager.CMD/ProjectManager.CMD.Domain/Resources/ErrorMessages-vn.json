@@ -23,6 +23,7 @@
   // Update Error 
   "UErr01": "Dữ liệu không tông tại!",
   "UErr02": "Không được phép cập nhật dòng dữ liệu này!",
+  "UErr03": "Không tồn tại liên kết phụ!",
   // Delete Error
   "DErr001": "Dữ liệu không tông tại!",
   "DErr002": "Không được phép xoá dòng dữ liệu này!"

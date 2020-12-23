@@ -46,5 +46,6 @@ namespace ProjectManager.Common
         public const string PlanRegister_TABLENAME = "PlanRegister";
         public const string DocumentReleasedLog_TABLENAME = "DocumentReleasedLog";
         public const string DocumentReleased_TABLENAME = "DocumentReleased";
+        public const string DocumentReleasedAccount_TABLENAME = "DocumentReleasedAccount";
     }
 }

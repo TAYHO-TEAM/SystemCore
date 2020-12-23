@@ -23,6 +23,8 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<RequestDetailRepository>().As<IRequestDetailRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ProblemCategoryRepository>().As<IProblemCategoryRepository>().InstancePerLifetimeScope();
             builder.RegisterType<GroupStagesRepository>().As<IGroupStagesRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<GroupsRepository>().As<IGroupsRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<GroupAccountRepository>().As<IGroupAccountRepository>().InstancePerLifetimeScope();
             builder.RegisterType<FilesAttachmentRepository>().As<IFilesAttachmentRepository>().InstancePerLifetimeScope();
             builder.RegisterType<DocumentTypeRepository>().As<IDocumentTypeRepository>().InstancePerLifetimeScope();
             builder.RegisterType<AssignmentsRepository>().As<IAssignmentsRepository>().InstancePerLifetimeScope();
@@ -46,6 +48,8 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PlanRegisterRepository>().As<IPlanRegisterRepository>().InstancePerLifetimeScope();
             builder.RegisterType<DocumentReleasedLogRepository>().As<IDocumentReleasedLogRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<DocumentReleasedRepository>().As<IDocumentReleasedRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<DocumentReleasedAccountRepository>().As<IDocumentReleasedAccountRepository>().InstancePerLifetimeScope();
         }
     }
 }

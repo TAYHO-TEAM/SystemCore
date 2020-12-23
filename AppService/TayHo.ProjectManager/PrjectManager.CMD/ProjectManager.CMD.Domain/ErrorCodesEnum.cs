@@ -29,6 +29,7 @@
     {
         UErr01,
         UErr02,
+        UErr03,
     }
     public enum ErrorCodeDelete
     {

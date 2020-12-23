@@ -16,6 +16,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<DocumentType> DocumentType { get; set; }
         public DbSet<FilesAttachment> FilesAttachment { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
+        public DbSet<Groups> Groups { get; set; }
         public DbSet<NS_CongViec> NS_CongViec { get; set; }
         public DbSet<NS_Reason> NS_Reason { get; set; }
         public DbSet<NS_CongViecDetail> NS_CongViecDetail { get; set; }
@@ -38,6 +39,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<Stages> Stages { get; set; }
         public DbSet<StepsProcess> StepsProcess { get; set; }
         public DbSet<DocumentReleasedLog> DocumentReleasedLog { get; set; }
+        public DbSet<DocumentReleasedAccount> DocumentReleasedAccount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
