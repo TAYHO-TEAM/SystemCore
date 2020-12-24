@@ -32,7 +32,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             var methodResult = new MethodResult<UpdateDocumentReleasedAccountCommandResponse>();
             var existingDocumentReleasedAccount = await _DocumentReleasedAccountRepository.SingleOrDefaultAsync(x => x.Id == request.Id && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false);
             var duplicateDocumentReleasedAccount = await _DocumentReleasedAccountRepository.AnyAsync(x => x.Id != request.Id && (x.IsDelete == false || !x.IsDelete.HasValue) && x.AccountId == request.AccountId && x.DocumentReleasedId == request.DocumentReleasedId).ConfigureAwait(false);
-            if (!duplicateDocumentReleasedAccount)
+            if (duplicateDocumentReleasedAccount)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr03), new[]
                 {

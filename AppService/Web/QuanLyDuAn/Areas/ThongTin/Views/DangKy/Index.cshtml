@@ -67,6 +67,7 @@
         const ACTION_HANGMUC = "/WorkItems";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_REPLY = "/ResponseRegistReply";
+        const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
         var code = "";
         //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
@@ -312,7 +313,29 @@
             //update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
             //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
         });
+        let customStore_AccountInfo = new DevExpress.data.CustomStore({
+            key: "accountId", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_ACCOUNTINFO,
+                    success: function (data) {
+                        var list = data.result.items;
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai Đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
 
+
+        //------------------------- Load dữ liệu --------------------------------------------
         $(function () {
             loadData(customStore);
         });
@@ -430,13 +453,41 @@
 
                     },//hangMucId
                     {
-                        dataField: "AccountName",
+                        dataField: "createBy",
                         caption: "Người đệ trình",
-                        dataType: "string",
+                        dataType: "number",
+                        allowEditing: false,
+                        lookup: {
+                            dataSource: customStore_AccountInfo,
+                            valueExpr: "accountId", displayExpr: "avatarImg",
+                        },
                         editorOptions: {
                             readOnly: true,
                             //visible: false,
                             placeholder: "auto gen",
+                        },
+                        cellTemplate: (c, o) => {
+                            console.log(o.data.accountName);
+                            $("<img />")
+                                .attr('id', "popover-target-" + o.key)
+                                .attr("src", "data:image/png;base64," + o.text)
+                                .addClass("img-circle elevation-2 img-size-30")
+                                .attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")
+                                .appendTo(c);
+                            $("<div />")
+                                .attr('id', "popover-detail-" + o.key)
+                                .append("<div>( " + (o.data.accountName) + ' Đã tạo ' + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>")
+                                .appendTo(container);
+                            $("#popover-detail-" + o.key).dxPopover({
+                                target: "#popover-target-" + o.key,
+                                showEvent: "mouseenter", hideEvent: "mouseleave",
+                                position: "bottom",
+                                animation: {
+                                    show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
+                                    hide: { type: "fade", from: 1, to: 0 },
+                                }
+                            });
+
                         },
                     },//account
                     {
@@ -1078,7 +1129,7 @@
                                 else {
                                     formData.append("Code", code);
                                 }
-                                formData.append("Code", item.code);
+                                //formData.append("Code", item.code);
                                 formData.append("OwnerByTable", table);
                                 $.ajax({
                                     url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',

@@ -138,7 +138,7 @@
                 });
                 return deferred.promise();
             },
-            
+
         });
         let customStore_Detail = (item) => new DevExpress.data.CustomStore({
             key: "id",
@@ -423,11 +423,78 @@
                             columnAutoWidth: true,
                             showBorders: true,
                             dataSource: customStore_Log(options.data),
-                            columns: [{
-                                dataField: "accountId",
-                                caption: "Tên tài liệu",
-                                dataType: "string",
-                            },],
+                            columns: [
+                                {
+                                    dataField: "accountId",
+                                    caption: "Ảnh đại diện",
+                                    alignment: "center",
+                                    dataType: "number",
+                                    allowEditing: false,
+                                    lookup: {
+                                        dataSource: customStore_AccountInfo,
+                                        valueExpr: "accountId", displayExpr: "avatarImg",
+                                    },
+                                    cellTemplate: (c, o) => {
+          
+                                        $("<img />")
+                                            .attr("src", "data:image/png;base64," + o.text)
+                                            .addClass("img-circle elevation-2 img-size-30")
+                                            .attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")
+                                            .appendTo(c);
+                                      
+                                    },
+                                },//avarta
+                                {
+                                    dataField: "accountId",
+                                    caption: "Họ Tên",
+                                    dataType: "string",
+                                    alignment: "center",
+                                    dataType: "number",
+                                    lookup: {
+                                        dataSource: customStore_AccountInfo,
+                                        valueExpr: "accountId", displayExpr: "userName",
+                                    },
+                                },//account
+                                {
+                                    dataField: "status",
+                                    caption: "Trạng thái",
+                                    alignment: "center",
+                                    dataType: "number",
+                                    cellTemplate: (container, options) => {
+                                        container
+                                            .attr('id', "popover-target-" + options.key)
+                                            .append(options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '')
+                                            .addClass(options.value == 0 ? 'text-danger font-weight-bold' : options.value == 1 ? 'text-success font-weight-bold' : options.value == 2 ? 'text-primary font-weight-bold' : options.value == 3 ? 'text-info font-weight-bold' : '');
+                                        $("<div />")
+                                            .attr('id', "popover-detail-" + options.key)
+                                            .append("<div>( " + (options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '') + ' ' + moment(options.data.createDate).locale("vi").fromNow() + ")" + "</div>")
+                                            .appendTo(container);
+                                        $("#popover-detail-" + options.key).dxPopover({
+                                            target: "#popover-target-" + options.key,
+                                            showEvent: "mouseenter", hideEvent: "mouseleave",
+                                            position: "bottom",
+                                            animation: {
+                                                show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
+                                                hide: { type: "fade", from: 1, to: 0 },
+                                            }
+                                        });
+                                    },
+                                },//status
+                                //{
+                                //    caption: "Ngày gửi",
+                                //    alignment: "center",
+                                //    dataType: "date",
+                                //    cellTemplate: (container, options) => {
+                                //        if (options.data.updateDate != null)
+                                //            container
+                                //                .append(moment(options.data.updateDate).locale('vi').fromNow());
+                                //        else 
+                                //            container
+                                //                .append(moment(options.data.createDate).locale('vi').fromNow());
+                                //    },
+                                  
+                                //},//status
+                            ],
                         }).attr("style", "margin:auto; width:90%").appendTo(container);
                     },
                 },
@@ -552,9 +619,8 @@
                                     formData.append("Code", item.code);
                                 }
                                 else {
-                                    formData.append("Code", code);
+                                    formData.append("Code", item.title);
                                 }
-                                formData.append("Code", item.code);
                                 formData.append("OwnerByTable", table);
                                 $.ajax({
                                     url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',
@@ -582,7 +648,7 @@
         }).addClass("popup-priority-2");
 
         let loadAccount = (item) => $("#popup-main-upload").dxPopup({
-            width: "70%",
+            width: "50%",
             height: "50%",
             fullScreen: false,
             dragEnabled: true,
@@ -624,15 +690,30 @@
                     },
                     columns: [
                         {
-                            caption: "STT", alignment: "center",
+                            caption: "STT",
+                            alignment: "center",
                             cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
                         },
                         {
                             dataField: "accountId",
-                            caption: "Account",
+                            caption: "Ảnh đại diện",
+                            alignment: "center",
+                            dataType: "number",
+                            allowEditing: false,
+                            lookup: {
+                                dataSource: customStore_AccountInfo,
+                                valueExpr: "accountId", displayExpr: "avatarImg",
+                            },
+                            cellTemplate: (c, o) => {
+                                $("<img />").attr("src", "data:image/png;base64," + o.text).addClass("img-circle elevation-2 img-size-30").attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';").appendTo(c);
+                            },
+                        },
+                        {
+                            dataField: "accountId",
+                            caption: "Họ Tên",
                             dataType: "string",
-                            alignment: "left",
-                            dataType: "string",
+                            alignment: "center",
+                            dataType: "number",
                             lookup: {
                                 dataSource: customStore_AccountInfo,
                                 valueExpr: "accountId", displayExpr: "userName",
@@ -653,8 +734,8 @@
                             dataField: "groupId",
                             caption: "Nhóm",
                             dataType: "string",
-                            alignment: "left",
-                            dataType: "string",
+                            alignment: "center",
+                            dataType: "number",
                             //groupIndex: 0,
                             lookup: {
                                 dataSource: customStore_Groups,
@@ -674,12 +755,14 @@
                         },//nhóm
                         {
                             dataField: "isActive",
-                            width: 100, alignment: "center",
+                            width: 100,
+                            alignment: "center",
                             editorType: "dxSwitch",
                         },
                         {
                             dataField: "isVisible",
-                            width: 100, alignment: "center",
+                            width: 100,
+                            alignment: "center",
                             editorType: "dxSwitch",
                         },
                     ],
@@ -696,6 +779,13 @@
                     },
                     onInitNewRow: (e) => {
                         e.data.documentReleasedId = item.id;
+                    },
+                    onEditorPreparing: function (e) {
+                        if (e.parentType === "dataRow" && e.dataField !== "accountId") {
+                            return;
+                        }
+                        if (!e.row.isNewRow)
+                            e.editorOptions.disabled = true;
                     },
                 });
                 scrollView.append(content);

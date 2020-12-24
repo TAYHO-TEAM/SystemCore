@@ -187,11 +187,10 @@
     <Compile Include="Areas\NganSach\Controllers\CongViecController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NhomCongViecController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
-    <Compile Include="Areas\PhatHanh\Controllers\HomeController.cs" />
-    <Compile Include="Areas\PhatHanh\PhatHanhAreaRegistration.cs" />
     <Compile Include="Areas\ThongTin\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\DangKyController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\PhatHanhController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -2318,8 +2317,6 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\PhatHanh\Data\" />
-    <Folder Include="Areas\PhatHanh\Views\Shared\" />
     <Folder Include="Areas\ThongTin\Data\" />
     <Folder Include="Models\" />
     <Folder Include="Views\PhatHanh\" />
@@ -2457,9 +2454,8 @@
     <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomCongViec\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomCongViec.cshtml" />
-    <Content Include="Areas\PhatHanh\Views\web.config" />
-    <Content Include="Areas\PhatHanh\Views\Home\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
+    <Content Include="Areas\ThongTin\Views\PhatHanh\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace QuanLyDuAn.Areas.PhatHanh.Controllers
+namespace QuanLyDuAn.Areas.ThongTin.Controllers
 {
-    public class HomeController : Controller
+    public class PhatHanhController : Controller
     {
-        // GET: PhatHanh/Home
+        // GET: ThongTin/PhatHanh
         public ActionResult Index()
         {
             return View();
