@@ -467,7 +467,6 @@
                             placeholder: "auto gen",
                         },
                         cellTemplate: (c, o) => {
-                            console.log(o.data.accountName);
                             $("<img />")
                                 .attr('id', "popover-target-" + o.key)
                                 .attr("src", "data:image/png;base64," + o.text)
