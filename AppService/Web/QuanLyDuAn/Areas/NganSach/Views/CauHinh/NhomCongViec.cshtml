@@ -17,6 +17,7 @@
         const ACTION_GIAIDOAN = "/NS_GiaiDoan";
         const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
         const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
+        const ACTION_CONGVIEC = "/NS_CongViec";
         const ACTION_GOITHAU = "/NS_GoiThau";
         const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
 
@@ -126,10 +127,13 @@
         var customStore_NhomCongViec = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
+                console.log(values)
                 let deferred = $.Deferred();
                 let params = {
                     'findId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
                 };
+                params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
+                params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
@@ -138,8 +142,13 @@
                     headers: header, dataType: "json",
                     data: params,
                     url: URL_API_PM_READ + ACTION_NHOMCONGVIEC,
-                    success: function (data) {
-                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    success: function (data) { 
+                        deferred.resolve(
+                            data.result.items,
+                            {  
+                                totalCount: data.result.pagingInfo.totalItems
+                            }
+                        ); 
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -149,22 +158,62 @@
                 });
                 return deferred.promise();
             },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key),
         });
+        var customStore_CongViec= (id) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => { 
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'nhomCongViecId,' + id + ';isActive,1;isVisible,1'
+                };
+                params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
+                params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_CONGVIEC,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+        });  
 
         $(function () {
             loadNhomCongViec();
         });
 
-        var loadNhomCongViec = () => $("#container").dxDataGrid({
+        let loadNhomCongViec = () => $("#container").dxDataGrid({
             height: heightScreen,
             dataSource: customStore_NhomCongViec,
             remoteOperations: {
                 paging: true,
                 sorting: true,
-                filtering: true,
-            },
+                filtering: true 
+            }, 
             showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             onToolbarPreparing: function (e) {
                 var container = e.component;
                 e.toolbarOptions.items.unshift(
@@ -185,21 +234,21 @@
                             },
                         },
                     },
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                visible: PermitInAction["insert"],
-                                text: "Nhóm công việc", icon: "add", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                icon: "refresh", tylingMode: "filled", type: "default",
-                                onClick: () => container.refresh()
-                            }
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            visible: PermitInAction["insert"],
+                            text: "Nhóm", icon: "add", stylingMode: "filled", type: "default",
+                            onClick: () => container.addRow()
                         }
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", tylingMode: "filled", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    }
                 )
             },
             searchPanel: {
@@ -208,13 +257,27 @@
                 searchVisibleColumnsOnly: true,
                 visible: true
             },
+            paging: {
+                enabled: true,
+                pageSize: 20
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 40],
+                showInfo: true,
+            },
             columns: [ 
+                {
+                    dataField: "status",caption: "STT",alignment:"center",width: 80,
+                    sortOrder:"desc"
+                },
                 {
                     dataField: "tenNhomCongViec", caption: "Tên nhóm", dataType: "string",
                     validationRules: [{ type: "required" }],
                     editorType: "dxTextBox",
                     editorOptions: {
-                        showClearButton: true, placeholder: "Vui lòng nhập..."
+                        showClearButton: true,
+                        placeholder: "Vui lòng nhập..."
                     }
                 },
                 {
@@ -285,7 +348,7 @@
                         dataSource: customStore_LoaiCongViec(PROJECTID),
                         valueExpr: "id", displayExpr: "tenLoaiCongViec",
                     },
-                    editorType: "dxLookup",
+                    editorType: "dxSelectBox",
                     editorOptions: {
                         placeholder: "Vui lòng chọn...",
                         searchEnabled: true, showClearButton: true,
@@ -299,7 +362,15 @@
                     lookup: {
                         dataSource: customStore_NhomChiPhi,
                         valueExpr: "id", displayExpr: "tenNhomChiPhi",
-                    }
+                    },
+                    editorType: "dxSelectBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng chọn...",
+                        searchEnabled: true, showClearButton: true,
+                        itemTemplate: function (data) {
+                            return $("<div>").append($("<b>").append(data.tenNhomChiPhi).addClass("mr-1"), $("<em>").append(data.dienGiai));
+                        },
+                    },
                 },
                 {
                     dataField: "isActive", width: 100,
@@ -309,25 +380,139 @@
                     dataField: "isVisible", width: 100,
                     editorType: "dxSwitch",
                 },
+                { 
+                    type: "buttons",
+                    width: 120,
+                    buttons: [{
+                        text: "CôngViệc",
+                        visible: PermitInAction["insert"],
+                        onClick: (e) => loadCongViec(e.row.data)
+                    }, "edit", "delete"]
+                }, 
             ],
             editing: { 
                 allowUpdating: PermitInAction["update"] ? true : null,
                 allowDeleting: PermitInAction["delete"] ? true : null,
-                mode: "popup", useIcons: false, confirmDelete: true,
-                popup: {
-                    width: 600, height: "auto",
-                    showTitle: true, title:"NHÓM CÔNG VIỆC",
-                    closeOnOutsideClick: false, showCloseButton: true,
-                },
-                form: {
-                    labelLocation: "left", itemType: "group", colCount: 1,
-                }
+                mode: "cell", useIcons: false, confirmDelete: true,
             },
             onInitNewRow: (e) => {
                 e.data.isActive = true;
                 e.data.isVisible = true;
                 e.data.projectId = PROJECTID;
             },
+            rowDragging: {
+                allowReordering: PermitInAction["update"],
+                showDragIcons: true,
+                dropFeedbackMode: "push",
+                dragDirection: "vertical",
+                onDragEnd: function (e) {
+                    var source = e.itemData,
+                        target = e.component.getVisibleRows()[e.toIndex].data,
+                        d = $.Deferred();
+                    if (source.id != target.id) {
+                        customStore_NhomCongViec.update(source.id, { status: target.status }).then(() => {
+                            e.component.refresh().then(d.resolve, d.reject);
+                        }, d.reject);
+                    }
+                },
+            }, 
         });
+        let loadCongViec = (item) => $("#popup-main").dxPopup({
+            fullScreen: true,showTitle: true, title: "DANH SÁCH CÔNG VIỆC",
+            showCloseButton: true, closeOnOutsideClick: false, visible: true,
+            contentTemplate: (c) => {
+                var scrollView = $("<div id='scrollView'></div>");
+                var content = $("<div/>");
+                content.dxDataGrid({
+                    dataSource: customStore_CongViec(item.id),
+                    remoteOperations: {
+                        paging: false,
+                        sorting: true,
+                        filtering: true
+                    },
+                    showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                    showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                    searchPanel: {
+                        highlightCaseSensitive: true,
+                        highlightSearchText: true,
+                        searchVisibleColumnsOnly: true,
+                        visible: true
+                    },
+                    paging: { enabled: false,  },
+                    columns: [
+                        {
+                            dataField: "status", caption: "STT", alignment: "center", width: 80,
+                            sortOrder: "desc"
+                        },
+                        {
+                            dataField: "nhom", caption:"Nhóm", groupIndex:0, showWhenGrouped: true
+                        },
+                        {
+                            dataField: "tenCongViec", caption: "Tên công việc"
+                        },
+                        {
+                            dataField: "dienGiai", caption: "Diễn giải", customizeText: (cellInfo) => { return (cellInfo.value != null && cellInfo.value.length > 0) ? cellInfo.value:"--" },
+                        },
+                        {
+                            dataField: "donViTinh", caption: "Đơn vị tính", alignment: "center"
+                        }
+                    ],
+                    editing: {
+                        //allowAdding: PermitInAction["insert"] ? true : null,
+                        allowUpdating: PermitInAction["update"] ? true : null,
+                        allowDeleting: PermitInAction["delete"] ? true : null,
+                        mode: "cell", useIcons: false, confirmDelete: true,
+                    },
+                    onInitNewRow: (e) => {
+                        e.data.isActive = true;
+                        e.data.isVisible = true;
+                        e.data.nhomCongViecId = item.id;
+                    },
+                    onToolbarPreparing: function (e) {
+                        var container = e.component;
+                        e.toolbarOptions.items.unshift( 
+                            {
+                                location: "before", widget: "dxButton",
+                                options: {
+                                    visible: PermitInAction["insert"],
+                                    text: "Công việc", icon: "add", stylingMode: "filled", type: "default",
+                                    onClick: () => container.addRow()
+                                }
+                            },
+                            {
+                                location: "after", widget: "dxButton",
+                                options: {
+                                    icon: "refresh", tylingMode: "filled", type: "default",
+                                    onClick: () => container.refresh()
+                                }
+                            }
+                        )
+                    },
+                    rowDragging: {
+                        allowReordering: PermitInAction["update"],
+                        showDragIcons: true,
+                        dropFeedbackMode: "push",
+                        dragDirection: "vertical",
+                        onDragEnd: function (e) {
+                            var source = e.itemData,
+                                target = e.component.getVisibleRows()[e.toIndex].data,
+                                d = $.Deferred();
+                            if (source.id != target.id) {
+                                customStore_CongViec(item.id).update(source.id, { status: target.status }).then(() => {
+                                    e.component.refresh().then(d.resolve, d.reject);
+                                }, d.reject);
+                            }
+                        },
+                    }, 
+                });
+                scrollView.append(content);
+                scrollView.dxScrollView({
+                    width: '100%',
+                    height: '100%'
+                });
+                c.append(scrollView);
+                return c;
+            }
+        }).dxPopup("instance");  
     </script>
 }

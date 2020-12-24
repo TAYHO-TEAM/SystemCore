@@ -6191,13 +6191,14 @@
   border-radius: 0;
 }
 .dx-popup-title {
-  position: relative;
-  padding: 0 8px 0 16px;
-  margin-bottom: -2px;
-  min-height: 28px;
-  border-bottom: 1px solid #e0e0e0;
-  background: 0 0;
-  color: rgba(0,0,0,.87);
+    position: relative;
+    padding: 0 8px 0 16px;
+    margin-bottom: -2px;
+    min-height: 30px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: rgba(248,141,43,1) !important;
+    color: white !important;
+    text-transform:uppercase;
 }
 .dx-popup-title.dx-toolbar {
   padding: 0 8px 0 16px;
