@@ -17,6 +17,7 @@
         const ACTION_GIAIDOAN = "/NS_GiaiDoan";
         const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
         const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
+        const ACTION_CONGVIEC = "/NS_CongViec";
         const ACTION_GOITHAU = "/NS_GoiThau";
         const ACTION_NHOMCHIPHI = "/NS_NhomChiPhi";
 
@@ -126,10 +127,13 @@
         var customStore_NhomCongViec = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
+                console.log(values)
                 let deferred = $.Deferred();
                 let params = {
                     'findId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1'
                 };
+                params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
+                params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
@@ -138,8 +142,13 @@
                     headers: header, dataType: "json",
                     data: params,
                     url: URL_API_PM_READ + ACTION_NHOMCONGVIEC,
-                    success: function (data) {
-                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    success: function (data) { 
+                        deferred.resolve(
+                            data.result.items,
+                            {  
+                                totalCount: data.result.pagingInfo.totalItems
+                            }
+                        ); 
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
@@ -149,7 +158,47 @@
                 });
                 return deferred.promise();
             },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key),
         });
+        var customStore_CongViec= (id) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => { 
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'nhomCongViecId,' + id + ';isActive,1;isVisible,1'
+                };
+                params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
+                params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_CONGVIEC,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+        });  
 
         $(function () {
             loadNhomCongViec();
@@ -161,10 +210,10 @@
             remoteOperations: {
                 paging: true,
                 sorting: true,
-                filtering: true,
-            },
+                filtering: true 
+            }, 
             showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             onToolbarPreparing: function (e) {
                 var container = e.component;
                 e.toolbarOptions.items.unshift(
@@ -207,6 +256,15 @@
                 highlightSearchText: true,
                 searchVisibleColumnsOnly: true,
                 visible: true
+            },
+            paging: {
+                enabled: true,
+                pageSize: 20
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 40],
+                showInfo: true,
             },
             columns: [ 
                 {
@@ -328,6 +386,37 @@
                 e.data.isVisible = true;
                 e.data.projectId = PROJECTID;
             },
+            masterDetail: {
+                enabled: true,
+                template: (c, o) => loadCongViec(c,o)
+            }
         });
+        var loadCongViec = (c,o) => {
+            $("<div>").dxDataGrid({
+                dataSource: customStore_CongViec(o.data.id),
+                remoteOperations: {
+                    paging: true,
+                    sorting: true,
+                    filtering: true
+                },
+                showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: true
+                },
+                paging: {
+                    enabled: true,
+                    pageSize: 20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                },
+            }).appendTo(c);
+        }  
     </script>
 }
