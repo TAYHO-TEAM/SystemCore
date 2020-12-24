@@ -44,7 +44,10 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<StepsProcessDTO>, DOBaseRepository<StepsProcessDTO>>();
 
             services.AddScoped<IDOBaseRepository<NS_CongViecDTO>, DOBaseRepository<NS_CongViecDTO>>();
+            services.AddScoped<INS_CongViecRepository<NS_CongViec_CongViecDetailDTO>, NS_CongViecRepository<NS_CongViec_CongViecDetailDTO>>();
+
             services.AddScoped<IDOBaseRepository<NS_CongViecDetailDTO>, DOBaseRepository<NS_CongViecDetailDTO>>();
+
             services.AddScoped<IDOBaseRepository<NS_GiaiDoanDTO>, DOBaseRepository<NS_GiaiDoanDTO>>();
             services.AddScoped<IDOBaseRepository<NS_GoiThauDTO>, DOBaseRepository<NS_GoiThauDTO>>();
 

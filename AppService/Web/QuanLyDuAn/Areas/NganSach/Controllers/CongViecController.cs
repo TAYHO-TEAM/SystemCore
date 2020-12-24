@@ -8,9 +8,9 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
     public class CongViecController : Controller
     {  
-        public ActionResult ChiTiet()
+        public ActionResult _ChiTiet(int id)
         {
-            return View();
+            return PartialView(id);
         }
     }
 }

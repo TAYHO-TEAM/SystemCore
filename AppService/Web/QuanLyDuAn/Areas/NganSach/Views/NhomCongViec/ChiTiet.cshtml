@@ -195,7 +195,7 @@
             columns: [
                 {
                     caption: "STT", width: 80, alignment: "center",
-                    cellTemplate: (c, o) => c.append($("<b>").append(o.rowIndex+1))
+                    cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                 },
                 {
                     dataField: "tenNhomCongViec", caption: "Tên nhóm công việc", dataType: "string",  
@@ -263,7 +263,25 @@
                     buttons: [
                         {
                             hint: "Xem chi tiết công việc", icon: "fas fa-eye",
-                            onClick: (e) => window.location = "/NganSach/CongViec/ChiTiet?id=" + e.row.data.id
+                            onClick: (e) => {
+                                loadingPanel.show();
+                                var content = $("<div/>");
+                                content.load("/NganSach/CongViec/_ChiTiet/" + e.row.data.id, function () {
+                                    loadingPanel.hide();
+                                    $("#popup-main").dxPopup({
+                                        fullScreen: true, visible: true,
+                                        showTitle: true, title: "CẬP NHẬT GIÁ TRỊ CÁC CÔNG VIỆC",
+                                        contentTemplate: function (container) {
+                                            var scrollView = $("<div id='scrollView'></div>");
+                                            scrollView.append(content);
+                                            scrollView.dxScrollView({ width: '100%', height: '100%' });
+                                            container.append(scrollView);
+                                            return container;
+                                        },
+                                    });
+                                });
+                                
+                            }
                         },
                         {
                             hint: "Thêm giá trị theo giai đoạn", icon: "fas fa-plus-circle",
