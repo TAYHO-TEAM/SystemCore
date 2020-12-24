@@ -184,6 +184,7 @@
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
     <Compile Include="Areas\NganSach\Controllers\HangMucController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\CongViecController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NhomCongViecController.cs" />
     <Compile Include="Areas\NganSach\NganSachAreaRegistration.cs" />
     <Compile Include="Areas\PhatHanh\Controllers\HomeController.cs" />
@@ -2458,6 +2459,7 @@
     <Content Include="Areas\NganSach\Views\CauHinh\NhomCongViec.cshtml" />
     <Content Include="Areas\PhatHanh\Views\web.config" />
     <Content Include="Areas\PhatHanh\Views\Home\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

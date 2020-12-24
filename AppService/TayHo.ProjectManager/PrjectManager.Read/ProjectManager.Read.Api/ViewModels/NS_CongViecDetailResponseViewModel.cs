@@ -9,5 +9,6 @@ namespace ProjectManager.Read.Api.ViewModels
         public int? GiaiDoanId { get; set; }
         public decimal? DonGia { get; set; }
         public int? KhoiLuong { get; set; }
+        public int? ReasonId { get; set; }
     }
 }
