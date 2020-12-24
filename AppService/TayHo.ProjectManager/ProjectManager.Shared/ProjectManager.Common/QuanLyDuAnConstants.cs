@@ -47,5 +47,6 @@ namespace ProjectManager.Common
         public const string DocumentReleasedLog_TABLENAME = "DocumentReleasedLog";
         public const string DocumentReleased_TABLENAME = "DocumentReleased";
         public const string DocumentReleasedAccount_TABLENAME = "DocumentReleasedAccount";
+        public const string AccountInfo_TABLENAME = "AccountInfo";
     }
 }

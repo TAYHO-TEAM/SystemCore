@@ -68,7 +68,7 @@
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_REPLY = "/ResponseRegistReply";
         var code = "";
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+        //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -312,6 +312,7 @@
             //update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
             //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
         });
+
         $(function () {
             loadData(customStore);
         });
@@ -956,121 +957,6 @@
                 return c;
             }
         }).addClass("popup-priority-1");
-        ///// Load Popup Rate
-        //let loadRate = (item) => $("#popup-main-sub").dxPopup({
-        //    width: "80%", height: "60%",
-        //    fullScreen: false,
-        //    dragEnabled: true,
-        //    resizeEnabled: true,
-        //    showTitle: true,
-        //    title: item.title && item.title.toUpperCase(),
-        //    showCloseButton: true, closeOnOutsideClick: true,
-        //    visible: true,
-        //    contentTemplate: (c) => {
-        //        var scrollView = $("<div id='scrollView'></div>");
-        //        var content = $("<div/>");
-        //        var content_Upload = $("<div/>");
-        //        content.dxDataGrid({
-        //            dataSource: customStore_Response(item.id),
-        //            remoteOperations: {
-        //                paging: true,
-        //                sorting: true,
-        //            },
-        //            repaintChangesOnly: true,
-        //            showBorders: true,
-        //            showColumnHeaders: true,
-        //            showColumnLines: false,
-        //            hoverStateEnabled: true,
-        //            showRowLines: true,
-        //            columnAutoWidth: true,
-        //            wordWrapEnabled: true,
-        //            rowAlternationEnabled: true,
-        //            paging: {
-        //                enabled: true,
-        //                pageSize: 20
-        //            },
-        //            pager: {
-        //                showPageSizeSelector: true,
-        //                allowedPageSizes: [10, 20, 40],
-        //                showInfo: true,
-
-        //            },
-        //            columns: [
-        //                {
-        //                    caption: "STT", alignment: "center",
-        //                    cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
-        //                },//STT
-        //                {
-        //                    dataField: "title",
-        //                    caption: "Tiêu đề",
-        //                    dataType: "string",
-        //                    alignment: "left",
-        //                },//Tiêu đề
-        //                {
-        //                    dataField: "description",
-        //                    caption: "Nhận xét",
-        //                    dataType: "string",
-        //                },//rev
-
-        //                {
-        //                    dataField: "typeOfResult",
-        //                    caption: "Kết quả",
-        //                    dataType: "number",
-        //                    alignment: "left",
-        //                    cellTemplate: (container, options) => {
-        //                        container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
-        //                    },
-        //                    editorOptions: {
-        //                        dataSource: typeApprove,
-        //                        displayExpr: "text",
-        //                        valueExpr: "value",
-        //                    },
-        //                    editorType: "dxSelectBox",
-        //                    validationRules: [{ type: "required" }],
-        //                },//account
-        //            ],
-        //            onCellClick: function (e) {
-        //                if (e.column.dataField === "noAttachment") {
-        //                    loadUpload("ResponseRegist", e.row.data, true);
-        //                }
-        //            },
-        //            editing: {
-        //                mode: "batch",
-        //                allowAdding: false,
-        //                allowDeleting: true,
-        //                allowUpdating: true,
-        //            },
-        //            onToolbarPreparing: (e) => {
-        //                var container = e.component;
-        //                e.toolbarOptions.items.unshift(
-        //                    {
-        //                        location: "after", widget: "dxButton",
-        //                        options: {
-        //                            icon: "refresh", type: "default",
-        //                            onClick: () => container.refresh()
-        //                        }
-        //                    })
-        //            },
-        //        });
-        //        content_Upload.dxFileUploader({
-        //            selectButtonText: "Select photo",
-        //            labelText: "",
-        //            accept: "image/*",
-        //            uploadMode: "useForm"
-        //        });
-        //        scrollView.append(content, content_Upload);
-        //        scrollView.dxScrollView({
-        //            width: '100%',
-        //            height: '100%'
-        //        });
-        //        c.append(scrollView);
-        //        return c;
-        //    },
-        //    onHidden: (c) => {
-        //        $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
-        //    }
-        //});
-        ///// Load Popup Upload file
 
         let loadUpload = (table, item, isUpload) => $("#popup-main-upload").dxPopup({
             width: "70%",

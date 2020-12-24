@@ -33,8 +33,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newDocumentReleased.Status = request.Status.HasValue ? request.Status : newDocumentReleased.Status;
             newDocumentReleased.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentReleased.IsActive;
             newDocumentReleased.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentReleased.IsVisible;
+
             await _DocumentReleasedRepository.AddAsync(newDocumentReleased).ConfigureAwait(false);
             await _DocumentReleasedRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            await _DocumentReleasedRepository.IsCreatedDocumentReleasedAsync((int)newDocumentReleased.DocumentTypeId, _user, newDocumentReleased.Id);
+
             methodResult.Result = _mapper.Map<CreateDocumentReleasedCommandResponse>(newDocumentReleased);
             return methodResult;
         }
