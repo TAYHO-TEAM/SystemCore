@@ -5,6 +5,9 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using Acc.Cmd.Domain;
+using Services.Common.Utilities;
+using Services.Common.DomainObjects.Exceptions;
 
 namespace  Acc.Cmd.Api.Application.Commands
 {
@@ -23,6 +26,15 @@ namespace  Acc.Cmd.Api.Application.Commands
         public async Task<MethodResult<CreateAccountsCommandResponse>> Handle(CreateAccountsCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateAccountsCommandResponse>();
+            var existingAccounts = await _accountsRepository.SingleOrDefaultAsync(x => x.AccountName == request.AccountName && x.IsDelete == false).ConfigureAwait(false);
+            if (existingAccounts != null)
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeInsert.IErr001), new[]
+                {
+                    ErrorHelpers.GetCommonErrorMessage(nameof(ErrorCodeUpdate.UErr01))
+                }); 
+            }
+            if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             var newAccounts = new Accounts(request.Code,
                                             request.Type,
                                             request.AccountName,

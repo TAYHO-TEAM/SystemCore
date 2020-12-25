@@ -74,7 +74,7 @@ namespace Acc.Cmd.Domain.DomainObjects
         public void SetPasswordHash(string Password) 
         { 
             _passwordHash = string.IsNullOrEmpty(Password) ? _passwordHash : Hash.Create(Password, _salt); if (!IsValid()) throw new DomainException(_errorMessages);
-            ValidatePassword(Password);
+      
         }
         public void SetSalt(string Salt) { _salt = string.IsNullOrEmpty(Salt) ? _salt : Salt; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTokenKey(string TokenKey) { _tokenKey = string.IsNullOrEmpty(TokenKey) ? _tokenKey : TokenKey; if (!IsValid()) throw new DomainException(_errorMessages); }

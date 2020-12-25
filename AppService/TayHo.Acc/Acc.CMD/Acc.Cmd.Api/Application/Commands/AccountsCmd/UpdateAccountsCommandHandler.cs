@@ -38,8 +38,8 @@ namespace  Acc.Cmd.Api.Application.Commands
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]
                 {
-                    ErrorHelpers.GenerateErrorResult(nameof(request.Id),request.Id)
-                });
+                    ErrorHelpers.GetCommonErrorMessage(nameof(ErrorCodeUpdate.UErr01))
+                }); ;
             }
             if (!methodResult.IsOk) throw new CommandHandlerException(methodResult.ErrorMessages);
             existingAccounts.IsActive = request.IsActive.HasValue ? request.IsActive : existingAccounts.IsActive;
@@ -47,7 +47,7 @@ namespace  Acc.Cmd.Api.Application.Commands
             existingAccounts.Status = request.Status.HasValue ? request.Status : existingAccounts.Status;
             existingAccounts.SetCode(request.Code);
             existingAccounts.SetType(request.Type);
-            existingAccounts.SetAccountName(request.AccountName);
+            //existingAccounts.SetAccountName(request.AccountName);
             existingAccounts.SetPasswordHash(request.Password);
             existingAccounts.SetUserId(request.UserId);
             existingAccounts.SetUpdate(_user,null);

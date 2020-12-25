@@ -16,6 +16,7 @@
 @section script{
     <script>
         const ACTION = "/Accounts";
+        const ACTION_CMD = "/Account";
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = new DevExpress.data.CustomStore({
@@ -53,9 +54,9 @@
                 });
                 return deferred.promise();
             },
-            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
-            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
-            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
+            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION_CMD, values),
+            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION_CMD, key, values),
+            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION_CMD, key),
         });
 
         $(function () {
@@ -84,13 +85,25 @@
                         },
                     },
                     {
-                        dataField: "accountName", caption: "Tên tài khoản",
-                        dataType: "string", width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        dataField: "accountName",
+                        caption: "Tên tài khoản",
+                        dataType: "string",
+                        width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
                         editorOptions: {
                             placeholder: "Vui lòng nhập...",
                             showClearButton: true
                         },
                         validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "password",
+                        caption: "Mật khẩu",
+                        dataType: "string",
+                        width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập...",
+                            showClearButton: true
+                        },
                     },
                     {
                         dataField: "isActive", width: 100,
