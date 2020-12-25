@@ -2454,8 +2454,6 @@
     <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomCongViec\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomCongViec.cshtml" />
-    <Content Include="Areas\PhatHanh\Views\web.config" />
-    <Content Include="Areas\PhatHanh\Views\Home\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\Index.cshtml" />
