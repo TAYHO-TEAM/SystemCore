@@ -8,9 +8,10 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
     public class CongViecController : Controller
     {  
-        public ActionResult _ChiTiet(int id)
+        public ActionResult ChiTiet(int? id = 0)
         {
-            return PartialView(id);
-        }
+            if (id != 0) return View(id);
+            else return RedirectToAction("ChiTiet", "NhomCongViec", new { area = "NganSach" });
+        } 
     }
 }

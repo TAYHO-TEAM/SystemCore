@@ -1,5 +1,156 @@
-﻿<div id="container_congviec" class="elevation-2"></div>
-
+﻿@model int
+<div id="container_congviec" data-id="@Model" class="elevation-2"></div>
 <script>
-    const ACTION_CONGVIEC = "/NS_CongViec";
+    var ACTION_CONGVIEC = "/NS_CongViec";
+    var container_congviec = $("#container_congviec");
+
+    var customStore_CongViec = new DevExpress.data.CustomStore({
+        key: "id",
+        load: (values) => {
+            let deferred = $.Deferred();
+            let params = {
+                'FindId': 'nhomCongViecId,' + container_congviec.data("id") + ';isActive,1;isVisible,1',
+                'TypeStore': GIAIDOANID,
+            };
+            if (values.sort) {
+                params['SortCol'] = values.sort[0].selector;
+                params['SortADSC'] = values.sort[0].desc;
+            }
+            $.ajax({
+                headers: header, dataType: "json",
+                data: params,
+                url: URL_API_PM_READ + ACTION_CONGVIEC + '/Detail',
+                success: function (data) {
+                    deferred.resolve(data.result.items, {
+                        totalCount: data.result.pagingInfo.totalItems
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr.responseJSON);
+                    deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                },
+                timeout: 10000
+            });
+            return deferred.promise();
+        },
+    }); 
+
+    $(function () {
+        loadCongViec();
+    });
+
+    var loadCongViec = () => container_congviec.dxDataGrid({
+        dataSource: customStore_CongViec,
+        remoteOperations: {
+            paging: false,
+            filtering: true,
+            sorting: true,
+            grouping: false
+        },
+        searchPanel: {
+            highlightCaseSensitive: true, highlightSearchText: true,
+            searchVisibleColumnsOnly: false, visible: true,
+        },
+        showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+        showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+        columns: [
+            {
+                dataField: "nhom", groupIndex: 0,
+                groupCellTemplate: (c, o) => {
+                    c.append(o.value).parent().attr("style", "background-color: rgba(128,128,128,.2)");
+                }
+            },
+            {
+                dataField: "tenCongViec", caption: "Thông tin / Nội dung công việc",
+            },
+            {
+                dataField: "dienGiai", caption: "Diễn giải"
+            },
+            {
+                dataField: "donViTinh", caption: "ĐVT", width: 120, alignment: "center",
+            },
+            {
+                dataField: "giaiDoanId", caption: "Giai đoạn", alignment: "center",
+                lookup: {
+                    dataSource: customStore_GiaiDoan(0),
+                    valueExpr: "id", displayExpr: "tenGiaiDoan",
+                },
+            },
+            {
+                dataField: "donGia", caption: "Đơn giá", dataType: "number", alignment: "center",
+                format: { type: "currency", currency: "VND" },
+
+            },
+            {
+                caption: "Tương tác",
+                alignment: "center", width: 100,
+                cellTemplate: (c, o) => {
+                    if (o.data.createBy_Name != null) {
+                        $("<div />").attr('id', "popover-target-" + o.key).append(
+                            $("<img />").attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30"),
+                            (o.data.modifyBy_Name != null && o.data.modifyBy_Name != o.data.createBy_Name) ? $("<img />").attr("src", "data:image/png;base64," + o.data.modifyBy_Avartar).addClass("img-circle elevation-2 img-size-30").attr("style", "margin-left: -15px !important") : null
+                        ).appendTo(c);
+                        $("<div />").attr('id', "popover-detail-" + o.key).append(
+                            "<div><b>" + o.data.createBy_Name + "</b></div><em>" + o.data.createBy_Title + ' - ' + o.data.createBy_Department + "</em><div>" + "(Đã tạo cách đây " + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>",
+                            (o.data.modifyBy_Name != null) ? "<br/><div><b>" + o.data.modifyBy_Name + "</b></div><em>" + o.data.modifyBy_Title + ' - ' + o.data.modifyBy_Department + "</em><div>" + "(Đã cập nhật cách đây " + moment(o.data.updateDate).locale("vi").fromNow() + ")" + "</div>" : null
+                        ).appendTo(c);
+                        $("#popover-detail-" + o.key).dxPopover({
+                            target: "#popover-target-" + o.key,
+                            showEvent: "mouseenter", hideEvent: "mouseleave",
+                            position: "bottom",
+                            animation: {
+                                show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
+                                hide: { type: "fade", from: 1, to: 0 }
+                            }
+                        });
+                    }
+                }
+            },
+            {
+                dataField: "status", sortOrder: "desc", visible: false
+            },
+        ],
+        //onRowUpdating(options) {
+        //    if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId;
+        //    options.newData['hangMucDetailId'] = options.oldData.hangMucDetailId;
+        //    options.newData = options.newData;
+        //},
+        summary: {
+            totalItems: [
+                {
+                    column: "donGia",
+                    summaryType: "sum",
+                    valueFormat: { type: "currency", currency: "VND" },
+                },
+            ]
+        },
+        onToolbarPreparing: function (e) {
+            var container = e.component;
+            e.toolbarOptions.items.unshift(
+                {
+                    location: "before", widget: "dxSelectBox",
+                    options: {
+                        dataSource: customStore_GiaiDoan(0),
+                        placeholder: "Xem theo giai đoạn...",
+                        valueExpr: "id", displayExpr: "tenGiaiDoan",
+                        width: "100%", searchEnabled: true, searchMode: "contains",
+                        stylingMode: "filled", showClearButton: true,
+                        value: GIAIDOANID,
+                        onValueChanged: function (data) {
+                            GIAIDOANID = data.value;
+                            localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID);
+                            container.refresh();
+                        },
+                    },
+                },
+                {
+                    location: "after", widget: "dxButton",
+                    options: {
+                        icon: "refresh", tylingMode: "filled", type: "default",
+                        onClick: () => container.refresh()
+                    }
+                }
+            )
+        },
+    });
 </script>
