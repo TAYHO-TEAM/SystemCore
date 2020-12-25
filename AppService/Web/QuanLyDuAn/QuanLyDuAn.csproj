@@ -2292,6 +2292,7 @@
     <Content Include="Scripts\localization\dx.messages.tr.js" />
     <Content Include="Scripts\localization\dx.messages.vi.js" />
     <Content Include="Scripts\localization\dx.messages.zh.js" />
+    <Content Include="Scripts\page\ngansach.js" />
     <Content Include="Scripts\page\main.js" />
     <Content Include="Scripts\page\account.js" />
     <Content Include="Scripts\vectormap-data\africa.js" />
@@ -2454,11 +2455,9 @@
     <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomCongViec\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomCongViec.cshtml" />
-    <Content Include="Areas\PhatHanh\Views\web.config" />
-    <Content Include="Areas\PhatHanh\Views\Home\Index.cshtml" />
-    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
