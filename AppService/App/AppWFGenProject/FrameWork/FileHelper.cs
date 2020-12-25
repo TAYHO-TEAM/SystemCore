@@ -49,6 +49,40 @@ namespace AppWFGenProject.FrameWork
                 return false;
             }
         }
+        public bool CreateFileFrom(string txtFileOld,string txtFileNew, Dictionary<string, string> dicGenOB)
+        {
+            if (File.Exists(txtFileOld))
+            {
+                if (File.Exists(txtFileNew))
+                {
+                    File.Delete(txtFileNew);
+                }
+                using (var sourceFile = File.OpenText(txtFileOld))
+                {
+                    // Open a stream for the temporary file
+                    using (var tempFileStream = new StreamWriter(txtFileNew))
+                    {
+                        string line;
+                        // read lines while the file has them
+                        while ((line = sourceFile.ReadLine()) != null)
+                        {
+                            foreach (var item in dicGenOB)
+                            {
+                                // Do the word replacement
+                                line = line.Replace(item.Key, item.Value);
+                            }
+                            // Write the modified line to the new file
+                            tempFileStream.WriteLine(line);
+                        }
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         public bool ReplaceLine(string txtFile, string sourcetxt,string destxt)
         {
             if (File.Exists(txtFile))
@@ -144,7 +178,7 @@ namespace AppWFGenProject.FrameWork
                 try
                 {
                     File.Create(path);
-                    using (TextWriter tw = new StreamWriter("path"))
+                    using (TextWriter tw = new StreamWriter(path))
                     {
                         foreach (string line in Lines)
                             tw.WriteLine(tw);

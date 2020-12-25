@@ -16,7 +16,7 @@ namespace AppWFGenProject.FrameWork
             /// gen entity 
             string pathentitytxt = @"F:\TayHo\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\CMD\Domain\Entity.txt";
             string entitytxt = readTemplate.ReadTxtAll(pathentitytxt);
-            fileHelper.CompileFile(pathentitytxt, "Entity", GenOB.Entity);
+            //fileHelper.CompileFile(pathentitytxt, "Entity", GenOB.Entity);
 
             DataTable dtEntity = ds.Tables[0];
             foreach (DataRow row in dtEntity.Rows)
@@ -29,8 +29,8 @@ namespace AppWFGenProject.FrameWork
             }
             Dictionary<string, string> getDic = new Dictionary<string, string>(GenOB.getDictionatyChange());
             var abc = getDic.Keys;
-
-            fileHelper.ReplaceLine(pathentitytxt.Replace("Entity", GenOB.Entity), getDic);
+            fileHelper.CreateFileFrom(pathentitytxt, pathentitytxt.Replace("Entity", GenOB.Entity), GenOB.getDictionatyChange());
+            //fileHelper.ReplaceLine(pathentitytxt.Replace("Entity", GenOB.Entity), getDic);
             //fileHelper.ReplaceLine(pathentitytxt, "{Entity}", GenOB.Entity);
             //fileHelper.ReplaceLine(pathentitytxt, "{paramCreate}", GenOB.paramCreate.Remove(GenOB.paramCreate.Length-1));
             //fileHelper.ReplaceLine(pathentitytxt, "{functionCreate}", GenOB.functionCreate);

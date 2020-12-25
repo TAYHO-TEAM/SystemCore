@@ -61,14 +61,9 @@ namespace AppWFGenProject
             GenOB genOB = new GenOB();
             GenCode genCode = new GenCode();
             string directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-            //JObject ConfigOB = JObject.Parse(File.ReadAllText(directory+@"\Content\Config\appconfig.json"));
             List<string> listTable = new List<string>();
             ReadTemplate readTemplate = new ReadTemplate();
-            //string abc = readTemplate.ReadTxtFromResource("Entity.txt");
-            //if (String.IsNullOrEmpty(txtDir.Text))
-            //{
-            //    btnGen.Enabled = false;
-            //}
+
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkOverWrite.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;
             if (typeCreate <= 0)
                  MessageBox.Show("Bạn chưa chọn cách tạo file. Vui lòng chọn cách tạo file", "Thông báo!");
@@ -81,7 +76,7 @@ namespace AppWFGenProject
                 }
             }
             genOB.Entity = listTable[0];
-            genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
+            genOB=genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
             //FileHelper fileHelper = new FileHelper();
             //fileHelper.ChangeTxtToCS(@"C:\Users\poka\Desktop\testChange.txt");
         }
