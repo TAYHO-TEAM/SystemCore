@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AppWFGenProject.FrameWork
 {
     public class FileHelper
     {
-        public bool ReplaceLine(string txtFile, Dictionary<string,string> dicGenOB)
+        public bool ReplaceLine(string txtFile, Dictionary<string, string> dicGenOB)
         {
 
             //    StreamReader reader = new StreamReader(directory + fileName);
@@ -32,10 +33,10 @@ namespace AppWFGenProject.FrameWork
                         // read lines while the file has them
                         while ((line = sourceFile.ReadLine()) != null)
                         {
-                            foreach(var item in dicGenOB)
+                            foreach (var item in dicGenOB)
                             {
                                 // Do the word replacement
-                                line = line.Replace(item.Key, item.Value); 
+                                line = line.Replace(item.Key, item.Value);
                             }
                             // Write the modified line to the new file
                             tempFileStream.WriteLine(line);
@@ -49,8 +50,9 @@ namespace AppWFGenProject.FrameWork
                 return false;
             }
         }
-        public bool CreateFileFrom(string txtFileOld,string txtFileNew, Dictionary<string, string> dicGenOB)
+        public bool CreateFileFrom(string txtFileOld, string txtFileNew, Dictionary<string, string> dicGenOB)
         {
+            createPath(txtFileNew);
             if (File.Exists(txtFileOld))
             {
                 if (File.Exists(txtFileNew))
@@ -83,8 +85,9 @@ namespace AppWFGenProject.FrameWork
                 return false;
             }
         }
-        public bool ReplaceLine(string txtFile, string sourcetxt,string destxt)
+        public bool ReplaceLine(string txtFile, string sourcetxt, string destxt)
         {
+            //createPath(destxt);
             if (File.Exists(txtFile))
             {
                 using (var sourceFile = File.OpenText(txtFile))
@@ -137,12 +140,12 @@ namespace AppWFGenProject.FrameWork
                 return false;
             }
         }
-        public bool CompileFile(string txtFile, string sourceFile,string desfile)
+        public bool CompileFile(string txtFile, string sourceFile, string desfile)
         {
             Path.Combine(txtFile, txtFile.Replace(sourceFile, desfile));
             return true;
         }
-        public bool CreateTxt(string txtFile,string content)
+        public bool CreateTxt(string txtFile, string content)
         {
             if (DestroyFile(txtFile))
             {
@@ -195,7 +198,7 @@ namespace AppWFGenProject.FrameWork
                 return false;
             }
         }
-        public void ChangeFileTemp(string pathOld , string pathNew)
+        public void ChangeFileTemp(string pathOld, string pathNew)
         {
             if (File.Exists(pathOld))
             {
@@ -232,6 +235,54 @@ namespace AppWFGenProject.FrameWork
                 //throw ex;
             }
         }
+        public string[] getFiles(string rootdir, bool Dir)
+        {
+            // get list of files or get list of directories
+            return Dir == true ? Directory.GetDirectories(rootdir) : Directory.GetFiles(rootdir);
+        }
+        public string[] getAllFiles(string rootdir, bool Dir)
+        {
+            // get list of files or get list of directories
+            return Dir == true ? Directory.GetDirectories(rootdir, "*", SearchOption.AllDirectories) : Directory.GetFiles(rootdir, "*", SearchOption.AllDirectories);
+        }
+        public IEnumerable<string> getEnumAllFiles(string rootdir, bool Dir)
+        {
+            return Dir == true ? Directory.EnumerateFiles(rootdir, "*", SearchOption.AllDirectories) : Directory.EnumerateDirectories(rootdir, "*", SearchOption.AllDirectories);
+        }
+        public IEnumerable<string> getFileSys(string rootdir)
+        {
+            // get list of files or get list of directories
+            return Directory.GetFileSystemEntries(rootdir, "*", SearchOption.AllDirectories);
+        }
+        public List<string> getFileName(string rootdir, bool all, List<string> FilesName)
+        {
+            try
+            {
+                foreach (string d in Directory.GetDirectories(rootdir))
+                {
+                    FilesName.AddRange(Directory.GetFiles(d).Select(Path.GetFileName).ToArray());
+                    if (!all) break;
+                    getFileName(d, all, FilesName);
+                }
 
+            }
+            catch (System.Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+            }
+            return FilesName;
+        }
+        public void createPath(string files)
+        {
+            int indexOf = (files.LastIndexOf("\\"));
+            try
+            {
+                Directory.CreateDirectory(files.Substring(0, indexOf +1));
+            }
+            catch (Exception ex)
+            {
+                // handle them here
+            }
+        }
     }
 }

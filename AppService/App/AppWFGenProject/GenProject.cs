@@ -41,7 +41,7 @@ namespace AppWFGenProject
             }
             else
             {
-                MessageBox.Show("Kết nối không thành công!","Lỗi kết nối", MessageBoxButtons.OK);
+                MessageBox.Show("Kết nối không thành công!", "Lỗi kết nối", MessageBoxButtons.OK);
             }
 
         }
@@ -50,10 +50,10 @@ namespace AppWFGenProject
         {
             Connection newConn = new Connection();
             var listTB = newConn.GetAllTable(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text);
-            foreach(string TB in listTB)
+            foreach (string TB in listTB)
             {
-                chlTable.Items.Add(TB,false);
-            }    
+                chlTable.Items.Add(TB, false);
+            }
         }
 
         private void btnGen_Click(object sender, EventArgs e)
@@ -63,20 +63,25 @@ namespace AppWFGenProject
             string directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
             List<string> listTable = new List<string>();
             ReadTemplate readTemplate = new ReadTemplate();
+            // Set nameproject
+            genOB.nameproject = txtNameProject.Text == "" ? "Test" : txtNameProject.Text;
+            // Set rootDir
+            genOB.rootDir = txtDir.Text==""?@"F:\Test\" : txtDir.Text;
 
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkOverWrite.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;
             if (typeCreate <= 0)
-                 MessageBox.Show("Bạn chưa chọn cách tạo file. Vui lòng chọn cách tạo file", "Thông báo!");
+                MessageBox.Show("Bạn chưa chọn cách tạo file. Vui lòng chọn cách tạo file", "Thông báo!");
 
             for (int i = 0; i < chlTable.Items.Count; i++)
             {
                 if (chlTable.GetItemChecked(i))
                 {
                     listTable.Add((string)chlTable.Items[i]);
+                    genOB.Entity = (string)chlTable.Items[i];
+                    genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
                 }
             }
-            genOB.Entity = listTable[0];
-            genOB=genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
+           
             //FileHelper fileHelper = new FileHelper();
             //fileHelper.ChangeTxtToCS(@"C:\Users\poka\Desktop\testChange.txt");
         }
@@ -89,7 +94,7 @@ namespace AppWFGenProject
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    txtDir.Text =fbd.SelectedPath;
+                    txtDir.Text = fbd.SelectedPath;
                     btnGen.Enabled = true;
                 }
             }

@@ -6,6 +6,7 @@ namespace AppWFGenProject.Extensions
 {
     public class GenOB
     {
+        public string rootDir { get; set; }
         public string nameproject { get; set; }
         public string common { get; set; }
         public string db { get; set; }
