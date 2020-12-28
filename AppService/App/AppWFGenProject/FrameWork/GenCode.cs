@@ -27,6 +27,15 @@ namespace AppWFGenProject.FrameWork
             genCMD.GenCMDAll(ds.Tables[ConstTable.Command], GenOB);
             genCMD.GenController( GenOB);
             genCMD.GenEntityProfile(ds.Tables[ConstTable.MappingCMD], GenOB);
+
+            IEnumerable<string> filesTxt = fileHelper.getEnumAllFilesTail(GenOB.rootDir,"txt",true);
+            if(1==1)
+            {
+                foreach(var i in filesTxt)
+                {
+                    fileHelper.ChangeTxtToCS(i);
+                }    
+            }    
         }
         public GenOB CreateGenOBRed(string NameTable)
         {

@@ -71,6 +71,8 @@ namespace AppWFGenProject
             genOB.common = "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
             // Set db
             genOB.db = "QuanLyDuAnContext"; // config setting tạo sau
+            // Set version 
+            genOB.version = "1"; // config setting tạo sau
 
 
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkOverWrite.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;

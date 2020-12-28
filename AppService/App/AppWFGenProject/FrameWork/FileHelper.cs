@@ -249,6 +249,10 @@ namespace AppWFGenProject.FrameWork
         {
             return Dir == true ? Directory.EnumerateFiles(rootdir, "*", SearchOption.AllDirectories) : Directory.EnumerateDirectories(rootdir, "*", SearchOption.AllDirectories);
         }
+        public IEnumerable<string> getEnumAllFilesTail(string rootdir,string tail, bool Dir)
+        {
+            return Dir == true ? Directory.EnumerateFiles(rootdir, "*."+ tail, SearchOption.AllDirectories) : Directory.EnumerateDirectories(rootdir, "*", SearchOption.AllDirectories);
+        }
         public IEnumerable<string> getFileSys(string rootdir)
         {
             // get list of files or get list of directories
