@@ -20,8 +20,13 @@ namespace AppWFGenProject.FrameWork
             //Gen domain entity
             GenCMD genCMD = new GenCMD();
             genCMD.GenEntity(dtEntity, GenOB);
-
-
+            genCMD.GenIRespositories( GenOB);
+            genCMD.GenEntityConfig(ds.Tables[ConstTable.EFConfig], GenOB);
+            genCMD.GenRepositories(GenOB);
+            genCMD.GenCommandBase(ds.Tables[ConstTable.Command], GenOB);
+            genCMD.GenCMDAll(ds.Tables[ConstTable.Command], GenOB);
+            genCMD.GenController( GenOB);
+            genCMD.GenEntityProfile(ds.Tables[ConstTable.MappingCMD], GenOB);
         }
         public GenOB CreateGenOBRed(string NameTable)
         {

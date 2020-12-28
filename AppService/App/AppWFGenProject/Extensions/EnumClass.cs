@@ -104,16 +104,15 @@
         public static string EntityCommand = "EntityCommand.txt";
         public static string EntityCommandHandler = "EntityCommandHandler.txt";
         public static string EntityCommandSet = "EntityCommandSet.txt";
-        public static string EntityController = "EntityController.txt";
+        public static string CMDEntityController = "EntityController.txt";
         public static string ApplicationModule = "ApplicationModule.txt";
-        public static string EntityProfile = "EntityProfile.txt";
-        public static string Accounts = "Accounts.txt";
+        public static string CMDEntityProfile = "EntityProfile.txt";
         public static string Entity = "Entity.txt";
         public static string IEntityRepository = "IEntityRepository.txt";
         public static string EntityConfiguration = "EntityConfiguration.txt";
         public static string EntityRepository = "EntityRepository.txt";
-        public static string EntityControllers = "EntityController.txt";
-        public static string EntityProfiles = "EntityProfile.txt";
+        public static string ReadEntityController = "EntityController.txt";
+        public static string ReadEntityProfile = "EntityProfile.txt";
         public static string EntityResponseViewModel = "EntityResponseViewModel.txt";
         public static string EntityDTO = "EntityDTO.txt";
 

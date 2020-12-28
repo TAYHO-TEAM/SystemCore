@@ -67,6 +67,11 @@ namespace AppWFGenProject
             genOB.nameproject = txtNameProject.Text == "" ? "Test" : txtNameProject.Text;
             // Set rootDir
             genOB.rootDir = txtDir.Text==""?@"F:\Test\" : txtDir.Text;
+            // Set common
+            genOB.rootDir = "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
+            // Set db
+            genOB.db = "QuanLyDuAnContext"; // config setting tạo sau
+
 
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkOverWrite.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;
             if (typeCreate <= 0)
@@ -78,6 +83,11 @@ namespace AppWFGenProject
                 {
                     listTable.Add((string)chlTable.Items[i]);
                     genOB.Entity = (string)chlTable.Items[i];
+                    // sert _entity
+                    if (genOB.Entity != string.Empty && char.IsUpper(genOB.Entity[0]))
+                    {
+                        genOB._entity = "_"+(char.ToLower(genOB.Entity[0]) + genOB.Entity.Substring(1));
+                    }
                     genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
                 }
             }
