@@ -101,21 +101,22 @@
                 highlightCaseSensitive: true, highlightSearchText: true,
                 searchVisibleColumnsOnly: false, visible: true,
             },
-            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             columns: [
                 {
-                    dataField: "nhom", groupIndex: 0,
-                    groupCellTemplate: (c, o) => {
-                        c.append(o.value).parent().attr("style", "background-color: rgba(128,128,128,.2)");
-                    }
+                    dataField: "status", caption: "STT", width: 80, alignment: "center", sortOrder: "desc",
+                }, 
+                {
+                    dataField: "nhom", groupIndex: 0, caption:"Nhóm",
                 },
                 {
-                    dataField: "tenCongViec", caption: "Thông tin / Nội dung công việc",
-                },
-                {
-                    dataField: "dienGiai", caption: "Diễn giải"
-                },
+                    dataField: "tenCongViec", caption: "Thông tin / Nội dung công việc", dataType: "string",
+                    cellTemplate: (c, o) => c.append(
+                        $("<b>").addClass("font-weight-bold").append(o.value),
+                        (o.data.dienGiai != null && o.data.dienGiai.length > 0) ? $("<em />").addClass("mt-1 ml-1").append("- " + o.data.dienGiai) : null
+                    )
+                }, 
                 {
                     dataField: "giaiDoanId", caption: "Giai đoạn", alignment: "center",
                     lookup: {
@@ -136,10 +137,13 @@
 
                 },
                 {
-                    caption: "Thành tiền", dataType: "number", alignment: "center",
+                    dataField: "thanhTien",caption: "Thành tiền", dataType: "number", alignment: "center",
                     format: { type: "currency", currency: "VND" }, 
-                    cellTemplate: (c, o) => {
-                        if (o.data.donGia > 0 && o.data.khoiLuong > 0) c.append(o.data.donGia * o.data.khoiLuong);
+                    //cellTemplate: (c, o) => {
+                    //    if (o.data.donGia > 0 && o.data.khoiLuong > 0) c.append(o.data.donGia * o.data.khoiLuong);
+                    //}
+                    calculateCellValue: function (data) {
+                        return (data.donGia > 0 && data.khoiLuong > 0)? data.donGia * data.khoiLuong:null;
                     }
                 },
                 {
@@ -169,10 +173,7 @@
                 },
                 {
                     dataField: "congViecDetailId", dataType: "number", visible: false,
-                },
-                {
-                    dataField: "status", sortOrder: "desc", visible: false,
-                },
+                }, 
                 {
                     type: "buttons", caption: "Tác vụ", alignment: "center",
                     buttons: [ 
@@ -212,6 +213,18 @@
                         summaryType: "sum",
                         valueFormat: { type: "currency", currency: "VND" },
                     },
+                    {
+                        column: "thanhTien",
+                        summaryType: "sum",
+                        valueFormat: { type: "currency", currency: "VND" },
+                    },
+                ],
+                groupItems: [
+                    {
+                        column: "tenCongViec",
+                        summaryType: "count",
+                        displayFormat: "{0} công việc",
+                    }
                 ]
             },
             onToolbarPreparing: function (e) {
@@ -252,12 +265,13 @@
             showTitle: true, title: type ? "Thêm giá trị công việc theo giai đoạn" : "Cập nhật giá trị công việc",
             showCloseButton: true, closeOnOutsideClick: false,
             visible: true,
-            contentTemplate: (c) => {
-                console.log(data);
+            contentTemplate: (c) => { 
                 formData = type ? {
-                    "giaiDoanId": "",
-                    "congViecDetailId": data.id,
+                    "congViecId": data.id,
+                    "giaiDoanId": "", 
+                    "reasonId": 0,
                     "donGia": 1000000000,
+                    "khoiLuong":1,
                     "isActive": true,
                     "isVisible": true
                 } : {
@@ -337,6 +351,7 @@
             onHiding: () => $("#container_congviec").dxDataGrid('instance').refresh(),
         });
         $(document).on('submit', '#form-container', function (e) {
+            console.log(formData)
             var form = $(this);
             var deferred = $.Deferred();
             if (form.data("type") == true) {

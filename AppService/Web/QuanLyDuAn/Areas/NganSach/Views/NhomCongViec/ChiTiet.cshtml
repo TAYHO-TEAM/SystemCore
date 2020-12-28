@@ -171,7 +171,9 @@
                     dataField: "tenNhomCongViec", caption: "Tên nhóm công việc", dataType: "string",  
                     cellTemplate: (c, o) => c.append(
                         $("<b>").addClass("font-weight-bold").append(o.value),
-                        o.data.dienGiai!=null? $("<em />").addClass("mt-1 ml-1").append("- "+o.data.dienGiai):null
+                        (o.data.dienGiai != null && o.data.dienGiai.length >0) ? $("<em />").addClass("mt-1 ml-1").append("- " + o.data.dienGiai) : null,
+
+                        $("<div />").addClass("text-muted small").append(o.data.chilCount > 0 ? "Đang có <b>" + o.data.chilCount +" công việc</b>":"Chưa có công việc cụ thể")
                     )
                 },
                 {
@@ -233,6 +235,7 @@
                     buttons: [
                         {
                             hint: "Xem chi tiết công việc", icon: "fas fa-eye",
+                            visible: (e) => e.row.data.chilCount>0,
                             onClick: (e) => window.location = "/NganSach/CongViec/ChiTiet?id=" + e.row.data.id
                         },
                         {
