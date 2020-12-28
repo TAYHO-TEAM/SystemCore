@@ -20,7 +20,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_CongViecDetail(int? CongViecId,
+        public NS_CongViecDetail(
+            int? CongViecId,
             int? ReasonId,
             int? GiaiDoanId,
             decimal? DonGia,

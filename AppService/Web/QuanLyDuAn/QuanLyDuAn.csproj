@@ -2319,7 +2319,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\ThongTin\Data\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\PhatHanh\" />
   </ItemGroup>
   <ItemGroup>
@@ -2458,7 +2457,6 @@
     <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\Index.cshtml" />
-    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
