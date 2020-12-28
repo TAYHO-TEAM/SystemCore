@@ -68,7 +68,7 @@ namespace AppWFGenProject
             // Set rootDir
             genOB.rootDir = txtDir.Text==""?@"F:\Test\" : txtDir.Text;
             // Set common
-            genOB.rootDir = "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
+            genOB.common = "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
             // Set db
             genOB.db = "QuanLyDuAnContext"; // config setting tạo sau
 
