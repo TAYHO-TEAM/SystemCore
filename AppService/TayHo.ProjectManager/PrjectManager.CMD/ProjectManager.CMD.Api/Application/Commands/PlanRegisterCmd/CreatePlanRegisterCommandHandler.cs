@@ -24,16 +24,18 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreatePlanRegisterCommandResponse>> Handle(CreatePlanRegisterCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreatePlanRegisterCommandResponse>();
-            var newPlanRegister = new PlanRegister(request.Code,
+            var newPlanRegister = new PlanRegister(request.ParentId,
+                                                    request.DocumentTypeId,
+                                                    request.WorkItemId,
+                                                    request.Code,
                                                     request.Title,
                                                     request.ProjectId,
                                                     request.ContractorInfoId,
                                                     request.Description,
-                                                    request.FromDate,
-                                                    request.ToDate,
-                                                    request.ParentId,
-                                                    request.ExpectFromDate,
-                                                    request.ExpectToDate);
+                                                    request.RequestDate,
+                                                    request.ResponseDate,
+                                                    request.ExpectRequestDate,
+                                                    request.ExpectResponseDate);
             newPlanRegister.SetCreate(_user);
             newPlanRegister.Status = request.Status.HasValue ? request.Status : newPlanRegister.Status;
             newPlanRegister.IsActive = request.IsActive.HasValue ? request.IsActive : newPlanRegister.IsActive;

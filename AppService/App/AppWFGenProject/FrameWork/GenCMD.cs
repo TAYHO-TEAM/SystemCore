@@ -24,7 +24,7 @@ namespace AppWFGenProject.FrameWork
                 GenOB.functionCreate += row["FunctionPublic"].ToString() + "\r\n\t";
                 GenOB.builderBehaviours += row["PropertiesOBJ"].ToString() + "\r\n\t";
             }
-            fileHelper.CreateFileFrom(pathentitytxt, (direct.DomainObjects + ConstFileNameTxt.Entity).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathentitytxt, fileHelper.ReplaceFileName((direct.DomainObjects + ConstFileNameTxt.Entity), GenOB), GenOB.getDictionatyChange());
         }
         public void GenIRespositories(GenOB GenOB)
         {
@@ -33,7 +33,7 @@ namespace AppWFGenProject.FrameWork
             /// get repos  
             string pathRepository = ConstPath.CMDDomain + ConstFileNameTxt.IEntityRepository;
          
-            fileHelper.CreateFileFrom(pathRepository, (direct.IRepositories + ConstFileNameTxt.IEntityRepository).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathRepository, fileHelper.ReplaceFileName((direct.IRepositories + ConstFileNameTxt.IEntityRepository), GenOB), GenOB.getDictionatyChange());
         }
         /// <summary>
         /// function genCMD : gen Infra
@@ -48,7 +48,7 @@ namespace AppWFGenProject.FrameWork
             {
                 GenOB.builderConfig += row[0].ToString() + "\r\n\t";
             }
-            fileHelper.CreateFileFrom(pathEntityConfig, (direct.IRepositories + ConstFileNameTxt.EntityConfiguration).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.IRepositories + ConstFileNameTxt.EntityConfiguration), GenOB), GenOB.getDictionatyChange());
         }
         public void GenRepositories( GenOB GenOB)
         {
@@ -57,7 +57,7 @@ namespace AppWFGenProject.FrameWork
             /// get path config  
             string pathEntityConfig = ConstPath.CMDInfra + ConstFileNameTxt.EntityRepository;
           
-            fileHelper.CreateFileFrom(pathEntityConfig, (direct.Repositories + ConstFileNameTxt.EntityRepository).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.Repositories + ConstFileNameTxt.EntityRepository), GenOB), GenOB.getDictionatyChange());
         }
         /// <summary>
         /// function genCMD : gen Controller
@@ -77,9 +77,9 @@ namespace AppWFGenProject.FrameWork
                 GenOB.builderPublic += row[0].ToString() + "\r\n\t";
             }
 
-            fileHelper.CreateFileFrom(pathEntityConfig, (direct.CommandBaseClasses + ConstFileNameTxt.EntityCommand).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathEntityConfig, (direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandHandler).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathEntityConfig, (direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandSet).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommand), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandHandler), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandSet), GenOB), GenOB.getDictionatyChange());
         }
         public void GenCMDAll(DataTable dt, GenOB GenOB)
         {
@@ -100,12 +100,12 @@ namespace AppWFGenProject.FrameWork
                 GenOB.builderSetUpdate += row["UpdateSet"].ToString() + "\r\n\t";
             }
 
-            fileHelper.CreateFileFrom(pathCreate, (direct.Command + ConstFileNameTxt.CreateEntityCommand).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathCreateHandler, (direct.Command + ConstFileNameTxt.CreateEntityCommandHandler).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathDelete, (direct.Command + ConstFileNameTxt.DeleteEntityCommand).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathDeleteHandler, (direct.Command + ConstFileNameTxt.DeleteEntityCommandHandler).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathUpdate, (direct.Command + ConstFileNameTxt.UpdateEntityCommand).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathUpdateHandler, (direct.Command + ConstFileNameTxt.UpdateEntityCommandHandler).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathCreate, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.CreateEntityCommand), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathCreateHandler, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.CreateEntityCommandHandler), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathDelete, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.DeleteEntityCommand), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathDeleteHandler, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.DeleteEntityCommandHandler), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathUpdate, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.UpdateEntityCommand), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathUpdateHandler, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.UpdateEntityCommandHandler), GenOB), GenOB.getDictionatyChange());
         }
         public void GenController( GenOB GenOB)
         {
@@ -113,7 +113,7 @@ namespace AppWFGenProject.FrameWork
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// gen entity 
             string pathController = ConstPath.CMDControllers + ConstFileNameTxt.CMDEntityController;
-            fileHelper.CreateFileFrom(pathController, (direct.Controllers + ConstFileNameTxt.CMDEntityController).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathController, fileHelper.ReplaceFileName((direct.Controllers + ConstFileNameTxt.CMDEntityController), GenOB), GenOB.getDictionatyChange());
         }
         public void GenEntityProfile(DataTable dt, GenOB GenOB)
         {
@@ -121,7 +121,7 @@ namespace AppWFGenProject.FrameWork
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// gen entity 
             string pathEntityProfile = ConstPath.CMDMappings + ConstFileNameTxt.CMDEntityProfile;
-            fileHelper.CreateFileFrom(pathEntityProfile, (direct.Mappings + ConstFileNameTxt.CMDEntityProfile).Replace("Entity", GenOB.Entity).Replace("{Entity}", GenOB.Entity), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityProfile, fileHelper.ReplaceFileName((direct.Mappings + ConstFileNameTxt.CMDEntityProfile), GenOB), GenOB.getDictionatyChange());
         }
     }
 }

@@ -2,11 +2,16 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using AppWFGenProject.Extensions;
 
 namespace AppWFGenProject.FrameWork
 {
     public class FileHelper
     {
+        public string ReplaceFileName(string path, GenOB GenOB)
+        {
+            return path.Replace("{Entity}", GenOB.Entity).Replace("{version}", GenOB.version).Replace("version", GenOB.version).Replace("Entity", GenOB.Entity);
+        }
         public bool ReplaceLine(string txtFile, Dictionary<string, string> dicGenOB)
         {
 

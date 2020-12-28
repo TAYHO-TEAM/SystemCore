@@ -432,23 +432,26 @@
                         dataField: "planRegisterId",
                         caption: "Kế hoạch",
                         visible: false,
-                        lookup: {
-                            dataSource: customStore_HangMuc,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            searchMode: "contains",
-                            searchExpr: ['code', 'title'],
-                            showClearButton: true,
-                            dataSource: customStore_Plan,
-                            valueExpr: "id", displayExpr: "title",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                            },
-                        },
+                        //lookup: {
+                        //    dataSource: customStore_HangMuc,
+                        //    valueExpr: "id", displayExpr: "title",
+                        //},
+                        //editorType: "dxSelectBox",
+                        //editorOptions: {
+                        //    searchMode: "contains",
+                        //    searchExpr: ['code', 'title'],
+                        //    showClearButton: true,
+                        //    dataSource: customStore_Plan,
+                        //    valueExpr: "id", displayExpr: "title",
+                        //    placeholder: "Vui lòng chọn...",
+                        //    searchEnabled: true, showClearButton: true,
+                        //    itemTemplate: function (data) {
+                        //        return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                        //    },
+                        //    //onValueChanged: function (data) {
+                        //    //    form.option("labelLocation", data.value);
+                        //    //},
+                        //},
                         //validationRules: [{ type: "required" }],
 
                     },//hangMucId
@@ -595,6 +598,27 @@
                                 colSpan: 12,
                                 dataField: "planRegisterId",
                                 label: { text: "Kế hoạch" },
+                                lookup: {
+                                    dataSource: customStore_HangMuc,
+                                    valueExpr: "id", displayExpr: "title",
+                                },
+                                editorType: "dxSelectBox",
+                                editorOptions: {
+                                    searchMode: "contains",
+                                    searchExpr: ['code', 'title'],
+                                    showClearButton: true,
+                                    dataSource: customStore_Plan,
+                                    valueExpr: "id", displayExpr: "title",
+                                    placeholder: "Vui lòng chọn...",
+                                    searchEnabled: true, showClearButton: true,
+                                    itemTemplate: function (data) {
+                                        return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                                    },
+                                    onValueChanged: function (data) {
+                                        console.log(data);
+                                        //form.option("labelLocation", data.value);
+                                    },
+                                },
                             },
                             {
                                 colSpan: 12,
