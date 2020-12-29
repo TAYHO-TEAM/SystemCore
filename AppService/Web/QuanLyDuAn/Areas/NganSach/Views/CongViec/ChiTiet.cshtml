@@ -82,6 +82,13 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIECDETAIL, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIECDETAIL, key),
             reshapeOnPush: true,
+        }); 
+        var customStore_NhomCongViecDetail = new DevExpress.data.CustomStore({
+            key: "id",
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_NHOMCONGVIECDETAIL, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_NHOMCONGVIECDETAIL, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIECDETAIL, key),
+            reshapeOnPush: true,
         });
 
         $(function () {
@@ -138,10 +145,7 @@
                 },
                 {
                     dataField: "thanhTien",caption: "Thành tiền", dataType: "number", alignment: "center",
-                    format: { type: "currency", currency: "VND" }, 
-                    //cellTemplate: (c, o) => {
-                    //    if (o.data.donGia > 0 && o.data.khoiLuong > 0) c.append(o.data.donGia * o.data.khoiLuong);
-                    //}
+                    format: { type: "currency", currency: "VND" },
                     calculateCellValue: function (data) {
                         return (data.donGia > 0 && data.khoiLuong > 0)? data.donGia * data.khoiLuong:null;
                     }
@@ -184,19 +188,19 @@
                         },
                         {
                             hint: "Cập nhật giá trị theo giai đoạn", icon: "fas fa-edit",
-                            visible: (e) => (e.row.data.nhomCongViecDetailId != null && PermitInAction["update"]),
+                            visible: (e) => (e.row.data.congViecDetailId != null && PermitInAction["update"]),
                             onClick: (e) => genUpdateForm(e.row.data, false)
                         },
                         {
                             hint: "Hủy bỏ giá trị theo giai đoạn", icon: "fas fa-trash",
-                            visible: (e) => (e.row.data.nhomCongViecDetailId != null && PermitInAction["delete"]),
+                            visible: (e) => (e.row.data.congViecDetailId != null && PermitInAction["delete"]),
                             onClick: (e) => {
                                 DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của nhóm công việc?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
                                     if (dialogResult) {
                                         var deferred = $.Deferred();
-                                        customStore_NhomCongViecDetail.remove(e.row.data.nhomCongViecDetailId).then(() => {
+                                        customStore_CongViecDetail.remove(e.row.data.congViecDetailId).then(() => {
                                             DevExpress.ui.notify("Hủy bỏ giá trị nhóm công việc thành công", "success", 3000);
-                                            $("#container").dxDataGrid('instance').refresh();
+                                            container_congviec.dxDataGrid('instance').refresh();
                                         }, deferred.reject);
                                         return deferred.promise();
                                     }
@@ -277,7 +281,9 @@
                 } : {
                         "id": data.congViecDetailId,
                         "giaiDoanId": data.giaiDoanId,
-                        "donGia": data.giaTri,
+                        "reasonId": 0,
+                        "donGia": data.donGia,
+                        "khoiLuong": data.khoiLuong,
                     };
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<form />").attr("id", "form-container").data("type", type);
@@ -348,10 +354,9 @@
                 c.append(scrollView);
                 return c;
             },
-            onHiding: () => $("#container_congviec").dxDataGrid('instance').refresh(),
+            onHiding: () => container_congviec.dxDataGrid('instance').refresh(),
         });
-        $(document).on('submit', '#form-container', function (e) {
-            console.log(formData)
+        $(document).on('submit', '#form-container', function (e) { 
             var form = $(this);
             var deferred = $.Deferred();
             if (form.data("type") == true) {
