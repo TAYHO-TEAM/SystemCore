@@ -26,5 +26,6 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             return PartialView();
         }
 
+
     }
 }

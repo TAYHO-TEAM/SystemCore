@@ -34,6 +34,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateRequestRegistCommandResponse>> Handle(CreateRequestRegistCommand request, CancellationToken cancellationToken)
         {
+            string tableName = QuanLyDuAnConstants.RequestRegist_TABLENAME;
             var methodResult = new MethodResult<CreateRequestRegistCommandResponse>();
 
             var parentRequestRegist = await _requestRegistRepository.SingleOrDefaultAsync(x => x.Id == request.ParentId && x.IsDelete == false).ConfigureAwait(false);
@@ -48,18 +49,18 @@ namespace ProjectManager.CMD.Api.Application.Commands
             else if (!request.ParentId.HasValue || request.ParentId == 0)
             {
                 request.ParentId =request.Rev= request.Level = 0;
-
-                request.Code =(await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)request.ProjectId, (int)request.WorkItemId, _user, (int)request.DocumentTypeId).ConfigureAwait(false)).Replace("-","");
+                request.BarCode = (await _requestRegistRepository.IsGetTitleRequestRegistAsync((int)request.ProjectId, (int)request.WorkItemId, _user, (int)request.DocumentTypeId).ConfigureAwait(false));
+                request.Code = request.BarCode.Replace("-", "");
             }
             else
             {
-                //request.Title = !string.IsNullOrEmpty(parentRequestRegist.Title)? parentRequestRegist.Title: await _requestRegistRepository.IsGetTitleRequestRegistAsync(request.ProjectId, request.WorkItemId, _user, request.DocumentTypeId).ConfigureAwait(false);
                 request.ProjectId = (int)parentRequestRegist.ProjectId;
                 request.WorkItemId = (int)parentRequestRegist.WorkItemId;
                 request.DocumentTypeId = (int)parentRequestRegist.DocumentTypeId;
                 request.Level = (parentRequestRegist.Level.HasValue ? ((int)parentRequestRegist.Level + 1) : 0);
                 request.Rev = lastRequestRegistsRev.HasValue? lastRequestRegistsRev + 1:1;
                 request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : "0";
+                request.BarCode = !string.IsNullOrEmpty(parentRequestRegist.BarCode) ? parentRequestRegist.BarCode : "0";
             }
             var newRequestRegist = new RequestRegist((int)request.PlanRegisterId,
                                                         request.Code,
@@ -79,21 +80,42 @@ namespace ProjectManager.CMD.Api.Application.Commands
             newRequestRegist.IsActive = request.IsActive.HasValue ? request.IsActive : newRequestRegist.IsActive;
             newRequestRegist.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newRequestRegist.IsVisible;
             await _requestRegistRepository.AddAsync(newRequestRegist).ConfigureAwait(false);
-          
             await _requestRegistRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
-            var isRequestRegist = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)newRequestRegist.DocumentTypeId, (int)newRequestRegist.CreateBy, newRequestRegist.Id).ConfigureAwait(false);
-            //await _mediaService.SaveFile(request.getFile(), @"D:\duan\Content\Upload", "test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png", @"D:\duan\Content\Upload" + "\test" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png");
-            //var newfileAttachment = new FilesAttachment((int)newRequestRegist.Id, QuanLyDuAnConstants.ResponseRegist_TABLENAME, "", "test", "png", "@@", "", "", @"D:\duan\Content\Upload");
-            //await _filesAttachmentRepository.AddAsync(newfileAttachment);
-            await _filesAttachmentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            //if (!isRequestRegist)
-            //{
-            //    methodResult.AddErrorMessage(nameof(ErrorCodeInsert.IErrN4), new[]
-            //    {
-            //        ErrorHelpers.GenerateErrorResult(nameof(newRequestRegist.ParentId),newRequestRegist.ParentId)
-            //    });
 
-            //}
+            // tạo phiếu đánh giá sau khi update câu hỏi
+            var isRequestRegist = await _requestRegistRepository.IsCreatedRequestRegistAsync((int)newRequestRegist.DocumentTypeId, (int)newRequestRegist.CreateBy, newRequestRegist.Id).ConfigureAwait(false);
+
+            // ghi file vào server và lưu log file dữ liệu
+            if(request.getFile() != null && request.getFile().Count>0)
+            {
+                foreach (var i in request.getFile())
+                {
+                    var result = await _mediaService.SaveFile(i, tableName, request.Code);
+                    var newFilesAttachment = new FilesAttachment(request.Id,
+                                                          tableName,
+                                                          request.Code,
+                                                          result.Item1,
+                                                          result.Item5,
+                                                          result.Item3,
+                                                          result.Item2,
+                                                          "",
+                                                          result.Item4);
+                    newFilesAttachment.SetCreate(_user);
+                    newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
+                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
+                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+
+                    await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
+                    await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeInsert.IErr000), new[]
+               {
+                    ErrorHelpers.GetCommonErrorMessage(nameof(ErrorCodeInsert.IErr000))
+                });
+            }
             methodResult.Result = _mapper.Map<CreateRequestRegistCommandResponse>(newRequestRegist);
             return methodResult;
         }

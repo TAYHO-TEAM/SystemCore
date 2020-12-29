@@ -56,7 +56,6 @@
 
 @section script{
     <script>
-
         const ACTION = "/RequestRegist/GetByAccountID";
         const ACTION_DETAIL = "/RequestRegist/GetDetail";
         const ACTION_RESPONSEBYACC = "/ResponseRegist/getByAccount";
@@ -130,24 +129,27 @@
                 return deferred.promise();
             },
         });
-        let customStore_Plan = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
+        let customStore_PLAN = (id) => new DevExpress.data.CustomStore({
+            key: "id",
+            loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
+                var params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    'FindId': id,
+                }
                 $.ajax({
                     headers: header, dataType: "json",
+                    data: params,
                     url: URL_API_PM_READ + ACTION_PLAN,
                     success: function (data) {
                         var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
                         deferred.resolve(list);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
                     },
                     timeout: 10000
                 });
@@ -578,9 +580,9 @@
                     allowDeleting: (e) => {
                         return e.row.data.parentId == 0 && e.row.data.delate;
                     },
-                    allowAdding: (e) => {
-                        return e.row.data.parentId == 0;
-                    },
+                    //allowAdding: (e) => {
+                    //    return false;//e.row.data.parentId == 0;
+                    //},
                     mode: "popup",
                     useIcons: true,
                     confirmDelete: true,
@@ -608,7 +610,7 @@
                                     searchMode: "contains",
                                     searchExpr: ['code', 'title'],
                                     showClearButton: true,
-                                    dataSource: customStore_Plan,
+                                    dataSource: customStore_PLAN(""),
                                     valueExpr: "id", displayExpr: "title",
                                     placeholder: "Vui lòng chọn...",
                                     searchEnabled: true, showClearButton: true,
@@ -616,7 +618,6 @@
                                         return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
                                     },
                                     onValueChanged: function (data) {
-                                        console.log(data);
                                         //form.option("labelLocation", data.value);
                                     },
                                 },
@@ -654,36 +655,37 @@
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
-                        //{
-                        //    location: "before",
-                        //    widget: "dxSelectBox",
-                        //    options: {
-                        //        dataSource: customStore_Projects,
-                        //        valueExpr: "id",
-                        //        displayExpr: "title",
-                        //        searchEnabled: true,
-                        //        searchMode: "contains",
-                        //        width: "100%",
-                        //        showClearButton: false,
-                        //        value: PROJECTID,
-                        //        onValueChanged: function (data) {
-                        //            PROJECTID = data.value;
-                        //            localStorage.setItem('projectIdCurrent', PROJECTID);
-                        //            loadData(customStore);
-                        //        },
-                        //    },
-                        //}, 
+                        {
+                            location: "before",
+                            widget: "dxSelectBox",
+                            options: {
+                                dataSource: customStore_Projects,
+                                valueExpr: "id",
+                                displayExpr: "title",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: PROJECTID,
+                                onValueChanged: function (data) {
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
                         {
                             location: "after",
                             widget: "dxButton",
                             options: {
-                                icon: "add",
+                                text: "Thêm mới",
+                                //icon: "add",
                                 onClick: function () {
                                     callPopup(
-                                        "THÊM MỚI YÊU CẦU RFI/RFA",
-                                        "/DangKy/_FormRegister",
-                                        ($(window).width() > 767 ? "50%" : "100%"),
-                                        dataGrid
+                                        "THÊM MỚI ĐĂNG KÝ",
+                                        "/ThongTin/DangKy/_FormRegister",
+                                        ($(window).width() > 767 ? "50%" : "80%"),
+                                        //dataGrid
                                     );
                                 }
                             }
@@ -1201,6 +1203,16 @@
             console.log(isUpload);
             loadUpload(table, item, isUpload);
         }
+
+        var fdatatest1 = new FormData();
+        fdatatest1.append('projectId', 1);
+        fdatatest1.append('planRegisterId', 2);
+        fdatatest1.append('documentTypeId', 1);
+        fdatatest1.append('workItemId', 1);
+        fdatatest1.append('title', '123');
+        fdatatest1.append('descriptions', '456');
+        fdatatest1.append('note', 'test');
+
         function callPopup(title, url, width, container) {
 
             var isFullscreen = false;
@@ -1220,6 +1232,7 @@
                 contentTemplate: function (container) {
                     var scrollView = $("<div id='scrollView'></div>");
                     var content = $("<div/>");
+                    console.log(url);
                     content.load(url);
                     scrollView.append(content);
                     scrollView.dxScrollView({
@@ -1230,9 +1243,87 @@
                     return container;
                 },
                 onHiding: function () {
-                    container.refresh();
+                   
+                   
+                },
+                onHidden: function () {
+                    for (var pair of fdatatest1.entries()) {
+                        console.log(pair[0] + ', ' + pair[1]);
+                       
+                    };
+                    alert(123);
+                    $.ajax({
+                        url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist',
+                        type: "POST",
+                        enctype: 'multipart/form-data',
+                        data: fdatatest1,
+                        processData: false,  // Important!
+                        contentType: false,
+                        cache: false,
+                        beforeSend: function (data) {
+                            alert(2.5);
+                        },
+                        success: function (data) {
+
+                            $("#result").text(data);
+                            console.log("SUCCESS : ", data);
+                            $("#btnSubmit").prop("disabled", false);
+
+                        },
+                        error: function (e) {
+
+                            $("#result").text(e.responseText);
+                            console.log("ERROR : ", e);
+                            $("#btnSubmit").prop("disabled", false);
+
+                        }
+                    });
                 }
             });
         }
+        var getFormData = new FormData;
+        function test(data) {
+
+            //for (var pair of data.entries()) {
+            //    //console.log(pair[0] + ', ' + pair[1]);
+            //    getFormData.append(pair[0], pair[1]);
+            //}
+
+        }
+        //$('#popup-register').on('hidden', function () {
+        //    alert(1);
+        //})
+        function postRegist(data) {
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist",
+                data: data,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    alert(2.5);
+                    for (var pair of data.entries()) {
+                        console.log(pair[0] + ', ' + pair[1]);
+                    }
+                },
+                success: function (data) {
+                    alert('fuck');
+                    //$("#result").text(data);
+                    //console.log("SUCCESS : ", data);
+                    //$("#btnSubmit").prop("disabled", false);
+
+                },
+                error: function (e) {
+                    alert(e);
+                    //$("#result").text(e.responseText);
+                    //console.log("ERROR : ", e);
+                    //$("#btnSubmit").prop("disabled", false);
+
+                }
+            });
+
+        };
     </script>
 }
