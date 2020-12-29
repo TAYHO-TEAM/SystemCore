@@ -41,6 +41,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingDocumentReleased.SetTitle(request.Title);
             existingDocumentReleased.SetDescription(request.Description);
             existingDocumentReleased.SetDocumentTypeId(request.DocumentTypeId);
+            existingDocumentReleased.SetProjectId(request.ProjectId);
+            existingDocumentReleased.SetWorkItemId(request.WorkItemId);
+            existingDocumentReleased.SetTagWorkItem(request.TagWorkItem);
             existingDocumentReleased.SetNoAttachment(request.NoAttachment);
 
             existingDocumentReleased.SetUpdate(_user,0);

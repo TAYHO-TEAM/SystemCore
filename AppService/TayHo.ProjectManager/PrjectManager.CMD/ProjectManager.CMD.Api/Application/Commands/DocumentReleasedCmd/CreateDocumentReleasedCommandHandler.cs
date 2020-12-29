@@ -28,6 +28,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var newDocumentReleased = new DocumentReleased(request.Title,
                                                             request.Description,
                                                             request.DocumentTypeId,
+                                                            request.ProjectId,
+                                                            request.WorkItemId,
+                                                            request.TagWorkItem,
                                                             request.NoAttachment);
             newDocumentReleased.SetCreate(_user);
             newDocumentReleased.Status = request.Status.HasValue ? request.Status : newDocumentReleased.Status;

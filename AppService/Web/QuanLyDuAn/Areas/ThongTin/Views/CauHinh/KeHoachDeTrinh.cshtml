@@ -18,6 +18,8 @@
         const ACTION = "/PlanRegister";
         const ACTION_PROJECT = "/Projects";
         const ACTION_CONTRACTORINFO = "/ContractorInfo";
+        const ACTION_HANGMUC = "/WorkItems";
+        const ACTION_DOCUMENTTYPE = "/DocumentType";
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
@@ -55,8 +57,46 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
-
-
+        let customStore_HangMuc = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_ACC_READ + ACTION_HANGMUC,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        let customStore_DocumetnType = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_DOCUMENTTYPE,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai Đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
         let customStore_Projects = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
@@ -99,6 +139,9 @@
             },
             byKey: (key) => { return key; }
         });
+
+
+
         $(function () {
             loadData(customStore);
         });
@@ -119,23 +162,45 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "title", caption: "Tên hạng mục",
+                        dataField: "code",
+                        caption: "Mã",
                         dataType: "string",
                     },
                     {
-                        dataField: "code", caption: "Ký Hiệu",
-                        dataType: "string",
-                    },
+                        dataField: "workItemId",
+                        caption: "Hạng mục",
+                        lookup: {
+                            dataSource: customStore_HangMuc,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_HangMuc,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            showClearButton: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                            },
+                        },
+                        validationRules: [{ type: "required" }],
+                    },//hangMucId
                     {
-                        dataField: "contractorInfoId", caption: "Nhà thầu", width: 250,
+                        dataField: "contractorInfoId",
+                        caption: "Nhà thầu", width: 250,
                         lookup: {
                             dataSource: customStore_ContractorInfo,
-                            valueExpr: "id", displayExpr: "name",
+                            valueExpr: "id",
+                            displayExpr: "name",
                         },
                         editorType: "dxSelectBox",
                         editorOptions: {
                             dataSource: customStore_ContractorInfo,
-                            valueExpr: "id", displayExpr: "name",
+                            valueExpr: "id",
+                            displayExpr: "name",
                             noDataText: "Không tìm thấy dữ liệu",
                             placeholder: "Vui lòng chọn...",
                             searchEnabled: true,
@@ -143,38 +208,52 @@
                                 return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<b>").append(data.name).addClass("mr-1"), $("<em>").append(data.Descriptions));
                             },
                         },
-                        validationRules: [{ type: "required" }]
+                        //cellTemplate: (c, o) =>  {
+                        //    console.log(1);
+                        //    console.log(o);
+                        //},
+                        validationRules: [{ type: "required" }],
                     },//contractorInfoId
                     {
-                        dataField: "fromDate", caption: "Từ ngày", dataType: "date",
-                        width: 150, alignment: "center", format: "dd/MM/yyyy"
-                    },
+                        dataField: "title",
+                        caption: "Tiêu đề",
+                        dataType: "string",
+                    },//title
                     {
-                        dataField: "toDate",
-                        caption: "Đến ngày",
+                        dataField: "requestDate",
+                        caption: "Ngày đệ trình",
                         dataType: "date",
                         width: 150,
                         alignment: "center",
                         format: "dd/MM/yyyy"
                     },
                     {
-                        dataField: "expectFromDate", caption: "Ngày dự kiến từ", dataType: "date",
-                        width: 150, alignment: "center", format: "dd/MM/yyyy"
+                        dataField: "responseDate",
+                        caption: "Ngày duyệt",
+                        dataType: "date",
+                        width: 150,
+                        alignment: "center",
+                        format: "dd/MM/yyyy"
                     },
                     {
-                        dataField: "expectToDate", caption: "Đến ngày dự kiến", dataType: "date",
-                        width: 150, alignment: "center", format: "dd/MM/yyyy"
+                        dataField: "expectRequestDate",
+                        caption: "Ngày dự kiến đệ trình",
+                        dataType: "date",
+                        width: 150,
+                        alignment: "center",
+                        format: "dd/MM/yyyy"
+                    },
+                    {
+                        dataField: "expectResponseDate",
+                        caption: "Ngày dự kiến phê duyệt",
+                        dataType: "date",
+                        width: 150,
+                        alignment: "center",
+                        format: "dd/MM/yyyy"
                     },
                     {
                         dataField: "isActive",
                         caption: "Kích hoạt",
-                        width: 100,
-                        alignment: "center",
-                        editorType: "dxSwitch",
-                    },
-                    {
-                        dataField: "isVisible",
-                        caption: "Ẩn",
                         width: 100,
                         alignment: "center",
                         editorType: "dxSwitch",
