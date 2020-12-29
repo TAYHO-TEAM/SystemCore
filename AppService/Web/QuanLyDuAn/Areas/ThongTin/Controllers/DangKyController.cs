@@ -21,5 +21,10 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return PartialView(Id);
         }
+        public ActionResult _FormRegister()
+        {
+            return PartialView();
+        }
+
     }
 }
