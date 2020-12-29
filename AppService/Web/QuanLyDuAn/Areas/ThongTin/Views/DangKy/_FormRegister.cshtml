@@ -1,4 +1,4 @@
-﻿<form id="form-regist" action="#" method="POST" enctype="multipart/form-data">
+﻿<form id="form-regist" action="#" method="POST" enctype="application/json">
 </form>
 
 <script>
@@ -21,11 +21,11 @@
     fdatatest.append('note', 'test');
     function acb() { alert('fuck') };
 
-   
+
     $(document).ready(function () {
 
-    
-        $("#form-regist").dxForm({
+
+        var formInstance =$("#form-regist").dxForm({
             formData: formData,
             labelLocation: "top",
             items: [
@@ -203,8 +203,11 @@
                         }
                     }
                 }
-            ]
-        });
+            ],
+            onFieldDataChanged: function (e) {
+                var newFormData = e.component.option("formData");
+            }
+        }).dxForm("instance");
 
         $(".file-uploader").dxFileUploader({
             selectButtonText: "Chọn tập tin...",
@@ -215,25 +218,21 @@
             allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".xlsm"],
             maxFileSize: 10000000,
         });
-        $("#test3").on("click", function (e) {
-            test(fdatatest);
-            //e.preventDefault();
-
-            //var i = 10;
-            //$.each(formData, function (key, value) {
-            //    alert(i++);
-            //    console.log(key);
-            //    console.log(value);
-            //    fdata.append(key, value);
-            //    console.log(fdata);
-            //});
-            //console.log(PROJECTID);
-            //fdata.append('projectId', PROJECTID);
-            //for (var pair of fdata.entries()) {
-            //    console.log(pair[0] + ', ' + pair[1]);
-            //}
+        $("#form-regist").on("submit", function (e) {
+            //test(fdatatest);
+            
+            var fdata = new FormData();
+            var i = 10;
+            $.each(formData, function (key, value) {
+                fdata.append(key, value);
+            });
+            console.log(PROJECTID);
+            fdata.append('projectId', PROJECTID);
+            for (var pair of fdata.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
             //$("#popup-register").dxPopup("toggle", false);
-            $("#popup-register").dxPopup("instance").hide();  
+            //$("#popup-register").dxPopup("instance").hide();
 
             //var files = $(".file-uploader").dxFileUploader("instance").option("value");
             //if (files.length > 0) {
@@ -256,34 +255,34 @@
             //    });
             //}
 
+            //e.preventDefault();
+            $.ajax({
+                url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/Assignments',
+                type: "POST",
+                enctype: 'multipart/form-data',
+                data: fdata,
+                processData: false,  // Important!
+                contentType: false,
+                cache: false,
+                beforeSend: function () {
 
-            //$.ajax({
-            //    url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist',
-            //    type: "POST",
-            //    enctype: 'multipart/form-data',
-            //    data: fdata,
-            //    processData: false,  // Important!
-            //    contentType: false,
-            //    cache: false,
-            //    beforeSend: function (data) {
-            //        alert(2.5);
-            //        console.log(data);
-            //    },
-            //    success:function(data) {
+                },
+                success:function(data) {
 
-            //        $("#result").text(data);
-            //        console.log("SUCCESS : ", data);
-            //        $("#btnSubmit").prop("disabled", false);
+                    $("#result").text(data);
+                    console.log("SUCCESS : ", data);
+                    $("#btnSubmit").prop("disabled", false);
 
-            //    },
-            //    error: function (e) {
+                },
+                error: function (e) {
 
-            //        $("#result").text(e.responseText);
-            //        console.log("ERROR : ", e);
-            //        $("#btnSubmit").prop("disabled", false);
+                    $("#result").text(e.responseText);
+                    console.log("ERROR : ", e);
+                    $("#btnSubmit").prop("disabled", false);
 
-            //    }
-            //});
+                }
+            });
+            //e.preventDefault();
             //return deferred.promise();
         });
 

@@ -1243,56 +1243,13 @@
                     return container;
                 },
                 onHiding: function () {
-                   
-                   
                 },
                 onHidden: function () {
-                    for (var pair of fdatatest1.entries()) {
-                        console.log(pair[0] + ', ' + pair[1]);
-                       
-                    };
-                    alert(123);
-                    $.ajax({
-                        url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist',
-                        type: "POST",
-                        enctype: 'multipart/form-data',
-                        data: fdatatest1,
-                        processData: false,  // Important!
-                        contentType: false,
-                        cache: false,
-                        beforeSend: function (data) {
-                            alert(2.5);
-                        },
-                        success: function (data) {
-
-                            $("#result").text(data);
-                            console.log("SUCCESS : ", data);
-                            $("#btnSubmit").prop("disabled", false);
-
-                        },
-                        error: function (e) {
-
-                            $("#result").text(e.responseText);
-                            console.log("ERROR : ", e);
-                            $("#btnSubmit").prop("disabled", false);
-
-                        }
-                    });
                 }
             });
         }
         var getFormData = new FormData;
-        function test(data) {
-
-            //for (var pair of data.entries()) {
-            //    //console.log(pair[0] + ', ' + pair[1]);
-            //    getFormData.append(pair[0], pair[1]);
-            //}
-
-        }
-        //$('#popup-register').on('hidden', function () {
-        //    alert(1);
-        //})
+      
         function postRegist(data) {
 
             $.ajax({
