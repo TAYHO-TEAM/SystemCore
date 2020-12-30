@@ -234,20 +234,34 @@
             //$("#popup-register").dxPopup("toggle", false);
             //$("#popup-register").dxPopup("instance").hide();
 
-            //var files = $(".file-uploader").dxFileUploader("instance").option("value");
-            //if (files.length > 0) {
-            //    $.each(files, function (key, value) {
-            //        console.log(key);
-            //        console.log(value);
-            //        fdata.append(files[key].name, files[key]);
-            //    });
-            //}
-            //loadingPanel.show();
-            //var FORMDATA = new FormData();
-            //$.each(formData, function (key, value) {
-            //    FORMDATA.append(key, value);
-            //});
+            var files = $(".file-uploader").dxFileUploader("instance").option("value");
+            if (files.length > 0) {
+                $.each(files, function (key, value) {
+                    fdata.append(files[key].name, files[key]);
+                });
+            }
 
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/ThongTin/DangKy/Create",
+                data: fdata,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (rs) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify(rs.result, rs.status, 3000);
+                    if (rs.status == "success") {
+                        $("#popup2").dxPopup('instance').hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                }
+            });
             //var files = $(".file-uploader").dxFileUploader("instance").option("value");
             //if (files.length > 0) {
             //    $.each(files, function (key, value) {
@@ -256,33 +270,33 @@
             //}
 
             //e.preventDefault();
-            $.ajax({
-                url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/Assignments',
-                type: "POST",
-                enctype: 'multipart/form-data',
-                data: fdata,
-                processData: false,  // Important!
-                contentType: false,
-                cache: false,
-                beforeSend: function () {
+            //$.ajax({
+            //    url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/Assignments',
+            //    type: "POST",
+            //    enctype: 'multipart/form-data',
+            //    data: fdata,
+            //    processData: false,  // Important!
+            //    contentType: false,
+            //    cache: false,
+            //    beforeSend: function () {
 
-                },
-                success:function(data) {
+            //    },
+            //    success:function(data) {
 
-                    $("#result").text(data);
-                    console.log("SUCCESS : ", data);
-                    $("#btnSubmit").prop("disabled", false);
+            //        $("#result").text(data);
+            //        console.log("SUCCESS : ", data);
+            //        $("#btnSubmit").prop("disabled", false);
 
-                },
-                error: function (e) {
+            //    },
+            //    error: function (e) {
 
-                    $("#result").text(e.responseText);
-                    console.log("ERROR : ", e);
-                    $("#btnSubmit").prop("disabled", false);
+            //        $("#result").text(e.responseText);
+            //        console.log("ERROR : ", e);
+            //        $("#btnSubmit").prop("disabled", false);
 
-                }
-            });
-            //e.preventDefault();
+            //    }
+            //});
+            e.preventDefault();
             //return deferred.promise();
         });
 
