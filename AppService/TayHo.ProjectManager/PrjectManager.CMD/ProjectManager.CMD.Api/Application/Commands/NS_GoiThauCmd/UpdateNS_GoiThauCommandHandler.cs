@@ -39,6 +39,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_GoiThau.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_GoiThau.IsVisible;
             existingNS_GoiThau.Status = request.Status.HasValue ? request.Status : existingNS_GoiThau.Status;
             existingNS_GoiThau.SetParentId(request.ParentId);
+            existingNS_GoiThau.SetProjectId(request.ProjectId);
             existingNS_GoiThau.SetSoHopDong(request.SoHopDong);
             existingNS_GoiThau.SetContractorInfoId(request.ContractorInfoId);
             existingNS_GoiThau.SetNgayKy(request.NgayKy);

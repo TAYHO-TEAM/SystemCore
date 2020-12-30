@@ -37,5 +37,10 @@ namespace QuanLyDuAn.Areas.NganSach.Controllers
         {
             return View();
         }
+
+        public ActionResult NhomPhat()
+        {
+            return View();
+        }
     }
 }

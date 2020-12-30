@@ -12,6 +12,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         {
             builder.ToTable(QuanLyDuAnConstants.NS_Phat_TABLENAME);
             builder.Property(x => x.GoiThauId).HasField("_goiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.NhomPhatId).HasField("_nhomPhatId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.NoiDung).HasField("_noiDung").HasMaxLength(500).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.DienGiai).HasField("_dienGiai").UsePropertyAccessMode(PropertyAccessMode.Field);

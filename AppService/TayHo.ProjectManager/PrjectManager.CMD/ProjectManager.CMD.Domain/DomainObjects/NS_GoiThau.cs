@@ -9,6 +9,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
     {
         #region Fields
         private int? _parentId;
+        private int? _projectId;
         private string _soHopDong;
         private int? _contractorInfoId;
         private DateTime? _ngayKy;
@@ -26,7 +27,9 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         {
         }
 
-        public NS_GoiThau(int? ParentId,
+        public NS_GoiThau(
+            int? ParentId,
+            int? ProjectId,
             string SoHopDong,
             int? ContractorInfoId,
             DateTime? NgayKy,
@@ -39,6 +42,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             decimal? GiaTri) : this()
         {
             _parentId = ParentId;
+            _projectId = ProjectId;
             _soHopDong = SoHopDong;
             _contractorInfoId = ContractorInfoId;
             _ngayKy = NgayKy;
@@ -54,6 +58,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Properties
         public int? ParentId { get => _parentId; }
+        public int? ProjectId { get => _projectId; }
         [MaxLength(50, ErrorMessage = nameof(ErrorCodeInsert.IErr50))] public string SoHopDong { get => _soHopDong; }
         public int? ContractorInfoId { get => _contractorInfoId; }
         public DateTime? NgayKy { get => _ngayKy; }
@@ -68,6 +73,7 @@ namespace ProjectManager.CMD.Domain.DomainObjects
 
         #region Behaviours
         public void SetParentId(int? ParentId) { _parentId = !ParentId.HasValue ? _parentId : ParentId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetProjectId(int? ProjectId) { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetSoHopDong(string SoHopDong) { _soHopDong = SoHopDong == null ? _soHopDong : SoHopDong; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetContractorInfoId(int? ContractorInfoId) { _contractorInfoId = !ContractorInfoId.HasValue ? _contractorInfoId : ContractorInfoId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNgayKy(DateTime? NgayKy) { _ngayKy = !NgayKy.HasValue ? _ngayKy : NgayKy; if (!IsValid()) throw new DomainException(_errorMessages); }

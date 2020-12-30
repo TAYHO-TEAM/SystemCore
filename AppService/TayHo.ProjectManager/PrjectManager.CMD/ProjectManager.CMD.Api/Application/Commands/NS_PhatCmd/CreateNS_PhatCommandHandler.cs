@@ -24,7 +24,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_PhatCommandResponse>> Handle(CreateNS_PhatCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_PhatCommandResponse>();
-            var newNS_Phat = new NS_Phat(request.GoiThauId,
+            var newNS_Phat = new NS_Phat(request.GoiThauId,request.ProjectId,
                 request.NhomPhatId,
                 request.NoiDung,
                 request.DienGiai,

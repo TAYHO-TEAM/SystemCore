@@ -24,7 +24,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_KhauTruCommandResponse>> Handle(CreateNS_KhauTruCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_KhauTruCommandResponse>();
-            var newNS_KhauTru = new NS_KhauTru(request.GoiThauId,
+            var newNS_KhauTru = new NS_KhauTru(request.GoiThauId,request.ProjectId,
                 request.NoiDung,
                 request.DienGiai,
                 request.GiaTri,

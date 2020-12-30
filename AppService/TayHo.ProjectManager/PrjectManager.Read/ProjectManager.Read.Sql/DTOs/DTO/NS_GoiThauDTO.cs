@@ -7,7 +7,8 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
 {
     public class NS_GoiThauDTO: DTOChilCountBase
     {
-        public int? ParentId { get; set; }
+        public int? ParentId { get; set; } 
+        public int? ProjectId { get; set; }
         public string SoHopDong { get; set; }
         public int? ContractorInfoId { get; set; }
         public DateTime? NgayKy { get; set; }

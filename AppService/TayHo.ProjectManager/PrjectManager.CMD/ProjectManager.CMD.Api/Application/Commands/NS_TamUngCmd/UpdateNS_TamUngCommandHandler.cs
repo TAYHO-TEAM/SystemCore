@@ -40,6 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_TamUng.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_TamUng.IsVisible;
             existingNS_TamUng.Status = request.Status.HasValue ? request.Status : existingNS_TamUng.Status;
             existingNS_TamUng.SetGoiThauId(request.GoiThauId);
+            existingNS_TamUng.SetProjectId(request.ProjectId);
             existingNS_TamUng.SetNoiDung(request.NoiDung);
             existingNS_TamUng.SetDienGiai(request.DienGiai);
             existingNS_TamUng.SetGiaTri(request.GiaTri);

@@ -5,6 +5,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
     public class NS_GoiThauCommandSet : BaseCommandClasses
     {
         public int? ParentId { get; set; }
+        public int? ProjectId { get; set; }
         public string SoHopDong { get; set; }
         public int? ContractorInfoId { get; set; }
         public DateTime? NgayKy { get; set; }
