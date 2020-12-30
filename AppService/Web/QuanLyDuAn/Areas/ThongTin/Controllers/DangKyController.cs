@@ -33,14 +33,14 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             MultipartFormDataContent mFormData = new MultipartFormDataContent();
             HttpFileCollectionBase listFile = HttpContext.Request.Files;
-            if (requestOBJ.DocumentTypeId.HasValue) mFormData.Add(new StringContent(nameof(requestOBJ.DocumentTypeId)), ((int)requestOBJ.DocumentTypeId).ToString());
-            if (requestOBJ.PlanRegisterId.HasValue) mFormData.Add(new StringContent(nameof(requestOBJ.PlanRegisterId)), ((int)requestOBJ.PlanRegisterId).ToString());
-            if (requestOBJ.ProjectId.HasValue) mFormData.Add(new StringContent(nameof(requestOBJ.ProjectId)), ((int)requestOBJ.ProjectId).ToString());
-            mFormData.Add(new StringContent(nameof(requestOBJ.Descriptions)), (requestOBJ.Descriptions).ToString());
-            mFormData.Add(new StringContent(nameof(requestOBJ.Note)), (requestOBJ.Note).ToString());
-            if (requestOBJ.ParentId.HasValue) mFormData.Add(new StringContent(nameof(requestOBJ.ParentId)), ((int)requestOBJ.ParentId).ToString());
-            mFormData.Add(new StringContent(nameof(requestOBJ.Title)), (requestOBJ.Title).ToString());
-            if (requestOBJ.WorkItemId.HasValue) mFormData.Add(new StringContent(nameof(requestOBJ.WorkItemId)), ((int)requestOBJ.WorkItemId).ToString());
+            if (requestOBJ.DocumentTypeId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.DocumentTypeId).ToString()), ((int)requestOBJ.DocumentTypeId).ToString());
+            if (requestOBJ.PlanRegisterId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.PlanRegisterId).ToString()), ((int)requestOBJ.PlanRegisterId).ToString());
+            if (requestOBJ.ProjectId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.ProjectId).ToString()), ((int)requestOBJ.ProjectId).ToString());
+            if (!string.IsNullOrEmpty(requestOBJ.Descriptions)) mFormData.Add(new StringContent(requestOBJ.Descriptions), requestOBJ.Descriptions );
+            if (!string.IsNullOrEmpty(requestOBJ.Note)) mFormData.Add(new StringContent(requestOBJ.Note),requestOBJ.Note);
+            if (requestOBJ.ParentId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.ParentId).ToString()), ((int)requestOBJ.ParentId).ToString());
+            if (!string.IsNullOrEmpty(requestOBJ.Title))mFormData.Add(new StringContent(requestOBJ.Title), requestOBJ.Title);
+            if (requestOBJ.WorkItemId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.WorkItemId).ToString()), nameof(requestOBJ.WorkItemId).ToString());
             if (listFile.Count > 0)
             {
                 foreach (var file in listFile)
@@ -56,45 +56,35 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             using (var client = new HttpClient())
             {
-                //client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist");
+                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");
                 //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
-                //client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "multipart/form-data");
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
 
                 //string filepath = "C:/Users/Popper/Desktop/Stackoverflow/MatchPositions.PNG";
                 //string filename = "MatchPositions.PNG";
 
-                //MultipartFormDataContent content = new MultipartFormDataContent();
+                MultipartFormDataContent content = new MultipartFormDataContent();
                 ////ByteArrayContent fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(filepath));
                 ////fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = filename };
                 ////content.Add(fileContent);
-                //content.Add(new StringContent("DocumentTypeId"), "1");
-                //content.Add(new StringContent("PlanRegisterId"), "1");
-                //content.Add(new StringContent("ProjectId"), "1");
-                //content.Add(new StringContent("WorkItemId"), "1");
+                content.Add(new StringContent("1"), "DocumentTypeId");
+                content.Add(new StringContent("1"), "PlanRegisterId");
+                content.Add(new StringContent("1"), "ProjectId");
+                content.Add(new StringContent("1"), "WorkItemId");
                 //content.Add(new StringContent("Descriptions"), "abc");
-                HttpRequestMessage request = new HttpRequestMessage();
-                using (var content = new MultipartFormDataContent())
+                //content.Add(new StringContent("IsVisible"), "true");
+                //content.Add(new StringContent("IsActive"), "true");
+
+
+                using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/RequestRegist", content).Result)
                 {
-                    content.Add(new StringContent("DocumentTypeId"), "1");
-                    content.Add(new StringContent("PlanRegisterId"), "1");
-                    content.Add(new StringContent("ProjectId"), "1");
-                    content.Add(new StringContent("WorkItemId"), "1");
-                    content.Add(new StringContent("Descriptions"), "abc");
-
-                    request.Content = content;
-                    request.RequestUri = new Uri( "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist");
-                    HttpResponseMessage response  = client.PostAsync(request.RequestUri, content).Result;
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        var err = response.Content.ReadAsStringAsync().Result;
+                    }
                 }
-
-
-                //using (HttpResponseMessage response = client.PostAsync("https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist", content).Result)
-                //{
-                //    if (response.StatusCode != HttpStatusCode.OK)
-                //    {
-                //        var err = response.Content.ReadAsStringAsync().Result;
-                //    }
-                //}
 
                 //    HttpResponseMessage response =await  client.PostAsync("https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist", mFormData);
                 //if (response.IsSuccessStatusCode)
