@@ -11,6 +11,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
     public class RequestRegistController : APIControllerBase
     {
         private int Action = 27;
+        private const string RequestRegistFull = nameof(RequestRegistFull);
         public RequestRegistController(IMediator mediator) : base(mediator)
         {
         }
@@ -26,8 +27,13 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         [HttpPost]
         [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateRequestRegistAsync([FromBody] CreateRequestRegistCommand command)
+        public async Task<IActionResult> CreateRequestRegistAsync([FromForm]CreateRequestRegistCommand command)
         {
+            var files = Request.Form.Files;
+            if (files != null)
+            {
+                command.setFile(files);
+            }
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
@@ -59,6 +65,25 @@ namespace ProjectManager.CMD.Api.Controllers.v1
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }
+        ///// <summary>
+        ///// Create a new RequestRegistFull.
+        ///// </summary>
+        ///// <param name="command"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[Route(RequestRegistFull)]
+        //[ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateRequestRegistCommandResponse>), (int)HttpStatusCode.OK)]
+        //[ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        //public async Task<IActionResult> CreateRequestRegistFullAsync([FromForm] CreateRequestRegistCommand command)
+        //{
+        //    var files = Request.Form.Files;
+        //    if (files != null)
+        //    {
+        //        command.setFile(files);
+        //    }
+        //    var result = await _mediator.Send(command).ConfigureAwait(false);
+        //    return Ok(result);
+        //}
 
         #endregion RequestRegist
     }
