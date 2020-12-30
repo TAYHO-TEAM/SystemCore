@@ -43,6 +43,7 @@
 }
 <div id="popup-main-upload"></div>
 <div id="popup-main-sub"></div>
+<div id="popup-register"></div>
 
 <div class="row">
     <div class="col-12">
@@ -479,7 +480,7 @@
                             $("<div />")
                                 .attr('id', "popover-detail-" + o.key)
                                 .append("<div>( " + (o.data.accountName) + ' Đã tạo ' + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>")
-                                .appendTo(container);
+                                .appendTo(c);
                             $("#popover-detail-" + o.key).dxPopover({
                                 target: "#popover-target-" + o.key,
                                 showEvent: "mouseenter", hideEvent: "mouseleave",
@@ -653,32 +654,49 @@
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
+                        //{
+                        //    location: "before",
+                        //    widget: "dxSelectBox",
+                        //    options: {
+                        //        dataSource: customStore_Projects,
+                        //        valueExpr: "id",
+                        //        displayExpr: "title",
+                        //        searchEnabled: true,
+                        //        searchMode: "contains",
+                        //        width: "100%",
+                        //        showClearButton: false,
+                        //        value: PROJECTID,
+                        //        onValueChanged: function (data) {
+                        //            PROJECTID = data.value;
+                        //            localStorage.setItem('projectIdCurrent', PROJECTID);
+                        //            loadData(customStore);
+                        //        },
+                        //    },
+                        //}, 
                         {
-                            location: "before",
-                            widget: "dxSelectBox",
+                            location: "after",
+                            widget: "dxButton",
                             options: {
-                                dataSource: customStore_Projects,
-                                valueExpr: "id",
-                                displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: PROJECTID,
-                                onValueChanged: function (data) {
-                                    PROJECTID = data.value;
-                                    localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
-                                },
-                            },
+                                icon: "add",
+                                onClick: function () {
+                                    callPopup(
+                                        "THÊM MỚI YÊU CẦU RFI/RFA",
+                                        "/DangKy/_FormRegister",
+                                        ($(window).width() > 767 ? "50%" : "100%"),
+                                        dataGrid
+                                    );
+                                }
+                            }
                         },
                         {
-                            location: "after", widget: "dxButton",
+                            location: "after",
+                            widget: "dxButton",
                             options: {
                                 icon: "refresh", stylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
                             }
-                        })
+                        },
+                    )
                 },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
@@ -1178,10 +1196,43 @@
             //    $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
             //},
         }).addClass("popup-priority-2");
+
         function loadFileAttachment(table, item, isUpload) {
             console.log(isUpload);
             loadUpload(table, item, isUpload);
         }
+        function callPopup(title, url, width, container) {
 
+            var isFullscreen = false;
+            if (width == "100%") isFullscreen = true;
+
+            $("#popup-register").dxPopup({
+                width: width, height: "auto",
+                fullScreen: isFullscreen,
+                position: { my: 'top', at: 'top', of: window },
+                dragEnabled: true,
+                resizeEnabled: true,
+                visible: true,
+                showTitle: true,
+                closeOnOutsideClick: false,
+                showCloseButton: true,
+                title: title,
+                contentTemplate: function (container) {
+                    var scrollView = $("<div id='scrollView'></div>");
+                    var content = $("<div/>");
+                    content.load(url);
+                    scrollView.append(content);
+                    scrollView.dxScrollView({
+                        width: '100%',
+                        height: '100%'
+                    });
+                    container.append(scrollView);
+                    return container;
+                },
+                onHiding: function () {
+                    container.refresh();
+                }
+            });
+        }
     </script>
 }
