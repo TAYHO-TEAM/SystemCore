@@ -91,9 +91,9 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 foreach (var i in request.getFile())
                 {
                     var result = await _mediaService.SaveFile(i, tableName, request.Code);
-                    var newFilesAttachment = new FilesAttachment(request.Id,
+                    var newFilesAttachment = new FilesAttachment(newRequestRegist.Id,
                                                           tableName,
-                                                          request.Code,
+                                                          newRequestRegist.Code,
                                                           result.Item1,
                                                           result.Item5,
                                                           result.Item3,

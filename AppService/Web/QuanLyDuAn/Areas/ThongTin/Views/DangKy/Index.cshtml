@@ -407,58 +407,6 @@
                         validationRules: [{ type: "required" }],
                     },//hangMucId
                     {
-                        dataField: "title",
-                        caption: "Tiêu đề",
-                        dataType: "string",
-
-                    },//tiêu đề
-                    {
-                        dataField: "documentTypeId", caption: "Loại tài liệu",
-                        lookup: {
-                            dataSource: customStore_DocumetnType,
-                            valueExpr: "id",
-                            displayExpr: "title",
-                        },
-                        editorType: "dxLookup",
-                        editorOptions: {
-                            dataSource: customStore_DocumetnType,
-                            valueExpr: "id", displayExpr: "title",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                            },
-                        },
-                        validationRules: [{ type: "required" }],
-                    },//loại tài liệu Id
-                    {
-                        dataField: "planRegisterId",
-                        caption: "Kế hoạch",
-                        visible: false,
-                        //lookup: {
-                        //    dataSource: customStore_HangMuc,
-                        //    valueExpr: "id", displayExpr: "title",
-                        //},
-                        //editorType: "dxSelectBox",
-                        //editorOptions: {
-                        //    searchMode: "contains",
-                        //    searchExpr: ['code', 'title'],
-                        //    showClearButton: true,
-                        //    dataSource: customStore_Plan,
-                        //    valueExpr: "id", displayExpr: "title",
-                        //    placeholder: "Vui lòng chọn...",
-                        //    searchEnabled: true, showClearButton: true,
-                        //    itemTemplate: function (data) {
-                        //        return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                        //    },
-                        //    //onValueChanged: function (data) {
-                        //    //    form.option("labelLocation", data.value);
-                        //    //},
-                        //},
-                        //validationRules: [{ type: "required" }],
-
-                    },//hangMucId
-                    {
                         dataField: "createBy",
                         caption: "Người đệ trình",
                         dataType: "number",
@@ -495,6 +443,60 @@
 
                         },
                     },//account
+                  
+                    {
+                        dataField: "documentTypeId", caption: "Loại tài liệu",
+                        lookup: {
+                            dataSource: customStore_DocumetnType,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                        },
+                        editorType: "dxLookup",
+                        editorOptions: {
+                            dataSource: customStore_DocumetnType,
+                            valueExpr: "id", displayExpr: "title",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true, showClearButton: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                            },
+                        },
+                        validationRules: [{ type: "required" }],
+                    },//loại tài liệu Id
+                    {
+                        dataField: "title",
+                        caption: "Tiêu đề",
+                        dataType: "string",
+
+                    },//tiêu đề
+                    {
+                        dataField: "planRegisterId",
+                        caption: "Kế hoạch",
+                        visible: false,
+                        //lookup: {
+                        //    dataSource: customStore_HangMuc,
+                        //    valueExpr: "id", displayExpr: "title",
+                        //},
+                        //editorType: "dxSelectBox",
+                        //editorOptions: {
+                        //    searchMode: "contains",
+                        //    searchExpr: ['code', 'title'],
+                        //    showClearButton: true,
+                        //    dataSource: customStore_Plan,
+                        //    valueExpr: "id", displayExpr: "title",
+                        //    placeholder: "Vui lòng chọn...",
+                        //    searchEnabled: true, showClearButton: true,
+                        //    itemTemplate: function (data) {
+                        //        return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                        //    },
+                        //    //onValueChanged: function (data) {
+                        //    //    form.option("labelLocation", data.value);
+                        //    //},
+                        //},
+                        //validationRules: [{ type: "required" }],
+
+                    },//hangMucId
+                    
                     {
                         dataField: "createDate",
                         caption: "Ngày đệ trình",
@@ -513,6 +515,15 @@
                         dataType: "string",
                         alignment: "left",
                     },// note
+                  
+                    {
+                        dataField: "status",
+                        caption: "Trang thái",
+                        dataType: "number",
+                        cellTemplate: (container, options) => {
+                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã xem' : options.value == 2 ? 'Ban đã xem' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
+                        },
+                    },//status
                     {
                         dataField: "noAttachment",
                         caption: "File đính kèm",
@@ -523,14 +534,6 @@
                         },
                     },
                     {
-                        dataField: "status",
-                        caption: "Trang thái",
-                        dataType: "number",
-                        cellTemplate: (container, options) => {
-                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã xem' : options.value == 2 ? 'Ban đã xem' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
-                        },
-                    },//rev
-                    {
                         type: "buttons",
                         width: 110,
                         buttons: ["edit", "delete", {
@@ -540,14 +543,15 @@
                                 return e.row.data.parentId === 0 && e.row.data.insert;
                             },
                             onClick: function (e) {
-
-                                var obj = e.row.data;
-                                obj['parentId'] = e.row.data.id;
-                                var d = $.Deferred();
-                                customStore.insert(obj).then(() => {
-                                    e.component.refresh().then(d.resolve, d.reject);
-                                }, d.reject);
-                                e.event.preventDefault();
+                                var container = e.component;
+                                var myJSON = JSON.stringify(e.row.data);
+                                console.log(myJSON)
+                                callPopup(
+                                    "THÊM MỚI ĐĂNG KÝ",
+                                    "/ThongTin/DangKy/_FormRev/" + e.row.data.id,
+                                        ($(window).width() > 767 ? "50%" : "80%"),
+                                        container
+                                    );
                             }
                         }]
                     },
@@ -685,7 +689,7 @@
                                         "THÊM MỚI ĐĂNG KÝ",
                                         "/ThongTin/DangKy/_FormRegister",
                                         ($(window).width() > 767 ? "50%" : "80%"),
-                                        //dataGrid
+                                        container
                                     );
                                 }
                             }
@@ -705,6 +709,10 @@
                     e.data.isVisible = true;
                     e.data.ProjectId = PROJECTID;
                 },
+                onRowDblClick: function (e) {
+                    console.log(e);
+                    loadDetail(e.data)
+                },
                 onContextMenuPreparing: function (e) {
 
                     if (!e.items) e.items = [];
@@ -715,7 +723,7 @@
                             onItemClick: () => loadDetail(e.row.data)
                         });
 
-                    }
+                    };
                 }
 
             });
@@ -1243,44 +1251,13 @@
                     return container;
                 },
                 onHiding: function () {
+                    container.refresh();
                 },
                 onHidden: function () {
                 }
             });
         }
-        var getFormData = new FormData;
-      
-        function postRegist(data) {
-
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: "https://api-pm-cmd.tayho.com.vn/api/cmd/v1/RequestRegist",
-                data: data,
-                processData: false,
-                contentType: false,
-                beforeSend: function () {
-                    alert(2.5);
-                    for (var pair of data.entries()) {
-                        console.log(pair[0] + ', ' + pair[1]);
-                    }
-                },
-                success: function (data) {
-                    alert('fuck');
-                    //$("#result").text(data);
-                    //console.log("SUCCESS : ", data);
-                    //$("#btnSubmit").prop("disabled", false);
-
-                },
-                error: function (e) {
-                    alert(e);
-                    //$("#result").text(e.responseText);
-                    //console.log("ERROR : ", e);
-                    //$("#btnSubmit").prop("disabled", false);
-
-                }
-            });
-
-        };
+     
+     
     </script>
 }

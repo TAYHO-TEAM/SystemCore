@@ -202,6 +202,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Content\css\adminlte.css" />
     <Content Include="Content\dx-diagram.css" />
     <Content Include="Content\dx-diagram.min.css" />
@@ -2455,7 +2456,6 @@
     <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomCongViec\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CauHinh\NhomCongViec.cshtml" />
-    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\CongViec\ChiTiet.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_FormRegister.cshtml" />
@@ -2463,11 +2463,13 @@
     <Content Include="Areas\NganSach\Views\ThanhToan\Phat.cshtml" />
     <Content Include="Areas\NganSach\Views\ThanhToan\KhauTru.cshtml" />
     <Content Include="Areas\NganSach\Views\ThanhToan\TamUng.cshtml" />
+    <Content Include="Areas\ThongTin\Views\DangKy\_FormRev.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Account\NoAuthentication.cshtml" />
+    <None Include="Properties\PublishProfiles\web.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Content\plugins\fullcalendar-bootstrap\main.d.ts" />
