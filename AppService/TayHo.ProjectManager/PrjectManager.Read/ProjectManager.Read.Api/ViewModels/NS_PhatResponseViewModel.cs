@@ -6,6 +6,7 @@ namespace ProjectManager.Read.Api.ViewModels
     public class NS_PhatResponseViewModel : BaseResponseAccountInfoViewModel
     {
         public int? GoiThauId { get; set; }
+        public int? ProjectId { get; set; }
         public int? NhomPhatId { get; set; }
         public string NoiDung { get; set; }
         public string DienGiai { get; set; }

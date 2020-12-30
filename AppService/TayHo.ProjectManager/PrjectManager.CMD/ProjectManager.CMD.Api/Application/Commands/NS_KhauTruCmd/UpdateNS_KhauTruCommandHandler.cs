@@ -40,6 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_KhauTru.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_KhauTru.IsVisible;
             existingNS_KhauTru.Status = request.Status.HasValue ? request.Status : existingNS_KhauTru.Status;
             existingNS_KhauTru.SetGoiThauId(request.GoiThauId);
+            existingNS_KhauTru.SetProjectId(request.ProjectId);
             existingNS_KhauTru.SetNoiDung(request.NoiDung);
             existingNS_KhauTru.SetDienGiai(request.DienGiai);
             existingNS_KhauTru.SetGiaTri(request.GiaTri);

@@ -8,6 +8,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     public class NS_TamUngDTO : DTOAccountInfoBase
     {
         public int? GoiThauId { get; set; }
+        public int? ProjectId { get; set; }
         public string NoiDung { get; set; }
         public string DienGiai { get; set; }
         public decimal? GiaTri { get; set; }

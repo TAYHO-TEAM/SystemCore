@@ -25,6 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNS_GoiThauCommandResponse>();
             var newNS_GoiThau = new NS_GoiThau(request.ParentId,
+                request.ProjectId,
                 request.SoHopDong,
                 request.ContractorInfoId,
                 request.NgayKy,

@@ -40,6 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_Phat.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_Phat.IsVisible;
             existingNS_Phat.Status = request.Status.HasValue ? request.Status : existingNS_Phat.Status;
             existingNS_Phat.SetGoiThauId(request.GoiThauId);
+            existingNS_Phat.SetProjectId(request.ProjectId);
             existingNS_Phat.SetNhomPhatId(request.NhomPhatId);
             existingNS_Phat.SetNoiDung(request.NoiDung);
             existingNS_Phat.SetDienGiai(request.DienGiai);

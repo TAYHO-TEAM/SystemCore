@@ -59,10 +59,13 @@ function loadMenu() {
                 if (window.location.pathname == aTarget.attr('href')) {
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active', true);
+
+                    $('.title-page').html(aTarget.data('descriptions'));
+                    document.title = aTarget.data('descriptions') + ' - '+document.title;
                 } else if (window.location.pathname == "/" && aTarget.attr('href') == "/Home") { 
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active');
-                }
+                } 
             });
         },
     }); 
@@ -102,7 +105,7 @@ var checkPermitInAction=(id, url) => {
 let menuItem = (item, list) => {
     var listChild = list.filter(x => x.parentId == item.id);
     var rs = "<li class='nav-item has-treeview'>\
-        <a class='nav-link' data-id='"+ item.id+"' href='" + item.url + "'>\
+        <a class='nav-link' data-id='"+ item.id + "' data-descriptions='" + item.descriptions+"' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
         </a>";

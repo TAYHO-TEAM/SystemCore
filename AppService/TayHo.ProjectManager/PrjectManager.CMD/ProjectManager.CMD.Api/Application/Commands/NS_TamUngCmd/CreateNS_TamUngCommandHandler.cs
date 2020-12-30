@@ -24,7 +24,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_TamUngCommandResponse>> Handle(CreateNS_TamUngCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_TamUngCommandResponse>();
-            var newNS_TamUng = new NS_TamUng(request.GoiThauId,
+            var newNS_TamUng = new NS_TamUng(request.GoiThauId,request.ProjectId,
 request.NoiDung,
 request.DienGiai,
 request.GiaTri,
