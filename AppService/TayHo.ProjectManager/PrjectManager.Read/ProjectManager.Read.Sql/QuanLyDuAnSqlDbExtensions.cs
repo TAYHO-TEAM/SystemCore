@@ -64,6 +64,14 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<NS_NhomCongViecDetailDTO>, DOBaseRepository<NS_NhomCongViecDetailDTO>>();
             services.AddScoped<IDOBaseRepository<NS_ReasonDTO>, DOBaseRepository<NS_ReasonDTO>>();
 
+            services.AddScoped<IDOBaseRepository<NS_PhatDTO>, DOBaseRepository<NS_PhatDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_Phat_NhomDTO>, DOBaseRepository<NS_Phat_NhomDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_Phat_TheoDoiDTO>, DOBaseRepository<NS_Phat_TheoDoiDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_KhauTruDTO>, DOBaseRepository<NS_KhauTruDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_KhauTru_TheoDoiDTO>, DOBaseRepository<NS_KhauTru_TheoDoiDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_TamUngDTO>, DOBaseRepository<NS_TamUngDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_TamUng_TheoDoiDTO>, DOBaseRepository<NS_TamUng_TheoDoiDTO>>();
+
             services.AddScoped<IDOBaseRepository<RequestRegistDTO>, DOBaseRepository<RequestRegistDTO>>();
             services.AddScoped<IDOBaseRepository<ResponseRegistDTO>, DOBaseRepository<ResponseRegistDTO>>();
             services.AddScoped<IDOBaseRepository<ResponseRegistReplyDTO>, DOBaseRepository<ResponseRegistReplyDTO>>();
