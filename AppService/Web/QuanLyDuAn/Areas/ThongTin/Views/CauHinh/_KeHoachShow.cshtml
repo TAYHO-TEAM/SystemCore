@@ -1,0 +1,58 @@
+﻿@model int
+<form id="form-regist" action="#" method="POST" enctype="application/json">
+    <div class="dx-fieldset">
+    </div>
+    <div id="fileuploader-container">
+        <div id="file-uploader"></div>
+    </div>
+    <div id="button"></div>
+</form>
+
+<script>
+    $(function () {
+        var ExcelToJSON = function () {
+
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        // Here is your object
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                        var json_object = JSON.stringify(XL_row_object);
+                        console.log(json_object);
+
+                    })
+
+                };
+
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+        $("#file-uploader").dxFileUploader({
+            selectButtonText: "Select photo",
+            labelText: "",
+            accept: "image/*",
+            uploadMode: "useForm"
+        });
+
+        $("#button").dxButton({
+            text: "Update profile",
+            type: "success",
+            onClick: function () {
+                DevExpress.ui.dialog.alert("Uncomment the line to enable sending a form to the server.", "Click Handler");
+                //$("#form").submit();
+            }
+        });
+    });
+
+</script>
