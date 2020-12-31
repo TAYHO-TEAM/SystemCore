@@ -1,4 +1,5 @@
-﻿<form id="form-regist" action="#" method="POST" enctype="application/json">
+﻿@model int
+<form id="form-regist" action="#" method="POST" enctype="application/json">
 </form>
 
 <script>
@@ -11,21 +12,33 @@
         , "note": ""
     };
     var fdata = new FormData();
-    var fdatatest = new FormData();
-    fdatatest.append('projectId', 1);
-    fdatatest.append('planRegisterId', 2);
-    fdatatest.append('documentTypeId', 1);
-    fdatatest.append('workItemId', 1);
-    fdatatest.append('title', '123');
-    fdatatest.append('descriptions', '456');
-    fdatatest.append('note', 'test');
-    function acb() { alert('fuck') };
-
-
     $(document).ready(function () {
+        var params = {
+            'PageSize': 0,
+            'PageNumber': 0,
+            'FindId': @Model,
+        }
+        $.ajax({
+            headers: header,
+            url: URL_API_PM_READ + ACTION,
+            dataType: "json",
+            data: params,
+            async: false,
+            success: function (data) {
+                let list = data.result.items;
+                console.log(list);
+                formData = {
+                    "planRegisterId": list[0].planRegisterId
+                    , "documentTypeId": list[0].documentTypeId
+                    , "workItemId": list[0].workItemId
+                    , "title": list[0].title
+                    , "descriptions": list[0].descriptions
+                    , "note": list[0].note
+                };
+            },
+            complete: function (e) {
 
-
-        var formInstance = $("#form-regist").dxForm({
+                 var formInstance = $("#form-regist").dxForm({
             formData: formData,
             labelLocation: "top",
             items: [
@@ -173,7 +186,7 @@
 
                             colSpan: 12,
                             template: '<span class="dx-field-item-label-text font-bold">Các tập tin đính kèm</span><div class="file-uploader"></div>',
-                           
+
                         },
                     ]
                 },
@@ -196,6 +209,11 @@
                 var newFormData = e.component.option("formData");
             }
         }).dxForm("instance");
+            },
+            //error: function (xhr, textStatus, errorThrown) {
+
+            //},
+        });
 
         $(".file-uploader").dxFileUploader({
             selectButtonText: "Chọn tập tin...",
@@ -207,8 +225,6 @@
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
-            //test(fdatatest);
-
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {
@@ -216,13 +232,11 @@
             });
             console.log(PROJECTID);
             fdata.append('projectId', PROJECTID);
+            fdata.append('parentId', @Model);
             fdata.append('token', UserCurrentInfo.accessToken);
             for (var pair of fdata.entries()) {
                 console.log(pair[0] + ', ' + pair[1]);
             }
-            //$("#popup-register").dxPopup("toggle", false);
-            //$("#popup-register").dxPopup("instance").hide();
-
             var files = $(".file-uploader").dxFileUploader("instance").option("value");
             if (files.length > 0) {
                 $.each(files, function (key, value) {
@@ -257,42 +271,7 @@
                     DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
                 }
             });
-            //var files = $(".file-uploader").dxFileUploader("instance").option("value");
-            //if (files.length > 0) {
-            //    $.each(files, function (key, value) {
-            //        FORMDATA.append(files[key].name, files[key]);
-            //    });
-            //}
-
-            //e.preventDefault();
-            //$.ajax({
-            //    url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/Assignments',
-            //    type: "POST",
-            //    enctype: 'multipart/form-data',
-            //    data: fdata,
-            //    processData: false,  // Important!
-            //    contentType: false,
-            //    cache: false,
-            //    beforeSend: function () {
-
-            //    },
-            //    success:function(data) {
-
-            //        $("#result").text(data);
-            //        console.log("SUCCESS : ", data);
-            //        $("#btnSubmit").prop("disabled", false);
-
-            //    },
-            //    error: function (e) {
-
-            //        $("#result").text(e.responseText);
-            //        console.log("ERROR : ", e);
-            //        $("#btnSubmit").prop("disabled", false);
-
-            //    }
-            //});
             e.preventDefault();
-            //return deferred.promise();
         });
 
     });

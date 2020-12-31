@@ -26,11 +26,10 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     }
     public class RequestRegistDetailDTO : RequestRegistDTO
     {
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
-        public DateTime? ExpectFromDate { get; set; }
-        public DateTime? ExpectToDate { get; set; }
-        public DateTime? CreatePlanDate { get; set; }
+        public DateTime? RequestDate { get; set; }
+        public DateTime? ResponseDate { get; set; }
+        public DateTime? ExpectRequestDate { get; set; }
+        public DateTime? ExpectResponseDate { get; set; }
         public List<ResponseRegistDTO> ResponseRegistDTOs { get; set; }
     }
 }
