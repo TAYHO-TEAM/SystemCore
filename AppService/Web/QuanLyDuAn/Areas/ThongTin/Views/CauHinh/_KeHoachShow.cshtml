@@ -1,18 +1,34 @@
 ﻿<input type="file" id="fileUpload" accept=".xls,.xlsx" />
 <br />
 <button type="button" id="uploadExcel">Convert</button>
-<pre id="jsonData"></pre>
+
+
+<div class="demo-container">
+    <div id="grid">
+        <div id="select-prefix"></div>
+        <div id="gridClearSelection"></div>
+        <div id="grid-container"></div>
+        <div class="selected-data">
+            <span class="caption">Selected Records:</span>
+            <span id="selected-items-container">Nobody has been selected</span>
+        </div>
+    </div>
+</div>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
 <script>
     var formData = {
         "code": ""
-        , "documentTypeId": ""
         , "workItemId": ""
         , "contractorInfoId": ""
+        , "documentTypeId": ""
         , "title": ""
-        , "note": ""
+        , "requestDate": ""
+        , "responseDate": ""
+        , "expectRequestDate": ""
+        , "expectResponseDate": ""
     };
+    let jsonObject = "";
     document
         .getElementById("fileUpload")
         .addEventListener("change", function (event) {
@@ -22,7 +38,6 @@
         .getElementById("uploadExcel")
         .addEventListener("click", function () {
             if (selectedFile) {
-                console.log("Hi...");
                 var fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     var data = event.target.result;
@@ -34,15 +49,121 @@
                         let rowObject = XLSX.utils.sheet_to_row_object_array(
                             workbook.Sheets[sheet]
                         );
-                        let jsonObject = JSON.stringify(rowObject);
-                        document.getElementById("jsonData").innerHTML = jsonObject;
+                        jsonObject = JSON.stringify(rowObject);
+                        //document.getElementById("jsonData").innerHTML = jsonObject;
                         console.log(jsonObject);
+                        gencode(jsonObject);
                     });
                 };
                 fileReader.readAsBinaryString(selectedFile);
             }
         });
 
+
+    //let loadData = () =>
+    function gencode(data) {
+        var dataGrid,
+            changedBySelectBox;
+
+        dataGrid = $("#grid-container").dxDataGrid({
+            dataSource: data,
+            keyExpr: "id",
+            showBorders: true,
+            selection: {
+                mode: "multiple"
+            },
+            columns: [
+                {
+                    dataField: "code",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "workItemId",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "contractorInfoId",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "documentTypeId",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "title",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "requestDate",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "responseDate",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "expectRequestDate",
+                    caption: "Mã",
+                    width: '10%',
+                },
+                {
+                    dataField: "expectResponseDate",
+                    caption: "Mã",
+                    width: '10%',
+                },
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData;
+                if (data.length > 0)
+                    $("#selected-items-container").text(
+                        $.map(data, function (value) {
+                            return value.FirstName + " " + value.LastName;
+                        }).join(", "));
+                else
+                    $("#selected-items-container").text("Nobody has been selected");
+                if (!changedBySelectBox)
+                    $("#select-prefix").dxSelectBox("instance").option("value", null);
+
+                changedBySelectBox = false;
+                clearButton.option("disabled", !data.length);
+            }
+        }).dxDataGrid("instance");
+
+        $("#select-prefix").dxSelectBox({
+            dataSource: ["All", "Dr.", "Mr.", "Mrs.", "Ms."],
+            placeholder: "Select title",
+            onValueChanged: function (data) {
+                if (!data.value)
+                    return;
+                changedBySelectBox = true;
+                if (data.value == "All") {
+                    dataGrid.selectAll();
+                } else {
+                    var employeesToSelect = $.map($.grep(dataGrid.option("dataSource"), function (item) {
+                        return item.Prefix === data.value;
+                    }), function (item) {
+                        return item.ID;
+                    });
+                    dataGrid.selectRows(employeesToSelect);
+                }
+            }
+        });
+
+        var clearButton = $("#gridClearSelection").dxButton({
+            text: "Clear Selection",
+            disabled: true,
+            onClick: function () {
+                dataGrid.clearSelection();
+            }
+        }).dxButton("instance");
+    };
 
 
 
