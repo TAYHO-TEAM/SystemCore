@@ -48,7 +48,6 @@
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
-
         @*<div id="popup-main"></div>*@
     </div>
 </div>
@@ -73,131 +72,12 @@
         //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
-        let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_READ_REQUESTREGISTBYACC, ACTION_CMD_REQUESTREGIST);
-        //let customStore = new DevExpress.data.CustomStore({
-        //    key: "id",
-        //    load: (values) => {
-        //        let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
-        //        if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
-        //        if (values.sort) {
-        //            params['SortCol'] = values.sort[0].selector;
-        //            params['SortADSC'] = values.sort[0].desc;
-        //            params['FindId'] = 'projectId,' + PROJECTID;
-        //        }
-
-        //        $.ajax({
-        //            headers: header,
-        //            url: URL_API_PM_READ + ACTION,
-        //            dataType: "json",
-        //            data: params,
-        //            success: function (data) {
-        //                let list = data.result.items;
-        //                deferred.resolve(list);
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-        //            },
-        //            timeout: 10000//10 giây
-        //        });
-
-        //        return deferred.promise();
-        //    },
-        //    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
-        //    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD, key, values),
-        //    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
-        //});
-        let customStore_Projects = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
-            load: (values) => {
-                var deferred = $.Deferred();
-                $.ajax({
-                    headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_PROJECT,
-                    success: function (data) {
-                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
-                        deferred.resolve(list);
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000
-                });
-                return deferred.promise();
-            },
-        });
+        let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
+        let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
         let customStore_PLAN =(id)=> customStore_READ_ID(ACTION_READ_PLAN,id);
-        //let customStore_PLAN = (id) => new DevExpress.data.CustomStore({
-        //    key: "id",
-        //    loadMode: "raw",
-        //    load: (values) => {
-        //        var deferred = $.Deferred();
-        //        var params = {
-        //            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-        //            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-        //            'FindId': id,
-        //        }
-        //        $.ajax({
-        //            headers: header, dataType: "json",
-        //            data: params,
-        //            url: URL_API_PM_READ + ACTION_PLAN,
-        //            success: function (data) {
-        //                var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-        //                deferred.resolve(list);
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                console.log(xhr.responseJSON);
-        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
-        //            },
-        //            timeout: 10000
-        //        });
-        //        return deferred.promise();
-        //    },
-        //});
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_READ_DOCUMENTTYPE);
-        let customStore_Detail = (id) => new DevExpress.data.CustomStore({
-            key: "id",
-            load: (values) => {
-                var deferred = $.Deferred();
-                var params = {
-                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindId': id
-                }
-                if (values.sort) {
-                    params['SortCol'] = values.sort[0].selector;
-                    params['SortADSC'] = values.sort[0].desc;
-                }
-                $.ajax({
-                    headers: header, dataType: "json",
-                    data: params,
-                    url: URL_API_PM_READ + ACTION_DETAIL,
-                    success: function (data) {
-                        var list = data.result.items;
-                        deferred.resolve(
-                            list,
-                            {
-                                totalCount: list.length,
-                            }
-                        );
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000
-                });
-                return deferred.promise();
-            },
-            //insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
-            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
-            //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
-        });
+        let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
         let customStore_Response = (id) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -280,8 +160,10 @@
             //update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
             //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
         });
+        //let customStore_AccountInfo = customStore_READ_ALL_ACC(ACTION_READ_ACCOUNTINFO);
         let customStore_AccountInfo = new DevExpress.data.CustomStore({
-            key: "accountId", loadMode: "raw",
+            key: "accountId", 
+            loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
@@ -304,13 +186,13 @@
 
         //------------------------- Load dữ liệu --------------------------------------------
         $(function () {
-            loadData(customStore);
+            loadData();
         });
 
-        let loadData = (dataSource) => {
+        let loadData = () => {
             $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: customStore,
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
@@ -437,28 +319,6 @@
                         dataField: "planRegisterId",
                         caption: "Kế hoạch",
                         visible: false,
-                        //lookup: {
-                        //    dataSource: customStore_HangMuc,
-                        //    valueExpr: "id", displayExpr: "title",
-                        //},
-                        //editorType: "dxSelectBox",
-                        //editorOptions: {
-                        //    searchMode: "contains",
-                        //    searchExpr: ['code', 'title'],
-                        //    showClearButton: true,
-                        //    dataSource: customStore_Plan,
-                        //    valueExpr: "id", displayExpr: "title",
-                        //    placeholder: "Vui lòng chọn...",
-                        //    searchEnabled: true, showClearButton: true,
-                        //    itemTemplate: function (data) {
-                        //        return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                        //    },
-                        //    //onValueChanged: function (data) {
-                        //    //    form.option("labelLocation", data.value);
-                        //    //},
-                        //},
-                        //validationRules: [{ type: "required" }],
-
                     },//hangMucId
                     
                     {
@@ -522,7 +382,7 @@
                 ],
                 onCellClick: function (e) {
                     if (e.column.dataField === "noAttachment") {
-                        loadUpload("RequestRegist", e.row.data, fal);
+                        loadUpload("RequestRegist", e.row.data, false);
                     }
                 },
                 paging: {
@@ -546,7 +406,8 @@
                     //    return e.row.data.parentId == 0 && e.row.data.update;
                     //},
                     allowDeleting: (e) => {
-                        return e.row.data.parentId == 0 && e.row.data.delate;
+                        console.log(e);
+                        return  e.row.data.parentId == 0 && e.row.data.delate;
                     },
                     //allowAdding: (e) => {
                     //    return false;//e.row.data.parentId == 0;
@@ -688,6 +549,10 @@
                         });
 
                     };
+                },
+                onCellPrepared: (e) => {
+                    if (e.rowType == "data" && e.column.dataField == "code")
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
                 }
 
             });
