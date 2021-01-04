@@ -123,7 +123,6 @@ let customStore_READ_ALL = (READ) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
-
 let customStore_READ_ID = (READ,ID) => new DevExpress.data.CustomStore({
     key: "id",
     loadMode: "raw",
