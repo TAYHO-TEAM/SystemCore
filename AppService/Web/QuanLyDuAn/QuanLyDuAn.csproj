@@ -2294,6 +2294,7 @@
     <Content Include="Scripts\localization\dx.messages.tr.js" />
     <Content Include="Scripts\localization\dx.messages.vi.js" />
     <Content Include="Scripts\localization\dx.messages.zh.js" />
+    <Content Include="Scripts\page\thongtin.js" />
     <Content Include="Scripts\page\ngansach.js" />
     <Content Include="Scripts\page\main.js" />
     <Content Include="Scripts\page\account.js" />
@@ -2464,6 +2465,7 @@
     <Content Include="Areas\NganSach\Views\ThanhToan\KhauTru.cshtml" />
     <Content Include="Areas\NganSach\Views\ThanhToan\TamUng.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_FormRev.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\_KeHoachShow.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

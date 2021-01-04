@@ -29,6 +29,10 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult _KeHoachShow()
+        {
+            return PartialView(1);
+        }
         public ActionResult TaiLieu()
         {
             return View();

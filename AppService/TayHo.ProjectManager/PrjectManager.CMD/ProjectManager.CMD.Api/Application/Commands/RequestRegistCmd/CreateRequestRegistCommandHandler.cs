@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using ProjectManager.CMD.Domain;
 using Services.Common.Utilities;
 using System.Linq;
-using System.Collections.Generic;
 using ProjectManager.CMD.Domain.IService;
 using ProjectManager.Common;
 using System;
@@ -62,7 +61,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 request.Code = !string.IsNullOrEmpty(parentRequestRegist.Code) ? parentRequestRegist.Code : "0";
                 request.BarCode = !string.IsNullOrEmpty(parentRequestRegist.BarCode) ? parentRequestRegist.BarCode : "0";
             }
-            var newRequestRegist = new RequestRegist((int)request.PlanRegisterId,
+            var newRequestRegist = new RequestRegist(request.PlanRegisterId,
                                                         request.Code,
                                                         request.BarCode,
                                                         request.Title,
