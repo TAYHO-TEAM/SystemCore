@@ -93,7 +93,7 @@
                 });
                 return deferred.promise();
             },
-            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT_THEODOI, values);,
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT_THEODOI, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key),
         });
@@ -161,7 +161,8 @@
                     caption: "Nội dung phạt",
                     cellTemplate: (c, o) => {
                         $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
-                        $("<em>").append(o.data.dienGiai).appendTo(c);
+                        if (o.data.dienGiai != null && o.data.dienGiai.length>0)
+                            $("<em>").append("Diễn giải: "+o.data.dienGiai).appendTo(c);
                     },
                     editorOptions: { placeholder: "Vui lòng nhập..." },
                     validationRules: [{ type: "required" }]
@@ -265,7 +266,7 @@
                     dataField: "createDate", width: 150, dataType: "date", alignment: "center", 
                     caption: "Thời gian",
                     cellTemplate: (c, o) => {
-                        $("<div>").append($("<em/>").append(moment(o.value).format("HH:mm:ss"), $("<h6/>").append(moment(o.value).format("DD/MM/YYYY")))).appendTo(c);
+                        $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
                     }
                 },
                 {
