@@ -2,7 +2,7 @@
 
 namespace Acc.Read.Sql.DTOs
 {
-    public class LogEventDTO : SysDTOBase
+    public class LogEventDTO : DTOAccountInfoBase
     {
         public int? UserId { get; set; }
         public string Event { get; set; }
