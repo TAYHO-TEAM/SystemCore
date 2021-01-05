@@ -55,6 +55,10 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT, key),
+            onInserting: function (values) {
+                // Update log
+                console.log(values);
+            }
         });
         var customStore_TheoDoi = (id) => new DevExpress.data.CustomStore({
             key: "id",
@@ -99,12 +103,12 @@
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key),
         });
-        var customStore_GoiThau = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
+        var customStore_GoiThau= (projectId) => new DevExpress.data.CustomStore({
+            key: "id",
             load: (values) => {
                 let deferred = $.Deferred();
                 $.ajax({
-                    data: { FindParentId: 0, FindId: 'projectId,' + PROJECTID },
+                    data: { FindParentId: 0, FindId: 'projectId,' + projectId },
                     headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
                     success: function (data) {
                         deferred.resolve(data.result.items);
@@ -138,8 +142,7 @@
                     FindId: params.data.phatId
                 },
                 success: function (rs) { 
-                    if (rs.isOk && rs.result != null && rs.result.items.length > 0 && rs.result.items[0].giaTriCon != null) {
-                        
+                    if (rs.isOk && rs.result != null && rs.result.items.length > 0 && rs.result.items[0].giaTriCon != null) {                        
                         if (params.validator._validationGroup.type == "insert") {
                             if (params.value <= rs.result.items[0].giaTriCon)
                                 d.resolve(true);
@@ -184,7 +187,7 @@
                 highlightCaseSensitive: true, highlightSearchText: true,
                 searchVisibleColumnsOnly: true, visible: true
             },
-            showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             grouping: {
                 allowCollapsing: true,
@@ -206,12 +209,12 @@
                 {
                     dataField: "goiThauId", caption: "Gói thầu", width: 150, alignment: "center",
                     lookup: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                     },
                     editorType: "dxSelectBox",
                     editorOptions: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                         placeholder: "Vui lòng chọn...",
                         searchEnabled: true, showClearButton: true,
@@ -240,6 +243,7 @@
                                 $("<em>").append(data.dienGiai));
                         },
                     },
+                    groupIndex: 1,
                     validationRules: [{ type: "required" }]
                 },
                 {
@@ -291,9 +295,12 @@
                 },
                 {
                     dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                    caption: "Thời gian",
+                    caption: "Thời gian tạo",
                     cellTemplate: (c, o) => {
-                        $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
+                        $("<div />").append(
+                            $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                            $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
+                        ).appendTo(c);
                     }
                 },
                 {
@@ -321,10 +328,10 @@
                         }
                     }
                 },
-                {
-                    dataField: "isActive", width: 100, alignment: "center",
-                    editorType: "dxSwitch",
-                },
+                //{
+                //    dataField: "isActive", width: 100, alignment: "center",
+                //    editorType: "dxSwitch",
+                //},
             ],
             editing: {
                 allowUpdating: (e) => {

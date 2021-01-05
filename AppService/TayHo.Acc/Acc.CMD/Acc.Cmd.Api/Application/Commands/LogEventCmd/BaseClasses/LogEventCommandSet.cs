@@ -1,8 +1,8 @@
-﻿using Acc.Read.Api.ViewModels.BaseClasses;
+﻿using System;
 
-namespace Acc.Read.Api.ViewModels
+namespace Acc.Cmd.Api.Application.Commands
 {
-    public class LogEventResponseViewModel : BaseResponseViewModel
+    public class LogEventCommandSet : BaseCommandClasses
     {
         public int? UserId { get; set; }
         public string Event { get; set; }
