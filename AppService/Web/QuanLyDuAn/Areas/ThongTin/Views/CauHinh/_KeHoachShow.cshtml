@@ -187,7 +187,7 @@
                                                 url: '/ThongTin/CauHinh/postPlanRegist',
                                                 dataType: "json",
                                                 type: "POST",
-                                                data: JSON.stringify({ 'planRegisters': list,'token':header}),
+                                                data: { requestOBJ: JSON.stringify({ 'planRegisters': list }), 'token': header.token },
                                                 success: function (data) {
                                                     alert('Đã udpate thành công dữ liệu!');
                                                     //deferred.resolve();
