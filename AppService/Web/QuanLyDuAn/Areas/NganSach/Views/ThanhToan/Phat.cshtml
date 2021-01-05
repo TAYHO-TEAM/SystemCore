@@ -26,6 +26,8 @@
                 params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    'FindId': 'projectId,' + PROJECTID ,
+                    'FindParentId': 'phatId,0',
                 };
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -50,10 +52,7 @@
                 });
                 return deferred.promise();
             },
-            insert: (values) => { 
-                values['giaTriCon'] = values['giaTri']; 
-                ajax_insert(URL_API_PM_CMD + ACTION_PHAT, values);
-            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT, key),
         });
@@ -74,13 +73,16 @@
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION_PHAT_THEODOI,
-                    dataType: "json",
+                    dataType: "json", async: false,
                     data: params,
                     success: function (data) {
                         var list = data.result.items;
-                        MAXDOT = list.length>0? list.reduce(function (prev, current) {
+                        MAXDOT = list.length > 0 ? list.reduce(function (prev, current) {
                             return (prev.dot > current.dot) ? prev.dot : current.dot
-                        }):0;
+                        }) : 0;
+
+                        MAXDOT = list.length == 1 ? MAXDOT.dot : MAXDOT;
+
                         deferred.resolve(list, {
                             totalCount: data.result.pagingInfo.totalItems
                         });
@@ -102,6 +104,7 @@
             load: (values) => {
                 let deferred = $.Deferred();
                 $.ajax({
+                    data: { FindParentId: 0, FindId: 'projectId,' + PROJECTID },
                     headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
                     success: function (data) {
                         deferred.resolve(data.result.items);
@@ -124,6 +127,41 @@
                 d.reject();
             }
             return d.promise();
+        }        
+        var checkGiaTriConLai = function (params) { 
+            var d = $.Deferred();
+            $.ajax({
+                headers: header,
+                url: URL_API_PM_READ + ACTION_PHAT,
+                dataType: "json",
+                data: {
+                    FindId: params.data.phatId
+                },
+                success: function (rs) { 
+                    if (rs.isOk && rs.result != null && rs.result.items.length > 0 && rs.result.items[0].giaTriCon != null) {
+                        
+                        if (params.validator._validationGroup.type == "insert") {
+                            if (params.value <= rs.result.items[0].giaTriCon)
+                                d.resolve(true);
+                            else
+                                d.reject();
+                        } else {
+                            if (params.value <= (rs.result.items[0].giaTriCon + params.validator._validationGroup.oldData.giaTri))
+                                d.resolve(true);
+                            else
+                                d.reject();
+                        }
+                    } else {
+                        d.reject();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr.responseJSON);
+                    deferred.reject("Có lỗi xảy ra trong quá trình checkGiaTriConLai. Mở Console để xem chi tiết.");
+                },
+                timeout: 5000
+            });
+            return d.promise();
         }
 
         $(function () {
@@ -137,9 +175,7 @@
                 sorting: true,
             },
             height: heightScreen,
-            paging: {
-                enabled: true, pageSize: 20
-            },
+            paging: { enabled: true, pageSize: 20 },
             pager: {
                 showPageSizeSelector: true, showInfo: true,
                 allowedPageSizes: [10, 20, 40, 80],
@@ -148,7 +184,7 @@
                 highlightCaseSensitive: true, highlightSearchText: true,
                 searchVisibleColumnsOnly: true, visible: true
             },
-            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+            showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             grouping: {
                 allowCollapsing: true,
@@ -161,62 +197,29 @@
                     caption: "Nội dung phạt",
                     cellTemplate: (c, o) => {
                         $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
-                        if (o.data.dienGiai != null && o.data.dienGiai.length>0)
-                            $("<em>").append("Diễn giải: "+o.data.dienGiai).appendTo(c);
+                        if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
+                            $("<em>").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
                     },
                     editorOptions: { placeholder: "Vui lòng nhập..." },
                     validationRules: [{ type: "required" }]
                 },
                 {
-                    dataField: "goiThauId", caption: "Gói thầu", width: 150,
+                    dataField: "goiThauId", caption: "Gói thầu", width: 150, alignment: "center",
                     lookup: {
                         dataSource: customStore_GoiThau,
                         valueExpr: "id", displayExpr: "soHopDong",
                     },
-                    editorType: "dxDropDownBox",
+                    editorType: "dxSelectBox",
                     editorOptions: {
                         dataSource: customStore_GoiThau,
                         valueExpr: "id", displayExpr: "soHopDong",
                         placeholder: "Vui lòng chọn...",
                         searchEnabled: true, showClearButton: true,
-                        contentTemplate: function (e) {
-                            var value = e.component.option("value"),
-                                $treeView = $("<div>").dxTreeView({
-                                    dataSource: e.component.getDataSource(),
-                                    dataStructure: "plain",
-                                    keyExpr: "id", parentIdExpr: "parentId", displayExpr: "soHopDong",
-                                    selectionMode: "single",
-                                    selectByClick: true,
-                                    expandAllEnabled: false,
-                                    searchEnabled: true,
-                                    focusStateEnabled: true,
-                                    onContentReady: function (args) {
-                                        if (!value) {
-                                            args.component.unselectAll();
-                                        } else {
-                                            args.component.selectItem(value);
-                                        }
-                                    },
-                                    selectNodesRecursive: false,
-                                    onItemSelectionChanged: function (args) {
-                                        e.component.option("value", args.node.key);
-                                        e.component.close();
-                                    },
-                                    itemTemplate: function (data) {
-                                        return $("<div>").append($("<b>").append(data.soHopDong).addClass("mr-1"), $("<em>").append(data.dienGiai));
-                                    },
-                                });
-                            treeView = $treeView.dxTreeView("instance");
-                            e.component.on("valueChanged", function (args) {
-                                if (!value) {
-                                    treeView.unselectAll();
-                                } else {
-                                    treeView.selectItem(value);
-                                }
-                            });
-                            return $treeView;
-                        },
+                        itemTemplate: function (data) {
+                            return "<b>" + data.soHopDong + "</b><em class='ml-1'>" + data.dienGiai + "</em>";
+                        } 
                     },
+                    groupIndex: 0,
                     validationRules: [{ type: "required" }]
                 },
                 {
@@ -224,8 +227,7 @@
                     lookup: {
                         dataSource: customStore_Phat_Nhom,
                         valueExpr: "id", displayExpr: "tenNhomPhat",
-                    },
-                    groupIndex: 0,
+                    }, 
                     editorType: "dxSelectBox",
                     editorOptions: {
                         dataSource: customStore_Phat_Nhom,
@@ -245,25 +247,50 @@
                     editorOptions: { placeholder: "Vui lòng nhập..." }
                 },
                 {
-                    dataField: "giaTri", width: 200, dataType: "number", alignment: "center",
-                    format: { type: "currency", currency: "VND" },
-                    caption: "Giá trị phạt",
-                    editorType: "dxNumberBox",
-                    editorOptions: {
-                        placeholder: "Vui lòng nhập giá trị...",
-                        showClearButton: true,
-                        format: "#,##0 đ",
-                        min: 1000000, step: 1000000, showSpinButtons: true,
-                    },
-                    validationRules: [{ type: "required" }]
+                    dataField: "chilCount", dataType: "number", alignment: "center",
+                    width: 100, caption: "Đợt thanh toán",
+                    customizeText: function (cellInfo) {
+                        return cellInfo.value + " đợt";
+                    }
                 },
                 {
-                    dataField: "giaTriCon", width: 200, dataType: "number", alignment: "center",
-                    format: { type: "currency", currency: "VND" },
-                    caption: "Giá trị còn lại"
+                    caption: "Giá trị", alignment: "center",
+                    columns: [
+
+                        {
+                            dataField: "giaTri", width: 180, dataType: "number", alignment: "right",
+                            format: { type: "currency", currency: "VND" },
+                            caption: "Phạt",
+                            editorType: "dxNumberBox",
+                            editorOptions: {
+                                placeholder: "Vui lòng nhập giá trị...",
+                                showClearButton: true,
+                                format: "#,##0 đ",
+                                min: 1000000, step: 1000000, showSpinButtons: true,
+                            },
+                            validationRules: [{ type: "required" }]
+                        },
+                        {
+                            dataField: "giaTriThuHoi", width: 180, dataType: "number", alignment: "right",
+                            format: { type: "currency", currency: "VND" },
+                            caption: "Đã thu hồi",
+                            calculateCellValue: function (data) {
+                                var value = (data.giaTriCon == null) ? 0 : (data.giaTri - data.giaTriCon);
+                                return (value != null) ? value : 0;
+                            }
+                        },
+                        {
+                            dataField: "giaTriCon", width: 180, dataType: "number", alignment: "right",
+                            format: { type: "currency", currency: "VND" },
+                            caption: "Còn lại",
+                            calculateCellValue: function (data) {
+                                return (data.giaTriCon != null) ? data.giaTriCon : 0;
+                            }
+                        },
+                    ]
                 },
                 {
-                    dataField: "createDate", width: 150, dataType: "date", alignment: "center", 
+                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
                     caption: "Thời gian",
                     cellTemplate: (c, o) => {
                         $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
@@ -274,16 +301,16 @@
                     alignment: "center", width: 100,
                     cellTemplate: (c, o) => {
                         if (o.data.createBy_Name != null) {
-                            $("<div />").attr('id', "popover-target-" + o.key).append(
+                            $("<div />").attr('id', "popover-target-main-" + o.key).append(
                                 $("<img />").attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30"),
                                 (o.data.modifyBy_Name != null && o.data.modifyBy_Name != o.data.createBy_Name) ? $("<img />").attr("src", "data:image/png;base64," + o.data.modifyBy_Avartar).addClass("img-circle elevation-2 img-size-30").attr("style", "margin-left: -15px !important") : null
                             ).appendTo(c);
-                            $("<div />").attr('id', "popover-detail-" + o.key).append(
+                            $("<div />").attr('id', "popover-detail-main-" + o.key).append(
                                 "<div><b>" + o.data.createBy_Name + "</b></div><em>" + o.data.createBy_Title + ' - ' + o.data.createBy_Department + "</em><div>" + "(Đã tạo cách đây " + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>",
                                 (o.data.modifyBy_Name != null) ? "<br/><div><b>" + o.data.modifyBy_Name + "</b></div><em>" + o.data.modifyBy_Title + ' - ' + o.data.modifyBy_Department + "</em><div>" + "(Đã cập nhật cách đây " + moment(o.data.updateDate).locale("vi").fromNow() + ")" + "</div>" : null
                             ).appendTo(c);
-                            $("#popover-detail-" + o.key).dxPopover({
-                                target: "#popover-target-" + o.key,
+                            $("#popover-detail-main-" + o.key).dxPopover({
+                                target: "#popover-target-main-" + o.key,
                                 showEvent: "mouseenter", hideEvent: "mouseleave",
                                 position: "bottom",
                                 animation: {
@@ -300,8 +327,12 @@
                 },
             ],
             editing: {
-                allowUpdating: PermitInAction["update"] ? true : null,
-                allowDeleting: PermitInAction["delete"] ? true : null,
+                allowUpdating: (e) => {
+                    return PermitInAction.update && e.row.data.chilCount == 0;
+                },
+                allowDeleting: (e) => {
+                    return PermitInAction.delete && e.row.data.chilCount == 0;
+                },
                 mode: "popup", useIcons: false, confirmDelete: true,
                 popup: {
                     width: 600, height: "auto", closeOnOutsideClick: true,
@@ -379,6 +410,11 @@
                         valueFormat: { type: "currency", currency: "VND" },
                     },
                     {
+                        column: "giaTriThuHoi",
+                        summaryType: "sum",
+                        valueFormat: { type: "currency", currency: "VND" },
+                    },
+                    {
                         column: "giaTriCon",
                         summaryType: "sum",
                         valueFormat: { type: "currency", currency: "VND" },
@@ -391,19 +427,28 @@
                         valueFormat: { type: "currency", currency: "VND" },
                     },
                     {
+                        column: "giaTriThuHoi",
+                        summaryType: "sum", alignByColumn: true,
+                        valueFormat: { type: "currency", currency: "VND" },
+                    },
+                    {
                         column: "giaTriCon",
                         summaryType: "sum", alignByColumn: true,
                         valueFormat: { type: "currency", currency: "VND" },
                     },
                 ]
             },
-            onRowDblClick: (e) => loadTheoDoi(e),
-        }).dxDataGrid("instance");
-
-        var loadTheoDoi = (e) => $("#popup-main").dxPopup({ 
+            onRowDblClick: (e) => {
+                if (e.rowType == "data") loadTheoDoi(e)
+            },
+            onRowInserting: function (e) {
+                e.data.giaTriCon = e.data.giaTri;
+            },
+        });
+        var loadTheoDoi = (e) => $("#popup-main").dxPopup({
             width: 900, height: "auto", fullScreen: $(window).width() <= 900,
             dragEnabled: true, resizeEnabled: true, showCloseButton: true, closeOnOutsideClick: true,
-            showTitle: true, title: "Theo dõi thanh toán phạt",            
+            showTitle: true, title: "Theo dõi thanh toán phạt",
             visible: true,
             contentTemplate: (c) => {
                 var ItemData = e.data;
@@ -423,11 +468,11 @@
                     showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                     columns: [
                         {
-                            dataField: "dot", alignment: "center", width:100,
+                            dataField: "dot", alignment: "center", width: 100,
                             caption: "Đợt", sortOrder: "desc", dataType: "number",
                             editorType: "dxNumberBox",
                             editorOptions: {
-                                placeholder: "Vui lòng chọn giai đoạn...",  
+                                placeholder: "Vui lòng chọn giai đoạn...",
                                 min: 0, step: 1, showSpinButtons: true,
                             },
                             validationRules: [
@@ -466,13 +511,22 @@
                                 format: "#,##0 đ",
                                 min: 1000000, step: 1000000, showSpinButtons: true,
                             },
-                            validationRules: [{ type: "required" }]
+                            validationRules: [
+                                { type: "required" },
+                                {
+                                    type: "async",
+                                    message: "Số tiền thanh toán không lớn hơn giá trị còn lại",
+                                    validationCallback: function (params) {
+                                        return checkGiaTriConLai(params);
+                                    }
+                                }
+                            ]
                         },
                         {
                             dataField: "createDate", width: 150, dataType: "date", alignment: "center",
                             caption: "Thời gian",
                             cellTemplate: (c, o) => {
-                                $("<div>").append($("<em/>").append(moment(o.value).format("HH:mm:ss"), $("<h6/>").append(moment(o.value).format("DD/MM/YYYY")))).appendTo(c);
+                                $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
                             }
                         },
                         {
@@ -502,8 +556,12 @@
                         },
                     ],
                     editing: {
-                        allowUpdating: PermitInAction["update"] ? true : null,
-                        allowDeleting: PermitInAction["delete"] ? true : null,
+                        allowUpdating: (e) => {
+                            return PermitInAction.update && e.row.data.dot == MAXDOT;
+                        },
+                        allowDeleting: (e) => {
+                            return PermitInAction.delete && e.row.data.dot == MAXDOT;
+                        },
                         mode: "popup", useIcons: false, confirmDelete: true,
                         popup: {
                             width: 600, height: "auto", closeOnOutsideClick: true,
@@ -512,16 +570,17 @@
                         form: {
                             labelLocation: "top", itemType: "group", colCount: 6,
                             showRequiredMark: true, requiredMark: "(*)",
-                            items: [ 
+                            items: [
                                 {
-                                    colSpan: 6, dataField: "noiDung", label: { text: "Nội dung / Thông tin" },
-                                },
-                                {
-                                    colSpan: 3, dataField: "dot", label: { text: "Đợt thanh toán" },
+                                colSpan: 3, dataField: "dot", label: { text: "Đợt thanh toán" },
                                 },
                                 {
                                     colSpan: 3, dataField: "giaTri", label: { text: "Số tiền" },
                                 },
+                                {
+                                    colSpan: 6, dataField: "noiDung", label: { text: "Nội dung / Thông tin" },
+                                },
+                                
                                 {
                                     colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
                                 },
@@ -530,7 +589,7 @@
                     },
                     onToolbarPreparing: function (e) {
                         var container = e.component;
-                        e.toolbarOptions.items.unshift( 
+                        e.toolbarOptions.items.unshift(
                             {
                                 location: "before", widget: "dxButton",
                                 options: {
@@ -549,7 +608,7 @@
                     },
                     onInitNewRow: (e) => {
                         e.data.phatId = ItemData.id,
-                        e.data.giaTri = 1000000;
+                            e.data.giaTri = 1000000;
                         e.data.dot = 1;
                     },
                     summary: {
@@ -561,12 +620,18 @@
                             },
                         ],
                     },
+                    onEditorPreparing: function (e) {
+                        if (e.parentType === "dataRow" && (e.dataField === "dot") && !e.row.isNewRow) {
+                            e.editorOptions.disabled = true;
+                        }                        
+                    },
                 }).dxDataGrid("instance");
                 scrollView.append(content);
                 scrollView.dxScrollView({ width: '100%', height: '100%' });
                 c.append(scrollView);
                 return c;
-            }
+            },
+            onHiding: (e) => $("#container").dxDataGrid("instance").refresh()
         }); 
     </script>
 }

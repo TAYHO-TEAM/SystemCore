@@ -2276,6 +2276,7 @@
     <Content Include="Scripts\globalize\message.min.js" />
     <Content Include="Scripts\globalize\number.js" />
     <Content Include="Scripts\globalize\number.min.js" />
+    <Content Include="Scripts\jszip.js" />
     <Content Include="Scripts\localization\dx.messages.cs.js" />
     <Content Include="Scripts\localization\dx.messages.de.js" />
     <Content Include="Scripts\localization\dx.messages.el.js" />
