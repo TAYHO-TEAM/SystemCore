@@ -14,6 +14,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
 {
     public class DangKyController : Controller
     {
+        public const int ActionId = 27;
         // GET: ThongTin/DangKy
         public ActionResult Index()
         {
