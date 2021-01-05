@@ -234,9 +234,6 @@
             fdata.append('projectId', PROJECTID);
             fdata.append('parentId', @Model);
             fdata.append('token', UserCurrentInfo.accessToken);
-            for (var pair of fdata.entries()) {
-                console.log(pair[0] + ', ' + pair[1]);
-            }
             var files = $(".file-uploader").dxFileUploader("instance").option("value");
             if (files.length > 0) {
                 $.each(files, function (key, value) {
@@ -275,6 +272,4 @@
         });
 
     });
-
-
 </script>

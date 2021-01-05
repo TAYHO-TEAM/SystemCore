@@ -1,5 +1,6 @@
 ﻿using AppWFGenProject.Extensions;
 using AppWFGenProject.FrameWork;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,10 @@ namespace AppWFGenProject
 {
     public partial class GenProject : Form
     {
-        public GenProject()
+        public IConfiguration _configuration;
+        public GenProject(IConfiguration configuration)
         {
+            _configuration = configuration;
             InitializeComponent();
             Environment.GetEnvironmentVariable("Content");
             txtPass.PasswordChar = '*';
@@ -29,7 +32,7 @@ namespace AppWFGenProject
 
         private void GenProject_Load(object sender, EventArgs e)
         {
-
+            ConfigExtenstions.GetValue<int>(_configuration, "appSettings", "DefaultItemsPerPage");
         }
 
         private void btnTestConnec_Click(object sender, EventArgs e)

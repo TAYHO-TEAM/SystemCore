@@ -15,6 +15,7 @@
 
 @section script{
     <script>
+        var id = 1;
         ///----------------------------- ------------------------
         const ACTION = "/DocumentReleased";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
@@ -111,9 +112,6 @@
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                console.log(values);
-                console.log(table);
-                console.log(item);
                 var deferred = $.Deferred();
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
@@ -418,14 +416,14 @@
                                 label: { text: "Nhóm hạng mục" },
                                 editorType: "dxTagBox",
                                 editorOptions: {
-                                        dataSource: customStore_HangMuc,
-                                        displayExpr: "title",
-                                        valueExpr: "title",
-                                        maxDisplayedTags: 3,
-                                        showSelectionControls: true,
-                                        itemTemplate: function (data) {
-                                            return "<div>" + data.title+"</div>";
-                                        }
+                                    dataSource: customStore_HangMuc,
+                                    displayExpr: "title",
+                                    valueExpr: "title",
+                                    maxDisplayedTags: 3,
+                                    showSelectionControls: true,
+                                    itemTemplate: function (data) {
+                                        return "<div>" + data.title + "</div>";
+                                    }
                                 },
                                 //template: () => {
                                 //    //return $("<div />").attr('id', "productsCustom");
@@ -530,13 +528,13 @@
                                         valueExpr: "accountId", displayExpr: "avatarImg",
                                     },
                                     cellTemplate: (c, o) => {
-          
+
                                         $("<img />")
                                             .attr("src", "data:image/png;base64," + o.text)
                                             .addClass("img-circle elevation-2 img-size-30")
                                             .attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")
                                             .appendTo(c);
-                                      
+
                                     },
                                 },//avarta
                                 {
@@ -587,11 +585,14 @@
                                 //            container
                                 //                .append(moment(options.data.createDate).locale('vi').fromNow());
                                 //    },
-                                  
+
                                 //},//status
                             ],
                         }).attr("style", "margin:auto; width:90%").appendTo(container);
                     },
+                },
+                onContentReady: (e) => {
+                    e.component;
                 },
             });
         };

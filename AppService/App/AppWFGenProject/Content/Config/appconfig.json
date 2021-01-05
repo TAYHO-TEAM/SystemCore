@@ -1,1 +1,5 @@
-﻿
+﻿{
+  "appSettings": {
+    "DefaultItemsPerPage": 3
+  }
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -90,6 +91,7 @@ namespace AppWFGenProject.Extensions
             }
             return listTable;
         }
+        public IConfiguration _configuration;
         public DataTable GetAllEntry(string db, string selectkey, string colname)
         {
             DataTable dt = new DataTable();
@@ -97,8 +99,10 @@ namespace AppWFGenProject.Extensions
             {
                 try
                 {
+                    
                     SqlCommand cmd = new SqlCommand();
                     SqlDataAdapter da = new SqlDataAdapter();
+                    
                     string _storeproce = ConfigurationSettings.AppSettings["SPGetALLEntry"].ToString();
                     try
                     {

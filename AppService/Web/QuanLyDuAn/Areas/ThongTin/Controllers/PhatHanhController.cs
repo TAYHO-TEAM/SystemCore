@@ -9,8 +9,16 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
     public class PhatHanhController : Controller
     {
         // GET: ThongTin/PhatHanh
-        public ActionResult Index()
+        public ActionResult Index(int id = 0 )
         {
+            if(id ==0)
+            {
+
+            }   
+            else
+            {
+
+            }                
             return View();
         }
     }
