@@ -74,7 +74,7 @@
         var WIDTH_CONTAINER = $("#container").width();
         let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
-        let customStore_PLAN =(id)=> customStore_READ_ID(ACTION_READ_PLAN,id);
+        let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_READ_DOCUMENTTYPE);
         let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
@@ -121,9 +121,6 @@
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                console.log(values);
-                console.log(table);
-                console.log(item);
                 var deferred = $.Deferred();
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
@@ -162,7 +159,7 @@
         });
         //let customStore_AccountInfo = customStore_READ_ALL_ACC(ACTION_READ_ACCOUNTINFO);
         let customStore_AccountInfo = new DevExpress.data.CustomStore({
-            key: "accountId", 
+            key: "accountId",
             loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
@@ -290,7 +287,7 @@
 
                         },
                     },//account
-                  
+
                     {
                         dataField: "documentTypeId", caption: "Loại tài liệu",
                         lookup: {
@@ -321,7 +318,7 @@
                         caption: "Kế hoạch",
                         visible: false,
                     },//hangMucId
-                    
+
                     {
                         dataField: "createDate",
                         caption: "Ngày đệ trình",
@@ -340,13 +337,13 @@
                         dataType: "string",
                         alignment: "left",
                     },// note
-                  
+
                     {
                         dataField: "status",
                         caption: "Trang thái",
                         dataType: "number",
                         cellTemplate: (container, options) => {
-                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã xem' : options.value == 2 ? 'Ban đã xem' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
+                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã duyệt' : options.value == 2 ? 'Ban đã duyệt' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
                         },
                     },//status
                     {
@@ -370,13 +367,12 @@
                             onClick: function (e) {
                                 var containerE = e.component;
                                 var myJSON = JSON.stringify(e.row.data);
-                                console.log(myJSON)
                                 callPopup(
                                     "THÊM MỚI ĐĂNG KÝ",
                                     "/ThongTin/DangKy/_FormRev/" + e.row.data.id,
-                                        ($(window).width() > 767 ? "50%" : "80%"),
-                                        containerE
-                                    );
+                                    ($(window).width() > 767 ? "50%" : "80%"),
+                                    containerE
+                                );
                             }
                         }]
                     },
@@ -408,7 +404,7 @@
                     //},
                     allowDeleting: (e) => {
                         console.log(e);
-                        return  e.row.data.parentId == 0 && e.row.data.delate;
+                        return e.row.data.parentId == 0 && e.row.data.delate;
                     },
                     //allowAdding: (e) => {
                     //    return false;//e.row.data.parentId == 0;
@@ -536,7 +532,6 @@
                     e.data.ProjectId = PROJECTID;
                 },
                 onRowDblClick: function (e) {
-                    console.log(e);
                     loadDetail(e.data)
                 },
                 onContextMenuPreparing: function (e) {
@@ -723,7 +718,7 @@
                                         label: { text: "Files" },
                                         template: (container) => {
                                             return $('<a>').click(function () {
-                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.noAttachment == null || value.noAttachment < 1) ? (value.update == true ? true : false) : false) : false);
+                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ( (value.update == true ? true : false) ) : false);
                                             }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                         },
                                     },
@@ -736,15 +731,14 @@
                                             //useSubmitBehavior: true,
                                             visible: ((value.modifyBy < 1) ? (value.update == true ? true : false) : false),
                                             onClick: function () {
-                                                //console.log(value);
                                                 var request = {
                                                     'id': value.id,
                                                     'description': value.description,
                                                     'typeOfResult': value.typeOfResult
                                                 };
-                                                console.log(request);
-                                                console.log(value);
                                                 ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
+                                                $("#popup-main").dxPopup("hide");
+                                                loadData();
                                             },
                                         },
                                     }]
@@ -909,6 +903,9 @@
                 var content_Upload = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form").append('<div id = "fileuploader-container" ><div id="file-uploader"></div></div ><div id="button"></div>');
                 content.dxDataGrid({
                     dataSource: customStore_File(table, item),
+                    elementAttr: {
+                        id: "dx-upload-file-1",
+                    },
                     remoteOperations: {
                         paging: true,
                         sorting: true,
@@ -1019,6 +1016,7 @@
                                     success: function (data) {
                                         $('.dx-fileuploader-file-status-message').empty();
                                         $('.dx-fileuploader-file-status-message').html('Đã up thành công!');
+                                        $('#dx-upload-file-1').dxDataGrid('instance').refresh();
                                     },
                                     cache: false,
                                     contentType: false,
@@ -1038,7 +1036,6 @@
         }).addClass("popup-priority-2");
 
         function loadFileAttachment(table, item, isUpload) {
-            console.log(isUpload);
             loadUpload(table, item, isUpload);
         }
 
@@ -1070,8 +1067,6 @@
                 contentTemplate: function (container) {
                     var scrollView = $("<div id='scrollView'></div>");
                     var content = $("<div/>");
-                    console.log(url);
-                    content.load(url);
                     scrollView.append(content);
                     scrollView.dxScrollView({
                         width: '100%',
@@ -1087,7 +1082,7 @@
                 }
             });
         }
-     
-     
+
+
     </script>
 }

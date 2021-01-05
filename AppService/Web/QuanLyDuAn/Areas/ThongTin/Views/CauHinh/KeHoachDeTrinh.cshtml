@@ -53,7 +53,7 @@
 
                 return deferred.promise();
             },
-            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, { 'planRegisters':[values]}),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
         });
@@ -362,7 +362,7 @@
                                     callPopup(
                                         "THÊM MỚI KẾ HOẠCH ĐỆ TRÌNH",
                                         "/ThongTin/CauHinh/_KeHoachShow/",
-                                        ($(window).width() > 767 ? "50%" : "80%"),
+                                        ($(window).width() > 767 ? "90%" : "80%"),
                                         container
                                     );
                                 }
