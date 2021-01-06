@@ -3,17 +3,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cập nhật giá trị các Hạng mục";
 }
-
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
 <div id="popup-log-event"></div>
+<div id="action-add"></div>
+<div id="action-remove"></div>
+<div id="action-edit"></div>
+<div id="action-log"></div>
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
-
         var customStore_GiaiDoan = (id) => new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
             load: (values) => {
@@ -89,6 +91,21 @@
 
         $(function () {
             loadHangMuc();
+            DevExpress.config({
+                floatingActionButtonConfig: {
+                    icon: "rowfield",
+                    label:"Tác vụ",
+                    shading: true,
+                    direction: "up",
+                    position: {
+                        of: "#container",
+                        my: "right bottom",
+                        at: "right bottom",
+                        offset: "-15 -15"
+                    }
+                }
+            });
+            DevExpress.ui.repaintFloatingActionButton();
         });
 
         var loadHangMuc = () => {
@@ -170,7 +187,7 @@
                     {
                         dataField: "status", dataType: "number", sortOrder: "desc", visible: false,
                     },
-                    {
+                    /*{
                         type: "buttons", caption: "Tác vụ", alignment: "center",
                         buttons: [
                             {
@@ -208,9 +225,52 @@
                                 }
                             }
                         ]
-                    }
+                    }*/
                 ],
-                onRowUpdating(options) {
+
+                selection: {
+                    mode: "single"
+                },
+                onSelectionChanged: function (e) {
+                    var data = e.selectedRowsData[0];
+                    if (data != null) {
+                        $("#action-add").dxSpeedDialAction({ 
+                            index: 1, icon: "fas fa-plus", label: "Thêm giá trị",
+                            visible: (data.chilCount == 0 && PermitInAction["insert"]),
+                            onClick: () => genUpdateForm(data, true)
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-edit").dxSpeedDialAction({
+                            index: 2, icon: "fas fa-edit", label: "Cập nhật giá trị mới",
+                            visible: (data.chilCount == 0 && data.hangMucDetailId != null && PermitInAction["update"]),
+                            onClick: () => genUpdateForm(data, false)
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-remove").dxSpeedDialAction({ 
+                            index: 3, icon: "fas fa-trash", label: "Hủy bỏ giá trị cũ",
+                            visible: (data.chilCount == 0 && data.hangMucDetailId != null && PermitInAction["delete"]),
+                            onClick: (e) => {
+                                DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                    if (dialogResult) {
+                                        var deferred = $.Deferred();
+                                        customStore_HangMucDetail.remove(data.hangMucDetailId).then(() => {
+                                            DevExpress.ui.notify("Hủy bỏ giá trị hạng mục thành công", "success", 3000);
+                                            e.component.refresh();
+                                        }, deferred.reject);
+                                        return deferred.promise();
+                                    }
+                                });
+                            }
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-log").dxSpeedDialAction({                            
+                            index: 4, icon: "fas fa-history", label: "Nhật ký cập nhật",
+                            visible: (data.chilCount == 0 && data.hangMucDetailId != null),
+                            onClick: () => callLogEvent(data.hangMucDetailId, ACTION_HANGMUCDETAIL)
+                        }).dxSpeedDialAction("instance");
+                    }
+                },
+                onRowUpdating: (options) => {
                     if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId;
                     options.newData['hangMucDetailId'] = options.oldData.hangMucDetailId;
                     options.newData = options.newData;
@@ -260,12 +320,11 @@
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 0)
-                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
                 },
                 onRowPrepared: (e) => {
-                    if (e.rowType == "data" && e.data.chilCount > 0) {
-                        e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
-                    }
+                    if (e.rowType == "data" && e.data.chilCount > 0)
+                        e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;");
                 },
                 //stateStoring: {
                 //    enabled: true,

@@ -202,7 +202,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\NganSach\Views\CongViec\_ChiTiet.cshtml" />
     <Content Include="Content\css\adminlte.css" />
     <Content Include="Content\dx-diagram.css" />
     <Content Include="Content\dx-diagram.min.css" />
