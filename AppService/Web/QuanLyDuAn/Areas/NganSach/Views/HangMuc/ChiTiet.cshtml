@@ -126,7 +126,7 @@
                         format: { type: "currency", currency: "VND" },
                     },
                     {
-                        caption: "Tương tác",
+                        caption: "Người tạo",
                         alignment: "center", width: 100,
                         cellTemplate: (c, o) => {
                             if (o.data.createBy_Name != null) {
@@ -150,6 +150,18 @@
                             }
                         }
                     }, 
+                    {
+                        dataField: "createDate", width: 150, dataType: "date", alignment: "center",
+                        caption: "Thời gian tạo",
+                        cellTemplate: (c, o) => {
+                            if (o.value != null) {
+                            $("<div />").append(
+                                $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                                $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
+                                ).appendTo(c);
+                            }
+                        }
+                    },
                     {
                         dataField: "hangMucDetailId", dataType: "number", visible: false,
                     },
@@ -245,11 +257,11 @@
                         e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                     }
                 }, 
-                stateStoring: {
-                    enabled: true,
-                    storageKey: "ngansach-hangmuc-localStorage",
-                    type: "localStorage"
-                },
+                //stateStoring: {
+                //    enabled: true,
+                //    storageKey: "ngansach-hangmuc-localStorage",
+                //    type: "localStorage"
+                //},
             });
         };
 

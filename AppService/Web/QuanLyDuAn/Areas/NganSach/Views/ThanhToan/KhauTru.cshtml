@@ -15,6 +15,7 @@
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
+<div id="popup-log-event"></div>
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -26,7 +27,8 @@
                 params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindId': 'projectId,' + PROJECTID
+                    'FindId': 'projectId,' + PROJECTID,
+                    'FindParentId': 'khauTruId,0',
                 };
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -54,6 +56,9 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_KHAUTRU, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_KHAUTRU, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_KHAUTRU, key),
+            onInserted: (key, values) => ajax_log_insert("Insert", ACTION_KHAUTRU, values, key),
+            onUpdated: (key, values) => ajax_log_insert("Update", ACTION_KHAUTRU, key, values),
+            onRemoved: (key) => ajax_log_insert("Delete", ACTION_KHAUTRU, key, null),
         });
         var customStore_TheoDoi = (id) => new DevExpress.data.CustomStore({
             key: "id",
@@ -97,13 +102,16 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_KHAUTRU_THEODOI, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_KHAUTRU_THEODOI, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_KHAUTRU_THEODOI, key),
+            onInserted: (key, values) => ajax_log_insert("Insert", ACTION_KHAUTRU_THEODOI, values, key),
+            onUpdated: (key, values) => ajax_log_insert("Update", ACTION_KHAUTRU_THEODOI, key, values),
+            onRemoved: (key) => ajax_log_insert("Delete", ACTION_KHAUTRU_THEODOI, key, null),
         });
-        var customStore_GoiThau = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
+        var customStore_GoiThau = (projectId) => new DevExpress.data.CustomStore({
+            key: "id",
             load: (values) => {
                 let deferred = $.Deferred();
                 $.ajax({
-                    data: { FindParentId: 0, FindId: 'projectId,' + PROJECTID },
+                    data: { FindParentId: 0, FindId: 'projectId,' + projectId },
                     headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
                     success: function (data) {
                         deferred.resolve(data.result.items);
@@ -115,6 +123,11 @@
                     timeout: 10000
                 });
                 return deferred.promise();
+            },
+            byKey: function (key) {
+                var d = new $.Deferred();
+                $.get(URL_API_PM_READ + ACTION_GOITHAU, { 'FindId': key }).done((rs) => d.resolve(rs.result.items[0])).fail(() => d.reject());
+                return d.promise();
             },
         });
 
@@ -138,7 +151,6 @@
                 },
                 success: function (rs) {
                     if (rs.isOk && rs.result != null && rs.result.items.length > 0 && rs.result.items[0].giaTriCon != null) {
-
                         if (params.validator._validationGroup.type == "insert") {
                             if (params.value <= rs.result.items[0].giaTriCon)
                                 d.resolve(true);
@@ -183,7 +195,7 @@
                 highlightCaseSensitive: true, highlightSearchText: true,
                 searchVisibleColumnsOnly: true, visible: true
             },
-            showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             grouping: {
                 allowCollapsing: true,
@@ -191,6 +203,10 @@
                 contextMenuEnabled: true,
             },
             columns: [
+                {
+                    alignment: "center", caption: "STT",
+                    width: 80, cellTemplate: (c, o) => c.append(o.rowIndex + 1)
+                },
                 {
                     dataField: "noiDung", alignment: "left",
                     caption: "Nội dung khấu trừ",
@@ -205,12 +221,12 @@
                 {
                     dataField: "goiThauId", caption: "Gói thầu", width: 150, alignment: "center",
                     lookup: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                     },
                     editorType: "dxSelectBox",
                     editorOptions: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                         placeholder: "Vui lòng chọn...",
                         searchEnabled: true, showClearButton: true,
@@ -218,11 +234,19 @@
                             return "<b>" + data.soHopDong + "</b><em class='ml-1'>" + data.dienGiai + "</em>";
                         }
                     },
+                    groupIndex: 0, autoExpandGroup: true,
                     validationRules: [{ type: "required" }]
                 },
                 {
                     dataField: "dienGiai", alignment: "left", visible: false,
                     editorOptions: { placeholder: "Vui lòng nhập..." }
+                },
+                {
+                    dataField: "chilCount", dataType: "number", alignment: "center",
+                    width: 100, caption: "Đợt thanh toán",
+                    customizeText: function (cellInfo) {
+                        return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
+                    }
                 },
                 {
                     caption: "Giá trị", alignment: "center",
@@ -261,14 +285,7 @@
                     ]
                 },
                 {
-                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                    caption: "Thời gian",
-                    cellTemplate: (c, o) => {
-                        $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
-                    }
-                },
-                {
-                    caption: "Tương tác",
+                    caption: "Người tạo",
                     alignment: "center", width: 100,
                     cellTemplate: (c, o) => {
                         if (o.data.createBy_Name != null) {
@@ -293,17 +310,38 @@
                     }
                 },
                 {
-                    dataField: "isActive", width: 100, alignment: "center",
-                    editorType: "dxSwitch",
+                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
+                    caption: "Thời gian tạo",
+                    cellTemplate: (c, o) => {
+                        $("<div>").append(
+                            $("<em/>").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                            $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
+                        ).appendTo(c);
+                    }
+                },
+                {
+                    type: "buttons",
+                    width: 120,
+                    buttons: ["edit", "delete",
+                        {
+                            hint: "Nhật ký cập nhật",
+                            icon: "fas fa-history",
+                            onClick: function (e) {
+                                callLogEvent(e.row.data.id, ACTION_KHAUTRU);
+                            }
+                        }
+                    ]
                 },
             ],
             editing: {
                 allowUpdating: PermitInAction.update,
                 allowDeleting: PermitInAction.delete,
-                mode: "popup", useIcons: false, confirmDelete: true,
+                mode: "popup", useIcons: true, confirmDelete: true,
                 popup: {
                     width: 600, height: "auto", closeOnOutsideClick: true,
                     showTitle: false, fullScreen: $(document).width() <= 600,
+                    position: { of: "#container" },
+                    dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
                 },
                 form: {
                     labelLocation: "top", itemType: "group", colCount: 6,
@@ -363,8 +401,7 @@
             onInitNewRow: (e) => {
                 e.data.projectId = PROJECTID;
                 e.data.isActive = true;
-                e.data.giaTri = 1000000;
-                e.data.giaTriCon = 1000000;
+                e.data.giaTri = 1000000; 
             },
             summary: {
                 totalItems: [
@@ -406,17 +443,22 @@
                 if (e.rowType == "data") loadTheoDoi(e)
             },
             onEditorPreparing: function (e) {
-                if (e.parentType === "dataRow" && (e.dataField === "giaTri" || e.dataField === "goiThauId") && !e.row.isNewRow) {
+                if (e.parentType === "dataRow" && ((e.dataField === "giaTri" && e.row.data.chilCount > 0) || e.dataField === "goiThauId") && !e.row.isNewRow) {
                     e.editorOptions.disabled = true;
                 }
             },
             onRowInserting: function (e) {
                 e.data.giaTriCon = e.data.giaTri;
             },
+            onRowUpdating: function (e) {
+                if (e.newData['giaTri'] !=null)
+                    e.newData['giaTriCon'] = e.newData['giaTri']; 
+            },
         });
         var loadTheoDoi = (e) => $("#popup-main").dxPopup({
-            width: 900, height: "auto", fullScreen: $(window).width() <= 900,
-            dragEnabled: true, resizeEnabled: true, showCloseButton: true, closeOnOutsideClick: true,
+            width: "100%", height: "100%",
+            position: { of: "#container" },
+            dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
             showTitle: true, title: "Theo dõi thanh toán khấu trừ",
             visible: true,
             contentTemplate: (c) => {
@@ -457,7 +499,7 @@
                         },
                         {
                             dataField: "noiDung", alignment: "left",
-                            caption: "Nội dung",
+                            caption: "Nội dung / Thông tin / Diễn giải",
                             cellTemplate: (c, o) => {
                                 $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
                                 $("<em>").append(o.data.dienGiai).appendTo(c);
@@ -492,13 +534,6 @@
                             ]
                         },
                         {
-                            dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                            caption: "Thời gian",
-                            cellTemplate: (c, o) => {
-                                $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
-                            }
-                        },
-                        {
                             caption: "Tương tác",
                             alignment: "center", width: 100,
                             cellTemplate: (c, o) => {
@@ -523,15 +558,35 @@
                                 }
                             }
                         },
+                        {
+                            dataField: "createDate", width: 150, dataType: "date", alignment: "center",
+                            caption: "Thời gian tạo",
+                            cellTemplate: (c, o) => {
+                                $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
+                            }
+                        },
+                        {
+                            type: "buttons",
+                            width: 120,
+                            buttons: ["edit", "delete",
+                                {
+                                    hint: "Nhật ký cập nhật",
+                                    icon: "fas fa-history",
+                                    onClick: function (e) {
+                                        callLogEvent(e.row.data.id, ACTION_TAMUNG_THEODOI);
+                                    }
+                                }
+                            ]
+                        },
                     ],
                     editing: {
                         allowUpdating: (e) => {
-                            return PermitInAction.update && e.row.data.dot == MAXDOT;
+                            return PermitInAction.update;
                         },
                         allowDeleting: (e) => {
                             return PermitInAction.delete && e.row.data.dot == MAXDOT;
                         },
-                        mode: "popup", useIcons: false, confirmDelete: true,
+                        mode: "popup", useIcons: true, confirmDelete: true,
                         popup: {
                             width: 600, height: "auto", closeOnOutsideClick: true,
                             showTitle: false, fullScreen: $(document).width() <= 600,
@@ -563,7 +618,7 @@
                                 location: "before", widget: "dxButton",
                                 options: {
                                     visible: PermitInAction["insert"],
-                                    text: "Thanh toán khấu trừ", icon: "add", stylingMode: "filled", type: "default",
+                                    text: "Thanh toán", icon: "add", stylingMode: "filled", type: "default",
                                     onClick: () => container.addRow()
                                 }
                             },
@@ -578,7 +633,7 @@
                     onInitNewRow: (e) => {
                         e.data.khauTruId = ItemData.id;
                         e.data.giaTri = 1000000;
-                        e.data.dot = 1;
+                        e.data.dot = MAXDOT+1;
                     },
                     summary: {
                         totalItems: [
@@ -590,7 +645,7 @@
                         ],
                     },
                     onEditorPreparing: function (e) {
-                        if (e.parentType === "dataRow" && (e.dataField === "dot") && !e.row.isNewRow) {
+                        if (e.parentType === "dataRow" && (e.dataField === "dot" || (e.dataField === "giaTri" && e.row.data.dot != MAXDOT)) && !e.row.isNewRow) {
                             e.editorOptions.disabled = true;
                         }
                     },
