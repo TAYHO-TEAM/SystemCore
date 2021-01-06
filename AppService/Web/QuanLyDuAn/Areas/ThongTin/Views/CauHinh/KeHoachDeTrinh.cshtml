@@ -387,9 +387,9 @@
             if (width == "100%") isFullscreen = true;
 
             $("#popup-register").dxPopup({
-                width: width, height: "auto",
+                width: "95%", height: "95%",
                 fullScreen: isFullscreen,
-                position: { my: 'top', at: 'top', of: window },
+                //position: { my: 'top', at: 'top', of: window },
                 dragEnabled: true,
                 resizeEnabled: true,
                 visible: true,
@@ -400,7 +400,6 @@
                 contentTemplate: function (container) {
                     var scrollView = $("<div id='scrollView'></div>");
                     var content = $("<div/>");
-                    console.log(url);
                     content.load(url);
                     scrollView.append(content);
                     scrollView.dxScrollView({

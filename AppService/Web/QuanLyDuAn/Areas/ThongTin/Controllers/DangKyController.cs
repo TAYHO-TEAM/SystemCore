@@ -14,6 +14,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
 {
     public class DangKyController : Controller
     {
+        public const int ActionId = 27;
         // GET: ThongTin/DangKy
         public ActionResult Index()
         {
@@ -78,10 +79,6 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             {
                 client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
-                //client.DefaultRequestHeaders.Accept.Clear();
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "multipart/form-data");
-                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/RequestRegist", mFormData).Result)
