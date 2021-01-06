@@ -1,14 +1,13 @@
 ﻿const ACTION_READ_REQUESTREGISTBYACC = "/RequestRegist/GetByAccountID";
 const ACTION_READ_REQUESTREGISTDETAIL = "/RequestRegist/GetDetail";
 const ACTION_READ_RESPONSEBYACC = "/ResponseRegist/getByAccount";
-const ACTION_READ_PLAN = "/PlanRegister";
 const ACTION_READ_RESPONSE = "/ResponseRegist";
 const ACTION_READ_FILEGET = "/FilesAttachment/getBy";
 const ACTION_READ_PROJECT = "/Projects";
 const ACTION_READ_HANGMUC = "/WorkItems";
 const ACTION_READ_DOCUMENTTYPE = "/DocumentType";
 const ACTION_READ_REPLY = "/ResponseRegistReply";
-const ACTION_READ_ACCOUNTINFO = "/ACCOUNTINFO";
+const ACTION_READ_ACCOUNTINFO = "/AccountInfo";
 
 const ACTION_CMD_REQUESTREGIST = "/RequestRegist";
 const ACTION_CMD_RESPONSEREGIST = "/ResponseRegist";
@@ -123,6 +122,28 @@ let customStore_READ_ALL = (READ) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
+let customStore_READ_FILTER = (READ,FILTER) => new DevExpress.data.CustomStore({
+    key: "id", loadMode: "raw",
+    load: (values) => {
+        let deferred = $.Deferred(), params = { 'FindId': FILTER};
+        $.ajax({
+            headers: header, dataType: "json",
+            url: URL_API_PM_READ + READ,
+            data: params,
+            success: function (data) {
+                var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr.responseJSON);
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000
+        });
+        return deferred.promise();
+    },
+});
+
 let customStore_READ_ID = (READ,ID) => new DevExpress.data.CustomStore({
     key: "id",
     loadMode: "raw",

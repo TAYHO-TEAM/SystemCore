@@ -8,5 +8,6 @@ namespace ProjectManager.CMD.Domain.IRepositories
     {
         Task<bool> IsCreatedDocumentReleasedAsync(int DocumentTypeId, int AccountId, int Id);
         Task<string> IsGetTitleDocumentReleasedAsync(int ProjectId, int WorkItemId, int DocumentTypeId);
+        Task DocumentReleasedProcessAsync();
     }
 }

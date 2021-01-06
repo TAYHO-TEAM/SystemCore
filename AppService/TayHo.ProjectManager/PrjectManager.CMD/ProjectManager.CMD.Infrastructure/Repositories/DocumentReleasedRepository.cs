@@ -26,7 +26,7 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
             await cmd.Connection.CloseAsync();
             return (bool)(result == 0 ? false : true);
         }
-        public async Task<string> IsGetTitleDocumentReleasedAsync(int ProjectId, int WorkItemId, int DocumentTypeId)
+        public async Task<string> IsGetTitleDocumentReleasedAsync(int ProjectId =0 , int WorkItemId =0, int DocumentTypeId = 0)
         {
             await using (var cmd = _dbContext.Database.GetDbConnection().CreateCommand())
             {
@@ -40,6 +40,18 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
                 var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
                 await cmd.Connection.CloseAsync();
                 return (string)result;
+            }
+        }
+        public async Task DocumentReleasedProcessAsync()
+        {
+            await using (var cmd = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+
+                await cmd.Connection.OpenAsync();
+                cmd.CommandText = "sp_DocumentReleased_Process";
+                cmd.CommandType = CommandType.StoredProcedure;
+                var result = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                await cmd.Connection.CloseAsync();
             }
         }
     }

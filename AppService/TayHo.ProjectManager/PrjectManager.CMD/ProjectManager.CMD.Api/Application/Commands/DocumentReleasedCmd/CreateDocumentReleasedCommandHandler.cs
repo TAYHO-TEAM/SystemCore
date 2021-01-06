@@ -33,7 +33,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             string tableName = QuanLyDuAnConstants.DocumentReleased_TABLENAME;
             var methodResult = new MethodResult<CreateDocumentReleasedCommandResponse>();
-            request.Code = (await _DocumentReleasedRepository.IsGetTitleDocumentReleasedAsync((int)request.ProjectId, (int)request.WorkItemId, (int)request.DocumentTypeId).ConfigureAwait(false));
+            request.Code = (await _DocumentReleasedRepository.IsGetTitleDocumentReleasedAsync(request.ProjectId?? 0, request.WorkItemId?? 0, request.DocumentTypeId ?? 0).ConfigureAwait(false));
             var newDocumentReleased = new DocumentReleased(request.Code,
                                                             request.Title,
                                                             request.Description,
@@ -73,6 +73,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
                     await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
                 }
+                await _DocumentReleasedRepository.DocumentReleasedProcessAsync();
             }
             else
             {

@@ -59,7 +59,7 @@
         const ACTION = "/RequestRegist/GetByAccountID";
         const ACTION_DETAIL = "/RequestRegist/GetDetail";
         const ACTION_RESPONSEBYACC = "/ResponseRegist/getByAccount";
-        const ACTION_PLAN = "/PlanRegister";
+        const ACTION_READ_PLAN = "/PlanRegister/GetByContractorID";
         const ACTION_RESPONSE = "/ResponseRegist";
         const ACTION_FILEGET = "/FilesAttachment/getBy";
         const ACTION_CMD = "/RequestRegist";
@@ -76,48 +76,49 @@
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
         let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
-        let customStore_DocumetnType = customStore_READ_ALL(ACTION_READ_DOCUMENTTYPE);
+        let customStore_DocumetnType = customStore_READ_FILTER(ACTION_READ_DOCUMENTTYPE,'status,1');
         let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
-        let customStore_Response = (id) => new DevExpress.data.CustomStore({
-            key: "id",
-            load: (values) => {
-                let deferred = $.Deferred();
-                var params = {
-                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindId': id
-                }
-                if (values.sort) {
-                    params['SortCol'] = values.sort[0].selector;
-                    params['SortADSC'] = values.sort[0].desc;
-                }
-                $.ajax({
-                    headers: header,
-                    url: URL_API_PM_READ + ACTION_RESPONSEBYACC,
-                    dataType: "json",
-                    data: params,
-                    success: function (data) {
-                        var list = data.result.items;
-                        deferred.resolve(
-                            list,
-                            {
-                                totalCount: list.length,
-                            }
-                        );
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000//10 giây
-                });
+        let customStore_Response = (id) => customStore_UPDATE_READ(id, ACTION_RESPONSE, ACTION_RESPONSEBYACC)
+        //let customStore_Response = (id) => new DevExpress.data.CustomStore({
+        //    key: "id",
+        //    load: (values) => {
+        //        let deferred = $.Deferred();
+        //        var params = {
+        //            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+        //            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+        //            'FindId': id
+        //        }
+        //        if (values.sort) {
+        //            params['SortCol'] = values.sort[0].selector;
+        //            params['SortADSC'] = values.sort[0].desc;
+        //        }
+        //        $.ajax({
+        //            headers: header,
+        //            url: URL_API_PM_READ + ACTION_RESPONSEBYACC,
+        //            dataType: "json",
+        //            data: params,
+        //            success: function (data) {
+        //                var list = data.result.items;
+        //                deferred.resolve(
+        //                    list,
+        //                    {
+        //                        totalCount: list.length,
+        //                    }
+        //                );
+        //            },
+        //            error: function (xhr, textStatus, errorThrown) {
+        //                console.log(xhr.responseJSON);
+        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+        //            },
+        //            timeout: 10000//10 giây
+        //        });
 
-                return deferred.promise();
-            },
-            //insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
-            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
-            //remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
-        });
+        //        return deferred.promise();
+        //    },
+        //    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
+        //    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
+        //    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
+        //});
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -526,7 +527,9 @@
                             location: "after",
                             widget: "dxButton",
                             options: {
-                                icon: "refresh", stylingMode: "filled", type: "default",
+                                icon: "refresh",
+                                stylingMode: "filled",
+                                type: "default",
                                 onClick: () => container.refresh()
                             }
                         },
@@ -553,10 +556,16 @@
                     };
                 },
                 onCellPrepared: (e) => {
-                    if (e.rowType == "data" && e.column.dataField == "code")
+                    if (e.rowType == "data" && e.column.dataField == "barCode") {
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
-                }
-
+                    }
+                },
+                //onRowPrepared: (e) => {
+                //    if (e.rowType == "data" && e.data.rev == 0) {
+                        
+                //        e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
+                //    }
+                //}, 
             });
         }
         /// Load Popup
