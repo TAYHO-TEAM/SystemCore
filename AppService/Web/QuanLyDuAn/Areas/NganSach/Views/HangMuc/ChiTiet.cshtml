@@ -9,11 +9,10 @@
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
-
-
+<div id="popup-log-event"></div>
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
-    <script>        
+    <script>
 
         var customStore_GiaiDoan = (id) => new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -82,6 +81,9 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_HANGMUCDETAIL, key),
+            onInserted: (key, values) => ajax_log_insert("Insert", ACTION_HANGMUCDETAIL, values, key),
+            onUpdated: (key, values) => ajax_log_insert("Update", ACTION_HANGMUCDETAIL, key, values),
+            onRemoved: (key) => ajax_log_insert("Delete", ACTION_HANGMUCDETAIL, key, null),
             reshapeOnPush: true,
         });
 
@@ -106,7 +108,7 @@
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
-                columns: [ 
+                columns: [
                     {
                         dataField: "tenHangMuc", caption: "Thông tin hạng mục", dataType: "string",
                     },
@@ -149,15 +151,15 @@
                                 });
                             }
                         }
-                    }, 
+                    },
                     {
                         dataField: "createDate", width: 150, dataType: "date", alignment: "center",
                         caption: "Thời gian tạo",
                         cellTemplate: (c, o) => {
                             if (o.value != null) {
-                            $("<div />").append(
-                                $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
-                                $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
+                                $("<div />").append(
+                                    $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                                    $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
                                 ).appendTo(c);
                             }
                         }
@@ -195,6 +197,14 @@
                                             return deferred.promise();
                                         }
                                     });
+                                }
+                            },
+                            {
+                                hint: "Nhật ký cập nhật",
+                                icon: "fas fa-history",
+                                visible: (e) => (e.row.data.chilCount == 0 && e.row.data.hangMucDetailId != null),
+                                onClick: function (e) {
+                                    callLogEvent(e.row.data.hangMucDetailId, ACTION_HANGMUCDETAIL);
                                 }
                             }
                         ]
@@ -256,7 +266,7 @@
                     if (e.rowType == "data" && e.data.chilCount > 0) {
                         e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                     }
-                }, 
+                },
                 //stateStoring: {
                 //    enabled: true,
                 //    storageKey: "ngansach-hangmuc-localStorage",
