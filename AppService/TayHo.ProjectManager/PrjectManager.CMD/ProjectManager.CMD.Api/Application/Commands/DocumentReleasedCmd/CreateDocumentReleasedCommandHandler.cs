@@ -6,14 +6,21 @@ using MediatR;
 using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
-
+using ProjectManager.CMD.Domain.IService;
+using Services.Common.Utilities;
+using ProjectManager.CMD.Domain;
+using ProjectManager.Common;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
     public class CreateDocumentReleasedCommandHandler : DocumentReleasedCommandHandler, IRequestHandler<CreateDocumentReleasedCommand, MethodResult<CreateDocumentReleasedCommandResponse>>
     {
-        public CreateDocumentReleasedCommandHandler(IMapper mapper, IDocumentReleasedRepository DocumentReleasedRepository,IHttpContextAccessor httpContextAccessor) : base(mapper, DocumentReleasedRepository,httpContextAccessor)
+        private readonly IMediaService _mediaService;
+        private readonly IFilesAttachmentRepository _filesAttachmentRepository;
+        public CreateDocumentReleasedCommandHandler(IMapper mapper, IDocumentReleasedRepository DocumentReleasedRepository,IHttpContextAccessor httpContextAccessor, IFilesAttachmentRepository filesAttachmentRepository, IMediaService mediaService) : base(mapper, DocumentReleasedRepository,httpContextAccessor)
         {
+            _filesAttachmentRepository = filesAttachmentRepository;
+            _mediaService = mediaService;
         }
 
         /// <summary>
@@ -24,8 +31,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateDocumentReleasedCommandResponse>> Handle(CreateDocumentReleasedCommand request, CancellationToken cancellationToken)
         {
+            string tableName = QuanLyDuAnConstants.DocumentReleased_TABLENAME;
             var methodResult = new MethodResult<CreateDocumentReleasedCommandResponse>();
-            var newDocumentReleased = new DocumentReleased(request.Title,
+            request.Code = (await _DocumentReleasedRepository.IsGetTitleDocumentReleasedAsync((int)request.ProjectId, (int)request.WorkItemId, (int)request.DocumentTypeId).ConfigureAwait(false));
+            var newDocumentReleased = new DocumentReleased(request.Code,
+                                                            request.Title,
                                                             request.Description,
                                                             request.DocumentTypeId,
                                                             request.ProjectId,
@@ -40,7 +50,37 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             await _DocumentReleasedRepository.AddAsync(newDocumentReleased).ConfigureAwait(false);
             await _DocumentReleasedRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             await _DocumentReleasedRepository.IsCreatedDocumentReleasedAsync((int)newDocumentReleased.DocumentTypeId, _user, newDocumentReleased.Id);
+            // ghi file vào server và lưu log file dữ liệu
+            if (request.getFile() != null && request.getFile().Count > 0)
+            {
+                foreach (var i in request.getFile())
+                {
+                    var result = await _mediaService.SaveFile(i, tableName, request.Code);
+                    var newFilesAttachment = new FilesAttachment(newDocumentReleased.Id,
+                                                          tableName,
+                                                          newDocumentReleased.Code,
+                                                          result.Item1,
+                                                          result.Item5,
+                                                          result.Item3,
+                                                          result.Item2,
+                                                          "",
+                                                          result.Item4);
+                    newFilesAttachment.SetCreate(_user);
+                    newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
+                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
+                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
 
+                    await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
+                    await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                methodResult.AddAPIErrorMessage(nameof(ErrorCodeInsert.IErr000), new[]
+               {
+                    ErrorHelpers.GetCommonErrorMessage(nameof(ErrorCodeInsert.IErr000))
+                });
+            }
             methodResult.Result = _mapper.Map<CreateDocumentReleasedCommandResponse>(newDocumentReleased);
             return methodResult;
         }
