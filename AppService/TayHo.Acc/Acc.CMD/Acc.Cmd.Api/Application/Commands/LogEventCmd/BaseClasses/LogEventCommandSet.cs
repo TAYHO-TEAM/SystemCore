@@ -1,8 +1,8 @@
-﻿using Acc.Read.Sql.DTOs.BaseClasses;
+﻿using System;
 
-namespace Acc.Read.Sql.DTOs
+namespace Acc.Cmd.Api.Application.Commands
 {
-    public class LogEventDTO : DTOAccountInfoBase
+    public class LogEventCommandSet : BaseCommandClasses
     {
         public int? UserId { get; set; }
         public string Event { get; set; }

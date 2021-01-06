@@ -9,15 +9,17 @@
             background-color: rgba(150, 150, 150, 0.2);
         }
     </style>
-    }
+}
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div>
+</div> 
+<div id="popup-log-event"></div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
-    <script>
+    <script> 
+
         var MAXDOT = 0;
         var customStore = new DevExpress.data.CustomStore({
             key: "id",
@@ -26,7 +28,7 @@
                 params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindId': 'projectId,' + PROJECTID ,
+                    'FindId': 'projectId,' + PROJECTID,
                     'FindParentId': 'phatId,0',
                 };
                 if (values.sort) {
@@ -55,6 +57,9 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT, key),
+            onInserted: (key, values) => ajax_log_insert("Insert", ACTION_PHAT, key, values),
+            onUpdated: (key, values) => ajax_log_insert("Update", ACTION_PHAT, key, values),
+            onRemoved: (key) => ajax_log_insert("Delete", ACTION_PHAT, key, null),
         });
         var customStore_TheoDoi = (id) => new DevExpress.data.CustomStore({
             key: "id",
@@ -98,13 +103,16 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT_THEODOI, values),
             update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key, values),
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key),
+            onInserted: (key, values) => ajax_log_insert("Insert", ACTION_PHAT_THEODOI, key, values),
+            onUpdated: (key, values) => ajax_log_insert("Update", ACTION_PHAT_THEODOI, key, values),
+            onRemoved: (key) => ajax_log_insert("Delete", ACTION_PHAT_THEODOI, key, null),
         });
-        var customStore_GoiThau = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
+        var customStore_GoiThau = (projectId) => new DevExpress.data.CustomStore({
+            key: "id",
             load: (values) => {
                 let deferred = $.Deferred();
                 $.ajax({
-                    data: { FindParentId: 0, FindId: 'projectId,' + PROJECTID },
+                    data: { FindParentId: 0, FindId: 'projectId,' + projectId },
                     headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
                     success: function (data) {
                         deferred.resolve(data.result.items);
@@ -117,9 +125,14 @@
                 });
                 return deferred.promise();
             },
+            byKey: function (key) {
+                var d = new $.Deferred();
+                $.get(URL_API_PM_READ + ACTION_GOITHAU, { 'FindId': key }).done((rs) => d.resolve(rs.result.items[0])).fail(() => d.reject());
+                return d.promise();
+            },
         });
-                
-        var checkDotThanhToan = function (value) { 
+
+        var checkDotThanhToan = function (value) {
             var d = $.Deferred();
             if (value > MAXDOT) {
                 d.resolve(true);
@@ -127,8 +140,8 @@
                 d.reject();
             }
             return d.promise();
-        }        
-        var checkGiaTriConLai = function (params) { 
+        }
+        var checkGiaTriConLai = function (params) {
             var d = $.Deferred();
             $.ajax({
                 headers: header,
@@ -137,9 +150,8 @@
                 data: {
                     FindId: params.data.phatId
                 },
-                success: function (rs) { 
+                success: function (rs) {
                     if (rs.isOk && rs.result != null && rs.result.items.length > 0 && rs.result.items[0].giaTriCon != null) {
-                        
                         if (params.validator._validationGroup.type == "insert") {
                             if (params.value <= rs.result.items[0].giaTriCon)
                                 d.resolve(true);
@@ -184,7 +196,7 @@
                 highlightCaseSensitive: true, highlightSearchText: true,
                 searchVisibleColumnsOnly: true, visible: true
             },
-            showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             grouping: {
                 allowCollapsing: true,
@@ -206,20 +218,20 @@
                 {
                     dataField: "goiThauId", caption: "Gói thầu", width: 150, alignment: "center",
                     lookup: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                     },
                     editorType: "dxSelectBox",
                     editorOptions: {
-                        dataSource: customStore_GoiThau,
+                        dataSource: customStore_GoiThau(PROJECTID),
                         valueExpr: "id", displayExpr: "soHopDong",
                         placeholder: "Vui lòng chọn...",
                         searchEnabled: true, showClearButton: true,
                         itemTemplate: function (data) {
                             return "<b>" + data.soHopDong + "</b><em class='ml-1'>" + data.dienGiai + "</em>";
-                        } 
+                        }
                     },
-                    groupIndex: 0,
+                    groupIndex: 0, autoExpandGroup: true,
                     validationRules: [{ type: "required" }]
                 },
                 {
@@ -227,7 +239,7 @@
                     lookup: {
                         dataSource: customStore_Phat_Nhom,
                         valueExpr: "id", displayExpr: "tenNhomPhat",
-                    }, 
+                    },
                     editorType: "dxSelectBox",
                     editorOptions: {
                         dataSource: customStore_Phat_Nhom,
@@ -240,6 +252,7 @@
                                 $("<em>").append(data.dienGiai));
                         },
                     },
+                    groupIndex: 1, autoExpandGroup: true,
                     validationRules: [{ type: "required" }]
                 },
                 {
@@ -250,7 +263,7 @@
                     dataField: "chilCount", dataType: "number", alignment: "center",
                     width: 100, caption: "Đợt thanh toán",
                     customizeText: function (cellInfo) {
-                        return cellInfo.value + " đợt";
+                        return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
                     }
                 },
                 {
@@ -290,13 +303,6 @@
                     ]
                 },
                 {
-                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                    caption: "Thời gian",
-                    cellTemplate: (c, o) => {
-                        $("<div>").append($("<em/>").append(moment(o.value).locale("vi").fromNow(), $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")))).appendTo(c);
-                    }
-                },
-                {
                     caption: "Tương tác",
                     alignment: "center", width: 100,
                     cellTemplate: (c, o) => {
@@ -322,18 +328,41 @@
                     }
                 },
                 {
-                    dataField: "isActive", width: 100, alignment: "center",
-                    editorType: "dxSwitch",
+                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
+                    caption: "Thời gian tạo",
+                    cellTemplate: (c, o) => {
+                        $("<div />").append(
+                            $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                            $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
+                        ).appendTo(c);
+                    }
+                },
+                //{
+                //    dataField: "isActive", width: 100, alignment: "center",
+                //    editorType: "dxSwitch",
+                //},
+                {
+                    type: "buttons",
+                    width: 120,
+                    buttons: ["edit", "delete",
+                        {
+                            hint: "Nhật ký cập nhật",
+                            icon: "fas fa-history",
+                            onClick: function (e) {
+                                callLogEvent(e.row.data.id, ACTION_PHAT);
+                            }
+                        }
+                    ]
                 },
             ],
             editing: {
                 allowUpdating: (e) => {
-                    return PermitInAction.update && e.row.data.chilCount == 0;
+                    return PermitInAction.update;
                 },
                 allowDeleting: (e) => {
-                    return PermitInAction.delete && e.row.data.chilCount == 0;
+                    return PermitInAction.delete;
                 },
-                mode: "popup", useIcons: false, confirmDelete: true,
+                mode: "popup", useIcons: true, confirmDelete: true,
                 popup: {
                     width: 600, height: "auto", closeOnOutsideClick: true,
                     showTitle: false, fullScreen: $(document).width() <= 600,
@@ -443,6 +472,11 @@
             },
             onRowInserting: function (e) {
                 e.data.giaTriCon = e.data.giaTri;
+            },
+            onEditorPreparing: function (e) {
+                if (e.parentType === "dataRow" && (e.dataField === "goiThauId" || (e.dataField === "giaTri" && e.row.data.chilCount > 0)) && !e.row.isNewRow) {
+                    e.editorOptions.disabled = true;
+                }
             },
         });
         var loadTheoDoi = (e) => $("#popup-main").dxPopup({
@@ -572,7 +606,7 @@
                             showRequiredMark: true, requiredMark: "(*)",
                             items: [
                                 {
-                                colSpan: 3, dataField: "dot", label: { text: "Đợt thanh toán" },
+                                    colSpan: 3, dataField: "dot", label: { text: "Đợt thanh toán" },
                                 },
                                 {
                                     colSpan: 3, dataField: "giaTri", label: { text: "Số tiền" },
@@ -580,7 +614,7 @@
                                 {
                                     colSpan: 6, dataField: "noiDung", label: { text: "Nội dung / Thông tin" },
                                 },
-                                
+
                                 {
                                     colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
                                 },
@@ -623,7 +657,7 @@
                     onEditorPreparing: function (e) {
                         if (e.parentType === "dataRow" && (e.dataField === "dot") && !e.row.isNewRow) {
                             e.editorOptions.disabled = true;
-                        }                        
+                        }
                     },
                 }).dxDataGrid("instance");
                 scrollView.append(content);
@@ -632,6 +666,6 @@
                 return c;
             },
             onHiding: (e) => $("#container").dxDataGrid("instance").refresh()
-        }); 
+        });
     </script>
 }
