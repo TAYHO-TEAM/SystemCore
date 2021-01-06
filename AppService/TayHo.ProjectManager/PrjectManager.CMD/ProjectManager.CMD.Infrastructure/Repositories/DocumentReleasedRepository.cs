@@ -26,5 +26,21 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
             await cmd.Connection.CloseAsync();
             return (bool)(result == 0 ? false : true);
         }
+        public async Task<string> IsGetTitleDocumentReleasedAsync(int ProjectId, int WorkItemId, int DocumentTypeId)
+        {
+            await using (var cmd = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+
+                await cmd.Connection.OpenAsync();
+                cmd.CommandText = "sp_DocumentRelease_GetTitle";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@ProjectId", ProjectId));
+                cmd.Parameters.Add(new SqlParameter("@WorkItemId", WorkItemId));
+                cmd.Parameters.Add(new SqlParameter("@DocumentTypeId", DocumentTypeId));
+                var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+                await cmd.Connection.CloseAsync();
+                return (string)result;
+            }
+        }
     }
 }
