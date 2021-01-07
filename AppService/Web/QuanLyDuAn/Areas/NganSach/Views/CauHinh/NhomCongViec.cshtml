@@ -8,12 +8,7 @@
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div>
-<div id="popup-log-event"></div>
-<div id="action-add"></div>
-<div id="action-remove"></div>
-<div id="action-edit"></div>
-<div id="action-log"></div>
+</div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -158,43 +153,43 @@
                 return d.promise();
             },
         });
-        //var customStore_CongViec= (id) => new DevExpress.data.CustomStore({
-        //    key: "id",
-        //    load: (values) => {
-        //        let deferred = $.Deferred();
-        //        let params = {
-        //            'findId': 'nhomCongViecId,' + id + ';isActive,1;isVisible,1'
-        //        };
-        //        params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
-        //        params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
-        //        if (values.sort) {
-        //            params['SortCol'] = values.sort[0].selector;
-        //            params['SortADSC'] = values.sort[0].desc;
-        //        }
-        //        $.ajax({
-        //            headers: header, dataType: "json",
-        //            data: params,
-        //            url: URL_API_PM_READ + ACTION_CONGVIEC,
-        //            success: function (data) {
-        //                deferred.resolve(
-        //                    data.result.items,
-        //                    {
-        //                        totalCount: data.result.pagingInfo.totalItems
-        //                    }
-        //                );
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                console.log(xhr.responseJSON);
-        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
-        //            },
-        //            timeout: 10000
-        //        });
-        //        return deferred.promise();
-        //    },
-        //    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
-        //    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
-        //    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
-        //});
+        var customStore_CongViec= (id) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'findId': 'nhomCongViecId,' + id + ';isActive,1;isVisible,1'
+                };
+                params['PageSize'] = isNullOrEmpty(values.take) ? values.take : 0;
+                params['PageNumber'] = (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0;
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_CONGVIEC,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
+        });
 
         $(function () {
             loadNhomCongViec();
@@ -504,13 +499,14 @@
                 var selectedRowKey = e.selectedRowKeys[0]; 
                 if (selectedRowData != null && selectedRowKey != null) {
                     var data = e.component.getRowIndexByKey(selectedRowKey);
-                    $("#action-edit").dxSpeedDialAction({
+
+                    $("#action-update").dxSpeedDialAction({
                         index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
                         visible: PermitInAction["update"],
                         onClick: () => e.component.editRow(data)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-remove").dxSpeedDialAction({
+                    $("#action-delete").dxSpeedDialAction({
                         index: 3, icon: "fas fa-trash", label: "Xóa bỏ thông tin",
                         visible: PermitInAction["delete"],
                         onClick: (e) => e.component.deleteRow(data)
@@ -561,11 +557,15 @@
                 });
                 DevExpress.ui.repaintFloatingActionButton();
             },
+            onRowDblClick: (e) => loadCongViec(e.data)
         });
-            /*
+
         let loadCongViec = (item) => $("#popup-main").dxPopup({
-            fullScreen: true,showTitle: true, title: "DANH SÁCH CÔNG VIỆC",
-            showCloseButton: true, closeOnOutsideClick: false, visible: true,
+            width: "100%", height: "100%",
+            position: { of: "#container" },
+            dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
+            showTitle: true, title: "CÁC CÔNG VIỆC TRONG NHÓM "+ item.tenNhomCongViec,
+            visible: true, 
             contentTemplate: (c) => {
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div/>");
@@ -584,27 +584,26 @@
                         searchVisibleColumnsOnly: true,
                         visible: true
                     },
-                    paging: { enabled: false,  },
+                    paging: { enabled: false, },
                     columns: [
                         {
                             dataField: "status", caption: "STT", alignment: "center", width: 80,
                             sortOrder: "desc"
                         },
                         {
-                            dataField: "nhom", caption:"Nhóm", groupIndex:0, showWhenGrouped: true
+                            dataField: "nhom", caption: "Nhóm", groupIndex: 0, showWhenGrouped: true
                         },
                         {
                             dataField: "tenCongViec", caption: "Tên công việc"
                         },
                         {
-                            dataField: "dienGiai", caption: "Diễn giải", customizeText: (cellInfo) => { return (cellInfo.value != null && cellInfo.value.length > 0) ? cellInfo.value:"--" },
+                            dataField: "dienGiai", caption: "Diễn giải", customizeText: (cellInfo) => { return (cellInfo.value != null && cellInfo.value.length > 0) ? cellInfo.value : "--" },
                         },
                         {
                             dataField: "donViTinh", caption: "Đơn vị tính", alignment: "center"
                         }
                     ],
-                    editing: {
-                        //allowAdding: PermitInAction["insert"] ? true : null,
+                    editing: { 
                         allowUpdating: PermitInAction["update"] ? true : null,
                         allowDeleting: PermitInAction["delete"] ? true : null,
                         mode: "cell", useIcons: false, confirmDelete: true,
@@ -660,6 +659,5 @@
                 return c;
             }
         }).dxPopup("instance");
-        */
     </script>
 }

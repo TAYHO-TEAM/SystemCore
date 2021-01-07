@@ -5,18 +5,19 @@
     ViewBag.Title = "Cập nhật giá trị các công việc";
 }
 
+@section style{
+    <style>
+        .dx-datagrid-rowsview .dx-row.dx-group-row:not(.dx-row-focused) {
+            color: rgba(0,0,0,.54);
+            background-color: rgba(150, 150, 150, 0.2);
+        }
+    </style>
+}
 <div class="row">
     <div class="col-12">
         <div id="container" data-id="@Model" class="elevation-2"></div>
     </div>
-</div>
-
-<div id="popup-log-event"></div>
-<div id="action-add"></div>
-<div id="action-remove"></div>
-<div id="action-edit"></div>
-<div id="action-log"></div>
-
+</div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -97,24 +98,34 @@
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIECDETAIL, key),
             reshapeOnPush: true,
         });
+        var customStore_Reason = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred();
+                let params = {
+                    'SortCol': 'status',
+                    'SortADSC': '1',
+                    'FindId': 'isActive,1;isVisible,1'
+                };
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_REASON,
+                    success: function (rs) {
+                        deferred.resolve(rs.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
 
         $(function () {
             loadCongViec();
-            DevExpress.config({
-                floatingActionButtonConfig: {
-                    icon: "rowfield",
-                    label: "Tác vụ",
-                    shading: true,
-                    direction: "up",
-                    position: {
-                        of: "#container",
-                        my: "right bottom",
-                        at: "right bottom",
-                        offset: "-15 -15"
-                    }
-                }
-            });
-            DevExpress.ui.repaintFloatingActionButton();
         });
 
         var loadCongViec = () => $("#container").dxDataGrid({
@@ -147,18 +158,31 @@
                     )
                 },
                 {
-                    dataField: "giaiDoanId", caption: "Giai đoạn", alignment: "center",
+                    dataField: "reasonId", caption: "Lý do", 
+                    width: 200, alignment: "left",
+                    lookup: {
+                        dataSource: customStore_Reason,
+                        valueExpr: "id", displayExpr: "ten",
+                    },
+                    cellTemplate: (c, o) => {
+                        c.append(o.value != null ? $("<div>").append(o.text) : $("<em>").append("Không có"))
+                    }
+                },
+                {
+                    dataField: "giaiDoanId", caption: "Giai đoạn",
+                    width: 120, alignment: "center",
                     lookup: {
                         dataSource: customStore_GiaiDoan(0),
                         valueExpr: "id", displayExpr: "tenGiaiDoan",
                     },
                 },
                 {
-                    dataField: "donViTinh", caption: "ĐVT", width: 120, alignment: "center",
+                    dataField: "donViTinh", caption: "ĐVT",
+                    width: 120, alignment: "center"
                 },
                 {
-                    dataField: "khoiLuong", caption: "Khối lượng", dataType: "number", alignment: "center",
-
+                    dataField: "khoiLuong", caption: "Khối lượng", dataType: "number",
+                    width: 80, alignment: "center",
                 },
                 {
                     dataField: "donGia", caption: "Đơn giá", dataType: "number", alignment: "center",
@@ -277,13 +301,13 @@
                         onClick: () => genUpdateForm(data, true)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-edit").dxSpeedDialAction({
+                    $("#action-update").dxSpeedDialAction({
                         index: 2, icon: "fas fa-edit", label: "Cập nhật giá trị mới",
                         visible: (data.congViecDetailId != null && PermitInAction["update"]),
                         onClick: () => genUpdateForm(data, false)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-remove").dxSpeedDialAction({
+                    $("#action-delete").dxSpeedDialAction({
                         index: 3, icon: "fas fa-trash", label: "Hủy bỏ giá trị cũ",
                         visible: (data.congViecDetailId != null && PermitInAction["delete"]),
                         onClick: (e) => {
@@ -335,10 +359,27 @@
                     }
                 )
             },
+            onContentReady: (e) => {
+                DevExpress.config({
+                    floatingActionButtonConfig: {
+                        icon: "rowfield",
+                        label: "Tác vụ",
+                        shading: true,
+                        position: {
+                            of: e.element,
+                            my: "right bottom",
+                            at: "right bottom",
+                            offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                        }
+                    }
+                });
+                DevExpress.ui.repaintFloatingActionButton();
+            },
         });
 
         var formData = {};
         var genUpdateForm = (data, type) => $("#popup-main").dxPopup({
+            position: { of: "#container" },
             width: 500, height: "auto",
             fullScreen: $(window).width() <= 500,
             dragEnabled: true, resizeEnabled: false,
@@ -373,7 +414,7 @@
                                 colSpan: 12,
                                 dataField: "giaiDoanId",
                                 label: { text: "Giai đoạn" },
-                                editorType: "dxLookup",
+                                editorType: "dxSelectBox",
                                 editorOptions: {
                                     disabled: !type,
                                     dataSource: customStore_GiaiDoan(type ? (data.giaiDoanId == null ? 0 : data.giaiDoanId) : 0),
@@ -385,6 +426,21 @@
                                     },
                                 },
                                 validationRules: [{ type: "required" }]
+                            },
+                            {
+                                colSpan: 12,
+                                dataField: "reasonId",
+                                label: { text: "Lý do" },
+                                editorType: "dxSelectBox",
+                                editorOptions: {
+                                    dataSource: customStore_Reason,
+                                    valueExpr: "id", displayExpr: "ten",
+                                    placeholder: "Vui lòng chọn...",
+                                    searchEnabled: true, showClearButton: true,
+                                    itemTemplate: function (data) {
+                                        return $("<div>").append($("<b>").append(data.ten).addClass("mr-1"), $("<em>").append(data.dienGiai));
+                                    },
+                                },
                             },
                             {
                                 colSpan: 6,

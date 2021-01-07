@@ -183,7 +183,6 @@
     <Compile Include="Areas\Admin\Controllers\WorkItemsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CongViecController.cs" />
-    <Compile Include="Areas\NganSach\Controllers\DefaultController.cs" />
     <Compile Include="Areas\NganSach\Controllers\HangMucController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NhomCongViecController.cs" />
     <Compile Include="Areas\NganSach\Controllers\ThanhToanController.cs" />
@@ -2424,7 +2423,6 @@
     <Content Include="Content\icons\dxiconsmaterial.woff2" />
     <Content Include="manifest.json" />
     <Content Include="Areas\NganSach\Views\web.config" />
-    <Content Include="Areas\NganSach\Views\Default\Index2.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\ThongTin\Views\web.config" />
     <Content Include="Areas\ThongTin\Views\_ViewStart.cshtml" />
@@ -2447,7 +2445,6 @@
     <Content Include="Areas\Admin\Views\SystemConfig\GroupActionPermistion.cshtml" />
     <Content Include="Areas\Admin\Views\SystemConfig\UserInfo.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\Index.cshtml" />
-    <Content Include="Areas\NganSach\Views\Default\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_DetailRequestRegist.cshtml" />

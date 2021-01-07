@@ -2,19 +2,20 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Cập nhật giá trị các nhóm công việc";
-} 
+}
+@section style{
+    <style>
+        .dx-datagrid-rowsview .dx-row.dx-group-row:not(.dx-row-focused) {
+            color: rgba(0,0,0,.54);
+            background-color: rgba(150, 150, 150, 0.2);
+        }
+    </style>
+}
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
-
-<div id="popup-log-event"></div>
-<div id="action-add"></div>
-<div id="action-remove"></div>
-<div id="action-edit"></div>
-<div id="action-log"></div>
-
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -150,21 +151,6 @@
 
         $(function () {
             loadData();
-            DevExpress.config({
-                floatingActionButtonConfig: {
-                    icon: "rowfield",
-                    label: "Tác vụ",
-                    shading: true,
-                    direction: "up",
-                    position: {
-                        of: "#container",
-                        my: "right bottom",
-                        at: "right bottom",
-                        offset: "-15 -15"
-                    }
-                }
-            });
-            DevExpress.ui.repaintFloatingActionButton();
         });
 
         var loadData = () => $("#container").dxDataGrid({
@@ -203,14 +189,14 @@
 
                         $("<div />").addClass("text-muted").append(o.data.chilCount > 0 ? "Đang có <b>" + o.data.chilCount + " công việc</b>" : "Không có công việc cụ thể")
                     )
-                },
+                }, 
                 {
                     dataField: "hangMucId", caption: "Hạng mục", dataType: "string",
                     lookup: {
                         dataSource: customStore_HangMuc,
                         valueExpr: "id", displayExpr: "tenHangMuc",
                     },
-                    groupIndex:0
+                    groupIndex: 0
                 },
                 {
                     dataField: "loaiCongViecId", caption: "Loại công việc", dataType: "string",
@@ -332,6 +318,22 @@
             selection: {
                 mode: "single"
             },
+            onContentReady: (e) => {
+                DevExpress.config({
+                    floatingActionButtonConfig: {
+                        icon: "rowfield",
+                        label: "Tác vụ",
+                        shading: true,
+                        position: {
+                            of: e.element,
+                            my: "right bottom",
+                            at: "right bottom",
+                            offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                        }
+                    }
+                });
+                DevExpress.ui.repaintFloatingActionButton();
+            },
             onSelectionChanged: function (e) {
                 var data = e.selectedRowsData[0];
                 if (data != null) {
@@ -341,13 +343,13 @@
                         onClick: () => genUpdateForm(data, true)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-edit").dxSpeedDialAction({
+                    $("#action-update").dxSpeedDialAction({
                         index: 2, icon: "fas fa-edit", label: "Cập nhật giá trị mới",
                         visible: (data.nhomCongViecDetailId != null && PermitInAction["update"] && listGD.filter(x => x.capDo == 'NCV' && x.id == data.giaiDoanId).length > 0),
                         onClick: () => genUpdateForm(data, false)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-remove").dxSpeedDialAction({
+                    $("#action-delete").dxSpeedDialAction({
                         index: 3, icon: "fas fa-trash", label: "Hủy bỏ giá trị cũ",
                         visible: (data.nhomCongViecDetailId != null && PermitInAction["delete"] && listGD.filter(x => x.capDo == 'NCV' && x.id == data.giaiDoanId).length > 0),
                         onClick: (e) => {
@@ -419,7 +421,7 @@
                     }
                 )
             },
-            onRowDblClick: (e) => { 
+            onRowDblClick: (e) => {
                 if (e.data.chilCount > 0) {
                     window.location = "/NganSach/CongViec/ChiTiet?id=" + e.data.id
                 } else DevExpress.ui.notify("Nhóm công việc này không có công việc cụ thể để xem", "error", 3000);
@@ -428,6 +430,7 @@
 
         var formData = {};
         var genUpdateForm = (data, type) => $("#popup-main").dxPopup({
+            position: { of: "#container" },
             width: 500, height: "auto",
             fullScreen: $(window).width() <= 500,
             dragEnabled: true, resizeEnabled: false,
