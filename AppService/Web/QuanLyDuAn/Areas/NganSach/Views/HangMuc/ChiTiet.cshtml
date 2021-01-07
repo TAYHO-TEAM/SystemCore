@@ -7,12 +7,7 @@
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div>
-<div id="popup-log-event"></div>
-<div id="action-add"></div>
-<div id="action-remove"></div>
-<div id="action-edit"></div>
-<div id="action-log"></div>
+</div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -91,21 +86,6 @@
 
         $(function () {
             loadHangMuc();
-            DevExpress.config({
-                floatingActionButtonConfig: {
-                    icon: "rowfield",
-                    label:"Tác vụ",
-                    shading: true,
-                    direction: "up",
-                    position: {
-                        of: "#container",
-                        my: "right bottom",
-                        at: "right bottom",
-                        offset: "-15 -15"
-                    }
-                }
-            });
-            DevExpress.ui.repaintFloatingActionButton();
         });
 
         var loadHangMuc = () => {
@@ -227,26 +207,26 @@
                         ]
                     }*/
                 ],
-
                 selection: {
                     mode: "single"
                 },
                 onSelectionChanged: function (e) {
                     var data = e.selectedRowsData[0];
+                    console.log(data);
                     if (data != null) {
-                        $("#action-add").dxSpeedDialAction({ 
+                        $("#action-add").dxSpeedDialAction({
                             index: 1, icon: "fas fa-plus", label: "Thêm giá trị",
                             visible: (data.chilCount == 0 && PermitInAction["insert"]),
                             onClick: () => genUpdateForm(data, true)
                         }).dxSpeedDialAction("instance");
 
-                        $("#action-edit").dxSpeedDialAction({
+                        $("#action-update").dxSpeedDialAction({
                             index: 2, icon: "fas fa-edit", label: "Cập nhật giá trị mới",
                             visible: (data.chilCount == 0 && data.hangMucDetailId != null && PermitInAction["update"]),
                             onClick: () => genUpdateForm(data, false)
                         }).dxSpeedDialAction("instance");
 
-                        $("#action-remove").dxSpeedDialAction({ 
+                        $("#action-delete").dxSpeedDialAction({
                             index: 3, icon: "fas fa-trash", label: "Hủy bỏ giá trị cũ",
                             visible: (data.chilCount == 0 && data.hangMucDetailId != null && PermitInAction["delete"]),
                             onClick: (e) => {
@@ -263,12 +243,28 @@
                             }
                         }).dxSpeedDialAction("instance");
 
-                        $("#action-log").dxSpeedDialAction({                            
+                        $("#action-log").dxSpeedDialAction({
                             index: 4, icon: "fas fa-history", label: "Nhật ký cập nhật",
                             visible: (data.chilCount == 0 && data.hangMucDetailId != null),
                             onClick: () => callLogEvent(data.hangMucDetailId, ACTION_HANGMUCDETAIL)
-                        }).dxSpeedDialAction("instance");
+                        });
                     }
+                },
+                onContentReady: (e) => {
+                    DevExpress.config({
+                        floatingActionButtonConfig: {
+                            icon: "rowfield",
+                            label: "Tác vụ",
+                            shading: true,
+                            position: {
+                                of: e.element,
+                                my: "right bottom",
+                                at: "right bottom",
+                                offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                            }
+                        }
+                    });
+                    DevExpress.ui.repaintFloatingActionButton();
                 },
                 onRowUpdating: (options) => {
                     if (options.oldData.giaiDoanId != null) options.newData['giaiDoanId'] = options.oldData.giaiDoanId;
@@ -326,16 +322,12 @@
                     if (e.rowType == "data" && e.data.chilCount > 0)
                         e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;");
                 },
-                //stateStoring: {
-                //    enabled: true,
-                //    storageKey: "ngansach-hangmuc-localStorage",
-                //    type: "localStorage"
-                //},
             });
         };
 
         var formData = {};
         var genUpdateForm = (data, type) => $("#popup-main").dxPopup({
+            position: { of: "#container" },
             width: 500, height: "auto",
             fullScreen: $(window).width() <= 500,
             dragEnabled: true, resizeEnabled: false,

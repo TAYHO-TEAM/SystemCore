@@ -9,13 +9,7 @@
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div>
-<div id="popup-log-event"></div>
-<div id="action-add"></div>
-<div id="action-add-sub"></div>
-<div id="action-remove"></div>
-<div id="action-edit"></div>
-<div id="action-log"></div>
+</div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -347,33 +341,7 @@
                         }
                     }
                 );
-            },
-            /*
-            onContextMenuPreparing: function (e) {
-                if (e.target == "content" && e.row.rowType == "data") {
-                    var dataGrid = e.component;
-                    if (!e.items) e.items = [];
-                    if (PermitInAction["insert"] && e.row.data.parentId == 0) {
-                        e.items.push({
-                            icon: "add", text: "Thêm phụ lục",
-                            onItemClick: () => dataGrid.addRow(e.row.data.id)
-                        });
-                    }
-                    if (PermitInAction["update"]) {
-                        e.items.push({
-                            icon: "edit", text: "Cập nhật thông tin",
-                            onItemClick: () => dataGrid.editRow(e.row.rowIndex)
-                        });
-                    }
-                    if (PermitInAction["delete"]) {
-                        e.items.push({
-                            icon: "remove", text: "Xóa bỏ",
-                            onItemClick: () => dataGrid.deleteRow(e.row.rowIndex)
-                        });
-                    }
-                }
-            },
-            */
+            },             
             onInitNewRow: (e) => {
                 e.data.thoiGianBaoHanh = 0;
                 e.data.thoiGianGiuBaoHanh = 0;
@@ -389,6 +357,7 @@
                     e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
             },
             onContentReady: (e) => {
+
                 $("#action-add").dxSpeedDialAction({
                     index: 1, icon: "fas fa-plus", label: "Thêm hợp đồng",
                     visible: PermitInAction["insert"],
@@ -404,7 +373,7 @@
                             of: e.element,
                             my: "right bottom",
                             at: "right bottom",
-                            offset: "-15 -15"
+                            offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
                         }
                     }
                 });
@@ -416,19 +385,20 @@
                 var selectedRowKey = e.selectedRowKeys[0]; 
                 if (selectedRowData != null && selectedRowKey != null) {
                     var data = e.component.getRowIndexByKey(selectedRowKey);
-                    $("#action-add-sub").dxSpeedDialAction({
+
+                    $("#action-add").dxSpeedDialAction({
                         index: 2, icon: "fas fa-plus", label: "Thêm phụ lục hợp đồng",
                         visible: (PermitInAction["insert"] && selectedRowData.parentId==0),
                         onClick: () => e.component.addRow(data)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-edit").dxSpeedDialAction({
+                    $("#action-update").dxSpeedDialAction({
                         index: 3, icon: "fas fa-edit", label: "Cập nhật thông tin",
                         visible: PermitInAction["update"],
                         onClick: () => e.component.editRow(data)
                     }).dxSpeedDialAction("instance");
 
-                    $("#action-remove").dxSpeedDialAction({
+                    $("#action-delete").dxSpeedDialAction({
                         index: 4, icon: "fas fa-trash", label: "Xóa bỏ thông tin",
                         visible: PermitInAction["delete"],
                         onClick: (e) => e.component.deleteRow(data)

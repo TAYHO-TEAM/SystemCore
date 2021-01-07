@@ -9,6 +9,7 @@ const ACTION_HANGMUCDETAIL      = "/NS_HangMucDetail";
 const ACTION_CONGVIECDETAIL     = "/NS_CongViecDetail";
 const ACTION_GOITHAU            = "/NS_GoiThau";
 const ACTION_NHOMCHIPHI         = "/NS_NhomChiPhi";
+const ACTION_REASON             = "/NS_Reason";
 
 const ACTION_CONTRACTORINFO     = "/ContractorInfo";
 
@@ -64,3 +65,4 @@ var customStore_Phat_Nhom = new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
+ 

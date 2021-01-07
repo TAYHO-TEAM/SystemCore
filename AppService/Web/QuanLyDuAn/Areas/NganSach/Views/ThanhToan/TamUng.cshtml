@@ -14,8 +14,7 @@
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div>
-<div id="popup-log-event"></div>
+</div> 
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -28,7 +27,7 @@
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                     'FindId': 'projectId,' + PROJECTID,
-                    'FindParentId': 'phatId,0',
+                    'FindParentId': 'tamUngId,0',
                 };
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -197,7 +196,7 @@
             columns: [
                 {
                     alignment: "center", caption: "STT",
-                    width: 80, cellTemplate: (c, o) => c.append(o.rowIndex+1)
+                    width: 80, cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                 },
                 {
                     dataField: "noiDung", alignment: "left",
@@ -310,28 +309,26 @@
                             $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
                         ).appendTo(c);
                     }
-                }, 
-                {
-                    type: "buttons",
-                    width: 120,
-                    buttons: ["edit", "delete",
-                        {
-                            hint: "Nhật ký cập nhật",
-                            icon: "fas fa-history",
-                            onClick: function (e) {
-                                callLogEvent(e.row.data.id, ACTION_TAMUNG);
-                            }
-                        }
-                    ]
                 },
+                //{
+                //    type: "buttons",
+                //    width: 120,
+                //    buttons: ["edit", "delete",
+                //        {
+                //            hint: "Nhật ký cập nhật",
+                //            icon: "fas fa-history",
+                //            onClick: function (e) {
+                //                callLogEvent(e.row.data.id, ACTION_TAMUNG);
+                //            }
+                //        }
+                //    ]
+                //},
             ],
-            editing: {
-                allowUpdating: PermitInAction.update,
-                allowDeleting: PermitInAction.delete,
+            editing: { 
                 mode: "popup", useIcons: true, confirmDelete: true,
                 popup: {
                     width: 600, height: "auto", closeOnOutsideClick: true,
-                    showTitle: false, fullScreen: $(document).width() <= 600,                    
+                    showTitle: false, fullScreen: $(document).width() <= 600,
                     position: { of: "#container" },
                     dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
                 },
@@ -373,15 +370,7 @@
                                 loadData(customStore);
                             },
                         },
-                    },
-                    {
-                        location: "after", widget: "dxButton",
-                        options: {
-                            visible: PermitInAction["insert"],
-                            text: "Tạm ứng", icon: "add", stylingMode: "filled", type: "default",
-                            onClick: () => container.addRow()
-                        }
-                    },
+                    }, 
                     {
                         location: "after", widget: "dxButton",
                         options: {
@@ -444,13 +433,60 @@
                 e.data.giaTriCon = e.data.giaTri;
             },
             onRowUpdating: function (e) {
-                if (e.newData['giaTri'] != null)
-                    e.newData['giaTriCon'] = e.newData['giaTri'];
+                if (e.newData['giaTri'] != null) e.newData['giaTriCon'] = e.newData['giaTri'];
+            },
+            onContentReady: (e) => {
+
+                $("#action-add").dxSpeedDialAction({
+                    index: 1, icon: "fas fa-plus", label: "Thêm mới",
+                    visible: PermitInAction["insert"],
+                    onClick: () => e.component.addRow()
+                }).dxSpeedDialAction("instance");
+
+                DevExpress.config({
+                    floatingActionButtonConfig: {
+                        icon: "rowfield",
+                        label: "Tác vụ",
+                        shading: true,
+                        position: {
+                            of: e.element,
+                            my: "right bottom",
+                            at: "right bottom",
+                            offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                        }
+                    }
+                });
+                DevExpress.ui.repaintFloatingActionButton();
+            },
+            selection: { mode: "single" },
+            onSelectionChanged: (e) => {
+                var selectedRowData = e.selectedRowsData[0];
+                var selectedRowKey = e.selectedRowKeys[0];
+                if (selectedRowData != null && selectedRowKey != null) {
+                    var data = e.component.getRowIndexByKey(selectedRowKey);
+
+                    $("#action-update").dxSpeedDialAction({
+                        index: 3, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                        visible: PermitInAction.update,
+                        onClick: () => e.component.editRow(data)
+                    }).dxSpeedDialAction("instance");
+
+                    $("#action-delete").dxSpeedDialAction({
+                        index: 4, icon: "fas fa-trash", label: "Xóa bỏ thông tin",
+                        visible: PermitInAction.delete,
+                        onClick: () => e.component.deleteRow(data)
+                    }).dxSpeedDialAction("instance");
+
+                    $("#action-log").dxSpeedDialAction({
+                        index: 5, icon: "fas fa-history", label: "Nhật ký cập nhật",
+                        onClick: () => callLogEvent(selectedRowData.id, ACTION_TAMUNG)
+                    }).dxSpeedDialAction("instance");
+                }
             },
         });
         var loadTheoDoi = (e) => $("#popup-main").dxPopup({
-            width: "100%", height: "100%", 
-            position: { of: "#container"}, 
+            width: "100%", height: "100%",
+            position: { of: "#container" },
             dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
             showTitle: true, title: "Theo dõi thanh toán tạm ứng",
             visible: true,
@@ -625,7 +661,7 @@
                     },
                     onInitNewRow: (e) => {
                         e.data.tamUngId = ItemData.id,
-                        e.data.giaTri = 1000000;
+                            e.data.giaTri = 1000000;
                         e.data.dot = 1;
                     },
                     summary: {

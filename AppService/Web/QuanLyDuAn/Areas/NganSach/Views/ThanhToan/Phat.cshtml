@@ -14,11 +14,10 @@
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
     </div>
-</div> 
-<div id="popup-log-event"></div> 
+</div>
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
-    <script> 
+    <script>
 
         var MAXDOT = 0;
         var customStore = new DevExpress.data.CustomStore({
@@ -252,7 +251,7 @@
                                 $("<em>").append(data.dienGiai));
                         },
                     },
-                    groupIndex: 1, autoExpandGroup: true,
+                    groupIndex: 1, autoExpandGroup: false,
                     validationRules: [{ type: "required" }]
                 },
                 {
@@ -336,27 +335,21 @@
                         ).appendTo(c);
                     }
                 },
-                {
-                    type: "buttons",
-                    width: 120,
-                    buttons: ["edit", "delete",
-                        {
-                            hint: "Nhật ký cập nhật",
-                            icon: "fas fa-history",
-                            onClick: function (e) {
-                                callLogEvent(e.row.data.id, ACTION_PHAT);
-                            }
-                        }
-                    ]
-                },
+                //{
+                //    type: "buttons",
+                //    width: 120,
+                //    buttons: ["edit", "delete",
+                //        {
+                //            hint: "Nhật ký cập nhật",
+                //            icon: "fas fa-history",
+                //            onClick: function (e) {
+                //                callLogEvent(e.row.data.id, ACTION_PHAT);
+                //            }
+                //        }
+                //    ]
+                //},
             ],
             editing: {
-                allowUpdating: (e) => {
-                    return PermitInAction.update;
-                },
-                allowDeleting: (e) => {
-                    return PermitInAction.delete;
-                },
                 mode: "popup", useIcons: true, confirmDelete: true,
                 popup: {
                     width: 600, height: "auto", closeOnOutsideClick: true,
@@ -404,14 +397,6 @@
                                 loadData(customStore);
                             },
                         },
-                    },
-                    {
-                        location: "after", widget: "dxButton",
-                        options: {
-                            visible: PermitInAction["insert"],
-                            text: "Phạt", icon: "add", stylingMode: "filled", type: "default",
-                            onClick: () => container.addRow()
-                        }
                     },
                     {
                         location: "after", widget: "dxButton",
@@ -478,12 +463,61 @@
                     e.editorOptions.disabled = true;
                 }
             },
+            onContentReady: (e) => {
+
+                $("#action-add").dxSpeedDialAction({
+                    index: 1, icon: "fas fa-plus", label: "Thêm mới",
+                    visible: PermitInAction["insert"],
+                    onClick: () => e.component.addRow()
+                }).dxSpeedDialAction("instance");
+
+                DevExpress.config({
+                    floatingActionButtonConfig: {
+                        icon: "rowfield",
+                        label: "Tác vụ",
+                        shading: true,
+                        position: {
+                            of: e.element,
+                            my: "right bottom",
+                            at: "right bottom",
+                            offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                        }
+                    }
+                });
+                DevExpress.ui.repaintFloatingActionButton();
+            },
+            selection: { mode: "single" },
+            onSelectionChanged: (e) => {
+                var selectedRowData = e.selectedRowsData[0];
+                var selectedRowKey = e.selectedRowKeys[0];
+                if (selectedRowData != null && selectedRowKey != null) {
+                    var data = e.component.getRowIndexByKey(selectedRowKey);
+
+                    $("#action-update").dxSpeedDialAction({
+                        index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                        visible: PermitInAction.update,
+                        onClick: () => e.component.editRow(data)
+                    }).dxSpeedDialAction("instance");
+
+                    $("#action-delete").dxSpeedDialAction({
+                        index: 3, icon: "fas fa-trash", label: "Xóa bỏ thông tin",
+                        visible: PermitInAction.delete,
+                        onClick: () => e.component.deleteRow(data)
+                    }).dxSpeedDialAction("instance");
+
+                    $("#action-log").dxSpeedDialAction({
+                        index: 4, icon: "fas fa-history", label: "Nhật ký cập nhật",
+                        onClick: () => callLogEvent(selectedRowData.id, ACTION_PHAT)
+                    }).dxSpeedDialAction("instance");
+                }
+            },
         });
         var loadTheoDoi = (e) => $("#popup-main").dxPopup({
-            width: 900, height: "auto", fullScreen: $(window).width() <= 900,
-            dragEnabled: true, resizeEnabled: true, showCloseButton: true, closeOnOutsideClick: true,
+            width: "100%", height: "100%",
+            position: { of: "#container" },
+            dragEnabled: false, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
             showTitle: true, title: "Theo dõi thanh toán phạt",
-            visible: true,
+            visible: true,  
             contentTemplate: (c) => {
                 var ItemData = e.data;
                 var scrollView = $("<div id='scrollView'></div>");
@@ -674,7 +708,29 @@
                         if (e.parentType === "dataRow" && (e.dataField === "dot" || (e.dataField === "giaTri" && e.row.data.dot != MAXDOT)) && !e.row.isNewRow) {
                             e.editorOptions.disabled = true;
                         }
-                    }, 
+                    },
+                    onContentReady: (e) => {
+                        $("#action-add-sub").dxSpeedDialAction({
+                            index: 1, icon: "fas fa-plus", label: "Thêm mới",
+                            visible: PermitInAction["insert"],
+                            onClick: () => e.component.addRow()
+                        }).dxSpeedDialAction("instance");
+
+                        DevExpress.config({
+                            floatingActionButtonConfig: {
+                                icon: "rowfield",
+                                label: "Tác vụ",
+                                shading: true,
+                                position: {
+                                    of: "#popup-main",
+                                    my: "right bottom",
+                                    at: "right bottom",
+                                    offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                                }
+                            }
+                        });
+                        DevExpress.ui.repaintFloatingActionButton();
+                    },
                 }).dxDataGrid("instance");
                 scrollView.append(content);
                 scrollView.dxScrollView({ width: '100%', height: '100%' });
