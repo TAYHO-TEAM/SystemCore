@@ -80,7 +80,7 @@
     }
     public static class ConstPath
     {
-        public static string localDisk = @"D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\";//D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate
+        public static string localDisk = @"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\";//D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate
         public static string CMDCommandBase = localDisk + @"CMD\Api\Application\Command\BaseClasses\";
         public static string CMDCommand = localDisk + @"CMD\Api\Application\Command\";
         public static string CMDControllers = localDisk + @"CMD\Api\Controllers\";

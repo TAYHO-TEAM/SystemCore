@@ -32,7 +32,7 @@ namespace AppWFGenProject
 
         private void GenProject_Load(object sender, EventArgs e)
         {
-            ConfigExtenstions.GetValue<int>(_configuration, "appSettings", "DefaultItemsPerPage");
+            //ConfigExtenstions.GetValue<int>(_configuration, "appSettings", "DefaultItemsPerPage");
         }
 
         private void btnTestConnec_Click(object sender, EventArgs e)
@@ -75,7 +75,7 @@ namespace AppWFGenProject
             // Set db
             genOB.db = "QuanLyDuAnContext"; // config setting tạo sau
             // Set version 
-            genOB.version = "1"; // config setting tạo sau
+            genOB.version = "v1"; // config setting tạo sau
 
 
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkOverWrite.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;

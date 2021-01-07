@@ -49,7 +49,13 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<ResponseRegist> ResponseRegist { get; set; }
         public DbSet<ResponseRegistReply> ResponseRegistReply { get; set; }
         public DbSet<Stages> Stages { get; set; }
-        public DbSet<StepsProcess> StepsProcess { get; set; } 
+        public DbSet<StepsProcess> StepsProcess { get; set; }
+        public DbSet<CustomCellContent> CustomCellContent { get; set; }
+        public DbSet<CustomColum> CustomColum { get; set; }
+        public DbSet<CustomForm> CustomForm { get; set; }
+        public DbSet<CustomFormBody> CustomFormBody { get; set; }
+        public DbSet<CustomFormContent> CustomFormContent { get; set; }
+        public DbSet<CustomTable> CustomTable { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

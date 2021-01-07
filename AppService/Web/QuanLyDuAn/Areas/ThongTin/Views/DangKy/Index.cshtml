@@ -632,7 +632,7 @@
                                 {
                                     colSpan: 12,
                                     dataField: "note",
-                                    label: { text: "Nghi chú" },
+                                    label: { text: "Ghi chú" },
                                     alignment: "left",
                                 },
                                 {
@@ -819,12 +819,16 @@
 
                         },//account
                         {
-                            dataField: "descriptions", caption: "Mô tả",
-                            dataType: "string", alignment: "left",
+                            dataField: "descriptions",
+                            caption: "Mô tả",
+                            dataType: "string",
+                            alignment: "left",
                         },
                         {
-                            dataField: "note", caption: "Nghi chú",
-                            dataType: "string", alignment: "left",
+                            dataField: "note",
+                            caption: "Ghi chú",
+                            dataType: "string",
+                            alignment: "left",
                         },
                         {
                             dataField: "createPlanDate",
@@ -1054,15 +1058,6 @@
             console.log(isUpload);
             loadUpload(table, item, isUpload);
         }
-
-        var fdatatest1 = new FormData();
-        fdatatest1.append('projectId', 1);
-        fdatatest1.append('planRegisterId', 2);
-        fdatatest1.append('documentTypeId', 1);
-        fdatatest1.append('workItemId', 1);
-        fdatatest1.append('title', '123');
-        fdatatest1.append('descriptions', '456');
-        fdatatest1.append('note', 'test');
 
         function callPopup(title, url, width, container) {
 

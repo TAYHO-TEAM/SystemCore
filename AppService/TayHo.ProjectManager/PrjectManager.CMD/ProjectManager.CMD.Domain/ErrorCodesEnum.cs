@@ -17,6 +17,7 @@
         IErr512,
         IErr1000,
         IErr1024,
+        IErr1028,
         IErr2048,
         IErr4000,
         IErrN0,

@@ -55,5 +55,11 @@ namespace ProjectManager.Common
         public const string DocumentReleased_TABLENAME = "DocumentReleased";
         public const string DocumentReleasedAccount_TABLENAME = "DocumentReleasedAccount";
         public const string AccountInfo_TABLENAME = "AccountInfo";
+        public const string CustomForm_TABLENAME = "CustomForm";
+        public const string CustomFormBody_TABLENAME = "CustomFormBody";
+        public const string CustomFormContent_TABLENAME = "CustomFormContent";
+        public const string CustomTable_TABLENAME = "CustomTable";
+        public const string CustomCellContent_TABLENAME = "CustomCellContent";
+        public const string CustomColum_TABLENAME = "CustomColum";
     }
 }

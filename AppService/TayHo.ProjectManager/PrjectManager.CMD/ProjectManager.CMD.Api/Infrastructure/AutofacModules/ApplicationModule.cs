@@ -57,6 +57,13 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<DocumentReleasedLogRepository>().As<IDocumentReleasedLogRepository>().InstancePerLifetimeScope();
             builder.RegisterType<DocumentReleasedRepository>().As<IDocumentReleasedRepository>().InstancePerLifetimeScope();
             builder.RegisterType<DocumentReleasedAccountRepository>().As<IDocumentReleasedAccountRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<CustomFormRepository>().As<ICustomFormRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomFormBodyRepository>().As<ICustomFormBodyRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomFormContentRepository>().As<ICustomFormContentRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomTableRepository>().As<ICustomTableRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomCellContentRepository>().As<ICustomCellContentRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomColumRepository>().As<ICustomColumRepository>().InstancePerLifetimeScope();
         }
     }
 }
