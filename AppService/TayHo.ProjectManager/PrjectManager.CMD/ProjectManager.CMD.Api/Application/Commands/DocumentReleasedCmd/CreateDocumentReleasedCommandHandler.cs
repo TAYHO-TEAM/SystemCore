@@ -33,7 +33,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             string tableName = QuanLyDuAnConstants.DocumentReleased_TABLENAME;
             var methodResult = new MethodResult<CreateDocumentReleasedCommandResponse>();
-            request.Code = (await _DocumentReleasedRepository.IsGetTitleDocumentReleasedAsync(request.ProjectId?? 0, request.WorkItemId?? 0, request.DocumentTypeId ?? 0).ConfigureAwait(false));
+            request.Code = (await _documentReleasedRepository.IsGetTitleDocumentReleasedAsync(request.ProjectId?? 0, request.WorkItemId?? 0, request.DocumentTypeId ?? 0).ConfigureAwait(false));
             var newDocumentReleased = new DocumentReleased(request.Code,
                                                             request.Title,
                                                             request.Description,
@@ -47,9 +47,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             newDocumentReleased.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentReleased.IsActive;
             newDocumentReleased.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentReleased.IsVisible;
 
-            await _DocumentReleasedRepository.AddAsync(newDocumentReleased).ConfigureAwait(false);
-            await _DocumentReleasedRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
-            await _DocumentReleasedRepository.IsCreatedDocumentReleasedAsync((int)newDocumentReleased.DocumentTypeId, _user, newDocumentReleased.Id);
+            await _documentReleasedRepository.AddAsync(newDocumentReleased).ConfigureAwait(false);
+            await _documentReleasedRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            await _documentReleasedRepository.IsCreatedDocumentReleasedAsync((int)newDocumentReleased.DocumentTypeId, _user, newDocumentReleased.Id);
             // ghi file vào server và lưu log file dữ liệu
             if (request.getFile() != null && request.getFile().Count > 0)
             {
@@ -73,7 +73,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                     await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
                     await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
                 }
-                await _DocumentReleasedRepository.DocumentReleasedProcessAsync();
+                await _documentReleasedRepository.DocumentReleasedProcessAsync();
             }
             else
             {

@@ -13,9 +13,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     public class CreateDocumentReleasedAccountCommandHandler : DocumentReleasedAccountCommandHandler, IRequestHandler<CreateDocumentReleasedAccountCommand, MethodResult<CreateDocumentReleasedAccountCommandResponse>>
     {
         private readonly IGroupAccountRepository _groupAccount;
-        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository,IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount) : base(mapper, DocumentReleasedAccountRepository,httpContextAccessor)
+        IDocumentReleasedRepository _documentReleasedRepository;
+        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository,IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount, IDocumentReleasedRepository DocumentReleasedRepository) : base(mapper, DocumentReleasedAccountRepository,httpContextAccessor)
         {
             _groupAccount = GroupAccount;
+            _documentReleasedRepository = DocumentReleasedRepository;
         }
 
         /// <summary>
@@ -59,7 +61,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }    
             await _DocumentReleasedAccountRepository.AddRangeAsync(newDocumentReleasedAccounts).ConfigureAwait(false);
             await _DocumentReleasedAccountRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
-            methodResult.Result = _mapper.Map<CreateDocumentReleasedAccountCommandResponse>(newDocumentReleasedAccounts);
+            await _documentReleasedRepository.DocumentReleasedProcessAsync();
+            var DocumentReleasedAccountResponseDTOs = _mapper.Map<List<DocumentReleasedAccountCommandResponseDTO>>(newDocumentReleasedAccounts);
+            methodResult.Result = new CreateDocumentReleasedAccountCommandResponse(DocumentReleasedAccountResponseDTOs);
             return methodResult;
         }
     }

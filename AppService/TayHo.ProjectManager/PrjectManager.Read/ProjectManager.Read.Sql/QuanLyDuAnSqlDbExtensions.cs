@@ -88,7 +88,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IFilesAttachmentRepository<FilesAttachmentDTO>, FilesAttachmentRepository<FilesAttachmentDTO>>();
             services.AddScoped<IPlanRegisterRepository<PlanRegisterDTO>, PlanRegisterRepository<PlanRegisterDTO>>();
             services.AddScoped<IDocumentReleasedRepository<DocumentReleasedDTO>, DocumentReleasedRepository<DocumentReleasedDTO>>();
-
+            services.AddScoped<IDocumentReleasedLogRepository<DocumentReleasedLogDetailDTO>, DocumentReleasedLogRepository<DocumentReleasedLogDetailDTO>>();
             return services;
         }
 
