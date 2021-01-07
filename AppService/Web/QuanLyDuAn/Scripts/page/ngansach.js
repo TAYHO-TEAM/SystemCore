@@ -1,21 +1,24 @@
-﻿const ACTION_PROJECT = "/Projects";
-const ACTION_NHOMCONGVIEC = "/NS_NhomCongViec";
-const ACTION_CONGVIEC = "/NS_CongViec";
+﻿const ACTION_PROJECT            = "/Projects";
+const ACTION_NHOMCONGVIEC       = "/NS_NhomCongViec";
+const ACTION_CONGVIEC           = "/NS_CongViec";
 const ACTION_NHOMCONGVIECDETAIL = "/NS_NhomCongViecDetail";
-const ACTION_HANGMUC = "/NS_HangMuc";
-const ACTION_LOAICONGVIEC = "/NS_LoaiCongViec";
-const ACTION_GIAIDOAN = "/NS_GiaiDoan";
-const ACTION_HANGMUCDETAIL = "/NS_HangMucDetail";
-const ACTION_CONGVIECDETAIL = "/NS_CongViecDetail";
-const ACTION_GOITHAU = "/NS_GoiThau";
+const ACTION_HANGMUC            = "/NS_HangMuc";
+const ACTION_LOAICONGVIEC       = "/NS_LoaiCongViec";
+const ACTION_GIAIDOAN           = "/NS_GiaiDoan";
+const ACTION_HANGMUCDETAIL      = "/NS_HangMucDetail";
+const ACTION_CONGVIECDETAIL     = "/NS_CongViecDetail";
+const ACTION_GOITHAU            = "/NS_GoiThau";
+const ACTION_NHOMCHIPHI         = "/NS_NhomChiPhi";
 
-const ACTION_PHAT = "/NS_Phat";
-const ACTION_PHAT_THEODOI = "/NS_Phat_TheoDoi";
-const ACTION_PHAT_NHOM = "/NS_Phat_Nhom";
-const ACTION_TAMUNG = "/NS_TamUng";
-const ACTION_TAMUNG_THEODOI = "/NS_TamUng_TheoDoi";
-const ACTION_KHAUTRU = "/NS_KhauTru";
-const ACTION_KHAUTRU_THEODOI = "/NS_KhauTru_TheoDoi";
+const ACTION_CONTRACTORINFO     = "/ContractorInfo";
+
+const ACTION_PHAT               = "/NS_Phat";
+const ACTION_PHAT_THEODOI       = "/NS_Phat_TheoDoi";
+const ACTION_PHAT_NHOM          = "/NS_Phat_Nhom";
+const ACTION_TAMUNG             = "/NS_TamUng";
+const ACTION_TAMUNG_THEODOI     = "/NS_TamUng_TheoDoi";
+const ACTION_KHAUTRU            = "/NS_KhauTru";
+const ACTION_KHAUTRU_THEODOI    = "/NS_KhauTru_TheoDoi";
 
 var customStore_Projects = new DevExpress.data.CustomStore({
     key: "id", loadMode: "raw",
@@ -60,4 +63,4 @@ var customStore_Phat_Nhom = new DevExpress.data.CustomStore({
         });
         return deferred.promise();
     },
-}); 
+});
