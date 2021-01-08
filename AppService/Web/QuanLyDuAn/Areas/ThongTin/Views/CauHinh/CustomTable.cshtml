@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "CustomForm";
+    ViewBag.Title = "CustomTable";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,11 +13,10 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/CustomForm";
-        const ACTION_PROJECT = "/OperationProcess";
+        const ACTION = "/CustomTable";
 
         //--------------------CMD------------------------------
-        const ACTION_CMD = "/CustomForm";
+        const ACTION_CMD = "/CustomTable";
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
@@ -26,10 +25,34 @@
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
 
 
+        let customStore_Projects = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_PROJECT,
+                    success: function (data) {
+                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                        if (PROJECTID == 0) {
+                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
+                            PROJECTID = parseInt(list[0].id)
+                        }
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Projects'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+
         $(function () {
             loadData(customStore);
         });
-
 
         let loadData = () => {
             $("#container").dxTreeList({
@@ -42,26 +65,16 @@
                     grouping: false
                 },
                 scrolling: { mode: "standard" },
-                rootValue: 0,
-                parentIdExpr: "parentId",
-                keyExpr: "id",
-                showBorders: false,
-                showColumnHeaders: true,
-                showColumnLines: false,
-                hoverStateEnabled: true,
-                showRowLines: true,
-                columnAutoWidth: true,
-                wordWrapEnabled: true,
-                rowAlternationEnabled: false,
+                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
+                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "title",
-                        caption: "Tên tài liệu",
+                        dataField: "title", caption: "Tên tài liệu",
                         dataType: "string",
                     },
                     {
-                        dataField: "code",
-                        caption: "Ký Hiệu",
+                        dataField: "code", caption: "Ký Hiệu",
                         dataType: "string",
                     },
                     {
@@ -114,6 +127,19 @@
                         buttons: ["add", "edit", "delete"]
                     }
                 ],
+                //rowDragging: {
+                //    allowDropInsideItem: true,
+                //    allowReordering: false,
+                //    dropFeedbackMode: "push",
+                //    onDragEnd: function (e) {
+                //        var source = e.itemData,
+                //            target = e.component.getVisibleRows()[e.toIndex].data,
+                //            d = $.Deferred();
+                //        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                //            e.component.refresh().then(d.resolve, d.reject);
+                //        }, d.reject);
+                //    },
+                //},
                 paging: {
                     enabled: true,
                     pageSize: 20

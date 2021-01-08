@@ -87,5 +87,9 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult _CustomForm()
+        {
+            return PartialView();
+        }
     }
 }

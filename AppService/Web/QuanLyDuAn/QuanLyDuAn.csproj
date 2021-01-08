@@ -2466,6 +2466,8 @@
     <Content Include="Areas\ThongTin\Views\PhatHanh\ListPhatHanh.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\_PhatHanhCreate.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomForm.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\_CustomForm.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\CustomTable.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

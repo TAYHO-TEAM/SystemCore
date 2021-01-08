@@ -29,7 +29,7 @@
         //    , "expectResponseDate": ""
         //};
         //let jsonObject = "";
-        var urlFileTemplate = "",
+        var urlFileTemplate = "https://duan.tayho.com.vn/Content/Template/PlanRegister/Temp_PlanRegister_001.xlsm",
             columnConfig = [
                 {
                     dataField: "code",
@@ -166,7 +166,8 @@
                         widget: "dxButton",
                         options: {
                             stylingMode: "filled",
-                            icon: "download", text: "Tải file mẫu",
+                            icon: "download",
+                            text: "Tải file mẫu",
                             onClick: function () {
                                 window.location = urlFileTemplate;
                             }
