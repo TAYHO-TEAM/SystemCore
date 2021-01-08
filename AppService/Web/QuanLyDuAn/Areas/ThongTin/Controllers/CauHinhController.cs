@@ -79,6 +79,13 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
-
+        public ActionResult CustomTable()
+        {
+            return View();
+        }
+        public ActionResult CustomColum()
+        {
+            return View();
+        }
     }
 }

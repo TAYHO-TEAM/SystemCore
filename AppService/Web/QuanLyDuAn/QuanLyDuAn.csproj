@@ -2323,7 +2323,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\ThongTin\Data\" />
-    <Folder Include="Views\PhatHanh\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\plugins\.npmignore" />

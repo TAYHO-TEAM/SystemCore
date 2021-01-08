@@ -13,6 +13,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
             builder.Property(x => x.Header).HasField("_header").HasMaxLength(1028).UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.CustomTableId).HasField("_customTableId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.CustomFormId).HasField("_customFormId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.Priority).HasField("_priority").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

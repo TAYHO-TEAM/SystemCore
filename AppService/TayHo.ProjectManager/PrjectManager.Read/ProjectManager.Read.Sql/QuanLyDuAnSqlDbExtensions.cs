@@ -89,6 +89,13 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IPlanRegisterRepository<PlanRegisterDTO>, PlanRegisterRepository<PlanRegisterDTO>>();
             services.AddScoped<IDocumentReleasedRepository<DocumentReleasedDTO>, DocumentReleasedRepository<DocumentReleasedDTO>>();
             services.AddScoped<IDocumentReleasedLogRepository<DocumentReleasedLogDetailDTO>, DocumentReleasedLogRepository<DocumentReleasedLogDetailDTO>>();
+
+            services.AddScoped<IDOBaseRepository<CustomCellContentDTO>, DOBaseRepository<CustomCellContentDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomColumDTO>, DOBaseRepository<CustomColumDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomFormBodyDTO>, DOBaseRepository<CustomFormBodyDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomFormContentDTO>, DOBaseRepository<CustomFormContentDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomFormDTO>, DOBaseRepository<CustomFormDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomTableDTO>, DOBaseRepository<CustomTableDTO>>();
             return services;
         }
 
