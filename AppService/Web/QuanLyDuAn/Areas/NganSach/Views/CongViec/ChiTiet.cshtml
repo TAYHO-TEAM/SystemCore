@@ -12,12 +12,15 @@
             background-color: rgba(150, 150, 150, 0.2);
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.1.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
 }
 <div class="row">
     <div class="col-12">
         <div id="container" data-id="@Model" class="elevation-2"></div>
     </div>
-</div> 
+</div>
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
@@ -145,10 +148,13 @@
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             columns: [
                 {
-                    dataField: "status", caption: "STT", width: 80, alignment: "center", sortOrder: "desc",
+                    dataField: "status", caption: "STT", width: 80, alignment: "center", sortOrder: "desc", visible: false,
                 },
                 {
-                    dataField: "nhom", groupIndex: 0, caption: "Nhóm",
+                    dataField: "id", caption: "ID", width: 80, alignment: "center",
+                },
+                {
+                    dataField: "nhom", groupIndex: 0, caption: "Nhóm", 
                 },
                 {
                     dataField: "tenCongViec", caption: "Thông tin / Nội dung công việc", dataType: "string",
@@ -158,7 +164,7 @@
                     )
                 },
                 {
-                    dataField: "reasonId", caption: "Lý do", 
+                    dataField: "reasonId", caption: "Lý do",
                     width: 200, alignment: "left",
                     lookup: {
                         dataSource: customStore_Reason,
@@ -353,6 +359,13 @@
                     {
                         location: "after", widget: "dxButton",
                         options: {
+                            icon: "export", tylingMode: "filled", type: "default",
+                            onClick: () => container.exportToExcel(false)
+                        }
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
                             icon: "refresh", tylingMode: "filled", type: "default",
                             onClick: () => container.refresh()
                         }
@@ -375,6 +388,38 @@
                 });
                 DevExpress.ui.repaintFloatingActionButton();
             },
+            //onExporting: e => {
+            //    var workbook = new ExcelJS.Workbook();
+            //    var worksheet = workbook.addWorksheet('Main sheet');
+            //    DevExpress.excelExporter
+            //        .exportDataGrid({
+            //            worksheet: worksheet,
+            //            component: e.component,
+            //            keepColumnWidths: false,
+            //            topLeftCell: { row: 2, column: 2 },
+            //            customizeCell: function (options) { 
+            //                var gridCell = options.gridCell;
+            //                var excelCell = options.excelCell;
+            //                if (gridCell.rowType === "data") {
+            //                    if (gridCell.column.dataField === 'thanhTien') { 
+            //                        excelCell.value = {
+            //                            text: gridCell.value,
+            //                            formula: 'G' + excelCell.row + '*H' + excelCell.row
+            //                        };
+            //                        excelCell.alignment = {
+            //                            horizontal: 'center'
+            //                        };
+            //                    }
+            //                }  
+            //            }
+            //        })
+            //        .then(function () {
+            //            workbook.xlsx.writeBuffer().then(function (buffer) {
+            //                saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'CapNhatGiaTriCacCongViec_Export.xlsx');
+            //            });
+            //        });
+            //    e.cancel = true;
+            //}
         });
 
         var formData = {};
