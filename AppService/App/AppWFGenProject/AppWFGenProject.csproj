@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="BaseClasses\" />
-	<Folder Include="Content\" />
     <Folder Include="Properties\App_Data\Content\TemPlate\CMD\Api\ViewModels\" />
     <Folder Include="Properties\App_Data\Content\TemPlate\VIEW\" />
   </ItemGroup>
@@ -50,6 +49,14 @@
 	<Content Include="Content\**"> 
 		<CopyToOutputDirectory>Content</CopyToOutputDirectory> 
 	</Content> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Content\Config\appconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Content\Config\appconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

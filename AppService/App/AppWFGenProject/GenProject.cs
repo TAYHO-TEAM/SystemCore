@@ -9,6 +9,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -32,7 +33,8 @@ namespace AppWFGenProject
 
         private void GenProject_Load(object sender, EventArgs e)
         {
-            //ConfigExtenstions.GetValue<int>(_configuration, "appSettings", "DefaultItemsPerPage");
+            int abc = _configuration.GetValue<int>("appSettings", "DefaultItemsPerPage");
+            
         }
 
         private void btnTestConnec_Click(object sender, EventArgs e)
@@ -69,7 +71,7 @@ namespace AppWFGenProject
             // Set nameproject
             genOB.nameproject = txtNameProject.Text == "" ? "Test" : txtNameProject.Text;
             // Set rootDir
-            genOB.rootDir = txtDir.Text==""?@"F:\Test\" : txtDir.Text;
+            genOB.rootDir = txtDir.Text == "" ? @"F:\Test\" : txtDir.Text;
             // Set common
             genOB.common = "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
             // Set db
@@ -91,12 +93,12 @@ namespace AppWFGenProject
                     // sert _entity
                     if (genOB.Entity != string.Empty && char.IsUpper(genOB.Entity[0]))
                     {
-                        genOB._entity = "_"+(char.ToLower(genOB.Entity[0]) + genOB.Entity.Substring(1));
+                        genOB._entity = "_" + (char.ToLower(genOB.Entity[0]) + genOB.Entity.Substring(1));
                     }
                     genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, listTable[0], genOB);
                 }
             }
-           
+
             //FileHelper fileHelper = new FileHelper();
             //fileHelper.ChangeTxtToCS(@"C:\Users\poka\Desktop\testChange.txt");
         }

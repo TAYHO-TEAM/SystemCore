@@ -1,4 +1,7 @@
-﻿namespace AppWFGenProject.Extensions
+﻿using System.IO;
+using System.Reflection;
+
+namespace AppWFGenProject.Extensions
 {
     public static class EnumClass
     {
@@ -80,7 +83,7 @@
     }
     public static class ConstPath
     {
-        public static string localDisk = @"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\";//D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate
+        public static string localDisk = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+@"\Content\TemPlate\";///@"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate";//@"D:\TayHo_project\TayHo.SystemCore\AppService\App\AppWFGenProject\Content\TemPlate\";//D:\Github\SystemCore\AppService\App\AppWFGenProject\Content\TemPlate
         public static string CMDCommandBase = localDisk + @"CMD\Api\Application\Command\BaseClasses\";
         public static string CMDCommand = localDisk + @"CMD\Api\Application\Command\";
         public static string CMDControllers = localDisk + @"CMD\Api\Controllers\";
