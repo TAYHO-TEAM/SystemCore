@@ -43,11 +43,11 @@ let customStore_CMD_READ = (CMD, READ) => new DevExpress.data.CustomStore({
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
-let customStore_CMD_READ_WITHPROJECTID = (CMD,READ)=> new DevExpress.data.CustomStore({
+let customStore_CMD_READ_WITHPROJECTID = (CMD, READ) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
         let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
-       
+
         if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
@@ -75,7 +75,7 @@ let customStore_CMD_READ_WITHPROJECTID = (CMD,READ)=> new DevExpress.data.Custom
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
-let customStore_UPDATE_READ = (ID,CMD,READ) => new DevExpress.data.CustomStore({
+let customStore_UPDATE_READ = (ID, CMD, READ) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
         var deferred = $.Deferred();
@@ -113,7 +113,7 @@ let customStore_UPDATE_READ = (ID,CMD,READ) => new DevExpress.data.CustomStore({
 });
 
 ////---------------------------READ--------------------------- 
-let customStore_READ_ALL_ACC = (READ) =>new DevExpress.data.CustomStore({
+let customStore_READ_ALL_ACC = (READ) => new DevExpress.data.CustomStore({
     key: "id",
     loadMode: "raw",
     load: (values) => {
@@ -154,10 +154,10 @@ let customStore_READ_ALL = (READ) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
-let customStore_READ_FILTER = (READ,FILTER) => new DevExpress.data.CustomStore({
+let customStore_READ_FILTER = (READ, FILTER) => new DevExpress.data.CustomStore({
     key: "id", loadMode: "raw",
     load: (values) => {
-        let deferred = $.Deferred(), params = { 'FindId': FILTER};
+        let deferred = $.Deferred(), params = { 'FindId': FILTER };
         $.ajax({
             headers: header, dataType: "json",
             url: URL_API_PM_READ + READ,
@@ -175,7 +175,7 @@ let customStore_READ_FILTER = (READ,FILTER) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
-let customStore_READ_ID = (READ,ID) => new DevExpress.data.CustomStore({
+let customStore_READ_ID = (READ, ID) => new DevExpress.data.CustomStore({
     key: "id",
     loadMode: "raw",
     load: (values) => {
@@ -211,7 +211,7 @@ var dataGridOptions = {
     },
     pager: {
         showPageSizeSelector: true, showInfo: true,
-        allowedPageSizes: [10, 20, 40, 80],       
+        allowedPageSizes: [10, 20, 40, 80],
     },
     searchPanel: {
         highlightCaseSensitive: true, highlightSearchText: true,
@@ -224,5 +224,41 @@ var dataGridOptions = {
     showRowLines: true,
     columnAutoWidth: true,
     wordWrapEnabled: true,
-    rowAlternationEnabled: true, 
+    rowAlternationEnabled: true,
 };
+function CALLPOPUP(title, url, width, container) {
+
+    var isFullscreen = false;
+    if (width == "100%") isFullscreen = true;
+
+    $("#popup-main").dxPopup({
+        width: width, height: "auto",
+        fullScreen: isFullscreen,
+        position: { my: 'top', at: 'top', of: window },
+        dragEnabled: true,
+        resizeEnabled: true,
+        visible: true,
+        showTitle: true,
+        closeOnOutsideClick: false,
+        showCloseButton: true,
+        title: title,
+        contentTemplate: function (container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var content = $("<div/>");
+            content.load(url);
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                width: '100%',
+                height: '100%'
+            });
+            container.append(scrollView);
+            return container;
+        },
+        onHiding: function () {
+            container.refresh();
+        },
+        onHidden: function () {
+            loadData();
+        }
+    });
+}

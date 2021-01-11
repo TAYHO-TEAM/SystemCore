@@ -59,18 +59,18 @@ namespace AppWFGenProject.Extensions
         public string DTOs { get; }
         public ConstDirect(string nameproject, string rootDir)
         {
-            Command = rootDir + @"\" + nameproject + ".CMD.Api" + _command;
-            CommandBaseClasses = rootDir + @"\" + nameproject + ".CMD.Api" + _commandBaseClasses;
-            Controllers = rootDir + @"\" + nameproject + ".CMD.Api" + _controllers;
-            Mappings = rootDir + @"\" + nameproject + ".CMD.Domain" + _mappings;
-            DomainObjects = rootDir + @"\" + nameproject + ".CMD.Domain" + _domainObjects;
-            IRepositories = rootDir + @"\" + nameproject + ".CMD.Domain" + _iRepositories;
-            EFConfig = rootDir + @"\" + nameproject + ".CMD.Infrastructure" + _eFConfig;
-            Repositories = rootDir + @"\" + nameproject + ".CMD.Infrastructure" + _repositories;
-            ReadControllers = rootDir + @"\" + nameproject + ".Read.Api" + _controllers;
-            ReadMappings = rootDir + @"\" + nameproject + ".Read.Api" + _mappings;
-            ViewModels = rootDir + @"\" + nameproject + ".Read.Api" + _viewModels;
-            DTOs = rootDir + @"\" + nameproject + ".Read.Sql" + _dTOs;
+            Command = rootDir + @"\" + nameproject + ".Api" + _command;
+            CommandBaseClasses = rootDir + @"\" + nameproject + ".Api" + _commandBaseClasses;
+            Controllers = rootDir + @"\" + nameproject + ".Api" + _controllers;
+            Mappings = rootDir + @"\" + nameproject + ".Domain" + _mappings;
+            DomainObjects = rootDir + @"\" + nameproject + ".Domain" + _domainObjects;
+            IRepositories = rootDir + @"\" + nameproject + ".Domain" + _iRepositories;
+            EFConfig = rootDir + @"\" + nameproject + ".Infrastructure" + _eFConfig;
+            Repositories = rootDir + @"\" + nameproject + ".Infrastructure" + _repositories;
+            ReadControllers = rootDir + @"\" + nameproject + ".Api" + _controllers;
+            ReadMappings = rootDir + @"\" + nameproject + ".Api" + _mappings;
+            ViewModels = rootDir + @"\" + nameproject + ".Api" + _viewModels;
+            DTOs = rootDir + @"\" + nameproject + ".Sql" + _dTOs;
         }
     }
     public static class ConstTable

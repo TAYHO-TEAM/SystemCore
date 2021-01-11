@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManager.Read.Sql.Interfaces
 {
-    public interface ICustomTableRepository<T> where T : class
+    public interface ICustomFormRepository<T> where T : class
     {
-        Task<PagingItems<CustomTableDetailDTO>> GetCustomTableDetailAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
+        Task<PagingItems<CustomFormDetailDTO>> GetCustomFormDetailAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
     }
 }
 

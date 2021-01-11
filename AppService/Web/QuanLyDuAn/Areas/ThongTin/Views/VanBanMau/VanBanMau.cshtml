@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
+<div id="popup-main"></div>
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
@@ -15,7 +15,8 @@
     <script>
         //--------------------READ------------------------------
         const ACTION = "/CustomForm";
-        const ACTION_PROJECT = "/OperationProcess";
+       
+        const ACTION_PROJECT = "/Project";
 
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomForm";
@@ -160,7 +161,16 @@
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
-                }
+                },
+                onRowDblClick: function (e) {
+                    var container = e.component;
+                    CALLPOPUP(
+                        "Chi tiết: \"" + e.data.header +"\"",
+                        "/ThongTin/VanBanMau/_VanBanMauDetail/" + e.data.id,
+                        ($(window).width() > 767 ? "50%" : "80%"),
+                        container
+                    );
+                },
             });
         }
     </script>

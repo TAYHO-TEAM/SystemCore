@@ -31,6 +31,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                     request.Style,
                                                     request.SourceValue,
                                                     request.SourceLink);
+            newCustomColum.SetCreate(_user);
             newCustomColum.Status = request.Status.HasValue ? request.Status : newCustomColum.Status;
             newCustomColum.IsActive = request.IsActive.HasValue ? request.IsActive : newCustomColum.IsActive;
             newCustomColum.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newCustomColum.IsVisible;

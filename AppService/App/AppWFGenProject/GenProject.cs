@@ -25,7 +25,7 @@ namespace AppWFGenProject
 
         private void GenProject_Load(object sender, EventArgs e)
         {
-            clbFunction.Items.Add("CMD",false);
+            clbFunction.Items.Add("CMD", false);
             clbFunction.Items.Add("READ", false);
             clbFunction.Items.Add("HTML", false);
 
@@ -61,8 +61,7 @@ namespace AppWFGenProject
             GenCode genCode = new GenCode();
 
             //ReadTemplate readTemplate = new ReadTemplate();
-            // Set nameproject
-            genOB.nameproject = txtNameProject.Text == "" ? "Test" : txtNameProject.Text;
+
             // Set rootDir
             genOB.rootDir = txtDir.Text == "" ? @"F:\Test\" : txtDir.Text;
             // Set common
@@ -93,10 +92,14 @@ namespace AppWFGenProject
                         }
                         if (clbFunction.CheckedItems.Contains("CMD"))
                         {
+                            // Set nameproject
+                            genOB.nameproject = (txtNameProject.Text == "" ? "Test" : txtNameProject.Text) + ".CMD";
                             genCode.CreateGenOBCMD(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, (string)chlTable.Items[i], genOB, typeCreate);
                         }
                         if (clbFunction.CheckedItems.Contains("READ"))
                         {
+                            // Set nameproject
+                            genOB.nameproject = (txtNameProject.Text == "" ? "Test" : txtNameProject.Text) + ".READ";
                             genCode.CreateGenOBRed(txtServer.Text, txtUser.Text, txtPass.Text, txtDB.Text, (string)chlTable.Items[i], genOB, typeCreate);
                         }
                         if (clbFunction.CheckedItems.Contains("HTML"))

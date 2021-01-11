@@ -1,4 +1,5 @@
-﻿<form id="form-regist" action="#" method="POST" enctype="application/json">
+﻿@model int
+<form id="form-regist" action="#" method="POST" enctype="application/json">
 </form>
 
 <script>
@@ -68,7 +69,6 @@
                                         $('#elementDocumentTypeId').dxSelectBox('instance')
                                             .option('value', null);
                                     };
-
                                     ///////// Hạng mục
                                     $('#elementHangMucId').dxSelectBox('instance')
                                         .option('disabled', data.value != null);
@@ -205,8 +205,6 @@
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
-            //test(fdatatest);
-
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {
@@ -218,9 +216,6 @@
             for (var pair of fdata.entries()) {
                 console.log(pair[0] + ', ' + pair[1]);
             }
-            //$("#popup-register").dxPopup("toggle", false);
-            //$("#popup-register").dxPopup("instance").hide();
-
             var files = $(".file-uploader").dxFileUploader("instance").option("value");
             if (files.length > 0) {
                 $.each(files, function (key, value) {
@@ -255,12 +250,11 @@
                     DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
                 }
             });
-         
+
             e.preventDefault();
             //return deferred.promise();
         });
 
     });
-
-
 </script>
+

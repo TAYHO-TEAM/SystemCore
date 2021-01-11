@@ -28,6 +28,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                                 request.CustomColumId,
                                                                 request.Contents,
                                                                 request.NoRown);
+            newCustomCellContent.SetCreate(_user);
             newCustomCellContent.Status = request.Status.HasValue ? request.Status : newCustomCellContent.Status;
             newCustomCellContent.IsActive = request.IsActive.HasValue ? request.IsActive : newCustomCellContent.IsActive;
             newCustomCellContent.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newCustomCellContent.IsVisible;

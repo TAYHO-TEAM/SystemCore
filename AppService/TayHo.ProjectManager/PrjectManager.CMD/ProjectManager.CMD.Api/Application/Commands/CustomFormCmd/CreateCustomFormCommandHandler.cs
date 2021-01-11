@@ -28,6 +28,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                     request.Title,
                                                     request.Header,
                                                     request.Style);
+            newCustomForm.SetCreate(_user);
             newCustomForm.Status = request.Status.HasValue ? request.Status : newCustomForm.Status;
             newCustomForm.IsActive = request.IsActive.HasValue ? request.IsActive : newCustomForm.IsActive;
             newCustomForm.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newCustomForm.IsVisible;

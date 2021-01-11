@@ -79,46 +79,7 @@
         let customStore_DocumetnType = customStore_READ_FILTER(ACTION_READ_DOCUMENTTYPE,'status,1');
         let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
         let customStore_Response = (id) => customStore_UPDATE_READ(id, ACTION_RESPONSE, ACTION_RESPONSEBYACC)
-        //let customStore_Response = (id) => new DevExpress.data.CustomStore({
-        //    key: "id",
-        //    load: (values) => {
-        //        let deferred = $.Deferred();
-        //        var params = {
-        //            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-        //            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-        //            'FindId': id
-        //        }
-        //        if (values.sort) {
-        //            params['SortCol'] = values.sort[0].selector;
-        //            params['SortADSC'] = values.sort[0].desc;
-        //        }
-        //        $.ajax({
-        //            headers: header,
-        //            url: URL_API_PM_READ + ACTION_RESPONSEBYACC,
-        //            dataType: "json",
-        //            data: params,
-        //            success: function (data) {
-        //                var list = data.result.items;
-        //                deferred.resolve(
-        //                    list,
-        //                    {
-        //                        totalCount: list.length,
-        //                    }
-        //                );
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                console.log(xhr.responseJSON);
-        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-        //            },
-        //            timeout: 10000//10 giây
-        //        });
 
-        //        return deferred.promise();
-        //    },
-        //    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
-        //    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, key, values),
-        //    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
-        //});
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {

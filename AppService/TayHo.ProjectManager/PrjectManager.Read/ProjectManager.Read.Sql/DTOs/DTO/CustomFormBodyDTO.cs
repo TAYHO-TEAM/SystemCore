@@ -9,4 +9,13 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? CustomTableId { get; set; }
         public int? CustomFormId { get; set; }
     }
+    public class CustomFormBodyDetailDTO : CustomFormBodyDTO
+    {
+        public string CustomTableCode { get; set; }
+        public string CustomTableTitle { get; set; }
+        public int? CustomTableNoColum { get; set; }
+        public int? CustomTableNoRown { get; set; }
+        public string CustomTableStyle { get; set; }
+        public int? CustomTablePriority { get; set; }
+    }
 }

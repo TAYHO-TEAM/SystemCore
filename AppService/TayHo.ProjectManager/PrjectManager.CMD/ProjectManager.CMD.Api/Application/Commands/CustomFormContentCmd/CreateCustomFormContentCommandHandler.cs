@@ -26,6 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             var methodResult = new MethodResult<CreateCustomFormContentCommandResponse>();
             var newCustomFormContent = new CustomFormContent(request.Code,
                                                                 request.CustomFormId);
+            newCustomFormContent.SetCreate(_user);
             newCustomFormContent.Status = request.Status.HasValue ? request.Status : newCustomFormContent.Status;
             newCustomFormContent.IsActive = request.IsActive.HasValue ? request.IsActive : newCustomFormContent.IsActive;
             newCustomFormContent.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newCustomFormContent.IsVisible;

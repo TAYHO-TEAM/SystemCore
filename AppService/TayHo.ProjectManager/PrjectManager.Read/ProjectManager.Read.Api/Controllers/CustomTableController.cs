@@ -20,11 +20,13 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class CustomTableController : APIControllerBase
     {
         private readonly IDOBaseRepository<CustomTableDTO> _dOBaseRepository;
-        //private readonly 
+        private readonly ICustomTableRepository<CustomTableDetailDTO> _customTableRepositor;
+        private const string Detail = nameof(Detail);
 
-        public CustomTableController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomTableDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public CustomTableController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomTableDTO> dOBaseRepository, ICustomTableRepository<CustomTableDetailDTO> customTableRepositor) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _customTableRepositor = customTableRepositor;
         }
 
         /// <summary>
@@ -41,6 +43,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.CustomTable_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<CustomTableResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<CustomTableResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of CustomTableDetail.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Detail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<CustomTableResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetCustomTableDetailAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<CustomTableResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.CustomTable_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _customTableRepositor.GetCustomTableDetailAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<CustomTableResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,

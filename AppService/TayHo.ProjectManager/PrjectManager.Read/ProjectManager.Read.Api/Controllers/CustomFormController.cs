@@ -20,10 +20,13 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class CustomFormController : APIControllerBase
     {
         private readonly IDOBaseRepository<CustomFormDTO> _dOBaseRepository;
+        private readonly ICustomFormRepository<CustomFormDetailDTO> _customFormRepository;
+        private const string Detail = nameof(Detail);
 
-        public CustomFormController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public CustomFormController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormDTO> dOBaseRepository, ICustomFormRepository<CustomFormDetailDTO> customFormRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _customFormRepository = customFormRepository;
         }
 
         /// <summary>
@@ -40,6 +43,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.CustomForm_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<CustomFormResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<CustomFormResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of CustomFormDetail.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Detail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<CustomFormResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetCustomFormDetailAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<CustomFormResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.CustomForm_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _customFormRepository.GetCustomFormDetailAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<CustomFormResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,

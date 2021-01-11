@@ -1,4 +1,6 @@
 ﻿using ProjectManager.Read.Api.ViewModels.BaseClasses;
+using ProjectManager.Read.Sql.DTOs.DTO;
+using System.Collections.Generic;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
@@ -8,5 +10,13 @@ namespace ProjectManager.Read.Api.ViewModels
         public string Title { get; set; }
         public string Header { get; set; }
         public string Style { get; set; }
+    }
+    public class CustomFormDetailResponseViewModel : CustomFormResponseViewModel
+    {
+        public CustomFormDetailResponseViewModel()
+        {
+            CustomFormBodyDTOs = new List<CustomFormBodyDTO>();
+        }
+        public List<CustomFormBodyDTO> CustomFormBodyDTOs { get; set; }
     }
 }

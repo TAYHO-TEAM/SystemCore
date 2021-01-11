@@ -52,7 +52,7 @@ namespace AppWFGenProject.FrameWork
                 i++;
                 GenOB.builderConfig += row[0].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
-            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.IRepositories + ConstFileNameTxt.EntityConfiguration), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.EFConfig + ConstFileNameTxt.EntityConfiguration), GenOB), GenOB.getDictionatyChange());
         }
         public void GenRepositories( GenOB GenOB)
         {

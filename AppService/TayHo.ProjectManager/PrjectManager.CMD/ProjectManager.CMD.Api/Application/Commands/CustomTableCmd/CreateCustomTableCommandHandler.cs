@@ -30,6 +30,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                     request.NoRown,
                                                     request.Style,
                                                     request.Priority);
+            newCustomTable.SetCreate(_user);
             newCustomTable.Status = request.Status.HasValue ? request.Status : newCustomTable.Status;
             newCustomTable.IsActive = request.IsActive.HasValue ? request.IsActive : newCustomTable.IsActive;
             newCustomTable.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newCustomTable.IsVisible;
