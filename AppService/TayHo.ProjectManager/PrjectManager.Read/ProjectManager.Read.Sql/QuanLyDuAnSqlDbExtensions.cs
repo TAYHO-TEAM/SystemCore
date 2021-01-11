@@ -96,6 +96,9 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<CustomFormContentDTO>, DOBaseRepository<CustomFormContentDTO>>();
             services.AddScoped<IDOBaseRepository<CustomFormDTO>, DOBaseRepository<CustomFormDTO>>();
             services.AddScoped<IDOBaseRepository<CustomTableDTO>, DOBaseRepository<CustomTableDTO>>();
+
+            services.AddScoped<ICustomTableRepository<CustomTableDetailDTO>, CustomTableRepository<CustomTableDetailDTO>>();
+
             return services;
         }
 

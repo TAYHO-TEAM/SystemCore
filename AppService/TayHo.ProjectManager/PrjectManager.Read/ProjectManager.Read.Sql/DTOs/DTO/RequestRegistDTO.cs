@@ -26,6 +26,10 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     }
     public class RequestRegistDetailDTO : RequestRegistDTO
     {
+        public RequestRegistDetailDTO()
+        {
+            ResponseRegistDTOs = new List<ResponseRegistDTO>();
+        }
         public DateTime? RequestDate { get; set; }
         public DateTime? ResponseDate { get; set; }
         public DateTime? ExpectRequestDate { get; set; }

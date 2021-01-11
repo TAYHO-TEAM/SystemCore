@@ -2471,6 +2471,7 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomTable.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\VanBanMau.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanMauDetail.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\CustomColum.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "CustomTable";
+    ViewBag.Title = "CustomColum";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -13,16 +13,18 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/CustomTable";
+        const ACTION = "/CustomColum";
+        const ACTION_CUSTOMTABLE = "/CustomTable";
 
         //--------------------CMD------------------------------
-        const ACTION_CMD = "/CustomTable";
+        const ACTION_CMD = "/CustomColum";
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+        let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
 
 
         $(function () {
@@ -45,48 +47,63 @@
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "code",
-                        caption: "Ký Hiệu",
-                        dataType: "string",
-                    },
-                    {
-                        dataField: "title",
-                        caption: "Tên kiểu dữ liệu",
-                        dataType: "string",
-                    },
-                    {
-                        dataField: "noColum",
-                        caption: "Số cột",
+                        dataField: "customTableId",
+                        caption: "Tên tài liệu",
                         dataType: "number",
+                        lookup: {
+                            dataSource: customStore_CUSTOMTABLE,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                        },
+                        editorType: "dxLookup",
+                        editorOptions: {
+                            dataSource: customStore_CUSTOMTABLE,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            showClearButton: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                            },
+                        },
+                        validationRules: [{ type: "required" }],
                     },
                     {
-                        dataField: "noRown",
-                        caption: "Số dòng",
-                        dataType: "number",
-                    },
-                    {
-                        dataField: "style",
-                        caption: "Định dạng",
-                        dataType: "number",
-                    },
-                    {
-                        dataField: "priority",
+                        dataField: "colIndex",
                         caption: "Vị trí",
                         dataType: "number",
-                        width: 110,
-                        alignment: "center",
-                        editorType: "dxNumberBox",
-                        editorOptions: {
-                            min: 1, step: 1,
-                            showSpinButtons: true,
-                        }, sortOrder: "desc"
                     },
                     {
-                        dataField: "isActive", width: 100, alignment: "center",
+                        dataField: "header",
+                        caption: "Tên cột",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "typeParam",
+                        caption: "Kiểu dữ liệu",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "sourceValue",
+                        caption: "Giá trị mặc định",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "sourceLink",
+                        caption: "Đường dẫn",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "isActive",
+                        width: 100,
+                        alignment: "center",
                         editorType: "dxSwitch",
                     },
                     {
-                        dataField: "isVisible", width: 100, alignment: "center",
+                        dataField: "isVisible",
+                        width: 100,
+                        alignment: "center",
                         editorType: "dxSwitch",
                     },
                     {
@@ -95,19 +112,6 @@
                         buttons: ["add", "edit", "delete"]
                     }
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    allowReordering: false,
-                    dropFeedbackMode: "push",
-                    onDragEnd: function (e) {
-                        //var source = e.itemData,
-                        //    target = e.component.getVisibleRows()[e.toIndex].data,
-                        //    d = $.Deferred();
-                        //customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                        //    e.component.refresh().then(d.resolve, d.reject);
-                        //}, d.reject);
-                    },
-                },
                 paging: {
                     enabled: true,
                     pageSize: 20
@@ -142,6 +146,19 @@
                             }
                         })
                 },
+                rowDragging: {
+                    allowDropInsideItem: true,
+                    allowReordering: false,
+                    dropFeedbackMode: "push",
+                    onDragEnd: function (e) {
+                        //var source = e.itemData,
+                        //    target = e.component.getVisibleRows()[e.toIndex].data,
+                        //    d = $.Deferred();
+                        //customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                        //    e.component.refresh().then(d.resolve, d.reject);
+                        //}, d.reject);
+                    },
+                },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
@@ -154,4 +171,5 @@
         }
     </script>
 }
+
 

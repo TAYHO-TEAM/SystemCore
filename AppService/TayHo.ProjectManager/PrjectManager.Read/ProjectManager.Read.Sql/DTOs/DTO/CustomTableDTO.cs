@@ -1,4 +1,5 @@
 ﻿using ProjectManager.Read.Sql.DTOs.BaseClasses;
+using System.Collections.Generic;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
@@ -10,5 +11,13 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? NoRown { get; set; }
         public string Style { get; set; }
         public int? Priority { get; set; }
+    }
+    public class CustomTableDetailDTO : CustomTableDTO
+    {
+        public CustomTableDetailDTO()
+        {
+            CustomColumDTOs = new List<CustomColumDTO>();
+        }
+        public  List<CustomColumDTO> CustomColumDTOs { get; set; }
     }
 }

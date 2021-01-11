@@ -33,7 +33,7 @@
 
 
         let loadData = () => {
-            $("#container").dxTreeList({
+            $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: customStore,
                 repaintChangesOnly: true,
@@ -57,7 +57,12 @@
                 columns: [
                     {
                         dataField: "title",
-                        caption: "Tên tài liệu",
+                        caption: "Tên mẫu văn bản",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "header",
+                        caption: "Đầu đề (Header)",
                         dataType: "string",
                     },
                     {
@@ -122,23 +127,23 @@
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
-                        {
-                            location: "before", widget: "dxSelectBox",
-                            options: {
-                                dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: PROJECTID,
-                                onValueChanged: function (data) {
-                                    PROJECTID = data.value;
-                                    localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
-                                },
-                            },
-                        },
+                        //{
+                        //    location: "before", widget: "dxSelectBox",
+                        //    options: {
+                        //        dataSource: customStore_Projects,
+                        //        valueExpr: "id", displayExpr: "title",
+                        //        searchEnabled: true,
+                        //        searchMode: "contains",
+                        //        width: "100%",
+                        //        showClearButton: false,
+                        //        value: PROJECTID,
+                        //        onValueChanged: function (data) {
+                        //            PROJECTID = data.value;
+                        //            localStorage.setItem('projectIdCurrent', PROJECTID);
+                        //            loadData(customStore);
+                        //        },
+                        //    },
+                        //},
                         {
                             location: "after", widget: "dxButton",
                             options: {

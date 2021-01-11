@@ -20,6 +20,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class CustomTableController : APIControllerBase
     {
         private readonly IDOBaseRepository<CustomTableDTO> _dOBaseRepository;
+        //private readonly 
 
         public CustomTableController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomTableDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
         {
