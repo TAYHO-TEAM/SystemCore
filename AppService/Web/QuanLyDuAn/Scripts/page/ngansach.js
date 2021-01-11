@@ -10,6 +10,7 @@ const ACTION_CONGVIECDETAIL     = "/NS_CongViecDetail";
 const ACTION_GOITHAU            = "/NS_GoiThau";
 const ACTION_NHOMCHIPHI         = "/NS_NhomChiPhi";
 const ACTION_REASON             = "/NS_Reason";
+const ACTION_NGHIEMTHU          = "/NS_NghiemThu";
 
 const ACTION_CONTRACTORINFO     = "/ContractorInfo";
 

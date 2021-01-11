@@ -2324,7 +2324,6 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\NganSach\Views\NghiemThu\" />
     <Folder Include="Areas\ThongTin\Data\" />
   </ItemGroup>
   <ItemGroup>
@@ -2472,6 +2471,7 @@
     <Content Include="Areas\ThongTin\Views\VanBanMau\VanBanMau.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanMauDetail.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomColum.cshtml" />
+    <Content Include="Areas\NganSach\Views\NghiemThu\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

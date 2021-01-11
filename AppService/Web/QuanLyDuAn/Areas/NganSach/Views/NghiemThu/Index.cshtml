@@ -1,0 +1,110 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Nghiệm thu";
+}
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script src="~/Scripts/page/ngansach.js"></script>
+    <script>
+        var customStore_GoiThau = (projectId) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                $.ajax({
+                    data: { FindParentId: 0, FindId: 'projectId,' + projectId },
+                    headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
+                    success: function (data) {
+                        deferred.resolve(data.result.items);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+            byKey: function (key) {
+                var d = new $.Deferred();
+                $.get(URL_API_PM_READ + ACTION_GOITHAU, { 'FindId': key }).done((rs) => d.resolve(rs.result.items[0])).fail(() => d.reject());
+                return d.promise();
+            },
+        });
+        var customStore_ContractorInfo = new DevExpress.data.CustomStore({
+            key: "id",  
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_CONTRACTORINFO,
+                    success: (data) => deferred.resolve(data.result.items.filter(x => x.isActive == true && x.isVisible == true)),
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            byKey: function (key) {
+                var d = new $.Deferred();
+                $.get(URL_API_PM_READ + ACTION_CONTRACTORINFO, { 'FindId': key }).done((rs) => d.resolve(rs.result.items[0])).fail(() => d.reject());
+                return d.promise();
+            },
+        });
+
+        $(function () {
+            loadData();
+        });
+        var loadData = () => $("#container").dxDataGrid({
+            onToolbarPreparing: function (e) {
+                var container = e.component;
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before", widget: "dxSelectBox",
+                        options: {
+                            dataSource: customStore_Projects,
+                            valueExpr: "id",
+                            displayExpr: (item) => { return item && item.code + " - " + item.title; },
+                            searchEnabled: true, searchMode: "contains",
+                            width: "auto", value: PROJECTID,  
+                            onValueChanged: function (data) {
+                                PROJECTID = data.value;
+                                localStorage.setItem('projectIdCurrent', PROJECTID);
+                                $("#sel_filter_goithau").dxSelectBox('instance').reset();
+                                $("#sel_filter_goithau").dxSelectBox("option", "dataSource", customStore_GoiThau(PROJECTID));  
+                            },
+                        },
+                    },
+                    {
+                        location: "before", widget: "dxSelectBox",
+                        options: {
+                            dataSource: customStore_GoiThau(PROJECTID),
+                            elementAttr: { id: "sel_filter_goithau" },
+                            valueExpr: "id",
+                            displayExpr: (item) => { return item && item.soHopDong + " - " + item.dienGiai; },
+                            searchEnabled: true, searchMode: "contains",
+                            width: "auto", 
+                            //onValueChanged: function (data) {
+                            //    PROJECTID = data.value;
+                            //    localStorage.setItem('projectIdCurrent', PROJECTID);
+                            //    $("#datagrid_filter_goithau").dxDataGrid("option", "dataSource", customStore_GoiThau(PROJECTID));
+                            //},
+                        }, 
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    });
+            },
+        });
+    </script>
+}

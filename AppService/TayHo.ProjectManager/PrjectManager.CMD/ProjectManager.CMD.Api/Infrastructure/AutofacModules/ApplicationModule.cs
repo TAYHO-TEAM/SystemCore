@@ -49,6 +49,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<NS_TamUng_TheoDoiRepository>().As<INS_TamUng_TheoDoiRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_KhauTruRepository>().As<INS_KhauTruRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_KhauTru_TheoDoiRepository>().As<INS_KhauTru_TheoDoiRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NS_NghiemThuRepository>().As<INS_NghiemThuRepository>().InstancePerLifetimeScope();
 
             builder.RegisterType<RequestRegistRepository>().As<IRequestRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();

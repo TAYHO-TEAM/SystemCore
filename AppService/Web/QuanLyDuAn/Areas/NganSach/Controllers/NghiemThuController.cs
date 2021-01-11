@@ -7,8 +7,7 @@ using System.Web.Mvc;
 namespace QuanLyDuAn.Areas.NganSach.Controllers
 {
     public class NghiemThuController : Controller
-    {
-        // GET: NganSach/NghiemThu
+    { 
         public ActionResult Index()
         {
             return View();
