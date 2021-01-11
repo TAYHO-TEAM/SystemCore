@@ -75,10 +75,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
-        public ActionResult CustomForm()
-        {
-            return View();
-        }
+     
         public ActionResult CustomTable()
         {
             return View();
@@ -87,9 +84,6 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
-        public ActionResult _CustomForm()
-        {
-            return PartialView();
-        }
+
     }
 }

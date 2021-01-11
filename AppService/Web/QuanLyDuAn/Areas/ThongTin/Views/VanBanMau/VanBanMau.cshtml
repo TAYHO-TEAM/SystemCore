@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "CustomForm";
+    ViewBag.Title = "VanBanMau";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <div class="row">
     <div class="col-12">
@@ -27,14 +28,14 @@
 
 
         $(function () {
-            loadData(customStore);
+            loadData();
         });
 
 
         let loadData = () => {
             $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: customStore,
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
@@ -69,26 +70,7 @@
                         caption: "Mô tả",
                         dataType: "string",
                     },
-                    {
-                        dataField: "operationProcessId",
-                        caption: "Quy trình",
-                        dataType: "number",
-                        lookup: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                        },
-                        editorType: "dxSelectBox",
-                        editorOptions: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                            noDataText: "Không tìm thấy dữ liệu",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>"));
-                            },
-                        }
-                    },
+                  
                     {
                         dataField: "status",
                         caption: "Sắp xếp",

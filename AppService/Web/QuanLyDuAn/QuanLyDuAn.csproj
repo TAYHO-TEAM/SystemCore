@@ -192,6 +192,7 @@
     <Compile Include="Areas\ThongTin\Controllers\DangKyController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\PhatHanhController.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\VanBanMauController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -2467,9 +2468,9 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\_KeHoachShow.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\ListPhatHanh.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\_PhatHanhCreate.cshtml" />
-    <Content Include="Areas\ThongTin\Views\CauHinh\CustomForm.cshtml" />
-    <Content Include="Areas\ThongTin\Views\CauHinh\_CustomForm.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomTable.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\VanBanMau.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanMauDetail.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

@@ -2,5 +2,9 @@
   "appSettings": {
     "DefaultItemsPerPage": 3
   },
-  "ServerURL": "https://localhost:44347/api/employee"
+  "ServerURL": "https://localhost:44347/api/employee",
+  "Common": {
+    "CmdEF": "Services.Common.APIs.Cmd.EF;",
+    "Version": "v1"
+  }
 }

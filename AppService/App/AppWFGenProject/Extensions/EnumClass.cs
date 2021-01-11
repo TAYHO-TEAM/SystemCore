@@ -35,6 +35,7 @@ namespace AppWFGenProject.Extensions
         private string _iRepositories = @"\IRepositories\";
         private string _repositories = @"\Repositories\";
         private string _viewModels = @"\ViewModels\";
+        private string _dTOs = @"\DTOs\DTO\";
         // CMD
         ////Controller
         public string Command { get; }
@@ -54,6 +55,8 @@ namespace AppWFGenProject.Extensions
         public string ReadMappings { get; }
         //// ViewModels
         public string ViewModels { get; }
+        //// DTO
+        public string DTOs { get; }
         public ConstDirect(string nameproject, string rootDir)
         {
             Command = rootDir + @"\" + nameproject + ".CMD.Api" + _command;
@@ -64,9 +67,10 @@ namespace AppWFGenProject.Extensions
             IRepositories = rootDir + @"\" + nameproject + ".CMD.Domain" + _iRepositories;
             EFConfig = rootDir + @"\" + nameproject + ".CMD.Infrastructure" + _eFConfig;
             Repositories = rootDir + @"\" + nameproject + ".CMD.Infrastructure" + _repositories;
-            ReadControllers = rootDir + @"\" + nameproject + "Read.Api" + _controllers;
-            ReadMappings = rootDir + @"\" + nameproject + "Read.Api" + _mappings;
-            ViewModels = rootDir + @"\" + nameproject + "Read.Api" + _viewModels;
+            ReadControllers = rootDir + @"\" + nameproject + ".Read.Api" + _controllers;
+            ReadMappings = rootDir + @"\" + nameproject + ".Read.Api" + _mappings;
+            ViewModels = rootDir + @"\" + nameproject + ".Read.Api" + _viewModels;
+            DTOs = rootDir + @"\" + nameproject + ".Read.Sql" + _dTOs;
         }
     }
     public static class ConstTable

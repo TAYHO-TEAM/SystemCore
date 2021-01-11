@@ -17,12 +17,14 @@ namespace AppWFGenProject.FrameWork
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// gen entity 
             string pathentitytxt = ConstPath.CMDDomain + ConstFileNameTxt.Entity;
+            int i = 0;
             foreach (DataRow row in dt.Rows)
             {
-                GenOB.builderFields += row["PrivateOBJ"].ToString() + "\r\n\t";
+                i++;
+                GenOB.builderFields += row["PrivateOBJ"].ToString() + "\r\n\t" + (i> 1 ? "\t\t":"");
                 GenOB.paramCreate += row["PublicParameter"].ToString().TrimEnd(','); ;
-                GenOB.functionCreate += row["FunctionPublic"].ToString() + "\r\n\t";
-                GenOB.builderBehaviours += row["PropertiesOBJ"].ToString() + "\r\n\t";
+                GenOB.functionCreate += row["FunctionPublic"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
+                GenOB.builderBehaviours += row["PropertiesOBJ"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
             fileHelper.CreateFileFrom(pathentitytxt, fileHelper.ReplaceFileName((direct.DomainObjects + ConstFileNameTxt.Entity), GenOB), GenOB.getDictionatyChange());
         }
@@ -44,9 +46,11 @@ namespace AppWFGenProject.FrameWork
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// get path entity config  
             string pathEntityConfig = ConstPath.CMDInfra + ConstFileNameTxt.EntityConfiguration;
+            int i = 0;
             foreach (DataRow row in dt.Rows)
             {
-                GenOB.builderConfig += row[0].ToString() + "\r\n\t";
+                i++;
+                GenOB.builderConfig += row[0].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
             fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.IRepositories + ConstFileNameTxt.EntityConfiguration), GenOB), GenOB.getDictionatyChange());
         }
@@ -71,10 +75,11 @@ namespace AppWFGenProject.FrameWork
             string pathEntityConfig = ConstPath.CMDCommandBase + ConstFileNameTxt.EntityCommand;
             string pathEntityCommandHandler = ConstPath.CMDCommandBase + ConstFileNameTxt.EntityCommandHandler;
             string pathEntityCommandSet = ConstPath.CMDCommandBase + ConstFileNameTxt.EntityCommandSet;
-
+            int i = 0;
             foreach (DataRow row in dt.Rows)
             {
-                GenOB.builderPublic += row[0].ToString() + "\r\n\t";
+                i++;
+                GenOB.builderPublic += row[0].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
 
             fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommand), GenOB), GenOB.getDictionatyChange());
@@ -92,12 +97,13 @@ namespace AppWFGenProject.FrameWork
             string pathDeleteHandler = ConstPath.CMDCommand + ConstFileNameTxt.DeleteEntityCommandHandler;
             string pathUpdate = ConstPath.CMDCommand + ConstFileNameTxt.UpdateEntityCommand;
             string pathUpdateHandler = ConstPath.CMDCommand + ConstFileNameTxt.UpdateEntityCommandHandler;
-
+            int i = 0;
             foreach (DataRow row in dt.Rows)
             {
-                GenOB.builderPublic += row[0].ToString() + "\r\n\t";
+                i++;
+                GenOB.builderPublic += row[0].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
                 GenOB.builderRequestParam += row["Request"].ToString();
-                GenOB.builderSetUpdate += row["UpdateSet"].ToString() + "\r\n\t";
+                GenOB.builderSetUpdate += row["UpdateSet"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
 
             fileHelper.CreateFileFrom(pathCreate, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.CreateEntityCommand), GenOB), GenOB.getDictionatyChange());
