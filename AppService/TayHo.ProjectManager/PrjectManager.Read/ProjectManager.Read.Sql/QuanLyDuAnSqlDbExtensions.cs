@@ -71,6 +71,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<NS_KhauTru_TheoDoiDTO>, DOBaseRepository<NS_KhauTru_TheoDoiDTO>>();
             services.AddScoped<IDOBaseRepository<NS_TamUngDTO>, DOBaseRepository<NS_TamUngDTO>>();
             services.AddScoped<IDOBaseRepository<NS_TamUng_TheoDoiDTO>, DOBaseRepository<NS_TamUng_TheoDoiDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_NghiemThuDTO>, DOBaseRepository<NS_NghiemThuDTO>>();
 
             services.AddScoped<IDOBaseRepository<RequestRegistDTO>, DOBaseRepository<RequestRegistDTO>>();
             services.AddScoped<IDOBaseRepository<ResponseRegistDTO>, DOBaseRepository<ResponseRegistDTO>>();

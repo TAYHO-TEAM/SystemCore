@@ -33,6 +33,7 @@ namespace ProjectManager.Common
         public const string NS_TamUng_TheoDoi_TABLENAME = "NS_TamUng_TheoDoi";
         public const string NS_KhauTru_TABLENAME = "NS_KhauTru";
         public const string NS_KhauTru_TheoDoi_TABLENAME = "NS_KhauTru_TheoDoi";
+        public const string NS_NghiemThu_TABLENAME = "NS_NghiemThu";
 
         public const string Stages_TABLENAME = "Stages";
         public const string Requests_TABLENAME = "Requests";
