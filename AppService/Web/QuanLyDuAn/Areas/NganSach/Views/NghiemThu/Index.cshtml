@@ -11,12 +11,32 @@
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
-        var customStore_GoiThau = (projectId) => new DevExpress.data.CustomStore({
+        var customStore_NghiemThu=(idGiaiDoan, idGoiThau) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    data: {
+                        FindId: 'projectId,' + PROJECTID
+                    },
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_NGHIEMTHU,
+                    success: (data) => deferred.resolve(data.result.items),
+                    error: function (e) {
+                        console.log(e);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        var customStore_GoiThau =new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
                 let deferred = $.Deferred();
                 $.ajax({
-                    data: { FindParentId: 0, FindId: 'projectId,' + projectId },
+                    data: { FindParentId: 0, FindId: 'projectId,' + PROJECTID },
                     headers: header, dataType: "json", url: URL_API_PM_READ + ACTION_GOITHAU,
                     success: function (data) {
                         deferred.resolve(data.result.items);
@@ -57,25 +77,31 @@
                 return d.promise();
             },
         });
-        var customStore_NghiemThu = new DevExpress.data.CustomStore({
-            key: "id",
+        var customStore_GiaiDoan = new DevExpress.data.CustomStore({
+            key: "id", 
             load: (values) => {
-                var deferred = $.Deferred();
+                let deferred = $.Deferred();
+                let params = {
+                    'SortCol': 'status', 'SortADSC': '1',
+                    'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1',
+                    'KeyWord':'toán'
+                };
                 $.ajax({
-                    data: {
-                        FindId: 'projectId,' + PROJECTID
-                    },
                     headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_NGHIEMTHU,
-                    success: (data) => deferred.resolve(data.result.items),
-                    error: function (e) {
-                        console.log(e);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_GIAIDOAN,
+                    success: function (rs) {
+                        var data = rs.result.items;
+                        deferred.resolve(data);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
                     },
                     timeout: 10000
                 });
                 return deferred.promise();
-            }, 
+            },
         });
 
         $(function () {
@@ -92,39 +118,89 @@
                             valueExpr: "id",
                             displayExpr: (item) => { return item && item.code + " - " + item.title; },
                             searchEnabled: true, searchMode: "contains",
-                            width: "auto", value: PROJECTID,  
+                            width: "auto", stylingMode: "filled",
+                            value: PROJECTID,
                             onValueChanged: function (data) {
                                 PROJECTID = data.value;
                                 localStorage.setItem('projectIdCurrent', PROJECTID);
                                 $("#sel_filter_goithau").dxSelectBox('instance').reset();
-                                $("#sel_filter_goithau").dxSelectBox("option", "dataSource", customStore_GoiThau(PROJECTID));  
+                                $("#sel_filter_goithau").dxSelectBox("option", "dataSource", customStore_GoiThau);  
+                                
+                                $("#sel_filter_giaidoan").dxSelectBox('instance').reset();
+                                $("#sel_filter_giaidoan").dxSelectBox("option", "dataSource", customStore_GiaiDoan);  
                             },
                         },
-                    },
+                    },//Project
                     {
                         location: "before", widget: "dxSelectBox",
                         options: {
-                            dataSource: customStore_GoiThau(PROJECTID),
+                            dataSource: customStore_GoiThau,
                             elementAttr: { id: "sel_filter_goithau" },
                             valueExpr: "id",
                             displayExpr: (item) => { return item && item.soHopDong + " - " + item.dienGiai; },
                             searchEnabled: true, searchMode: "contains",
-                            width: "auto", 
+                            width: "auto", stylingMode: "filled",
                             //onValueChanged: function (data) {
                             //    PROJECTID = data.value;
                             //    localStorage.setItem('projectIdCurrent', PROJECTID);
                             //    $("#datagrid_filter_goithau").dxDataGrid("option", "dataSource", customStore_GoiThau(PROJECTID));
                             //},
                         }, 
-                    },
+                    },//GoiThau
+                    {
+                        location: "before", widget: "dxSelectBox", label: {text:'s'},
+                        options: {
+                            dataSource: customStore_GiaiDoan,
+                            elementAttr: { id: "sel_filter_giaidoan" },
+                            valueExpr: "id",
+                            displayExpr: (item) => { return item && item.tenGiaiDoan + " - " + item.dienGiai; },
+                            searchEnabled: true, searchMode: "contains",
+                            width: "auto", stylingMode: "filled"
+                        }, 
+                    },//GiaiDoan
+                    {
+                        location: "before", widget: "dxButton",
+                        options: {
+                            icon: "fas fa-eye", type: "default", stylingMode: "contained",
+                            text:"Xem",
+                            onClick: () => container.refresh()
+                        }
+                    },//BTN View
+                    {
+                        location: "before", widget: "dxButton",
+                        options: {
+                            icon: "add", type: "default", stylingMode: "contained",
+                            text: "Thêm đợt",
+                            onClick: () => loadCreate()
+                        }
+                    },//BTN Add
                     {
                         location: "after", widget: "dxButton",
                         options: {
                             icon: "refresh", type: "default",
                             onClick: () => container.refresh()
                         }
-                    });
+                    }
+                );
             },
+        });
+        var loadCreate = () => $("#popup-main").dxPopup({
+            position: { of: "#container" },
+            //width: "100%", height: "100%",
+            fullScreen: true,
+            dragEnabled: false, resizeEnabled: false,
+            showTitle: true, title: "Thêm mới đợt nghiệm thu",
+            showCloseButton: true, closeOnOutsideClick: false,
+            visible: true,
+            contentTemplate: (c) => {
+                var scrollView = $("<div id='scrollView'></div>");
+                var content = $("<div />");
+                content.dxDataGrid({
+                }).dxDataGrid("instance");
+                scrollView.append(content);
+                scrollView.dxScrollView({ width: '100%', height: '100%' });
+                return c.append(scrollView);
+            }
         });
     </script>
 }

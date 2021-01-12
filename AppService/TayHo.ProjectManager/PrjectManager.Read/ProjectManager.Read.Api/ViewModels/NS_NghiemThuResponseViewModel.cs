@@ -6,6 +6,7 @@ namespace ProjectManager.Read.Api.ViewModels
     {
         public int? CongViecDetailId { get; set; }
         public int? GoiThauId { get; set; }
+        public int? GiaiDoanId { get; set; }
         public int? Dot { get; set; }
         public double? KhoiLuong { get; set; }
     }
