@@ -23,7 +23,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_NghiemThuCommandResponse>> Handle(CreateNS_NghiemThuCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_NghiemThuCommandResponse>();
-            var newNS_NghiemThu = new NS_NghiemThu(request.CongViecDetailId,request.Dot,request.KhoiLuong);
+            var newNS_NghiemThu = new NS_NghiemThu(request.CongViecDetailId,
+                request.GoiThauId,
+                request.Dot,
+                request.KhoiLuong);
             newNS_NghiemThu.SetCreate(_user);
             newNS_NghiemThu.Status = request.Status.HasValue ? request.Status : newNS_NghiemThu.Status;
             newNS_NghiemThu.IsActive = request.IsActive.HasValue ? request.IsActive : newNS_NghiemThu.IsActive;
