@@ -1,0 +1,18 @@
+﻿@model int
+<div class="demo-container">
+    @*<div class="long-title"><h3>Personal details</h3></div>*@
+    <div id="form-container">
+        <div id="form"></div>
+    </div>
+</div>
+
+<script>
+
+        $(function () {
+            alert(@Model);
+            customStore_CUSTOMFORMBODY(@Model).load().done((rs) => { console.log(rs) });
+        })
+
+</script>
+
+

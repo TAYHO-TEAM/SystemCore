@@ -8,6 +8,7 @@ namespace ProjectManager.Read.Sql.Interfaces
     public interface ICustomFormRepository<T> where T : class
     {
         Task<PagingItems<CustomFormDetailDTO>> GetCustomFormDetailAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
+        Task<PagingItems<CustomFormDetailBodyDTO>> GetCustomFormDetailBodyAsync(RequestHasAccountIdFilterParam requetsBaseFilterParam);
     }
 }
 

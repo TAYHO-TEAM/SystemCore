@@ -23,5 +23,15 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return PartialView(id);
         }
+        // GET: ThongTin/VanBanMau
+        public ActionResult DanhSachVanBan()
+        {
+            return View();
+        }
+        // GET: ThongTin/VanBanMau
+        public ActionResult _DienVanBan(int id)
+        {
+            return PartialView(id);
+        }
     }
 }

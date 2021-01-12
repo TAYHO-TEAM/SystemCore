@@ -2473,6 +2473,8 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomColum.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanMauDetail_bak.cshtml" />
     <Content Include="Areas\NganSach\Views\NghiemThu\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\DanhSachVanBan.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\_DienVanBan.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

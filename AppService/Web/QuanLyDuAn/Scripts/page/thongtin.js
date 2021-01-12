@@ -139,54 +139,7 @@ let customStore_CMD_READ_FILTER_FK = (CMD, READ, FKID) => new DevExpress.data.Cu
 
         return deferred.promise();
     },
-    insert: (values) => {
-        console.log(URL_API_PM_CMD + CMD);
-        console.log(values);
-        //ajax_insert(URL_API_PM_CMD + CMD, values);
-
-        //var deferred = $.Deferred();
-        $.ajax({
-            url: "https://api-acc-cmd.tayho.com.vn/api/cmd/v1/Account",
-            dataType: "json",
-            type: "POST",
-            data: JSON.stringify(values),
-            success: function (data) {
-                console.log(data);
-                //if (data != null && data.isOk && data.result != null)
-                //    deferred.resolve(data.result);
-                //else
-                //    deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log(textStatus);
-                console.log(errorThrown);
-                //console.log(xhr);
-                deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
-            },
-        });
-        //$.ajax({
-        //    headers: header,
-        //    url: URL_API_PM_CMD + CMD,
-        //    dataType: "json",
-        //    type: "POST",
-        //    data: JSON.stringify(values),
-        //    success: function (data) {
-        //        console.log(data);
-        //        //if (data != null && data.isOk && data.result != null)
-        //        //    deferred.resolve(data.result);
-        //        //else
-        //        //    deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
-        //    },
-        //    error: function (xhr, textStatus, errorThrown) {
-        //        console.log(textStatus);
-        //        console.log(errorThrown);
-        //        //console.log(xhr);
-        //        deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
-        //    },
-        //    //timeout: 5000
-        //});
-
-    },
+    insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });

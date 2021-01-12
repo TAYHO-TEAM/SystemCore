@@ -43,5 +43,35 @@ namespace ProjectManager.Read.Sql.Repositories
             result.Items = list;
             return result;
         }
+        public async Task<PagingItems<CustomFormDetailBodyDTO>> GetCustomFormDetailBodyAsync(RequestHasAccountIdFilterParam requestBaseFilterParam)
+        {
+            requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName ?? "*";
+            CustomFormDetailBodyDTO CustomFormDetailBodyDTO = new CustomFormDetailBodyDTO();
+            var result = new PagingItems<CustomFormDetailBodyDTO>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestBaseFilterParam.PageNumber,
+                    PageSize = requestBaseFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_CustomForm_GetDetailBody", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            //result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            //result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+            CustomFormDetailBodyDTO = rs.Read<CustomFormDetailBodyDTO>().Single();
+            CustomFormDetailBodyDTO.CustomFormBodyDetailDTOs = rs.Read<CustomFormBodyDetailDTO>().ToList();
+            for(int i =0; i< CustomFormDetailBodyDTO.CustomFormBodyDetailDTOs.Count;i++)
+            {
+                requestBaseFilterParam.FindId = CustomFormDetailBodyDTO.CustomFormBodyDetailDTOs[i].CustomTableId.ToString();
+                using var rsTableDetail = conn.QueryMultipleAsync("sp_CustomTable_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+                CustomTableDTO customTableDTO = rsTableDetail.Read<CustomTableDTO>().Single();
+                CustomFormDetailBodyDTO.CustomFormBodyDetailDTOs[i].CustomColumDetailDTOs = rsTableDetail.Read<CustomColumDetailDTO>().ToList();
+            }    
+            List<CustomFormDetailBodyDTO> list = new List<CustomFormDetailBodyDTO>();
+            list.Add(CustomFormDetailBodyDTO);
+            result.Items = list;
+            return result;
+        }
     }
 }

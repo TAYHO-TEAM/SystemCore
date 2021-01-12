@@ -19,4 +19,8 @@ namespace ProjectManager.Read.Api.ViewModels
         }
         public List<CustomFormBodyDTO> CustomFormBodyDTOs { get; set; }
     }
+    public class CustomFormBodyDetailResponseViewModel : CustomFormDetailBodyDTO
+    {
+       
+    }
 }

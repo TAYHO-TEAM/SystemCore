@@ -1,4 +1,5 @@
 ﻿using ProjectManager.Read.Sql.DTOs.BaseClasses;
+using System.Collections.Generic;
 
 namespace ProjectManager.Read.Sql.DTOs.DTO
 {
@@ -11,5 +12,13 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public string Style { get; set; }
         public string SourceValue { get; set; }
         public string SourceLink { get; set; }
+    }
+    public class CustomColumDetailDTO : CustomColumDTO
+    {
+        public CustomColumDetailDTO()
+        {
+            CustomCellContentDTOs = new List<CustomCellContentDTO>();
+        }
+        public List<CustomCellContentDTO> CustomCellContentDTOs { get; set; }
     }
 }
