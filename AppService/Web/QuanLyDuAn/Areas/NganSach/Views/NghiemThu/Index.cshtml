@@ -57,6 +57,26 @@
                 return d.promise();
             },
         });
+        var customStore_NghiemThu = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    data: {
+                        FindId: 'projectId,' + PROJECTID
+                    },
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_NGHIEMTHU,
+                    success: (data) => deferred.resolve(data.result.items),
+                    error: function (e) {
+                        console.log(e);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            }, 
+        });
 
         $(function () {
             loadData();

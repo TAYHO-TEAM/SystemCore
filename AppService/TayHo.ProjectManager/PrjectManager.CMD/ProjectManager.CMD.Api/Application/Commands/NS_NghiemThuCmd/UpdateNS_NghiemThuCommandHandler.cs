@@ -40,9 +40,9 @@ namespace ProjectManager.CMD.Api.Application.Commands
             existingNS_NghiemThu.Status = request.Status.HasValue ? request.Status : existingNS_NghiemThu.Status;
 
             existingNS_NghiemThu.SetCongViecDetailId(request.CongViecDetailId);
+            existingNS_NghiemThu.SetGoiThauId(request.GoiThauId);
             existingNS_NghiemThu.SetDot(request.Dot);
             existingNS_NghiemThu.SetKhoiLuong(request.KhoiLuong);
-
 
             existingNS_NghiemThu.SetUpdate(_user, null);
             _nS_NghiemThuRepository.Update(existingNS_NghiemThu);

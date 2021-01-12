@@ -11,9 +11,9 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         {
             builder.ToTable(QuanLyDuAnConstants.NS_NghiemThu_TABLENAME);
             builder.Property(x => x.CongViecDetailId).HasField("_congViecDetailId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.GoiThauId).HasField("_goiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.Dot).HasField("_dot").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.KhoiLuong).HasField("_khoiLuong").UsePropertyAccessMode(PropertyAccessMode.Field);
-
         }
     }
 }

@@ -401,7 +401,7 @@
                     $("#action-delete").dxSpeedDialAction({
                         index: 4, icon: "fas fa-trash", label: "Xóa bỏ thông tin",
                         visible: PermitInAction["delete"],
-                        onClick: (e) => e.component.deleteRow(data)
+                        onClick: () => e.component.deleteRow(data)
                     }).dxSpeedDialAction("instance");
 
                     $("#action-log").dxSpeedDialAction({
