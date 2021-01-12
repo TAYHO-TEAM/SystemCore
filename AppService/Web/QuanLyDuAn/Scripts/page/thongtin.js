@@ -111,6 +111,85 @@ let customStore_UPDATE_READ = (ID, CMD, READ) => new DevExpress.data.CustomStore
     },
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
 });
+let customStore_CMD_READ_FILTER_FK = (CMD, READ, FKID) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = {};
+
+        //if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+        params['FindParentId'] = FKID;
+        if (values.sort) {
+            params['SortCol'] = values.sort[0].selector;
+            params['SortADSC'] = values.sort[0].desc;
+        }
+        $.ajax({
+            headers: header,
+            url: URL_API_PM_READ + READ,
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                let list = data.result.items;
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000//10 giây
+        });
+
+        return deferred.promise();
+    },
+    insert: (values) => {
+        console.log(URL_API_PM_CMD + CMD);
+        console.log(values);
+        //ajax_insert(URL_API_PM_CMD + CMD, values);
+
+        //var deferred = $.Deferred();
+        $.ajax({
+            url: "https://api-acc-cmd.tayho.com.vn/api/cmd/v1/Account",
+            dataType: "json",
+            type: "POST",
+            data: JSON.stringify(values),
+            success: function (data) {
+                console.log(data);
+                //if (data != null && data.isOk && data.result != null)
+                //    deferred.resolve(data.result);
+                //else
+                //    deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(textStatus);
+                console.log(errorThrown);
+                //console.log(xhr);
+                deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
+            },
+        });
+        //$.ajax({
+        //    headers: header,
+        //    url: URL_API_PM_CMD + CMD,
+        //    dataType: "json",
+        //    type: "POST",
+        //    data: JSON.stringify(values),
+        //    success: function (data) {
+        //        console.log(data);
+        //        //if (data != null && data.isOk && data.result != null)
+        //        //    deferred.resolve(data.result);
+        //        //else
+        //        //    deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
+        //    },
+        //    error: function (xhr, textStatus, errorThrown) {
+        //        console.log(textStatus);
+        //        console.log(errorThrown);
+        //        //console.log(xhr);
+        //        deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
+        //    },
+        //    //timeout: 5000
+        //});
+
+    },
+    update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
 
 ////---------------------------READ--------------------------- 
 let customStore_READ_ALL_ACC = (READ) => new DevExpress.data.CustomStore({

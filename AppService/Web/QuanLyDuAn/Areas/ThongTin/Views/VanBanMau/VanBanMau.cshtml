@@ -15,8 +15,10 @@
     <script>
         //--------------------READ------------------------------
         const ACTION = "/CustomForm";
-       
+        const ACTION_CUSTOMTABLE = "/CustomTable";
         const ACTION_PROJECT = "/Project";
+        const ACTION_CUSTOMFORMBODY = "/CustomFormBody";
+        const ACTION_DETAIL = "/CustomForm/Detail";
 
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomForm";
@@ -26,6 +28,9 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+        let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
+        let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_FK(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
+        let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
 
 
         $(function () {
@@ -44,9 +49,6 @@
                     grouping: false
                 },
                 scrolling: { mode: "standard" },
-                rootValue: 0,
-                parentIdExpr: "parentId",
-                keyExpr: "id",
                 showBorders: false,
                 showColumnHeaders: true,
                 showColumnLines: false,
@@ -156,7 +158,7 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    e.data.ProjectId = PROJECTID;
+                    //e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
@@ -164,6 +166,8 @@
                 },
                 onRowDblClick: function (e) {
                     var container = e.component;
+                    console.log(container);
+                    console.log(e);
                     CALLPOPUP(
                         "Chi tiết: \"" + e.data.header +"\"",
                         "/ThongTin/VanBanMau/_VanBanMauDetail/" + e.data.id,

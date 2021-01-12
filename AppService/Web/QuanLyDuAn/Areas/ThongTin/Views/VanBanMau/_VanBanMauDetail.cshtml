@@ -1,28 +1,22 @@
 ﻿@model int
-<form id="form-regist" action="#" method="POST" enctype="application/json">
-</form>
+@*<form id="form-regist" action="#" method="POST" enctype="application/json">
+</form>*@
 <div id="popup-register"></div>
 <div class="row">
     <div class="col-12">
-        <div id="container" class="elevation-2"></div>
+        <div id="container-popup" class="elevation-2"></div>
     </div>
 </div>
 <script>
-    //----------------------------- Parameter  ---------------------------
-    const ACTION_CUSTOMFORMBODY = "/CustomFormBody";
-    const ACTION_DETAIL = "/CustomForm/Detail";
-    //----------------------------- Get Content Data  ---------------------------
-    let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY);
-    let customStore_DETAIL  = (id) => customStore_READ_ID(ACTION_DETAIL, id);
 
     $(function () {
-        loadID(@Model);
+        loadID();
     });
 
-    let loadID = (id) => {
-        $("#container").dxDataGrid({
+    var loadID = () => {
+        $("#container-popup").dxDataGrid({
             height: heightScreen,
-            dataSource: customStore_ID(id),
+            dataSource: customStore_CUSTOMFORMBODY('customFormId,' +@Model),
             remoteOperations: {
                 filtering: true,
                 sorting: true,
@@ -38,34 +32,42 @@
             rowAlternationEnabled: true,
             columns: [
                 {
-                    dataField: "title",
-                    caption: "Tên tài liệu",
+                    dataField: "header",
+                    caption: "Tiêu đề",
                     dataType: "string",
                 },
                 {
-                    dataField: "description",
-                    caption: "Mô tả",
-                    dataType: "string",
+                    dataField: "customTableId",
+                    caption: "Loại hiểm thị",
+                    dataType: "number",
+                    lookup: {
+                        dataSource: customStore_CUSTOMTABLE,
+                        valueExpr: "id",
+                        displayExpr: "title",
+                    },
+                    editorType: "dxLookup",
+                    editorOptions: {
+                        dataSource: customStore_CUSTOMTABLE,
+                        valueExpr: "id",
+                        displayExpr: "title",
+                        placeholder: "Vui lòng chọn...",
+                        searchEnabled: true,
+                        showClearButton: true,
+                        itemTemplate: function (data) {
+                            return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                        },
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
+                    dataField: "priority",
+                    caption: "Thứ tự",
+                    dataType: "number",
                 },
                 {
                     type: "buttons", caption: "Tác vụ",
                     width: 120, alignment: "center",
-                    buttons: ["edit", "delete", {
-                        hint: "Người nhận",
-                        icon: "user",
-                        //visible: function (e) {
-                        //    return !e.row.isEditing && !isChief(e.row.data.Position);
-                        //},
-                        onClick: function (e) {
-                            //alert(1);
-                            loadAccount(e.row.data);
-                            //var clonedItem = $.extend({}, e.row.data, { ID: ++maxID });
-
-                            //employees.splice(e.row.rowIndex, 0, clonedItem);
-                            //e.component.refresh(true);
-                            //e.eve,nt.preventDefault();
-                        }
-                    }],
+                    buttons: ["edit", "delete"],
                 }
             ],
             paging: { enabled: true, pageSize: 20 },
@@ -81,17 +83,12 @@
                 visible: WIDTH_CONTAINER > 350
             },
             editing: {
-                //allowAdding: true,
+                allowAdding: true,
                 allowUpdating: true,
                 allowDeleting: true,
                 mode: "popup",
-                useIcons: true,
+                useIcons: false,
                 confirmDelete: true,
-                popup: {
-                    width: 600, height: "auto",
-                    showTitle: true, title: "Trình duyệt",
-                    closeOnOutsideClick: false, showCloseButton: true,
-                },
             },
             onToolbarPreparing: function (e) {
                 var container = e.component;
