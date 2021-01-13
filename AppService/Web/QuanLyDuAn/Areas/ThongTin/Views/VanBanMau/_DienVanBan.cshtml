@@ -5,13 +5,94 @@
         <div id="form"></div>
     </div>
 </div>
-
+<style>
+</style>
 <script>
+    var employee = {
+        "FirstName": "John",
+        "LastName": "Heart",
+        "Address": "351 S Hill St., Los Angeles, CA",
+        "City": 'Atlanta',
+        "Phones": ["8005552797", "8005953232"]
+    };
 
-        $(function () {
-            alert(@Model);
-            customStore_CUSTOMFORMBODY(@Model).load().done((rs) => { console.log(rs) });
-        })
+    $(function () {
+
+        customStore_CUSTOMFORMDETAIL(@Model).load().done((rs) => {
+            console.log(rs);
+            var form = $("#form").dxForm({
+                colCount: 1,
+                formData: rs,
+                items: [
+                    {
+                        itemType: "group",
+                        caption: "Điền thông tin ",
+                        name: "phones-container",
+                        items: [
+                            {
+                                itemType: "group",
+                                name: "phones",
+                                items: getPhonesOptions(rs[0].customFormBodyDetailDTOs)
+                            },
+                            {
+                                itemType: "button",
+                                horizontalAlignment: "left",
+                                cssClass: "add-phone-button",
+                                buttonOptions: {
+                                    icon: "add",
+                                    text: "Add phone",
+                                    onClick: function () {
+                                        //employee.Phones.push("");
+                                        //form.itemOption("phones-container.phones", "items", getPhonesOptions(employee.Phones));
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }).dxForm("instance");
+            function getPhonesOptions(phones) {
+                var options = [];
+                for (var i = 0; i < phones.length ; i++) {
+                    options.push(generateNewPhoneOptions(i));
+                }
+                return options;
+            }
+
+            function generateNewPhoneOptions(index) {
+                if (rs[0].customFormBodyDetailDTOs[index].customTableDetailDTO.title === "TextBox") {
+                    return {
+                        dataField: "rs[0].customFormBodyDetailDTOs[" + index + "].header",
+                        editorType: "dxTextBox",
+                        cssClass: "custom-textbox",
+                        label: {
+                            
+                            text: rs[0].customFormBodyDetailDTOs[index].header,
+                            location: "left",
+                            //alignment :"right",
+                        },
+                        editorOptions: {
+                            //mask: "+1 (X00) 000-0000",
+                            //maskRules: { "X": /[01-9]/ },
+                            //buttons: [{
+                            //    name: "trash",
+                            //    location: "after",
+                            //    options: {
+                            //        stylingMode: "text",
+                            //        icon: "trash",
+                            //        onClick: function () {
+                            //            employee.Phones.splice(index, 1);
+                            //            form.itemOption("phones-container.phones", "items", getPhonesOptions(employee.Phones));
+                            //        }
+                            //    }
+                            //}]
+                        }
+                    }
+                }
+            }
+        });
+
+    });
 
 </script>
 

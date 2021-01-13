@@ -20,10 +20,13 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class CustomFormContentController : APIControllerBase
     {
         private readonly IDOBaseRepository<CustomFormContentDTO> _dOBaseRepository;
+        private readonly ICustomFormContentRepository<CustomFormContentDetailDTO> _customFormContentRepository;
+        private const string Detail = nameof(Detail);
 
-        public CustomFormContentController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormContentDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        public CustomFormContentController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormContentDTO> dOBaseRepository, ICustomFormContentRepository<CustomFormContentDetailDTO> customFormContentRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _customFormContentRepository = customFormContentRepository;
         }
 
         /// <summary>
@@ -44,6 +47,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<CustomFormContentResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of CustomFormContentDetail.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Detail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<CustomFormContentDetailResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetCustomFormContentDetailAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<CustomFormContentDetailResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.CustomFormContent_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _customFormContentRepository.GetCustomFormContentDetailBodyAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<CustomFormContentDetailResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<CustomFormContentDetailResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

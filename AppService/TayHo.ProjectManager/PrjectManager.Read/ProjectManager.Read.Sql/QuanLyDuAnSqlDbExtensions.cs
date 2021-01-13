@@ -100,6 +100,7 @@ namespace ProjectManager.Read.Sql
 
             services.AddScoped<ICustomTableRepository<CustomTableDetailDTO>, CustomTableRepository<CustomTableDetailDTO>>();
             services.AddScoped<ICustomFormRepository<CustomFormDetailDTO>, CustomFormRepository<CustomFormDetailDTO>>();
+            services.AddScoped<ICustomFormContentRepository<CustomFormContentDetailDTO>, CustomFormContentRepository<CustomFormContentDetailDTO>>();
             return services;
         }
 

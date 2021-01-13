@@ -14,14 +14,6 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     {
         public CustomFormDetailDTO()
         {
-            CustomFormBodyDTOs = new List<CustomFormBodyDTO>();
-        }
-        public List<CustomFormBodyDTO> CustomFormBodyDTOs { get; set; }
-    }
-    public class CustomFormDetailBodyDTO : CustomFormDTO
-    {
-        public CustomFormDetailBodyDTO()
-        {
             CustomFormBodyDetailDTOs = new List<CustomFormBodyDetailDTO>();
         }
         public List<CustomFormBodyDetailDTO> CustomFormBodyDetailDTOs { get; set; }

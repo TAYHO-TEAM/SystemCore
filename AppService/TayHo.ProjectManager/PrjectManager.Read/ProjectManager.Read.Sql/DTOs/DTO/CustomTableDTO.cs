@@ -14,10 +14,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     }
     public class CustomTableDetailDTO : CustomTableDTO
     {
-        public CustomTableDetailDTO()
-        {
-            CustomColumDTOs = new List<CustomColumDTO>();
-        }
-        public  List<CustomColumDTO> CustomColumDTOs { get; set; }
+        public List<CustomColumDetailDTO> CustomColumDetailDTOs { get; set; } = new List<CustomColumDetailDTO>();
+    
     }
 }

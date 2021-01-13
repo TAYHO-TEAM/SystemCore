@@ -10,12 +10,6 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
     }
     public class CustomFormContentDetailDTO : CustomFormContentDTO
     {
-        public CustomFormContentDetailDTO()
-        {
-            CustomCellContentDTOs = new List<CustomCellContentDTO>();
-        }
-        public CustomFormDetailBodyDTO CustomFormDetailBodyDTO { get; set; }
-        public List<CustomCellContentDTO> CustomCellContentDTOs { get; set; }
-
+        public CustomFormDetailDTO CustomFormDetailDTO { get; set; }
     }
 }

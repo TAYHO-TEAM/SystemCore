@@ -10,6 +10,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public CustomFormContentProfile()
         {
             CreateMap<CustomFormContentDTO, CustomFormContentResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<CustomFormContentDetailDTO, CustomFormContentDetailResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

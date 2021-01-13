@@ -11,16 +11,9 @@ namespace ProjectManager.Read.Api.ViewModels
         public string Header { get; set; }
         public string Style { get; set; }
     }
-    public class CustomFormDetailResponseViewModel : CustomFormResponseViewModel
+    public class CustomFormDetailResponseViewModel : CustomFormDetailDTO
     {
-        public CustomFormDetailResponseViewModel()
-        {
-            CustomFormBodyDTOs = new List<CustomFormBodyDTO>();
-        }
-        public List<CustomFormBodyDTO> CustomFormBodyDTOs { get; set; }
+      
     }
-    public class CustomFormBodyDetailResponseViewModel : CustomFormDetailBodyDTO
-    {
-       
-    }
+  
 }

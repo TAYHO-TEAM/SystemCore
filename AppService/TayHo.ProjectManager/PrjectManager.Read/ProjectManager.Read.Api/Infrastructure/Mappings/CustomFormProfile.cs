@@ -11,7 +11,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         {
             CreateMap<CustomFormDTO, CustomFormResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
             CreateMap<CustomFormDetailDTO, CustomFormDetailResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
-            CreateMap<CustomFormDetailBodyDTO, CustomFormBodyDetailResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            //CreateMap<CustomFormDetailBodyDTO, CustomFormBodyDetailResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

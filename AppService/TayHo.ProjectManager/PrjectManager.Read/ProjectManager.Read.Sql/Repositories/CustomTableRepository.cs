@@ -34,12 +34,11 @@ namespace ProjectManager.Read.Sql.Repositories
                 }
             };
             using var conn = await _connectionFactory.CreateConnectionAsync();
-            using var rs = conn.QueryMultipleAsync("sp_CustomTable_GetByStep", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            using var rs = conn.QueryMultipleAsync("sp_CustomTable_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
             //result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
             //result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
             customTableDetailDTO = rs.Read<CustomTableDetailDTO>().Single();
-            customTableDetailDTO.CustomColumDTOs = new List<CustomColumDTO>();
-            customTableDetailDTO.CustomColumDTOs = rs.Read<CustomColumDTO>().ToList();
+            customTableDetailDTO.CustomColumDetailDTOs = rs.Read<CustomColumDetailDTO>().ToList();
             List<CustomTableDetailDTO> list = new List<CustomTableDetailDTO>();
             list.Add(customTableDetailDTO);
             //IEnumerable<CustomTableDetailDTO> enumerable = list;

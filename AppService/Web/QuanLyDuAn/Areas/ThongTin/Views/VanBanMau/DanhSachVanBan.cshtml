@@ -17,7 +17,7 @@
         const ACTION = "/CustomForm";
         const ACTION_CUSTOMTABLE = "/CustomTable";
         const ACTION_PROJECT = "/Project";
-        const ACTION_CUSTOMFORMBODY = "/CustomFormBody";
+        const ACTION_CUSTOMFORMDETAIL = "/CustomForm/Detail";
         const ACTION_DETAIL = "/CustomForm/Detail";
 
         //--------------------CMD------------------------------
@@ -29,7 +29,7 @@
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
-        let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_FK(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
+        let customStore_CUSTOMFORMDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
 
 
