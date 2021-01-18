@@ -1,10 +1,12 @@
 ﻿@model int
-<div class="demo-container">
+<!--<div class="demo-container">-->
     @*<div class="long-title"><h3>Personal details</h3></div>*@
-    <div id="form-container">
-        <div id="form"></div>
+    <!--<div id="form-container">
+        <div id="form-custom"></div>
     </div>
-</div>
+</div>-->
+<form id="form-custom" action="#" method="POST" enctype="application/json">
+</form>
 <style>
 </style>
 <script>
@@ -15,63 +17,70 @@
         "City": 'Atlanta',
         "Phones": ["8005552797", "8005953232"]
     };
-
+    var customStore_SELECT = (link) => customStore_GET_LINK(link);
     $(function () {
 
         customStore_CUSTOMFORMDETAIL(@Model).load().done((rs) => {
             console.log(rs);
-            var form = $("#form").dxForm({
+            var form = $("#form-custom").dxForm({
                 colCount: 1,
                 formData: rs,
                 items: [
                     {
                         itemType: "group",
-                        caption: "Điền thông tin ",
-                        name: "phones-container",
-                        items: [
-                            {
-                                itemType: "group",
-                                name: "phones",
-                                items: getPhonesOptions(rs[0].customFormBodyDetailDTOs)
-                            },
-                            {
-                                itemType: "button",
-                                horizontalAlignment: "left",
-                                cssClass: "add-phone-button",
-                                buttonOptions: {
-                                    icon: "add",
-                                    text: "Add phone",
-                                    onClick: function () {
-                                        //employee.Phones.push("");
-                                        //form.itemOption("phones-container.phones", "items", getPhonesOptions(employee.Phones));
-                                    }
-                                }
+                        name: "Phones",
+                        items: getGroupOptions(rs[0].customFormBodyDetailDTOs),
+                    },
+                    {
+                        itemType: "button",
+                        horizontalAlignment: "center",
+                        buttonOptions: {
+                            text: "Lưu lại",
+                            icon: "fa fa-save",
+                            type: "success",
+                            useSubmitBehavior: true,
+                            elementAttr: {
+                                id: "submit",
                             }
-                        ]
-                    }
+                        }
+                    },
                 ]
             }).dxForm("instance");
-            function getPhonesOptions(phones) {
+            function getGroupOptions(customFormBodyDetail) {
+                var groups = [];
+                for (var i = 0; i < customFormBodyDetail.length; i++) {
+                    groups.push({
+                        itemType: "group",
+                        caption: customFormBodyDetail[i].header,
+                        name: customFormBodyDetail[i].header,
+                        items: getPhonesOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.title),
+                    });
+                }
+                return groups;
+            }
+            function getPhonesOptions(phones,type) {
                 var options = [];
-                for (var i = 0; i < phones.length ; i++) {
-                    options.push(generateNewPhoneOptions(i));
+                for (var i = 0; i < phones.length; i++) {
+                    var opt = generateNewPhoneOptions(phones[i],i,type);
+                    if (opt !== null) {
+                        options.push(opt);
+                    }
                 }
                 return options;
             }
 
-            function generateNewPhoneOptions(index) {
-                if (rs[0].customFormBodyDetailDTOs[index].customTableDetailDTO.title === "TextBox") {
+            function generateNewPhoneOptions(object,index, type) {
+                console.log(index);
+                if (type === "TextBox") {
                     return {
-                        dataField: "rs[0].customFormBodyDetailDTOs[" + index + "].header",
+                        dataField: @Model +'_' + object.id + '_' + index,
+                        label: { text: " " },
                         editorType: "dxTextBox",
                         cssClass: "custom-textbox",
-                        label: {
-                            
-                            text: rs[0].customFormBodyDetailDTOs[index].header,
-                            location: "left",
-                            //alignment :"right",
-                        },
                         editorOptions: {
+                            elementAttr: {
+                                 id: @Model +'_'+object.id + '_' + index,
+                            }
                             //mask: "+1 (X00) 000-0000",
                             //maskRules: { "X": /[01-9]/ },
                             //buttons: [{
@@ -89,11 +98,84 @@
                         }
                     }
                 }
+                else if (type === "SelectBox")
+                {
+                    return {
+                        dataField: @Model +'_' + object.id + '_' + index,
+                        label: { text: "Input" },
+                        displayExpr: "userName",
+                        valueExpr: "userName",
+                        editorType: "dxSelectBox",
+                        cssClass: "custom-textbox",
+                        editorOptions: {
+                            elementAttr: {
+                                id: @Model +'_'+object.id + '_' + index,
+                            },
+                            dataSource: customStore_SELECT(object.sourceLink),
+                            displayExpr: "userName",
+                            valueExpr: "userName",
+                        }
+                    };
+
+                }
+                else
+                {
+                    return null;
+                }
             }
         });
+        $("#form-custom").on("submit", function (e) {
+            //test(fdatatest);
+            e.preventDefault();
+            alert(1);
+            var fdata = new FormData();
+            $.each(formData, function (key, value) {
+                fdata.append(key, value);
+            });
+    
+            fdata.append('customFormContentId', @Model);
+            for (var pair of fdata.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
+            alert(2);
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/ThongTin/VanBanMau/Create",
+                data: fdata,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (rs) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify(rs.result, rs.status, 3000);
+                    if (rs.status == "success") {
+                        $("#popup-register").dxPopup('instance').hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                }
+            });
+            e.preventDefault();
+            //var files = $(".file-uploader").dxFileUploader("instance").option("value");
+            //if (files.length > 0) {
+            //    $.each(files, function (key, value) {
+            //        fdata.append(files[key].name, files[key]);
+            //    });
 
+            //}
+            //else {
+            //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
+            //    e.preventDefault();
+            //    return false;
+            //};
+
+            
+        });
     });
-
 </script>
 
 

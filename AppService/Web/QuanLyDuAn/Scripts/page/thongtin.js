@@ -234,7 +234,28 @@ let customStore_READ_ID = (READ, ID) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
-
+let customStore_GET_LINK = (LINK) => new DevExpress.data.CustomStore({
+    key: 'id',
+    loadMode: "raw",
+    load: () => {
+        var deferred = $.Deferred();
+        $.ajax({
+            headers: header,
+            dataType: "json",
+            url: LINK,
+            success: function (data) {
+                var list = data.result.items;
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr.responseJSON);
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000
+        });
+        return deferred.promise();
+    },
+});
 
 var dataGridOptions = {
     height: heightScreen,
