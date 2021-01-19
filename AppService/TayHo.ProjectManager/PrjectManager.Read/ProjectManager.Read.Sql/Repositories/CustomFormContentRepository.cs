@@ -37,22 +37,26 @@ namespace ProjectManager.Read.Sql.Repositories
             //result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
             //result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
             CustomFormContentDetailDTO = rs.Read<CustomFormContentDetailDTO>().Single();
-            CustomFormContentDetailDTO.CustomFormDetailDTO = rs.Read<CustomFormDetailDTO>().Single();
-            CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs = rs.Read<CustomFormBodyDetailDTO>().ToList();
-            for (int i = 0; i < CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs.Count; i++)
+            if(CustomFormContentDetailDTO != null && CustomFormContentDetailDTO.Id >0)
             {
-                requestBaseFilterParam.FindId = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableId.ToString();
-                using var rsTableDetail = conn.QueryMultipleAsync("sp_CustomTable_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
-                CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO = rsTableDetail.Read<CustomTableDetailDTO>().Single();
-                CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs = rsTableDetail.Read<CustomColumDetailDTO>().ToList();
-                for (int j = 0; j < CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs.Count; j++)
+                CustomFormContentDetailDTO.CustomFormDetailDTO = rs.Read<CustomFormDetailDTO>().Single();
+                CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs = rs.Read<CustomFormBodyDetailDTO>().ToList();
+                for (int i = 0; i < CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs.Count; i++)
                 {
-                    requestBaseFilterParam.FindId = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs[i].Id.ToString();
-                    requestBaseFilterParam.FindParentId = CustomFormContentDetailDTO.Id.ToString();
-                    using var rsCellContent = conn.QueryMultipleAsync("sp_CustomCellContent_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
-                    CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs[j].CustomCellContentDTOs = rsCellContent.Read<CustomCellContentDTO>().ToList();
+                    requestBaseFilterParam.FindId = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableId.ToString();
+                    using var rsTableDetail = conn.QueryMultipleAsync("sp_CustomTable_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+                    CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO = rsTableDetail.Read<CustomTableDetailDTO>().Single();
+                    CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs = rsTableDetail.Read<CustomColumDetailDTO>().ToList();
+                    for (int j = 0; j < CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs.Count; j++)
+                    {
+                        requestBaseFilterParam.FindId = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs[j].Id.ToString();
+                        requestBaseFilterParam.FindParentId = CustomFormContentDetailDTO.Id.ToString();
+                        using var rsCellContent = conn.QueryMultipleAsync("sp_CustomCellContent_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+                        CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs[j].CustomCellContentDTOs = rsCellContent.Read<CustomCellContentDTO>().ToList();
+                    }
                 }
-            }
+            }    
+           
 
             List<CustomFormContentDetailDTO> list = new List<CustomFormContentDetailDTO>();
             list.Add(CustomFormContentDetailDTO);

@@ -17,8 +17,10 @@
         const ACTION = "/CustomForm";
         const ACTION_CUSTOMTABLE = "/CustomTable";
         const ACTION_PROJECT = "/Project";
-        const ACTION_CUSTOMFORMDETAIL = "/CustomForm/Detail";
+        const ACTION_CUSTOMFORMCONTENTDETAIL = "/CustomFormContent/Detail";
         const ACTION_DETAIL = "/CustomForm/Detail";
+        const ACTION_CUSTOMFORM = "/CustomForm";
+        const ACTION_LISTOWNER = "/CustomFormContent/ListOwner";
 
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomForm";
@@ -29,8 +31,10 @@
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
-        let customStore_CUSTOMFORMDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMDETAIL, id);
+        let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
+        let customStore_LISTOWNER = (id) => customStore_READ_FILTER(ACTION_LISTOWNER, 'customFormId,' + id);
+        let customStore_CUSTOMFORM = customStore_READ_ALL(ACTION_CUSTOMFORM);
 
 
         $(function () {
@@ -78,7 +82,6 @@
                         caption: "Mô tả",
                         dataType: "string",
                     },
-
                     {
                         dataField: "status",
                         caption: "Sắp xếp",
@@ -128,13 +131,87 @@
                 },
                 onRowDblClick: function (e) {
                     var container = e.component;
-                    CALLPOPUP(
-                        "Tạo văn bản theo mẫu: \"" + e.data.header +"\"",
-                        "/ThongTin/VanBanMau/_DienVanBan/" + e.data.id,
-                        ($(window).width() > 767 ? "50%" : "80%"),
-                        container
-                    );
+
                 },
+                masterDetail: {
+                autoExpandAll: false,
+                component: null,
+                enabled: true,
+                render: null,
+                template: function (container, options) {
+                    $("<div>").dxDataGrid({
+                        showBorders: false,
+                        showColumnHeaders: true,
+                        showColumnLines: false,
+                        hoverStateEnabled: true,
+                        showRowLines: true,
+                        columnAutoWidth: true,
+                        wordWrapEnabled: true,
+                        rowAlternationEnabled: true,
+                        columnAutoWidth: true,
+                        showBorders: true,
+                        dataSource: customStore_LISTOWNER(options.data.id),
+                        columns: [
+                            {
+                                dataField: "id",
+                                caption: "Số văn bản",
+                                dataType: "string",
+                            },
+                            {
+                                dataField: "createDate",
+                                caption: "Ngày thực hiện",
+                                dataType: "date",
+                            },
+                            {
+                                dataField: "updateDate",
+                                caption: "Ngày sửa",
+                                dataType: "date",
+                            },
+                        ],
+                        editing: {
+                            //allowAdding: true,
+                            allowUpdating: false,
+                            allowDeleting: false,
+                            mode: "popup",
+                            useIcons: true,
+                            confirmDelete: true,
+                            popup: {
+                                width: 600, height: "auto",
+                                showTitle: true, title: "Trình duyệt",
+                                closeOnOutsideClick: false, showCloseButton: true,
+                            },
+                        },
+                        onInitNewRow: (e) => {
+                            e.data.isActive = true;
+                            e.data.isVisible = true;
+                        },
+                        onToolbarPreparing: function (e) {
+                            var container = e.component;
+                            e.toolbarOptions.items.unshift(
+                                {
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        icon: "refresh",
+                                        stylingMode: "filled",
+                                        type: "default",
+                                        onClick: () => container.refresh()
+                                    }
+                                },
+                            )
+                        },
+                        onRowDblClick: function (e) {
+                            var container = e.component;
+                            CALLPOPUP(
+                                "Tạo văn bản theo mẫu: \"" + options.data.header + "\"",
+                                "/ThongTin/VanBanMau/_DienVanBan/" + e.data.id,
+                                ($(window).width() > 767 ? "50%" : "80%"),
+                                container
+                            );
+                        },
+                    }).attr("style", "margin:auto; width:90%").appendTo(container);
+                },
+            },
             });
         }
     </script>

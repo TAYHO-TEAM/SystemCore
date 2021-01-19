@@ -1,7 +1,7 @@
 ﻿@model int
 <!--<div class="demo-container">-->
-    @*<div class="long-title"><h3>Personal details</h3></div>*@
-    <!--<div id="form-container">
+@*<div class="long-title"><h3>Personal details</h3></div>*@
+<!--<div id="form-container">
         <div id="form-custom"></div>
     </div>
 </div>-->
@@ -10,17 +10,10 @@
 <style>
 </style>
 <script>
-    var employee = {
-        "FirstName": "John",
-        "LastName": "Heart",
-        "Address": "351 S Hill St., Los Angeles, CA",
-        "City": 'Atlanta',
-        "Phones": ["8005552797", "8005953232"]
-    };
     var customStore_SELECT = (link) => customStore_GET_LINK(link);
     $(function () {
 
-        customStore_CUSTOMFORMDETAIL(@Model).load().done((rs) => {
+        customStore_CUSTOMFORMCONTENTDETAIL(@Model).load().done((rs) => {
             console.log(rs);
             var form = $("#form-custom").dxForm({
                 colCount: 1,
@@ -29,7 +22,7 @@
                     {
                         itemType: "group",
                         name: "Phones",
-                        items: getGroupOptions(rs[0].customFormBodyDetailDTOs),
+                        items: getGroupOptions(rs[0].customFormDetailDTO.customFormBodyDetailDTOs),
                     },
                     {
                         itemType: "button",
@@ -129,19 +122,32 @@
             e.preventDefault();
             alert(1);
             var fdata = new FormData();
-            $.each(formData, function (key, value) {
+
+            var inputs = document.getElementById("form-custom").elements;
+
+            // Iterate over the form controls
+            for (i = 0; i < inputs.length; i++) {
+                if (inputs[i].nodeName === "INPUT" && inputs[i].type === "text") {
+                    // Update text input
+                    //inputs[i].value.toLocaleUpperCase();
+                    fdata.append(inputs[i].name, inputs[i].value);
+                }
+            }
+        
+
+            @*$.each(formData, function (key, value) {
                 fdata.append(key, value);
             });
-    
+
             fdata.append('customFormContentId', @Model);
             for (var pair of fdata.entries()) {
                 console.log(pair[0] + ', ' + pair[1]);
-            }
+            }*@
             alert(2);
             $.ajax({
                 type: "POST",
                 enctype: 'multipart/form-data',
-                url: "/ThongTin/VanBanMau/Create",
+                url: "/ThongTin/VanBanMau/Test",
                 data: fdata,
                 processData: false,
                 contentType: false,
@@ -173,7 +179,7 @@
             //    return false;
             //};
 
-            
+
         });
     });
 </script>

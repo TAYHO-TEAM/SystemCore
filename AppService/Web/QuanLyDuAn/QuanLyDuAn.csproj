@@ -201,6 +201,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DynamicOBJ.cs" />
     <Compile Include="Utilities\PlanRegistOBJ.cs" />
     <Compile Include="Utilities\RequestOBJ.cs" />
   </ItemGroup>
@@ -2475,6 +2476,7 @@
     <Content Include="Areas\NganSach\Views\NghiemThu\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\DanhSachVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DienVanBan.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\_DanhSachVanBan.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
