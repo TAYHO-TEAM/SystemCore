@@ -103,6 +103,7 @@
                 return deferred.promise();
             },
         });
+        var MAXDOT = 0;
 
         $(function () {
             loadData();
@@ -155,7 +156,11 @@
                             valueExpr: "id",
                             displayExpr: (item) => { return item && item.tenGiaiDoan + " - " + item.dienGiai; },
                             searchEnabled: true, searchMode: "contains",
-                            width: "auto", stylingMode: "filled"
+                            width: "auto", stylingMode: "filled",
+                            itemTemplate: (data, index) => {
+                                var rs = $("<div>").html("<b>" + data.tenGiaiDoan + "</b> - <em>" + data.dienGiai + "</em>");
+                                return rs;
+                            }
                         }, 
                     },//GiaiDoan
                     {
@@ -171,7 +176,7 @@
                         options: {
                             icon: "add", type: "default", stylingMode: "contained",
                             text: "Thêm đợt",
-                            onClick: () => loadCreate()
+                            onClick: () => loadCreate_ChonDotThanhToan()
                         }
                     },//BTN Add
                     {
@@ -184,19 +189,47 @@
                 );
             },
         });
-        var loadCreate = () => $("#popup-main").dxPopup({
+        var loadCreate_ChonDotThanhToan = () => $("#popup-main").dxPopup({
             position: { of: "#container" },
-            //width: "100%", height: "100%",
-            fullScreen: true,
-            dragEnabled: false, resizeEnabled: false,
+            width: 500, height: "auto",
+            //fullScreen: true,
+            dragEnabled: true, resizeEnabled: false,
             showTitle: true, title: "Thêm mới đợt nghiệm thu",
             showCloseButton: true, closeOnOutsideClick: false,
             visible: true,
             contentTemplate: (c) => {
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div />");
-                content.dxDataGrid({
-                }).dxDataGrid("instance");
+                var header = $("<div />").addClass("row");
+                header.append(
+                    $("<div />").addClass("col-6 text-center").html("<h6>GÓI THẦU</h6><em>" + $("#sel_filter_goithau").dxSelectBox('instance').option('text')+"</em>"),
+                    $("<div />").addClass("col-6 text-center").html("<h6>GIAI ĐOẠN</h6><em>" + $("#sel_filter_giaidoan").dxSelectBox('instance').option('text')+"</em>"),
+                    $("<div />").addClass("col-12 text-center").html("<br />"),
+                    $("<div />").addClass("col-12 text-center").html("<h6>ĐỢT THANH TOÁN</h6>")
+                ).appendTo(content);
+
+                var body = $("<div />")
+                body.dxNumberBox({
+                    value: MAXDOT,
+                    min: MAXDOT - 1,
+                    showSpinButtons: true, step: 1, useLargeSpinButtons: true,                    
+                    elementAttr: {
+                        id: "txtDotThanhToan",
+                    },
+                    buttons: ["spins", 
+                        {
+                            name: "xacnhan-taomoi-dotthanhtoan-nghiemthu",
+                            location: "after",
+                            options: {
+                                text: "Xác nhận", stylingMode: "contained", type: "default",
+                                onClick: () => {
+                                    $("#popup-main").dxPopup("instance").hide();
+                                }
+                            }
+                        }
+                    ]
+                }).dxNumberBox("instance");
+                body.appendTo(content);
                 scrollView.append(content);
                 scrollView.dxScrollView({ width: '100%', height: '100%' });
                 return c.append(scrollView);
