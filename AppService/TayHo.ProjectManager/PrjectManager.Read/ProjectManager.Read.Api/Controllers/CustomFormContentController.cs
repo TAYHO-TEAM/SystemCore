@@ -22,6 +22,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         private readonly IDOBaseRepository<CustomFormContentDTO> _dOBaseRepository;
         private readonly ICustomFormContentRepository<CustomFormContentDetailDTO> _customFormContentRepository;
         private const string Detail = nameof(Detail);
+        private const string ListOwner = nameof(ListOwner);
 
         public CustomFormContentController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormContentDTO> dOBaseRepository, ICustomFormContentRepository<CustomFormContentDetailDTO> customFormContentRepository) : base(mapper,httpContextAccessor)
         {
@@ -70,6 +71,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<CustomFormContentDetailResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of CustomFormContent.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(ListOwner)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<CustomFormContentResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetCustomFormContentAccountAsync([FromQuery] BaseRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<CustomFormContentResponseViewModel>>();
+            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.CustomFormContent_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAccountFKAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<CustomFormContentResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<CustomFormContentResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

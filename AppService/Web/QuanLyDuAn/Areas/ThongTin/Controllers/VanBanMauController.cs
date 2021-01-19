@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLyDuAn.Utilities;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http.Description;
 using System.Web.Mvc;
 
 namespace QuanLyDuAn.Areas.ThongTin.Controllers
@@ -28,20 +30,43 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return PartialView(id);
         }
-        // GET: ThongTin/VanBanMau
+        // GET: ThongTin/DanhSachVanBan
         public ActionResult DanhSachVanBan()
         {
             return View();
         }
-        // GET: ThongTin/VanBanMau
+        // GET: ThongTin/_DanhSachVanBan
+        public ActionResult _DanhSachVanBan(int id)
+        {
+            return PartialView(id);
+        }
+        // GET: ThongTin/_DienVanBan
         public ActionResult _DienVanBan(int id)
         {
             return PartialView(id);
         }
-        [HttpPost, ValidateInput(false)]
-        public JsonResult Create(string abc)
+        [HttpPost]
+        [ResponseType(typeof(string))]
+        public ActionResult Test()
         {
-            string xyz = abc;
+            try
+            {
+                if (!Request.Form.AllKeys.Any() )
+                    throw new ArgumentNullException();
+                var abc = Request;
+
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpPost, ValidateInput(false)]
+        public JsonResult Create(object abc)
+        {
+            var xyz = abc;
             return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
         }
         public async Task PostRegist(MultipartFormDataContent mFormData, string token)
@@ -61,5 +86,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 }
             }
         }
+        
     }
+  
 }
