@@ -12,8 +12,6 @@ const ACTION_NHOMCHIPHI         = "/NS_NhomChiPhi";
 const ACTION_REASON             = "/NS_Reason";
 const ACTION_NGHIEMTHU          = "/NS_NghiemThu";
 
-const ACTION_CONTRACTORINFO     = "/ContractorInfo";
-
 const ACTION_PHAT               = "/NS_Phat";
 const ACTION_PHAT_THEODOI       = "/NS_Phat_TheoDoi";
 const ACTION_PHAT_NHOM          = "/NS_Phat_Nhom";
