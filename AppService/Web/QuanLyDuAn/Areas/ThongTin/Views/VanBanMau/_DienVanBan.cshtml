@@ -46,15 +46,15 @@
                         itemType: "group",
                         caption: customFormBodyDetail[i].header,
                         name: customFormBodyDetail[i].header,
-                        items: getPhonesOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.title),
+                        items: getInputOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.title, customFormBodyDetail[i].id),
                     });
                 }
                 return groups;
             }
-            function getPhonesOptions(phones,type) {
+            function getInputOptions(colums,type,customFromBodyId) {
                 var options = [];
-                for (var i = 0; i < phones.length; i++) {
-                    var opt = generateNewPhoneOptions(phones[i],i,type);
+                for (var i = 0; i < colums.length; i++) {
+                    var opt = generateNewInputOptions(colums[i], i, type, customFromBodyId);
                     if (opt !== null) {
                         options.push(opt);
                     }
@@ -62,17 +62,17 @@
                 return options;
             }
 
-            function generateNewPhoneOptions(object,index, type) {
+            function generateNewInputOptions(object, index, type, customFromBodyId) {
                 console.log(index);
                 if (type === "TextBox") {
                     return {
-                        dataField: @Model +'_' + object.id + '_' + index,
+                        dataField:  customFromBodyId+'_'+ object.id + '_' + index,
                         label: { text: " " },
                         editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
                             elementAttr: {
-                                 id: @Model +'_'+object.id + '_' + index,
+                                 id:  customFromBodyId+'_'+ object.id + '_' + index,
                             }
                             //mask: "+1 (X00) 000-0000",
                             //maskRules: { "X": /[01-9]/ },
@@ -94,7 +94,7 @@
                 else if (type === "SelectBox")
                 {
                     return {
-                        dataField: @Model +'_' + object.id + '_' + index,
+                        dataField: customFromBodyId+'_'+ object.id + '_' + index,
                         label: { text: "Input" },
                         displayExpr: "userName",
                         valueExpr: "userName",
@@ -102,7 +102,7 @@
                         cssClass: "custom-textbox",
                         editorOptions: {
                             elementAttr: {
-                                id: @Model +'_'+object.id + '_' + index,
+                                id:  customFromBodyId+'_'+ object.id + '_' + index,
                             },
                             dataSource: customStore_SELECT(object.sourceLink),
                             displayExpr: "userName",
@@ -122,18 +122,18 @@
             e.preventDefault();
             alert(1);
             var fdata = new FormData();
-
+            fdata.append("customformContentId", @Model);
+            fdata.append("token", UserCurrentInfo.accessToken);
             var inputs = document.getElementById("form-custom").elements;
-
             // Iterate over the form controls
             for (i = 0; i < inputs.length; i++) {
-                if (inputs[i].nodeName === "INPUT" && inputs[i].type === "text") {
+                if (inputs[i].nodeName === "INPUT" && inputs[i].name !== null && inputs[i].name !== '') {
                     // Update text input
                     //inputs[i].value.toLocaleUpperCase();
                     fdata.append(inputs[i].name, inputs[i].value);
                 }
             }
-        
+
 
             @*$.each(formData, function (key, value) {
                 fdata.append(key, value);

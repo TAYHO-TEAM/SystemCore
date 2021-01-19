@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Services.Common.DomainObjects;
-using System;
+using System.Collections.Generic;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
@@ -8,6 +8,16 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     {
         
     }
+    public class CreateCustomCellContentCommands : IRequest<MethodResult<CreateCustomCellContentCommandResponses>>
+    {
+        public List<CreateCustomCellContentCommand> createCustomCellContentCommands { get; set; }
+    }
 
-    public class CreateCustomCellContentCommandResponse : CustomCellContentCommandResponseDTO { }
+    public class CreateCustomCellContentCommandResponse : CustomCellContentCommandResponseDTO 
+    { 
+    }
+    public class CreateCustomCellContentCommandResponses : CustomCellContentCommandResponseDTOs 
+    { 
+    }
+
 }

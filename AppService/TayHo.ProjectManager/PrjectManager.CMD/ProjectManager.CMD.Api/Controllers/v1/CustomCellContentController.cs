@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Common.DomainObjects;
 using System.Net;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace ProjectManager.CMD.Api.Controllers.v1
 {
@@ -13,7 +14,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         public CustomCellContentController(IMediator mediator) : base(mediator)
         {
         }
-
+        private const string ListCellContent = nameof(ListCellContent);
 
         #region CustomCellContent
 
@@ -23,9 +24,23 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Services.Common.DomainObjects.MethodResult<CreateCustomCellContentCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<CreateCustomCellContentCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateCustomCellContentAsync([FromBody] CreateCustomCellContentCommand command)
+        {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+        /// <summary>
+        /// Create a new ListCustomCellContent.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(ListCellContent)]
+        [ProducesResponseType(typeof(MethodResult<CreateCustomCellContentCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateListCustomCellContentAsync([FromForm] List<CreateCustomCellContentCommand> command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);

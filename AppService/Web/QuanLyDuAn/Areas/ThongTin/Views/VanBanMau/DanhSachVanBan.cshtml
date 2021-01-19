@@ -24,6 +24,7 @@
 
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomForm";
+        const ACTION_CMD_CUSTOMFORMCONTENT = "/CustomFormContent";
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
@@ -34,7 +35,7 @@
         let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
         let customStore_LISTOWNER = (id) => customStore_READ_FILTER(ACTION_LISTOWNER, 'customFormId,' + id);
-        let customStore_CUSTOMFORM = customStore_READ_ALL(ACTION_CUSTOMFORM);
+        let customStore_CUSTOMFORM = customStore_INSERT_READ(ACTION_CMD_CUSTOMFORMCONTENT,ACTION_CUSTOMFORM);
 
 
         $(function () {
@@ -83,6 +84,11 @@
                         dataType: "string",
                     },
                     {
+                        dataField: "createDate",
+                        caption: "Ngày phát hành",
+                        dataType: "date",
+                    },
+                    {
                         dataField: "status",
                         caption: "Sắp xếp",
                         dataType: "number",
@@ -113,12 +119,16 @@
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
                         {
-                            location: "after", widget: "dxButton",
+                            location: "after",
+                            widget: "dxButton",
                             options: {
                                 icon: "refresh", tylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
-                            }
-                        })
+                            },
+
+                        },
+                        
+                    )
                 },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
@@ -131,7 +141,6 @@
                 },
                 onRowDblClick: function (e) {
                     var container = e.component;
-
                 },
                 masterDetail: {
                 autoExpandAll: false,
@@ -153,8 +162,12 @@
                         dataSource: customStore_LISTOWNER(options.data.id),
                         columns: [
                             {
+                                caption: "STT", width: 80, alignment: "center",
+                                cellTemplate: (c, o) => c.append(o.rowIndex + 1)
+                            },
+                            {
                                 dataField: "id",
-                                caption: "Số văn bản",
+                                caption: "Mã VB",
                                 dataType: "string",
                             },
                             {
@@ -184,10 +197,30 @@
                         onInitNewRow: (e) => {
                             e.data.isActive = true;
                             e.data.isVisible = true;
+                            
                         },
                         onToolbarPreparing: function (e) {
                             var container = e.component;
                             e.toolbarOptions.items.unshift(
+                                {
+                                    location: "after",
+                                    widget: "dxButton",
+                                    options: {
+                                        text: "Thêm mới",
+                                        //icon: "add",
+                                        onClick: function () {
+                                            var d = $.Deferred();
+                                            customStore_CUSTOMFORM.insert({ customFormId : options.data.id, isActive : true , isVisible : true}).then((rs) => {
+                                                CALLPOPUP(
+                                                    "Tạo văn bản theo mẫu: \"" + options.data.header + "\"",
+                                                    "/ThongTin/VanBanMau/_DienVanBan/" + rs.id,
+                                                    ($(window).width() > 767 ? "50%" : "80%"),
+                                                    container
+                                                );
+                                            }, d.reject);
+                                        }
+                                    }
+                                },
                                 {
                                     location: "after",
                                     widget: "dxButton",
