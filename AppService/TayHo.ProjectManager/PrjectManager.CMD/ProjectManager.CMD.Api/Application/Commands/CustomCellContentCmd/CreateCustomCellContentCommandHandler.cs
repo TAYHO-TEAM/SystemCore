@@ -25,6 +25,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateCustomCellContentCommandResponse>();
             var newCustomCellContent = new CustomCellContent(request.CustomFormContentId,
+                                                                request.CustomFormBodyId,
                                                                 request.CustomColumId,
                                                                 request.Contents,
                                                                 request.NoRown);
