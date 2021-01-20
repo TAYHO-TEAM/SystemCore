@@ -12,19 +12,33 @@
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
         var MAXDOT = 0;
-        var idGoiThau = 0, idGiaiDoan = 0;
+        var idGoiThau = 0, idGiaiDoan = 0, dotTT=null;
 
-        var customStore_NghiemThu=(idGiaiDoan, idGoiThau) => new DevExpress.data.CustomStore({
+        var customStore_NghiemThu = ()=> new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                var deferred = $.Deferred();
+                let deferred = $.Deferred();
                 $.ajax({
                     data: {
-                        FindId: 'projectId,' + PROJECTID
+                        FindId: 'goiThauId,' + this.idGoiThau + ';giaiDoanId,' + this.idGiaiDoan + (dotTT != null ? ";dot," + this.dotTT : "")
                     },
                     headers: header, dataType: "json",
                     url: URL_API_PM_READ + ACTION_NGHIEMTHU,
-                    success: (data) => deferred.resolve(data.result.items),
+                    success: (data) => {
+                        var list = data.result.items; 
+                        MAXDOT = list.length > 0 ? Math.max.apply(Math, list.map(function (o) { return o.dot; })) : 0; 
+
+                        if (dotTT == null) {
+                            deferred.resolve(list.filter(x => x.dot == MAXDOT), {
+                                totalCount: list.filter(x => x.dot == MAXDOT).length
+                            });
+                        } else {
+                            deferred.resolve(list, {
+                                totalCount: data.result.pagingInfo.totalItems
+                            });
+                        }
+                        
+                    },
                     error: function (e) {
                         console.log(e);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
@@ -137,6 +151,7 @@
             loadData();
         });
         var loadData = () => $("#container").dxDataGrid({
+            dataSource: customStore_NghiemThu(),
             onToolbarPreparing: function (e) {
                 var container = e.component;
                 e.toolbarOptions.items.unshift(
@@ -168,22 +183,28 @@
                             valueExpr: "id",
                             displayExpr: (item) => { return item && item.soHopDong + " - " + item.dienGiai; },
                             searchEnabled: true, searchMode: "contains",
-                            width: "auto", stylingMode: "filled", showClearButton:true,
+                            width: "auto", stylingMode: "filled", showClearButton: true,
+                            itemTemplate: (data, index) => {
+                                var rs = $("<div>").html("<b>" + data.soHopDong + "</b> - <em>" + data.dienGiai + "</em>");
+                                return rs;
+                            },
                             onValueChanged: function (data) {
                                 if (data.value != null) idGoiThau = data.value;
                                 else idGoiThau = 0;
+
+                                container.refresh();
                             },
                         },
                     },//GoiThau
                     {
-                        location: "before", widget: "dxSelectBox", label: {text:'s'},
+                        location: "before", widget: "dxSelectBox",  
                         options: {
                             dataSource: customStore_GiaiDoan,
                             elementAttr: { id: "sel_filter_giaidoan" },
                             valueExpr: "id",
                             displayExpr: (item) => { return item && item.tenGiaiDoan + " - " + item.dienGiai; },
                             searchEnabled: true, searchMode: "contains",
-                            width: "auto", stylingMode: "filled",
+                            width: "auto", stylingMode: "filled", showClearButton: true,
                             itemTemplate: (data, index) => {
                                 var rs = $("<div>").html("<b>" + data.tenGiaiDoan + "</b> - <em>" + data.dienGiai + "</em>");
                                 return rs;
@@ -191,17 +212,28 @@
                             onValueChanged: function (data) {
                                 if (data.value != null) idGiaiDoan = data.value;
                                 else idGiaiDoan = 0;
+
+                                container.refresh();
                             },
                         },
-                    },//GiaiDoan
-                    {
-                        location: "before", widget: "dxButton",
-                        options: {
-                            icon: "fas fa-eye", type: "default", stylingMode: "contained",
-                            text:"Xem",
-                            onClick: () => container.refresh()
-                        }
-                    },//BTN View
+                    },
+                    //{
+                    //    location: "before", widget: "dxSelectBox", 
+                    //    options: {
+                    //        items: Array.from(Array(10).keys()),
+                    //        elementAttr: { id: "sel_filter_dot" },    
+                    //        width: "auto", stylingMode: "filled", showClearButton: true,
+                    //        itemTemplate: (data, index) => {
+                    //            var rs = $("<div>").html("<b>Đợt " + index + "</b>");
+                    //            return rs;
+                    //        },
+                    //        onValueChanged: function (data) {
+                    //            dotTT = data.value;
+
+                    //            container.refresh();
+                    //        },
+                    //    },
+                    //},
                     {
                         location: "before", widget: "dxButton",
                         options: {
@@ -213,7 +245,7 @@
                                 else DevExpress.ui.notify("Vui lòng chọn Gói thầu và giai đoạn cần tạo", "error", 3000);
                             }
                         }
-                    },//BTN Add
+                    },
                     {
                         location: "after", widget: "dxButton",
                         options: {
@@ -223,53 +255,28 @@
                     }
                 );
             },
-        });
-        var loadCreate_ChonDotThanhToan = () => $("#popup-main").dxPopup({
-            position: { of: "#container" },
-            width: 700, height: "auto",
-            dragEnabled: true, resizeEnabled: false,
-            showTitle: true, title: "Thêm mới đợt nghiệm thu",
-            showCloseButton: true, closeOnOutsideClick: false,
-            visible: true,
-            contentTemplate: (c) => {
-                var scrollView = $("<div id='scrollView'></div>");
-                var content = $("<div />");
-                var header = $("<div />").addClass("row");
-                header.append(
-                    $("<div />").addClass("col-6 text-center").html("<h6>GÓI THẦU</h6><em>" + $("#sel_filter_goithau").dxSelectBox('instance').option('text')+"</em>"),
-                    $("<div />").addClass("col-6 text-center").html("<h6>GIAI ĐOẠN</h6><em>" + $("#sel_filter_giaidoan").dxSelectBox('instance').option('text')+"</em>"),
-                    $("<div />").addClass("col-12 text-center").html("<br />"),
-                    $("<div />").addClass("col-12 text-center").html("<h6>ĐỢT THANH TOÁN</h6>")
-                ).appendTo(content);
-
-                var body = $("<div />")
-                body.dxNumberBox({
-                    value: MAXDOT,
-                    min: MAXDOT - 1,
-                    showSpinButtons: true, step: 1, useLargeSpinButtons: true,
-                    elementAttr: {
-                        id: "txtDotThanhToan",
+            columns: [
+                {
+                    dataField: "congViecDetailId",
+                    lookup: {
+                        dataSource: customStore_CongViec(),
+                        valueExpr: "id", displayExpr: "tenCongViec",
                     },
-                    buttons: ["spins",
-                        {
-                            name: "xacnhan-taomoi-dotthanhtoan-nghiemthu",
-                            location: "after",
-                            options: {
-                                text: "Xác nhận", stylingMode: "contained", type: "default",
-                                onClick: () => {
-                                    var dot = $("#txtDotThanhToan").dxNumberBox("instance").option('value');
-                                    $("#popup-main").dxPopup("instance").hide().done(() => loadCreate_ChonCongViec(dot));
-                                }
-                            }
-                        }
-                    ]
-                }).dxNumberBox("instance");
-                body.appendTo(content);
-                scrollView.append(content);
-                scrollView.dxScrollView({ width: '100%', height: '100%' });
-                return c.append(scrollView);
-            }
-        });
+                },
+                {
+                    cellTemplate: (c, o) => {
+                        c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia)
+                    }
+                },
+                {
+                    dataField: "dot",
+                    groupIndex: 0, caption:"Nghiệm thu đợt"
+                },
+                {
+                    dataField: "khoiLuong"
+                }
+            ]
+        }); 
         var loadCreate = () => $("#popup-main").dxPopup({
             position: { of: "#container" },
             fullScreen: true, dragEnabled: false, resizeEnabled: false,
@@ -329,16 +336,55 @@
                     onToolbarPreparing: function (e) {
                         e.toolbarOptions.items.unshift(
                             {
-                            location: "before",
-                            widget: "dxButton",
-                            options: {
-                                elementAttr: { id: "btnChooseItems" },
-                                stylingMode: "filled", type: "danger",
-                                text: "LỰA CHỌN", icon: "check",
-                                disabled: true,                                
-                                onClick: function () { }
-                            }
-                        },//Add button
+                                location: "before",
+                                widget: "dxNumberBox",
+                                options: {
+                                    elementAttr: {
+                                        id: "txtDotThanhToan",
+                                    },
+                                    placeholder: "Đợt nghiệm thu...",
+                                    value: MAXDOT+1,
+                                    min: MAXDOT,
+                                    showSpinButtons: true, step: 1, useLargeSpinButtons: true,
+                                }
+                            },
+                            {
+                                location: "before",
+                                widget: "dxButton",
+                                options: {
+                                    elementAttr: { id: "btnChooseItems" },
+                                    stylingMode: "filled", type: "danger",
+                                    text: "LỰA CHỌN", icon: "check",
+                                    disabled: true,
+                                    onClick: function () {
+                                        var dotTT = $("#txtDotThanhToan").dxNumberBox('instance').option('value')
+                                        if (dotTT != null && dotTT > MAXDOT) {
+                                            let d = $.Deferred();
+                                            customStore_NghiemThu().load().then((rs) => { 
+                                                $.each(e.component.getSelectedRowKeys(), function (index, value) { 
+                                                    customStore_NghiemThu().load().then((rs) => {
+                                                        customStore_NghiemThu().insert(
+                                                            {
+                                                                congViecDetailId: value,
+                                                                goiThauId: idGoiThau,
+                                                                giaiDoanId: idGiaiDoan,
+                                                                dot: dotTT,
+                                                                khoiLuong: 0,
+                                                                isActive: true,
+                                                                isVisible: true,
+                                                                status: 0
+                                                            }
+                                                        ).then(() => { d.resolve() }, d.reject);
+                                                    }, d.reject);
+                                                });
+                                            }, d.reject);
+                                            $("#popup-main").dxPopup('instance').hide();
+                                            return d.promise();
+                                        }
+                                        else DevExpress.ui.notify("Vui lòng chọn đợt nghiệm thu (Lớn hơn đợt hiện tại: " + MAXDOT + ")", "error", 3000); 
+                                    }
+                                }
+                            },
                             {
                                 location: "after", widget: "dxButton",
                                 options: {
@@ -357,7 +403,8 @@
                 scrollView.append(content);
                 scrollView.dxScrollView({ width: '100%', height: '100%' });
                 return c.append(scrollView);
-            }
+            },
+            onHidden: () => $("#container").dxDataGrid('instance').refresh()
         });
     </script>
 }
