@@ -65,12 +65,16 @@
             function generateNewInputOptions(object, index, type, customFromBodyId) {
                 console.log(index);
                 if (type === "TextBox") {
+                    console.log("abc");
+                    console.log(index);
+                    console.log(object);
                     return {
                         dataField:  customFromBodyId+'_'+ object.id + '_' + index,
                         label: { text: " " },
                         editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            value: object.customCellContentDTOs[0].contents,
                             elementAttr: {
                                  id:  customFromBodyId+'_'+ object.id + '_' + index,
                             }
@@ -101,6 +105,7 @@
                         editorType: "dxSelectBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            value: object.customCellContentDTOs[0].contents,
                             elementAttr: {
                                 id:  customFromBodyId+'_'+ object.id + '_' + index,
                             },
@@ -120,7 +125,7 @@
         $("#form-custom").on("submit", function (e) {
             //test(fdatatest);
             e.preventDefault();
-            alert(1);
+ 
             var fdata = new FormData();
             fdata.append("customformContentId", @Model);
             fdata.append("token", UserCurrentInfo.accessToken);
@@ -143,7 +148,6 @@
             for (var pair of fdata.entries()) {
                 console.log(pair[0] + ', ' + pair[1]);
             }*@
-            alert(2);
             $.ajax({
                 type: "POST",
                 enctype: 'multipart/form-data',

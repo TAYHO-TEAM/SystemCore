@@ -49,6 +49,7 @@ namespace ProjectManager.Read.Sql.Repositories
                     CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs = rsTableDetail.Read<CustomColumDetailDTO>().ToList();
                     for (int j = 0; j < CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs.Count; j++)
                     {
+                        requestBaseFilterParam.ColumName = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].Id.ToString();
                         requestBaseFilterParam.FindId = CustomFormContentDetailDTO.CustomFormDetailDTO.CustomFormBodyDetailDTOs[i].CustomTableDetailDTO.CustomColumDetailDTOs[j].Id.ToString();
                         requestBaseFilterParam.FindParentId = CustomFormContentDetailDTO.Id.ToString();
                         using var rsCellContent = conn.QueryMultipleAsync("sp_CustomCellContent_GetDetail", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;

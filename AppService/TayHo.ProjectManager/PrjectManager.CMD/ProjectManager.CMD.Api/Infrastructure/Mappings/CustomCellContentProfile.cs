@@ -9,6 +9,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.Mappings
     {
         public CustomCellContentProfile()
         {
+            CreateMap<CustomCellContent, CreateFormCustomCellContentCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<CustomCellContent, CreateCustomCellContentCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<CustomCellContent, UpdateCustomCellContentCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<CustomCellContent, CustomCellContentCommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));

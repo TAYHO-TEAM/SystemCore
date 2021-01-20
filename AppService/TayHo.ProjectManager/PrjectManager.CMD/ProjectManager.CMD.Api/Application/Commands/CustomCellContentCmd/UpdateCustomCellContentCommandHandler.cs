@@ -42,6 +42,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 
 
             existingCustomCellContent.SetCustomFormContentId(request.CustomFormContentId);
+            existingCustomCellContent.SetCustomFormBodyId(request.CustomFormBodyId);
             existingCustomCellContent.SetCustomColumId(request.CustomColumId);
             existingCustomCellContent.SetContents(request.Contents);
             existingCustomCellContent.SetNoRown(request.NoRown);

@@ -15,6 +15,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         {
         }
         private const string ListCellContent = nameof(ListCellContent);
+        private const string FromForm = nameof(FromForm);
 
         #region CustomCellContent
 
@@ -28,6 +29,25 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateCustomCellContentAsync([FromBody] CreateCustomCellContentCommand command)
         {
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+        /// <summary>
+        /// Create a new FormCustomCellContent.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(FromForm)]
+        [ProducesResponseType(typeof(MethodResult<CreateFormCustomCellContentCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateFormCustomCellContentAsync([FromForm] CreateFormCustomCellContentCommand command)
+        {
+            var files = Request.Form.Files;
+            if (files != null)
+            {
+                command.setFile(files);
+            }
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);
         }

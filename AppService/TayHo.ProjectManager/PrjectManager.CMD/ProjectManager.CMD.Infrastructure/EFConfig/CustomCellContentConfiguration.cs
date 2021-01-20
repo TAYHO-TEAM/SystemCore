@@ -10,6 +10,7 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         public void Configure(EntityTypeBuilder<CustomCellContent> builder)
         {
             builder.ToTable(QuanLyDuAnConstants.CustomCellContent_TABLENAME);
+            builder.Property(x => x.CustomFormBodyId).HasField("_customFormBodyId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.CustomFormContentId).HasField("_customFormContentId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.CustomColumId).HasField("_customColumId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.Contents).HasField("_contents").UsePropertyAccessMode(PropertyAccessMode.Field);

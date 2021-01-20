@@ -8,6 +8,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     {
         
     }
+    public class CreateFormCustomCellContentCommand : FormCustomCellContentCommandSet, IRequest<MethodResult<CreateFormCustomCellContentCommandResponse>>
+    {
+
+    }
     public class CreateCustomCellContentCommands : IRequest<MethodResult<CreateCustomCellContentCommandResponses>>
     {
         public List<CreateCustomCellContentCommand> createCustomCellContentCommands { get; set; }
@@ -15,6 +19,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
 
     public class CreateCustomCellContentCommandResponse : CustomCellContentCommandResponseDTO 
     { 
+    }
+    public class CreateFormCustomCellContentCommandResponse : FormCustomCellContentCommandResponseDTO
+    {
     }
     public class CreateCustomCellContentCommandResponses  
     {
