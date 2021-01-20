@@ -38,9 +38,9 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         /// <returns></returns>
         [HttpPost]
         [Route(ListCellContent)]
-        [ProducesResponseType(typeof(MethodResult<CreateCustomCellContentCommandResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(MethodResult<CreateCustomCellContentCommandResponses>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateListCustomCellContentAsync([FromForm] List<CreateCustomCellContentCommand> command)
+        public async Task<IActionResult> CreateListCustomCellContentAsync([FromForm] CreateCustomCellContentCommands command)
         {
             var result = await _mediator.Send(command).ConfigureAwait(false);
             return Ok(result);

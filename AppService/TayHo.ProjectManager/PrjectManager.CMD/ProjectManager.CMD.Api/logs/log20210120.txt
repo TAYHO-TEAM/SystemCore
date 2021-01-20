@@ -1,0 +1,139 @@
+2021-01-20 10:08:28.708 +07:00 [INF] Application Starting.
+2021-01-20 10:08:42.857 +07:00 [INF] User profile is available. Using 'C:\Users\CongTrien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-01-20 10:08:43.108 +07:00 [INF] Now listening on: http://localhost:50999
+2021-01-20 10:08:43.109 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-01-20 10:08:43.109 +07:00 [INF] Hosting environment: Development
+2021-01-20 10:08:43.110 +07:00 [INF] Content root path: D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api
+2021-01-20 10:08:46.216 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger  
+2021-01-20 10:08:46.330 +07:00 [INF] Request finished in 115.7561ms 301 
+2021-01-20 10:08:46.342 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/index.html  
+2021-01-20 10:08:46.369 +07:00 [INF] Request finished in 26.7065ms 200 text/html;charset=utf-8
+2021-01-20 10:08:46.389 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui.css  
+2021-01-20 10:08:46.390 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-bundle.js  
+2021-01-20 10:08:46.395 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-standalone-preset.js  
+2021-01-20 10:08:46.432 +07:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2021-01-20 10:08:46.432 +07:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2021-01-20 10:08:46.435 +07:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2021-01-20 10:08:46.444 +07:00 [INF] Request finished in 49.1832ms 200 application/javascript
+2021-01-20 10:08:46.444 +07:00 [INF] Request finished in 54.565ms 200 text/css
+2021-01-20 10:08:46.444 +07:00 [INF] Request finished in 54.5ms 200 application/javascript
+2021-01-20 10:08:46.861 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-bundle.js.map  
+2021-01-20 10:08:46.867 +07:00 [INF] Request finished in 6.604ms 404 
+2021-01-20 10:08:46.875 +07:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:50999/swagger/swagger-ui-bundle.js.map  
+2021-01-20 10:08:46.877 +07:00 [INF] Request finished in 1.8138ms 404 
+2021-01-20 10:08:47.074 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-standalone-preset.js.map  
+2021-01-20 10:08:47.076 +07:00 [INF] Request finished in 2.2278ms 404 
+2021-01-20 10:08:47.079 +07:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:50999/swagger/swagger-ui-standalone-preset.js.map  
+2021-01-20 10:08:47.081 +07:00 [INF] Request finished in 1.9716ms 404 
+2021-01-20 10:08:47.132 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/v1/swagger.json  
+2021-01-20 10:08:47.657 +07:00 [INF] Request finished in 525.5446ms 200 application/json;charset=utf-8
+2021-01-20 10:08:59.157 +07:00 [INF] Request starting HTTP/1.1 POST http://localhost:50999/api/cmd/v1/RequestRegist multipart/form-data; boundary=----WebKitFormBoundarygx7oP8CRZrPMmT1u 44
+2021-01-20 10:08:59.169 +07:00 [INF] CORS policy execution successful.
+2021-01-20 10:08:59.177 +07:00 [INF] Executing endpoint 'ProjectManager.CMD.Api.Controllers.v1.RequestRegistController.CreateRequestRegistAsync (ProjectManager.CMD.Api)'
+2021-01-20 10:08:59.217 +07:00 [INF] Route matched with {action = "CreateRequestRegist", controller = "RequestRegist"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateRequestRegistAsync(ProjectManager.CMD.Api.Application.Commands.CreateRequestRegistCommand) on controller ProjectManager.CMD.Api.Controllers.v1.RequestRegistController (ProjectManager.CMD.Api).
+2021-01-20 10:08:59.260 +07:00 [INF] ----- Handling command CreateRequestRegistCommand ({"PlanRegisterId":null,"Code":null,"BarCode":null,"Title":null,"Descriptions":null,"Note":null,"ParentId":null,"Level":null,"NoAttachment":null,"ProjectId":null,"WorkItemId":null,"DocumentTypeId":null,"Rev":null,"Id":null,"IsActive":null,"IsVisible":null,"Status":null,"$type":"CreateRequestRegistCommand"})
+2021-01-20 10:09:00.078 +07:00 [WRN] No type was specified for the decimal column 'DonGia' on entity type 'NS_CongViecDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.080 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_GoiThau'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.081 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_HangMucDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.082 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_KhauTru'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.083 +07:00 [WRN] No type was specified for the decimal column 'GiaTriCon' on entity type 'NS_KhauTru'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.084 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_KhauTru_TheoDoi'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.085 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_NhomCongViecDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.085 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_Phat'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.086 +07:00 [WRN] No type was specified for the decimal column 'GiaTriCon' on entity type 'NS_Phat'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.089 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_Phat_TheoDoi'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.090 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_TamUng'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.091 +07:00 [WRN] No type was specified for the decimal column 'GiaTriCon' on entity type 'NS_TamUng'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.092 +07:00 [WRN] No type was specified for the decimal column 'GiaTri' on entity type 'NS_TamUng_TheoDoi'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.
+2021-01-20 10:09:00.119 +07:00 [INF] Entity Framework Core 3.1.8 initialized 'QuanLyDuAnContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: None
+2021-01-20 10:09:02.272 +07:00 [INF] Executed DbCommand (31ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [r].[Id], [r].[BarCode], [r].[Code], [r].[CreateBy], [r].[CreateDate], [r].[CreateDateUTC], [r].[Descriptions], [r].[DocumentTypeId], [r].[IsActive], [r].[IsDelete], [r].[IsModify], [r].[IsVisible], [r].[Level], [r].[ModifyBy], [r].[NoAttachment], [r].[Note], [r].[ParentId], [r].[PlanRegisterId], [r].[ProjectId], [r].[Rev], [r].[Status], [r].[Title], [r].[UpdateDate], [r].[UpdateDateUTC], [r].[WorkItemId]
+FROM [RequestRegist] AS [r]
+WHERE CAST(0 AS bit) = CAST(1 AS bit)
+2021-01-20 10:09:02.313 +07:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[Id], [r].[BarCode], [r].[Code], [r].[CreateBy], [r].[CreateDate], [r].[CreateDateUTC], [r].[Descriptions], [r].[DocumentTypeId], [r].[IsActive], [r].[IsDelete], [r].[IsModify], [r].[IsVisible], [r].[Level], [r].[ModifyBy], [r].[NoAttachment], [r].[Note], [r].[ParentId], [r].[PlanRegisterId], [r].[ProjectId], [r].[Rev], [r].[Status], [r].[Title], [r].[UpdateDate], [r].[UpdateDateUTC], [r].[WorkItemId]
+FROM [RequestRegist] AS [r]
+WHERE [r].[ParentId] IS NULL AND ([r].[IsDelete] = CAST(0 AS bit))
+2021-01-20 10:09:02.521 +07:00 [INF] Executed action ProjectManager.CMD.Api.Controllers.v1.RequestRegistController.CreateRequestRegistAsync (ProjectManager.CMD.Api) in 3296.769ms
+2021-01-20 10:09:02.523 +07:00 [INF] Executed endpoint 'ProjectManager.CMD.Api.Controllers.v1.RequestRegistController.CreateRequestRegistAsync (ProjectManager.CMD.Api)'
+2021-01-20 10:09:02.733 +07:00 [ERR] Nullable object must have a value.
+System.InvalidOperationException: Nullable object must have a value.
+   at System.Nullable`1.get_Value()
+   at ProjectManager.CMD.Api.Application.Commands.CreateRequestRegistCommandHandler.Handle(CreateRequestRegistCommand request, CancellationToken cancellationToken) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Commands\RequestRegistCmd\CreateRequestRegistCommandHandler.cs:line 51
+   at ProjectManager.CMD.Api.Application.Behaviors.RequestPerformanceBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Behaviors\RequestPerformanceBehaviour.cs:line 23
+   at ProjectManager.CMD.Api.Application.Behaviors.LoggingBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Behaviors\LoggingBehaviour.cs:line 21
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPostProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPreProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at ProjectManager.CMD.Api.Controllers.v1.RequestRegistController.CreateRequestRegistAsync(CreateRequestRegistCommand command) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Controllers\v1\RequestRegistController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Services.Common.APIs.Infrastructure.CustomJwtMiddleware.Invoke(HttpContext context) in D:\TayHo_project\TayHo.SystemCore\CoreService\01.Services.Common\Services.Common.APIs\Infrastructure\Middlewares\CustomJwtMiddleware.cs:line 27
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Services.Common.APIs.Infrastructure.CustomExceptionHandler.InvokeAsync(HttpContext httpContext) in D:\TayHo_project\TayHo.SystemCore\CoreService\01.Services.Common\Services.Common.APIs\Infrastructure\Middlewares\CustomExceptionHandlerMiddleware.cs:line 36
+2021-01-20 10:09:02.778 +07:00 [ERR] Nullable object must have a value.
+System.InvalidOperationException: Nullable object must have a value.
+   at System.Nullable`1.get_Value()
+   at ProjectManager.CMD.Api.Application.Commands.CreateRequestRegistCommandHandler.Handle(CreateRequestRegistCommand request, CancellationToken cancellationToken) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Commands\RequestRegistCmd\CreateRequestRegistCommandHandler.cs:line 51
+   at ProjectManager.CMD.Api.Application.Behaviors.RequestPerformanceBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Behaviors\RequestPerformanceBehaviour.cs:line 23
+   at ProjectManager.CMD.Api.Application.Behaviors.LoggingBehaviour`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Application\Behaviors\LoggingBehaviour.cs:line 21
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestExceptionActionProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPostProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at MediatR.Pipeline.RequestPreProcessorBehavior`2.Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate`1 next)
+   at ProjectManager.CMD.Api.Controllers.v1.RequestRegistController.CreateRequestRegistAsync(CreateRequestRegistCommand command) in D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api\Controllers\v1\RequestRegistController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Services.Common.APIs.Infrastructure.CustomJwtMiddleware.Invoke(HttpContext context) in D:\TayHo_project\TayHo.SystemCore\CoreService\01.Services.Common\Services.Common.APIs\Infrastructure\Middlewares\CustomJwtMiddleware.cs:line 27
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Services.Common.APIs.Infrastructure.CustomExceptionHandler.InvokeAsync(HttpContext httpContext) in D:\TayHo_project\TayHo.SystemCore\CoreService\01.Services.Common\Services.Common.APIs\Infrastructure\Middlewares\CustomExceptionHandlerMiddleware.cs:line 36
+2021-01-20 10:09:02.799 +07:00 [INF] Request finished in 3642.4469ms 500 application/json
+2021-01-20 10:17:12.475 +07:00 [INF] Application Starting.
+2021-01-20 10:17:14.284 +07:00 [INF] User profile is available. Using 'C:\Users\CongTrien\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-01-20 10:17:14.533 +07:00 [INF] Now listening on: http://localhost:50999
+2021-01-20 10:17:14.534 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-01-20 10:17:14.535 +07:00 [INF] Hosting environment: Development
+2021-01-20 10:17:14.535 +07:00 [INF] Content root path: D:\TayHo_project\TayHo.SystemCore\AppService\TayHo.ProjectManager\PrjectManager.CMD\ProjectManager.CMD.Api
+2021-01-20 10:17:18.399 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger  
+2021-01-20 10:17:18.508 +07:00 [INF] Request finished in 106.3303ms 301 
+2021-01-20 10:17:18.522 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/index.html  
+2021-01-20 10:17:18.542 +07:00 [INF] Request finished in 20.2468ms 200 text/html;charset=utf-8
+2021-01-20 10:17:18.565 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-standalone-preset.js  
+2021-01-20 10:17:18.566 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui.css  
+2021-01-20 10:17:18.566 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-bundle.js  
+2021-01-20 10:17:18.631 +07:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2021-01-20 10:17:18.634 +07:00 [INF] Request finished in 69.6807ms 200 application/javascript
+2021-01-20 10:17:18.631 +07:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2021-01-20 10:17:18.636 +07:00 [INF] Request finished in 69.8378ms 200 text/css
+2021-01-20 10:17:18.631 +07:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2021-01-20 10:17:18.638 +07:00 [INF] Request finished in 71.2444ms 200 application/javascript
+2021-01-20 10:17:18.897 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-bundle.js.map  
+2021-01-20 10:17:18.904 +07:00 [INF] Request finished in 6.6805ms 404 
+2021-01-20 10:17:18.906 +07:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:50999/swagger/swagger-ui-bundle.js.map  
+2021-01-20 10:17:18.907 +07:00 [INF] Request finished in 1.3149ms 404 
+2021-01-20 10:17:19.174 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/swagger-ui-standalone-preset.js.map  
+2021-01-20 10:17:19.176 +07:00 [INF] Request finished in 2.2396ms 404 
+2021-01-20 10:17:19.178 +07:00 [INF] Request starting HTTP/1.1 GET http://127.0.0.1:50999/swagger/swagger-ui-standalone-preset.js.map  
+2021-01-20 10:17:19.180 +07:00 [INF] Request finished in 1.33ms 404 
+2021-01-20 10:17:19.232 +07:00 [INF] Request starting HTTP/1.1 GET http://localhost:50999/swagger/v1/swagger.json  
+2021-01-20 10:17:19.793 +07:00 [INF] Request finished in 560.8117ms 200 application/json;charset=utf-8
+2021-01-20 10:17:34.556 +07:00 [INF] Application is shutting down...

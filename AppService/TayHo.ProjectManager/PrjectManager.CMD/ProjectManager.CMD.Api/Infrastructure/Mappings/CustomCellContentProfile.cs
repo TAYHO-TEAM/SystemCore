@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ProjectManager.CMD.Api.Application.Commands;
 using ProjectManager.CMD.Domain.DomainObjects;
-
+using System.Collections.Generic;
 
 namespace ProjectManager.CMD.Api.Infrastructure.Mappings
 {

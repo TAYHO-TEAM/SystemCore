@@ -1,5 +1,6 @@
 ﻿using QuanLyDuAn.Utilities;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -68,14 +69,9 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 }
 
             }
-            PostRegist(mFormData, token);
-            return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
-        }
-        public async Task PostRegist(MultipartFormDataContent mFormData, string token)
-        {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
+                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -84,9 +80,28 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
                         var err = response.Content.ReadAsStringAsync().Result;
+                        return Json(new { status = "error", result = err });
                     }
                 }
             }
+            return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
         }
+        //public async Task PostRegist(MultipartFormDataContent mFormData, string token)
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
+        //        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        //        using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/RequestRegist", mFormData).Result)
+        //        {
+        //            if (response.StatusCode != HttpStatusCode.OK)
+        //            {
+        //                var err = response.Content.ReadAsStringAsync().Result;
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

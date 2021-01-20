@@ -75,9 +75,9 @@ namespace ProjectManager.CMD.Api.Application.Commands
                                                         (int)request.DocumentTypeId,
                                                         request.Rev);
             newRequestRegist.SetCreate(_user);
-            newRequestRegist.Status = request.Status.HasValue ? request.Status : newRequestRegist.Status;
-            newRequestRegist.IsActive = request.IsActive.HasValue ? request.IsActive : newRequestRegist.IsActive;
-            newRequestRegist.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newRequestRegist.IsVisible;
+            newRequestRegist.Status = request.Status.HasValue ? request.Status : 0;
+            newRequestRegist.IsActive = request.IsActive.HasValue ? request.IsActive : true;
+            newRequestRegist.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
             await _requestRegistRepository.AddAsync(newRequestRegist).ConfigureAwait(false);
             await _requestRegistRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
 

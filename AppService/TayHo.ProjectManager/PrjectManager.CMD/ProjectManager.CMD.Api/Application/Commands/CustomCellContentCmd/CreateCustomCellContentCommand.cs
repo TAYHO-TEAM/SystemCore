@@ -16,8 +16,13 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     public class CreateCustomCellContentCommandResponse : CustomCellContentCommandResponseDTO 
     { 
     }
-    public class CreateCustomCellContentCommandResponses : CustomCellContentCommandResponseDTOs 
-    { 
+    public class CreateCustomCellContentCommandResponses  
+    {
+        public CreateCustomCellContentCommandResponses(List<CustomCellContentCommandResponseDTO> CustomCellContent)
+        {
+            _customCellContent = CustomCellContent;
+        }
+        public List<CustomCellContentCommandResponseDTO> _customCellContent { get; }
     }
 
 }

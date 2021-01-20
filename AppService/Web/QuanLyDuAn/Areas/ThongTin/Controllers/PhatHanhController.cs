@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -86,7 +87,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             }
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
+                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString()); //http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
