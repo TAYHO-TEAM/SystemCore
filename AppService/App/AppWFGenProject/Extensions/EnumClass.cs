@@ -41,8 +41,8 @@ namespace AppWFGenProject.Extensions
         public string Command { get; }
         public string CommandBaseClasses { get; }
         public string Controllers { get; }
-        //// Domain
         public string Mappings { get; }
+        //// Domain
         public string DomainObjects { get; }
         public string IRepositories { get; }
         //// Infrastructure
@@ -62,7 +62,7 @@ namespace AppWFGenProject.Extensions
             Command = rootDir + @"\" + nameproject + ".Api" + _command;
             CommandBaseClasses = rootDir + @"\" + nameproject + ".Api" + _commandBaseClasses;
             Controllers = rootDir + @"\" + nameproject + ".Api" + _controllers;
-            Mappings = rootDir + @"\" + nameproject + ".Domain" + _mappings;
+            Mappings = rootDir + @"\" + nameproject + ".Api" + _mappings;
             DomainObjects = rootDir + @"\" + nameproject + ".Domain" + _domainObjects;
             IRepositories = rootDir + @"\" + nameproject + ".Domain" + _iRepositories;
             EFConfig = rootDir + @"\" + nameproject + ".Infrastructure" + _eFConfig;

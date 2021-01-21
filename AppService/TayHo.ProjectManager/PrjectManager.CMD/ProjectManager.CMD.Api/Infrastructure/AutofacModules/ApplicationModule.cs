@@ -65,6 +65,10 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<CustomTableRepository>().As<ICustomTableRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CustomCellContentRepository>().As<ICustomCellContentRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CustomColumRepository>().As<ICustomColumRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<NotifyRepository>().As<INotifyRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NotifyAccountRepository>().As<INotifyAccountRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NotifyTemplateRepository>().As<INotifyTemplateRepository>().InstancePerLifetimeScope();
         }
     }
 }

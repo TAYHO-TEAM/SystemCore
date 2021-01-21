@@ -21,11 +21,13 @@ namespace AppWFGenProject.FrameWork
             foreach (DataRow row in dt.Rows)
             {
                 i++;
-                GenOB.builderFields += row["PrivateOBJ"].ToString() + "\r\n\t" + (i> 1 ? "\t\t":"");
-                GenOB.paramCreate += row["PublicParameter"].ToString().TrimEnd(','); ;
+                GenOB.builderFields += row["PrivateOBJ"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
+                GenOB.paramCreate += row["PublicParameter"].ToString(); 
                 GenOB.functionCreate += row["FunctionPublic"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
-                GenOB.builderBehaviours += row["PropertiesOBJ"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
+                GenOB.builderProperties += row["PropertiesOBJ"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
+                GenOB.builderBehaviours += row["FunctionBehavior"].ToString() + "\r\n\t" + (i > 1 ? "\t\t" : "");
             }
+            GenOB.paramCreate = GenOB.paramCreate.TrimEnd(',');
             fileHelper.CreateFileFrom(pathentitytxt, fileHelper.ReplaceFileName((direct.DomainObjects + ConstFileNameTxt.Entity), GenOB), GenOB.getDictionatyChange());
         }
         public void GenIRespositories(GenOB GenOB)
@@ -34,7 +36,7 @@ namespace AppWFGenProject.FrameWork
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// get repos  
             string pathRepository = ConstPath.CMDDomain + ConstFileNameTxt.IEntityRepository;
-         
+
             fileHelper.CreateFileFrom(pathRepository, fileHelper.ReplaceFileName((direct.IRepositories + ConstFileNameTxt.IEntityRepository), GenOB), GenOB.getDictionatyChange());
         }
         /// <summary>
@@ -54,13 +56,13 @@ namespace AppWFGenProject.FrameWork
             }
             fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.EFConfig + ConstFileNameTxt.EntityConfiguration), GenOB), GenOB.getDictionatyChange());
         }
-        public void GenRepositories( GenOB GenOB)
+        public void GenRepositories(GenOB GenOB)
         {
             FileHelper fileHelper = new FileHelper();
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);
             /// get path config  
             string pathEntityConfig = ConstPath.CMDInfra + ConstFileNameTxt.EntityRepository;
-          
+
             fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.Repositories + ConstFileNameTxt.EntityRepository), GenOB), GenOB.getDictionatyChange());
         }
         /// <summary>
@@ -83,8 +85,8 @@ namespace AppWFGenProject.FrameWork
             }
 
             fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommand), GenOB), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandHandler), GenOB), GenOB.getDictionatyChange());
-            fileHelper.CreateFileFrom(pathEntityConfig, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandSet), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityCommandHandler, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandHandler), GenOB), GenOB.getDictionatyChange());
+            fileHelper.CreateFileFrom(pathEntityCommandSet, fileHelper.ReplaceFileName((direct.CommandBaseClasses + ConstFileNameTxt.EntityCommandSet), GenOB), GenOB.getDictionatyChange());
         }
         public void GenCMDAll(DataTable dt, GenOB GenOB)
         {
@@ -113,7 +115,7 @@ namespace AppWFGenProject.FrameWork
             fileHelper.CreateFileFrom(pathUpdate, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.UpdateEntityCommand), GenOB), GenOB.getDictionatyChange());
             fileHelper.CreateFileFrom(pathUpdateHandler, fileHelper.ReplaceFileName((direct.Command + ConstFileNameTxt.UpdateEntityCommandHandler), GenOB), GenOB.getDictionatyChange());
         }
-        public void GenController( GenOB GenOB)
+        public void GenController(GenOB GenOB)
         {
             FileHelper fileHelper = new FileHelper();
             ConstDirect direct = new ConstDirect(GenOB.nameproject, GenOB.rootDir);

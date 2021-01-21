@@ -931,7 +931,7 @@
                                         searchEnabled: true,
                                         showClearButton: true,
                                         itemTemplate: function (data) {
-                                            return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.department));
+                                            d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
                                         },
                                         //onValueChanged: function (data) {
 
@@ -949,7 +949,7 @@
                                         validationCallback: function (params) {
                                             console.log(params);
                                             var d = $.Deferred();
-                                            d.resolve(!(typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number'));
+                                            d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
                                             //$('#accountIdSelect').dxSelectBox('instance').option('value',null)
                                             return d.promise();
                                             /*sendRequest(params.value);*/

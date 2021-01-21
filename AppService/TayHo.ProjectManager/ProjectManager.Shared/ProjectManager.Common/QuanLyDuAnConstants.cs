@@ -63,5 +63,8 @@ namespace ProjectManager.Common
         public const string CustomTable_TABLENAME = "CustomTable";
         public const string CustomCellContent_TABLENAME = "CustomCellContent";
         public const string CustomColum_TABLENAME = "CustomColum";
+        public const string NotifyAccount_TABLENAME = "NotifyAccount";
+        public const string Notify_TABLENAME = "Notify";
+        public const string NotifyTemplate_TABLENAME = "NotifyTemplate";
     }
 }
