@@ -67,7 +67,7 @@ namespace AppWFGenProject
             // Set common
             genOB.common = _configuration.GetValue<string>("Common", "CmdEF").ToString();// "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
             // Set db
-            genOB.db = "QuanLyDuAnContext"; // config setting tạo sau
+            genOB.db = "QuanLyDuAn"; // config setting tạo sau
             // Set version 
             genOB.version = _configuration.GetValue<string>("Common", "Version").ToString();//"v1"; // config setting tạo sau
 
@@ -89,6 +89,11 @@ namespace AppWFGenProject
                         if (genOB.Entity != string.Empty && char.IsUpper(genOB.Entity[0]))
                         {
                             genOB._entity = "_" + (char.ToLower(genOB.Entity[0]) + genOB.Entity.Substring(1));
+                        }
+                        // sert entity
+                        if (genOB.Entity != string.Empty && char.IsUpper(genOB.Entity[0]))
+                        {
+                            genOB.entity = (char.ToLower(genOB.Entity[0]) + genOB.Entity.Substring(1));
                         }
                         if (clbFunction.CheckedItems.Contains("CMD"))
                         {
