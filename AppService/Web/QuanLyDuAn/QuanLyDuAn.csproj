@@ -192,6 +192,7 @@
     <Compile Include="Areas\ThongTin\Controllers\DangKyController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\PhatHanhController.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\ThongBaoController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\VanBanMauController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -2478,6 +2479,7 @@
     <Content Include="Areas\ThongTin\Views\VanBanMau\DanhSachVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DienVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DanhSachVanBan.cshtml" />
+    <Content Include="Areas\ThongTin\Views\ThongBao\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

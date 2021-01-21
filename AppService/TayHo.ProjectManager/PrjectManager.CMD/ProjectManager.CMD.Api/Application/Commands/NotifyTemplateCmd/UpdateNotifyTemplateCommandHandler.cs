@@ -1,5 +1,5 @@
 using ProjectManager.CMD.Domain;
-using ProjectManager.CMD.Domain.Repositories;
+using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
 using MediatR;
 using Services.Common.DomainObjects;

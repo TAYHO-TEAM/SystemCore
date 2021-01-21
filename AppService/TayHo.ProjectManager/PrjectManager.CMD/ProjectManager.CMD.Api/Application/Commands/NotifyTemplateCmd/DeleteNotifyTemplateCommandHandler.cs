@@ -1,5 +1,5 @@
 using ProjectManager.CMD.Domain;
-using ProjectManager.CMD.Domain.Repositories;
+using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
 using MediatR;
 using Services.Common.DomainObjects;
@@ -16,7 +16,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
 {
     public class DeleteNotifyTemplateCommandHandler : NotifyTemplateCommandHandler, IRequestHandler<DeleteNotifyTemplateCommand, MethodResult<DeleteNotifyTemplateCommandResponse>>
     {
-        public DeleteNotifyTemplateCommandHandler(IMapper mapper, INotifyTemplateRepository NotifyTemplateRepository, IHttpContextAccessor httpContextAccessor) : base(mapper, httpContextAccessor, NotifyTemplateRepository)
+        public DeleteNotifyTemplateCommandHandler(IMapper mapper, IHttpContextAccessor httpContextAccessor, INotifyTemplateRepository notifyTemplateRepository) : base(mapper, httpContextAccessor, notifyTemplateRepository)
         {
         }
 

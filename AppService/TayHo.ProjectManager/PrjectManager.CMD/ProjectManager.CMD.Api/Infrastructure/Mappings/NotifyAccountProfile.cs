@@ -9,7 +9,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.Mappings
     {
         public NotifyAccountProfile()
         {
-            CreateMap<NotifyAccount, CreateNotifyAccountCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            //CreateMap<NotifyAccount, CreateNotifyAccountCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<NotifyAccount, UpdateNotifyAccountCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<NotifyAccount, NotifyAccountCommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
         }

@@ -1,5 +1,5 @@
 using ProjectManager.CMD.Domain.DomainObjects;
-using ProjectManager.CMD.Domain.Repositories;
+using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;using Microsoft.AspNetCore.Http;
 using MediatR;
 using Services.Common.DomainObjects;

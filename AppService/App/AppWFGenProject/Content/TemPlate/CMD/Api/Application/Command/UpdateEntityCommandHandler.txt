@@ -13,7 +13,7 @@ namespace  {nameproject}.Api.Application.Commands
 {
     public class Update{Entity}CommandHandler : {Entity}CommandHandler,IRequestHandler<Update{Entity}Command, MethodResult<Update{Entity}CommandResponse>>
     {
-        public Update{Entity}CommandHandler(IMapper mapper, I{Entity}Repository {entity}Repository,IHttpContextAccessor httpContextAccessor) : base(mapper,{entity}Repository, httpContextAccessor)
+        public Update{Entity}CommandHandler(IMapper mapper,IHttpContextAccessor httpContextAccessor, I{Entity}Repository {entity}Repository) : base(mapper,httpContextAccessor,{entity}Repository)
         {
         }
 

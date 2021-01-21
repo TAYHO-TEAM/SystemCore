@@ -1,4 +1,4 @@
-using ProjectManager.CMD.Domain.Repositories;
+using ProjectManager.CMD.Domain.IRepositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Services.Common.Security;

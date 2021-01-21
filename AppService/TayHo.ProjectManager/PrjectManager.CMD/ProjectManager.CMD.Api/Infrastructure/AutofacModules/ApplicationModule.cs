@@ -68,6 +68,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
 
             builder.RegisterType<NotifyRepository>().As<INotifyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NotifyAccountRepository>().As<INotifyAccountRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NotifyTemplateRepository>().As<INotifyTemplateRepository>().InstancePerLifetimeScope();
         }
     }
 }
