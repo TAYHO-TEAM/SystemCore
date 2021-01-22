@@ -46,7 +46,7 @@
                         itemType: "group",
                         caption: customFormBodyDetail[i].header,
                         name: customFormBodyDetail[i].header,
-                        items: getInputOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.title, customFormBodyDetail[i].id),
+                        items: getInputOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.code, customFormBodyDetail[i].id),
                     });
                 }
                 return groups;
@@ -64,48 +64,37 @@
 
             function generateNewInputOptions(object, index, type, customFromBodyId) {
                 console.log(index);
-                if (type === "TextBox") {
+                if (type === "dxTextBox") {
                     console.log("abc");
                     console.log(index);
                     console.log(object);
                     return {
                         dataField:  customFromBodyId+'_'+ object.id + '_' + index,
                         label: { text: " " },
-                        editorType: "dxTextBox",
+                        editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
-                            value: object.customCellContentDTOs[0].contents,
+                            placeholder: "Vui lòng điền thông tin",
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
                                  id:  customFromBodyId+'_'+ object.id + '_' + index,
                             }
-                            //mask: "+1 (X00) 000-0000",
-                            //maskRules: { "X": /[01-9]/ },
-                            //buttons: [{
-                            //    name: "trash",
-                            //    location: "after",
-                            //    options: {
-                            //        stylingMode: "text",
-                            //        icon: "trash",
-                            //        onClick: function () {
-                            //            employee.Phones.splice(index, 1);
-                            //            form.itemOption("phones-container.phones", "items", getPhonesOptions(employee.Phones));
-                            //        }
-                            //    }
-                            //}]
+                            
                         }
                     }
                 }
-                else if (type === "SelectBox")
+                else if (type === "dxSelectBox")
                 {
                     return {
-                        dataField: customFromBodyId+'_'+ object.id + '_' + index,
-                        label: { text: "Input" },
+                        //dataField: customFromBodyId+'_'+ object.id + '_' + index,
                         displayExpr: "userName",
                         valueExpr: "userName",
-                        editorType: "dxSelectBox",
+                        editorType: type,
                         cssClass: "custom-textbox",
+                        
                         editorOptions: {
-                            value: object.customCellContentDTOs[0].contents,
+                            searchEnabled: true,
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
                                 id:  customFromBodyId+'_'+ object.id + '_' + index,
                             },
@@ -115,6 +104,35 @@
                         }
                     };
 
+                }
+                else if (type === "dxDateBox") {
+                    return {
+                        //dataField: customFromBodyId + '_' + object.id + '_' + index,
+                        editorType: type,
+                        cssClass: "custom-textbox",
+                        editorOptions: {
+                            text: object.sourceValue,
+                            type: "datetime",
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                            elementAttr: {
+                                id: customFromBodyId + '_' + object.id + '_' + index,
+                            },
+                        }
+                    };
+                }
+                else if (type === "dxCheckBox") {
+                    return {
+                        //dataField: customFromBodyId + '_' + object.id + '_' + index,
+                        editorType: type,
+                        cssClass: "custom-textbox",
+                        editorOptions: {
+                            text: object.sourceValue,
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents === 'true'?true:false : false,
+                            elementAttr: {
+                                id: customFromBodyId + '_' + object.id + '_' + index,
+                            },
+                        }
+                    };
                 }
                 else
                 {
