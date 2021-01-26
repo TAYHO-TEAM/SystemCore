@@ -335,13 +335,19 @@
                 },
                 onContentReady: (e) => {
                     e.component;
+                    var item = customStore_Detail(getParamInUrl('id', location.href)).load().then((rs) => {
+                        if (rs.length > 0) {
+                            loadDetail(rs[0]);
+                        }
+                    });
+
                 },
                 onRowDblClick: function (e) {
-                    loadDetail(e.data)
+                    console.log(e.data);
+                    loadDetail(e.data);
                 },
             });
         };
-
         /// Load Popup
         let loadDetail = (item) => $("#popup-main").dxPopup({
             width: "60%", height: "95%",

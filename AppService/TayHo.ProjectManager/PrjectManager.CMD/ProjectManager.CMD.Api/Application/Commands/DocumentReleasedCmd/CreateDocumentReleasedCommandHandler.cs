@@ -41,11 +41,13 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                                             request.ProjectId,
                                                             request.WorkItemId,
                                                             request.TagWorkItem,
+                                                            request.Location,
+                                                            request.Calendar,
                                                             request.NoAttachment);
             newDocumentReleased.SetCreate(_user);
             newDocumentReleased.Status = request.Status.HasValue ? request.Status : newDocumentReleased.Status;
-            newDocumentReleased.IsActive = request.IsActive.HasValue ? request.IsActive : newDocumentReleased.IsActive;
-            newDocumentReleased.IsVisible = request.IsVisible .HasValue ? request.IsVisible : newDocumentReleased.IsVisible;
+            newDocumentReleased.IsActive = request.IsActive.HasValue ? request.IsActive : true;
+            newDocumentReleased.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
 
             await _documentReleasedRepository.AddAsync(newDocumentReleased).ConfigureAwait(false);
             await _documentReleasedRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);

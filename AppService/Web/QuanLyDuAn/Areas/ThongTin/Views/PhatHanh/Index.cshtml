@@ -300,8 +300,14 @@
                     sorting: true,
                     grouping: false
                 },
-                showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                showBorders: false,
+                showColumnHeaders: true,
+                showColumnLines: false,
+                hoverStateEnabled: true,
+                showRowLines: true,
+                columnAutoWidth: true,
+                wordWrapEnabled: true,
+                rowAlternationEnabled: true,
                 columns: [
                     {
                         dataField: "title",
@@ -357,7 +363,6 @@
                             c.append(o.text);
                         }
                     },
-
                     {
                         dataField: "noAttachment",
                         caption: "File đính kèm",
@@ -368,25 +373,21 @@
                         },
                     },
                     {
-                        type: "buttons", caption: "Tác vụ",
-                        width: 120, alignment: "center",
-                        buttons: ["edit", "delete", {
-                            hint: "Người nhận",
-                            icon: "user",
-                            //visible: function (e) {
-                            //    return !e.row.isEditing && !isChief(e.row.data.Position);
-                            //},
-                            onClick: function (e) {
-                                //alert(1);
-                                loadAccount(e.row.data);
-                                //var clonedItem = $.extend({}, e.row.data, { ID: ++maxID });
-
-                                //employees.splice(e.row.rowIndex, 0, clonedItem);
-                                //e.component.refresh(true);
-                                //e.eve,nt.preventDefault();
-                            }
-                        }],
-                    }
+                        dataField: "createDate",
+                        caption: "Ngày phát hành",
+                        dataType: "datetime",
+                    },
+                    //{
+                    //    type: "buttons", caption: "Tác vụ",
+                    //    width: 120, alignment: "center",
+                    //    buttons: ["edit", "delete", {
+                    //        hint: "Người nhận",
+                    //        icon: "user",
+                    //        onClick: function (e) {
+                    //            loadAccount(e.row.data);
+                    //        }
+                    //    }],
+                    //}
                 ],
                 paging: { enabled: true, pageSize: 20 },
                 pager: {
@@ -402,8 +403,8 @@
                 },
                 editing: {
                     //allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    //allowUpdating: true,
+                    //allowDeleting: true,
                     mode: "popup",
                     useIcons: true,
                     confirmDelete: true,
@@ -429,6 +430,7 @@
                                 dataField: "documentTypeId",
                                 label: { text: "Loại tài liệu" },
                             },
+                          
                             {
                                 colSpan: 12,
                                 dataField: "tagWorkItem",
@@ -451,6 +453,7 @@
                                 label: { text: "Mô tả" },
                                 editorType: "dxTextArea",
                             },
+                          
                         ],
                     },
                 },
@@ -475,22 +478,6 @@
                                     loadData(customStore);
                                 },
                             },
-                        },
-                        {
-                            location: "after",
-                            widget: "dxButton",
-                            options: {
-                                text: "Thêm mới",
-                                //icon: "add",
-                                onClick: function () {
-                                    callPopup(
-                                        "THÊM MỚI PHÁT HÀNH",
-                                        "/ThongTin/PhatHanh/_PhatHanhCreate",
-                                        ($(window).width() > 767 ? "50%" : "80%"),
-                                        container
-                                    );
-                                }
-                            }
                         },
                         {
                             location: "after",
@@ -618,9 +605,70 @@
                             ],
                         }).attr("style", "margin:auto; width:90%").appendTo(container);
                     },
+                    onContentReady: (e) => {
+                        e.component;
+                    },
+                },
+                selection: {
+                    mode: "single"
                 },
                 onContentReady: (e) => {
-                    e.component;
+                    var container = e.component;
+                    $("#action-add").dxSpeedDialAction({
+                        index: 1, icon: "fas fa-plus",
+                        label: "Thêm mới",
+                        visible: PermitInAction["insert"],
+                        onClick: () => {
+                            console.log('abc');
+                            callPopup(
+                                "THÊM MỚI PHÁT HÀNH",
+                                "/ThongTin/PhatHanh/_PhatHanhCreate",
+                                ($(window).width() > 767 ? "50%" : "80%"),
+                                container
+                            );
+                        }
+                    }).dxSpeedDialAction("instance");
+
+                    DevExpress.config({
+                        floatingActionButtonConfig: {
+                            icon: "rowfield",
+                            label: "Tác vụ",
+                            shading: true,
+                            position: {
+                                of: e.element,
+                                my: "right bottom",
+                                at: "right bottom",
+                                offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                            }
+                        }
+                    });
+                    DevExpress.ui.repaintFloatingActionButton();
+                },
+                onSelectionChanged: (e) => {
+                    var selectedRowData = e.selectedRowsData[0];
+                    var selectedRowKey = e.selectedRowKeys[0]; 
+                    if (selectedRowData != null && selectedRowKey != null) {
+                        var data = e.component.getRowIndexByKey(selectedRowKey);
+
+                        $("#action-update").dxSpeedDialAction({
+                            index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                            visible: PermitInAction["update"],
+                            onClick: () => e.component.editRow(data)
+                        }).dxSpeedDialAction("instance");
+
+                        //$("#action-delete").dxSpeedDialAction({
+                        //    index: 3, icon: "fas fa-trash", label: "Xóa",
+                        //    visible: PermitInAction["delete"],
+                        //    onClick: (e) => e.component.deleteRow(data)
+                        //}).dxSpeedDialAction("instance");
+
+                        $("#action-log").dxSpeedDialAction({
+                            index: 4, icon: "fas fa-user", label: "Thêm người nhận",
+                            onClick: () => {
+                                loadAccount(selectedRowData);
+                            }
+                        }).dxSpeedDialAction("instance");
+                    }
                 },
             });
         };
@@ -897,7 +945,7 @@
                                         showClearButton: true,
                                         itemTemplate: function (data) {
                                             return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
-                                        }, 
+                                        },
                                         validationRules: [{
                                             type: "async",
                                             message: "Đã có thông tin Nhóm",
@@ -931,7 +979,7 @@
                                         searchEnabled: true,
                                         showClearButton: true,
                                         itemTemplate: function (data) {
-                                            d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
+                                            return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.accountName));
                                         },
                                         //onValueChanged: function (data) {
 

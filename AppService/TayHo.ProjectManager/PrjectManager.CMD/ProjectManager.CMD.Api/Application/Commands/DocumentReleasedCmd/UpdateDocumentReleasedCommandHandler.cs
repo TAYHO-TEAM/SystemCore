@@ -44,6 +44,8 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingDocumentReleased.SetProjectId(request.ProjectId);
             existingDocumentReleased.SetWorkItemId(request.WorkItemId);
             existingDocumentReleased.SetTagWorkItem(request.TagWorkItem);
+            existingDocumentReleased.SetLocation(request.Location);
+            existingDocumentReleased.SetCalendar(request.Calendar);
             existingDocumentReleased.SetNoAttachment(request.NoAttachment);
 
             existingDocumentReleased.SetUpdate(_user,0);

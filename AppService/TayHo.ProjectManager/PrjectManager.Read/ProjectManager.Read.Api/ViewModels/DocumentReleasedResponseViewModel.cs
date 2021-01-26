@@ -1,4 +1,5 @@
 ﻿using ProjectManager.Read.Api.ViewModels.BaseClasses;
+using System;
 
 namespace ProjectManager.Read.Api.ViewModels
 {
@@ -11,6 +12,8 @@ namespace ProjectManager.Read.Api.ViewModels
         public int? ProjectId { get; set; }
         public int? WorkItemId { get; set; }
         public string TagWorkItem { get; set; }
+        public string Location { get; set; }
+        public DateTime? Calender { get; set; }
         public byte? NoAttachment { get; set; }
         public bool? Insert { get; set; }
         public bool? Update { get; set; }

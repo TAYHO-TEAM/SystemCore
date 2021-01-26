@@ -1,9 +1,11 @@
-﻿using ProjectManager.Read.Sql.DTOs.BaseClasses;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
-namespace ProjectManager.Read.Sql.DTOs.DTO
+namespace QuanLyDuAn.Utilities
 {
-    public class DocumentReleasedDTO : DTOBase
+    public class DocumentReleasedOBJ
     {
         public string Code { get; set; }
         public string Title { get; set; }
@@ -13,7 +15,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? WorkItemId { get; set; }
         public string TagWorkItem { get; set; }
         public string Location { get; set; }
-        public DateTime? Calender { get; set; }
-        public byte? NoAttachment { get; set; }
+        public DateTime? Calendar { get; set; }
+        public string token { get; set; }
     }
 }
