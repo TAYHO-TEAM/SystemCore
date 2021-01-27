@@ -335,11 +335,14 @@
                 },
                 onContentReady: (e) => {
                     e.component;
-                    var item = customStore_Detail(getParamInUrl('id', location.href)).load().then((rs) => {
-                        if (rs.length > 0) {
-                            loadDetail(rs[0]);
-                        }
-                    });
+                    if (getParamInUrl('id', location.href) !== null && getParamInUrl('id', location.href) > 0) {
+                        customStore_Detail(getParamInUrl('id', location.href)).load().then((rs) => {
+                            if (rs.length > 0) {
+                                loadDetail(rs[0]);
+                            }
+                        });
+                    }
+                  
 
                 },
                 onRowDblClick: function (e) {

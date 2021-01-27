@@ -67,12 +67,70 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 {
                     throw new ArgumentNullException();
                 }
+                HttpFileCollectionBase listFile = HttpContext.Request.Files;
+                if (listFile.Count > 0)
+                {
+                    CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
+                    MultipartFormDataContent mFormData = new MultipartFormDataContent();
+                    customCellContentOBJ.CustomFormContentId = CustomFormContentId;
+                    int i = 0;
+                    string[] ids = new string[100];
+
+                    foreach (string file in listFile)
+                    {
+                        ids = listFile.Keys[i].ToString().Split('_');
+                        customCellContentOBJ = new CustomCellContentOBJ();
+                        HttpPostedFileBase fileBase = Request.Files[file];
+                        byte[] fileData = null;
+                        using (var binaryReader = new BinaryReader(fileBase.InputStream))
+                        {
+                            fileData = binaryReader.ReadBytes(fileBase.ContentLength);
+                        }
+                        ByteArrayContent b = new ByteArrayContent(fileData);
+                        b.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                        //byte[] binData = b.ReadBytes(fileBase.ContentLength);
+                        //mFormData.Add(b, nameof(file) + i++.ToString(), fileBase.FileName);
+                        try
+                        {
+                            customCellContentOBJ.CustomFormBodyId = Convert.ToInt32(ids[0]);
+                            customCellContentOBJ.CustomColumId = Convert.ToInt32(ids[1]);
+                            customCellContentOBJ.NoRown = Convert.ToInt32(ids[2]);
+                            customCellContentOBJ.Contents ="";
+                            if (customCellContentOBJ.CustomFormContentId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomFormContentId).ToString()), nameof(customCellContentOBJ.CustomFormContentId));
+                            if (customCellContentOBJ.CustomFormBodyId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomFormBodyId).ToString()), nameof(customCellContentOBJ.CustomFormBodyId));
+                            if (customCellContentOBJ.CustomColumId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomColumId).ToString()), nameof(customCellContentOBJ.CustomColumId));
+                            if (customCellContentOBJ.NoRown.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.NoRown).ToString()), nameof(customCellContentOBJ.NoRown));
+                            if (!string.IsNullOrEmpty(customCellContentOBJ.Contents)) mFormData.Add(new StringContent(customCellContentOBJ.Contents), nameof(customCellContentOBJ.Contents));
+                            using (var client = new HttpClient())
+                            {
+                                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");
+                                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                                using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/CustomCellContent/FromForm", mFormData).Result)
+                                {
+                                    if (response.StatusCode != HttpStatusCode.OK)
+                                    {
+                                        var err = response.Content.ReadAsStringAsync().Result;
+                                        return Json(new { status = "error", result = err });
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new ArgumentNullException();
+                        }
+                    }
+
+                }
                 foreach (var item in Request.Form)
                 {
                     string[] ids = new string[100];
                     CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
                     MultipartFormDataContent mFormData = new MultipartFormDataContent();
                     customCellContentOBJ.CustomFormContentId = CustomFormContentId;
+                    
                     if (item.ToString().Contains("_"))
                     {
                         ids = item.ToString().Split('_');
@@ -112,6 +170,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                     {
 
                     }
+                  
                 }
                 return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
             }
