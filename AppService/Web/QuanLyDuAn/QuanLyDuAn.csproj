@@ -2481,6 +2481,8 @@
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DienVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DanhSachVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\ThongBao\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\QuanLyVanBan.cshtml" />
+    <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanChiTiet.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

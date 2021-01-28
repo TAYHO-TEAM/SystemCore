@@ -219,6 +219,17 @@ let customStore_CMD_READ_FILTER_ID = (CMD, READ, ID) => new DevExpress.data.Cust
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
+let customStore_DELETE_READDATASOURCE = (CMD, DATASOURCE) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = {};
+
+        deferred.resolve(DATASOURCE);
+
+        return deferred.promise();
+    },
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
 
 ////---------------------------READ--------------------------- 
 let customStore_READ_ALL_ACC = (READ) => new DevExpress.data.CustomStore({

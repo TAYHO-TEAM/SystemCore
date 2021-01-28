@@ -1,19 +1,10 @@
 ﻿@model int
-<!--<div class="demo-container">-->
-@*<div class="long-title"><h3>Personal details</h3></div>*@
-<!--<div id="form-container">
-        <div id="form-custom"></div>
-    </div>
-</div>-->
 <form id="form-custom" action="#" method="POST" enctype="application/json">
     <div id="fileuploader-container">
         <div id="file-uploader"></div>
     </div>
 
 </form>
-
-<style>
-</style>
 <script>
     var customStore_SELECT = (link) => customStore_GET_LINK(link);
     var customStore_CELLCONTEN = (data) => customStore_DELETE_READDATASOURCE(ACTION_CELLCONTENT,data);
@@ -75,9 +66,10 @@
                 if (type === "dxTextBox") {
                     return {
                         itemType: "simple",
+                        readOnly: true,
                         dataField: Id,
                         label: { text: " " },
-                        editorType: type,
+                        editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
                             placeholder: "Vui lòng điền thông tin",
@@ -94,9 +86,10 @@
                     return {
                         //dataField: customFromBodyId+'_'+ object.id + '_' + index,
                         itemType: "simple",
+                        readOnly: true,
                         displayExpr: "userName",
                         valueExpr: "userName",
-                        editorType: type,
+                        editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
                             searchEnabled: true,
@@ -116,7 +109,8 @@
                     return {
                         //dataField: customFromBodyId + '_' + object.id + '_' + index,
                         itemType: "simple",
-                        editorType: type,
+                        readOnly: true,
+                        editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
                             type: "datetime",
@@ -132,7 +126,8 @@
                     return {
                         //dataField: customFromBodyId + '_' + object.id + '_' + index,
                         itemType: "simple",
-                        editorType: type,
+                        readOnly: true,
+                        editorType: "dxTextBox",
                         cssClass: "custom-textbox",
                         editorOptions: {
                             text: object.sourceValue,
@@ -153,6 +148,7 @@
                                 {
                                     name: "order",
                                     visible: true,
+                                    readOnly: true,
                                     template: function (data, $itemElement) {
                                         $("<div id='dataGrid'>")
                                             .appendTo($itemElement)
@@ -179,6 +175,7 @@
                                 },
                                 {
                                     itemType: "simple",
+                                    readOnly: true,
                                     name: "Image",
                                     editorType: 'dxGallery',
                                     editorOptions: {
@@ -192,33 +189,13 @@
                                     },
 
                                 },
-                                {
-                                    itemType: "simple",
-                                    dataField: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                    label: { text: " " },
-                                    editorType: type,
-                                    cssClass: "custom-textbox",
-                                    editorOptions: {
-                                        visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
-                                        multiple: true,
-                                        accept: 'image/*',
-                                        uploadMode: "instantly",
-                                        showFileList: true,
-                                        elementAttr: {
-                                            id: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                            class: "customForm_Uploader",
-                                        },
-                                        onValueChanged: function (e) {
-                                            //console.log($("#" + Id).dxFileUploader('instance').option('value').length);
-                                        }
-                                    }
-                                }
                             ]
                         };
                     }
                     else if (object.typeParam == 'file') {
                         return {
                             itemType: "group",
+                            readOnly: true,
                             name: "listFileUploader",
                             items: [
                                 {
@@ -232,31 +209,13 @@
                                             });
                                     }
                                 },
-                                {
-                                    itemType: "simple",
-                                    dataField: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                    label: { text: " " },
-                                    editorType: type,
-                                    cssClass: "custom-textbox",
-                                    editorOptions: {
-                                        visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
-                                        multiple: true,
-                                        accept: 'application/*',
-                                        elementAttr: {
-                                            id: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                            class: "customForm_Uploader",
-                                        },
-                                        onValueChanged: function (e) {
-                                            console.log($("#" + Id).dxFileUploader('instance').option('value').length);
-                                        }
-                                    }
-                                }
                             ]
                         };
                     }
                     else {
                         return {
                             itemType: "group",
+                            readOnly: true,
                             name: "listFileUploader",
                             items: [
                                 {
@@ -270,25 +229,6 @@
                                             });
                                     }
                                 },
-                                {
-                                    itemType: "simple",
-                                    dataField: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                    label: { text: " " },
-                                    editorType: type,
-                                    cssClass: "custom-textbox",
-                                    editorOptions: {
-                                        visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
-                                        multiple: true,
-                                        accept: '*/*',
-                                        elementAttr: {
-                                            id: customFromBodyId + '_' + object.id + '_' + (object.customCellContentDTOs.length + 1),
-                                            class: "customForm_Uploader",
-                                        },
-                                        onValueChanged: function (e) {
-                                            console.log($("#" + Id).dxFileUploader('instance').option('value').length);
-                                        }
-                                    }
-                                }
                             ]
                         };
                     }
@@ -300,109 +240,5 @@
                 }
             }
         });
-        $("#form-custom").on("submit", function (e) {
-            //test(fdatatest);
-            e.preventDefault();
-
-
-
-
-            var fdata = new FormData();
-            fdata.append("customformContentId", @Model);
-            fdata.append("token", UserCurrentInfo.accessToken);
-            //var inputs = document.getElementById("form-custom").elements;
-            //// Iterate over the form controls
-            //for (i = 0; i < inputs.length; i++) {
-            //    if (inputs[i].nodeName === "INPUT" && inputs[i].name !== null && inputs[i].name !== '' && inputs[i].type !== 'file' ) {
-            //        // Update text input
-            //        //inputs[i].value.toLocaleUpperCase();
-            //        fdata.append(inputs[i].name, inputs[i].value);
-            //    }
-            //}
-            //Get and Append CustomCellContent of TextBox
-            var textBox = document.getElementsByClassName("customForm_TextBox");
-            for (var j = 0; j < textBox.length; j++) {
-                fdata.append(textBox[j].id, $("#" + textBox[j].id).dxTextBox('instance').option('value'));
-            }
-            //Get and Append CustomCellContent of SelectBox
-            var selectBox = document.getElementsByClassName("customForm_SelectBox");
-            for (var j = 0; j < selectBox.length; j++) {
-                fdata.append(selectBox[j].id, $("#" + selectBox[j].id).dxSelectBox('instance').option('value'));
-            }
-            //Get and Append CustomCellContent of DateBox
-            var dateBox = document.getElementsByClassName("customForm_DateBox");
-            for (var j = 0; j < dateBox.length; j++) {
-                fdata.append(dateBox[j].id, moment($("#" + dateBox[j].id).dxDateBox('instance').option('value')).format('YYYY-MM-DD HH:mm:ss'));
-            }
-            //Get and Append CustomCellContent of CheckBox
-            var checkBox = document.getElementsByClassName("customForm_CheckBox");
-            for (var j = 0; j < checkBox.length; j++) {
-                fdata.append(checkBox[j].id, $("#" + checkBox[j].id).dxCheckBox('instance').option('value'));
-                console.log($("#" + checkBox[j].id).dxCheckBox('instance').option('value'));
-            }
-
-            //Get and Append CustomCellContent of Uploader
-            var uploader = document.getElementsByClassName("customForm_Uploader");
-            for (var j = 0; j < uploader.length; j++) {
-                var res = (uploader[j].id).split("_");
-                console.log(res);
-                var files = $("#" + uploader[j].id).dxFileUploader('instance').option('value');
-                if (files.length > 0) {
-                    $.each(files, function (key, value) {
-                        fdata.append((res[0] + '_' + res[1] + '_' + ((1)*res[2] + key) ), files[key]);
-                    });
-                }
-                console.log(uploader[j].id);
-                console.log($("#" + uploader[j].id).dxFileUploader('instance').option('value'));
-            }
-
-            @*$.each(formData, function (key, value) {
-                fdata.append(key, value);
-            }); 
-
-            fdata.append('customFormContentId', @Model);*@
-            for (var pair of fdata.entries()) {
-                console.log(pair[0] + ', ' + pair[1]);
-            }
-
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: "/ThongTin/VanBanMau/UpdateCellContent",
-                data: fdata,
-                processData: false,
-                contentType: false,
-                cache: false,
-                timeout: 600000,
-                success: function (rs) {
-                    loadingPanel.hide();
-                    DevExpress.ui.notify(rs.result, rs.status, 3000);
-                    if (rs.status == "success") {
-                        $("#popup-main").dxPopup('instance').hide();
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    loadingPanel.hide();
-                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
-                }
-            });
-            e.preventDefault();
-
-
-            //var files = $(".file-uploader").dxFileUploader("instance").option("value");
-            //if (files.length > 0) {
-            //    $.each(files, function (key, value) {
-            //        fdata.append(files[key].name, files[key]);
-            //    });
-
-            //}
-            //else {
-            //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
-            //    e.preventDefault();
-            //    return false;
-            //};
-        });
     });
 </script>
-
-

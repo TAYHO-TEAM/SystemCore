@@ -26,7 +26,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<UpdateCustomFormBodyCommandResponse>> Handle(UpdateCustomFormBodyCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<UpdateCustomFormBodyCommandResponse>();
-            var existingCustomFormBody = await _customFormBodyRepository.SingleOrDefaultAsync(x => x.Id == request.Id && x.IsDelete == false).ConfigureAwait(false);
+            var existingCustomFormBody = await _customFormBodyRepository.SingleOrDefaultAsync(x => x.Id == request.Id && (x.IsDelete == false || x.IsDelete == null)).ConfigureAwait(false);
             if (existingCustomFormBody == null)
             {
                 methodResult.AddAPIErrorMessage(nameof(ErrorCodeUpdate.UErr01), new[]

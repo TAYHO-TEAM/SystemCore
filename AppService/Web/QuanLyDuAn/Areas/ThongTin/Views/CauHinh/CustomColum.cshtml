@@ -41,6 +41,12 @@
                     sorting: true,
                     grouping: false
                 },
+                grouping: {
+                    autoExpandAll: false,
+                },
+                groupPanel: {
+                    visible: true
+                },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
@@ -48,14 +54,15 @@
                 columns: [
                     {
                         dataField: "customTableId",
-                        caption: "Tên tài liệu",
+                        //groupIndex: 0,
+                        caption: "Tên dữ liệu",
                         dataType: "number",
                         lookup: {
                             dataSource: customStore_CUSTOMTABLE,
                             valueExpr: "id",
                             displayExpr: "title",
                         },
-                        editorType: "dxLookup",
+                        editorType: "dxSelectBox",
                         editorOptions: {
                             dataSource: customStore_CUSTOMTABLE,
                             valueExpr: "id",

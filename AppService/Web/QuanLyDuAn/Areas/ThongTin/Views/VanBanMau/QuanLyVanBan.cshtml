@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "VanBanMau";
+    ViewBag.Title = "QuanLyVanBan";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div id="popup-main"></div>
 <div class="row">
     <div class="col-12">
@@ -14,30 +13,49 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/CustomForm";
-        const ACTION_CUSTOMTABLE = "/CustomTable";
-        const ACTION_PROJECT = "/Project";
-        const ACTION_CUSTOMFORMBODY = "/CustomFormBody";
-        const ACTION_DETAIL = "/CustomForm/Detail";
+        const ACTION = "/CustomFormContent";
+        const ACTION_CUSTOMFORM = "/CustomForm";
+        const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
         const ACTION_CELLCONTENT = "/CustomCellContent";
+        const ACTION_DETAIL = "/CustomForm/Detail";
+        const ACTION_CUSTOMFORMCONTENTDETAIL = "/CustomFormContent/Detail";
 
         //--------------------CMD------------------------------
-        const ACTION_CMD = "/CustomForm";
+        const ACTION_CMD = "/CustomFormContent";
+        const ACTION_CMD_CUSTOMFORMCONTENT = "/CustomFormContent";
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
-        let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
-        let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_FK(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
+        let customStore_CUSTOMFROM = customStore_READ_ALL(ACTION_CUSTOMFORM);
+        let customStore_AccountInfo = new DevExpress.data.CustomStore({
+            key: "accountId",
+            load: (values) => {
+                var deferred = $.Deferred();
+                $.ajax({
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_ACCOUNTINFO,
+                    success: function (data) {
+                        var list = data.result.items;
+                        deferred.resolve(list);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai Đoạn'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+        });
+        let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
-
 
         $(function () {
             loadData();
         });
-
 
         let loadData = () => {
             $("#container").dxDataGrid({
@@ -60,29 +78,38 @@
                 rowAlternationEnabled: false,
                 columns: [
                     {
-                        dataField: "title",
+                        dataField: "code",
+                        caption: "Mã văn bản",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "customFormId",
                         caption: "Tên mẫu văn bản",
                         dataType: "string",
+                        lookup: {
+                            dataSource: customStore_CUSTOMFROM,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                        },
                     },
                     {
-                        dataField: "header",
-                        caption: "Đầu đề (Header)",
+                        dataField: "createBy",
+                        caption: "Người thực hiện",
                         dataType: "string",
+                        lookup: {
+                            dataSource: customStore_AccountInfo,
+                            valueExpr: "accountId",
+                            displayExpr: "userName",
+                        },
                     },
                     {
-                        dataField: "code",
-                        caption: "Ký Hiệu",
-                        dataType: "string",
+                        dataField: "createDate",
+                        caption: "Ngày thực hiện",
+                        dataType: "date",
                     },
-                    {
-                        dataField: "descriptions",
-                        caption: "Mô tả",
-                        dataType: "string",
-                    },
-                  
                     {
                         dataField: "status",
-                        caption: "Sắp xếp",
+                        caption: "Trạng thái",
                         dataType: "number",
                         width: 110,
                         alignment: "center",
@@ -91,19 +118,6 @@
                             min: 1, step: 1, showSpinButtons: true,
                         }, sortOrder: "desc"
                     },
-                    {
-                        dataField: "isActive", width: 100, alignment: "center",
-                        editorType: "dxSwitch",
-                    },
-                    {
-                        dataField: "isVisible", width: 100, alignment: "center",
-                        editorType: "dxSwitch",
-                    },
-                    {
-                        type: "buttons", caption: "Tác vụ",
-                        width: 120, alignment: "center",
-                        buttons: ["add", "edit", "delete"]
-                    }
                 ],
                 paging: {
                     enabled: true,
@@ -120,41 +134,20 @@
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
                 },
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "cell",
-                    useIcons: false,
-                    confirmDelete: true,
-                },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
-                        //{
-                        //    location: "before", widget: "dxSelectBox",
-                        //    options: {
-                        //        dataSource: customStore_Projects,
-                        //        valueExpr: "id", displayExpr: "title",
-                        //        searchEnabled: true,
-                        //        searchMode: "contains",
-                        //        width: "100%",
-                        //        showClearButton: false,
-                        //        value: PROJECTID,
-                        //        onValueChanged: function (data) {
-                        //            PROJECTID = data.value;
-                        //            localStorage.setItem('projectIdCurrent', PROJECTID);
-                        //            loadData(customStore);
-                        //        },
-                        //    },
-                        //},
                         {
-                            location: "after", widget: "dxButton",
+                            location: "after",
+                            widget: "dxButton",
                             options: {
                                 icon: "refresh", tylingMode: "filled", type: "default",
                                 onClick: () => container.refresh()
-                            }
-                        })
+                            },
+
+                        },
+
+                    )
                 },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
@@ -167,11 +160,10 @@
                 },
                 onRowDblClick: function (e) {
                     var container = e.component;
-                    console.log(container);
                     console.log(e);
                     CALLPOPUP(
-                        "Chi tiết: \"" + e.data.header +"\"",
-                        "/ThongTin/VanBanMau/_VanBanMauDetail/" + e.data.id,
+                        "Tạo văn bản theo mẫu:",
+                        "/ThongTin/VanBanMau/_VanBanChiTiet/" + e.data.id,
                         ($(window).width() > 767 ? "50%" : "80%"),
                         container
                     );
@@ -180,4 +172,3 @@
         }
     </script>
 }
-

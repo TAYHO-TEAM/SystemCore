@@ -2,6 +2,7 @@
 using QuanLyDuAn.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -48,7 +49,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         }
         [HttpPost]
         [ResponseType(typeof(string))]
-        public JsonResult Test()
+        public JsonResult UpdateCellContent()
         {
             List<CustomCellContentOBJ> customCellContentOBJs = new List<CustomCellContentOBJ>();
           
@@ -70,16 +71,14 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 HttpFileCollectionBase listFile = HttpContext.Request.Files;
                 if (listFile.Count > 0)
                 {
-                    CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
-                    MultipartFormDataContent mFormData = new MultipartFormDataContent();
-                    customCellContentOBJ.CustomFormContentId = CustomFormContentId;
-                    int i = 0;
-                    string[] ids = new string[100];
-
                     foreach (string file in listFile)
                     {
-                        ids = listFile.Keys[i].ToString().Split('_');
-                        customCellContentOBJ = new CustomCellContentOBJ();
+                        string[] ids = new string[100];
+                        ids = file.ToString().Split('_');
+                        CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
+                        MultipartFormDataContent mFormData = new MultipartFormDataContent();
+
+                        customCellContentOBJ.CustomFormContentId = CustomFormContentId;
                         HttpPostedFileBase fileBase = Request.Files[file];
                         byte[] fileData = null;
                         using (var binaryReader = new BinaryReader(fileBase.InputStream))
@@ -89,7 +88,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                         ByteArrayContent b = new ByteArrayContent(fileData);
                         b.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
                         //byte[] binData = b.ReadBytes(fileBase.ContentLength);
-                        //mFormData.Add(b, nameof(file) + i++.ToString(), fileBase.FileName);
+                        mFormData.Add(b, nameof(file), fileBase.FileName);
                         try
                         {
                             customCellContentOBJ.CustomFormBodyId = Convert.ToInt32(ids[0]);
@@ -103,7 +102,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                             if (!string.IsNullOrEmpty(customCellContentOBJ.Contents)) mFormData.Add(new StringContent(customCellContentOBJ.Contents), nameof(customCellContentOBJ.Contents));
                             using (var client = new HttpClient())
                             {
-                                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");
+                                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());
                                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -122,7 +121,6 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                             throw new ArgumentNullException();
                         }
                     }
-
                 }
                 foreach (var item in Request.Form)
                 {
@@ -147,7 +145,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                             if (!string.IsNullOrEmpty(customCellContentOBJ.Contents)) mFormData.Add(new StringContent(customCellContentOBJ.Contents), nameof(customCellContentOBJ.Contents));
                             using (var client = new HttpClient())
                             {
-                                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");
+                                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());
                                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -179,13 +177,16 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 return Json(new { status = "error", result = ex.ToString() });
             }
         }
-        [HttpPost, ValidateInput(false)]
-        public JsonResult Create(object abc)
+        // GET: ThongTin/QuanLyVanBan
+        public ActionResult QuanLyVanBan()
         {
-            var xyz = abc;
-            return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
+            return View();
         }
-      
+        // GET: ThongTin/QuanLyVanBanChiTiet
+        public ActionResult _VanBanChiTiet(int id)
+        {
+            return PartialView(id);
+        }
 
     }
 

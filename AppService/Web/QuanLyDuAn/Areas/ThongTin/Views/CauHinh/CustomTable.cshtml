@@ -51,36 +51,37 @@
                     },
                     {
                         dataField: "title",
-                        caption: "Tên kiểu dữ liệu",
+                        caption: "Tên trường dữ liệu",
                         dataType: "string",
                     },
                     {
                         dataField: "noColum",
-                        caption: "Số cột",
+                        caption: "Vị trí cột",
                         dataType: "number",
                     },
                     {
                         dataField: "noRown",
-                        caption: "Số dòng",
+                        caption: "Giới hạn dòng",
                         dataType: "number",
                     },
                     {
                         dataField: "style",
-                        caption: "Định dạng",
+                        caption: "Định dạng CSS",
                         dataType: "number",
                     },
-                    {
-                        dataField: "priority",
-                        caption: "Vị trí",
-                        dataType: "number",
-                        width: 110,
-                        alignment: "center",
-                        editorType: "dxNumberBox",
-                        editorOptions: {
-                            min: 1, step: 1,
-                            showSpinButtons: true,
-                        }, sortOrder: "desc"
-                    },
+                    //{
+                    //    dataField: "priority",
+                    //    caption: "Vị trí",
+                    //    dataType: "number",
+                    //    width: 110,
+                    //    alignment: "center",
+                    //    editorType: "dxNumberBox",
+                    //    editorOptions: {
+                    //        min: 1, step: 1,
+                    //        showSpinButtons: true,
+                    //    }, 
+                    //    sortOrder: "desc",
+                    //},
                     {
                         dataField: "isActive", width: 100, alignment: "center",
                         editorType: "dxSwitch",
@@ -89,25 +90,25 @@
                         dataField: "isVisible", width: 100, alignment: "center",
                         editorType: "dxSwitch",
                     },
-                    {
-                        type: "buttons", caption: "Tác vụ",
-                        width: 120, alignment: "center",
-                        buttons: ["add", "edit", "delete"]
-                    }
+                    //{
+                    //    type: "buttons", caption: "Tác vụ",
+                    //    width: 120, alignment: "center",
+                    //    buttons: ["add", "edit", "delete"]
+                    //}
                 ],
-                rowDragging: {
-                    allowDropInsideItem: true,
-                    allowReordering: false,
-                    dropFeedbackMode: "push",
-                    onDragEnd: function (e) {
-                        //var source = e.itemData,
-                        //    target = e.component.getVisibleRows()[e.toIndex].data,
-                        //    d = $.Deferred();
-                        //customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                        //    e.component.refresh().then(d.resolve, d.reject);
-                        //}, d.reject);
-                    },
-                },
+                //rowDragging: {
+                //    allowDropInsideItem: true,
+                //    allowReordering: false,
+                //    dropFeedbackMode: "push",
+                //    onDragEnd: function (e) {
+                //        //var source = e.itemData,
+                //        //    target = e.component.getVisibleRows()[e.toIndex].data,
+                //        //    d = $.Deferred();
+                //        //customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
+                //        //    e.component.refresh().then(d.resolve, d.reject);
+                //        //}, d.reject);
+                //    },
+                //},
                 paging: {
                     enabled: true,
                     pageSize: 20
@@ -127,7 +128,7 @@
                     allowAdding: true,
                     allowUpdating: true,
                     allowDeleting: true,
-                    mode: "cell",
+                    mode: "popup",
                     useIcons: false,
                     confirmDelete: true,
                 },
@@ -149,7 +150,61 @@
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
-                }
+                },
+                  selection: {
+                    mode: "single"
+                },
+                onContentReady: (e) => {
+                    var container = e.component;
+                  
+                    $("#action-add").dxSpeedDialAction({
+                        index: 1, icon: "fas fa-plus", label: "Thêm giá trị",
+                        visible: (PermitInAction["insert"] ),
+                        onClick: () => e.component.addRow(),
+                    }).dxSpeedDialAction("instance");
+
+                    DevExpress.config({
+                        floatingActionButtonConfig: {
+                            icon: "rowfield",
+                            label: "Tác vụ",
+                            shading: true,
+                            position: {
+                                of: e.element,
+                                my: "right bottom",
+                                at: "right bottom",
+                                offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                            }
+                        }
+                    });
+                    DevExpress.ui.repaintFloatingActionButton();
+                },
+                onSelectionChanged: (e) => {
+                    var selectedRowData = e.selectedRowsData[0];
+                    var selectedRowKey = e.selectedRowKeys[0];
+                   
+                    if (selectedRowData != null && selectedRowKey != null) {
+                        var data = e.component.getRowIndexByKey(selectedRowKey);
+                        console.log(e);
+                        $("#action-update").dxSpeedDialAction({
+                            index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                            visible: PermitInAction["update"],
+                            onClick: () => e.component.editRow(data)
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-delete").dxSpeedDialAction({
+                            index: 3, icon: "fas fa-trash", label: "Xóa",
+                            visible: PermitInAction["delete"],
+                            onClick: (e) => e.component.deleteRow(selectedRowKey),
+                        }).dxSpeedDialAction("instance");
+
+                        //$("#action-log").dxSpeedDialAction({
+                        //    index: 4, icon: "fas fa-user", label: "Thêm người nhận",
+                        //    onClick: () => {
+                        //        loadAccount(selectedRowData);
+                        //    }
+                        //}).dxSpeedDialAction("instance");
+                    }
+                },
             });
         }
     </script>

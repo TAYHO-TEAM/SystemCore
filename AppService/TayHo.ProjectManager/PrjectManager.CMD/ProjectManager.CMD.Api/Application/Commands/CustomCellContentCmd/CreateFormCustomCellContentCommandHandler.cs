@@ -69,6 +69,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             await _customCellContentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             // ghi file vào server và lưu log file dữ liệu
+            int OwnerById = (existingCustomCellContent == null ? newCustomCellContent.Id : existingCustomCellContent.Id);
             try
             {
                 if (request.getFile() != null && request.getFile().Count > 0)
@@ -77,7 +78,16 @@ namespace ProjectManager.CMD.Api.Application.Commands
                     //foreach (var i in request.getFile())
                     //{
                     var result = await _mediaService.SaveFile(i, tableName, i.FileName);
-                    var newFilesAttachment = new FilesAttachment(newCustomCellContent.Id,
+                    //FilesAttachment newFilesAttachment = new FilesAttachment(1,
+                    //                                     "abc",
+                    //                                     "abc",
+                    //                                     "abc",
+                    //                                     "abc",
+                    //                                     "abc",
+                    //                                     "abc",
+                    //                                    "abc",
+                    //                                     "abc");
+                    var newFilesAttachment = new FilesAttachment(OwnerById,
                                                           tableName,
                                                           i.FileName,
                                                           result.Item1,
@@ -88,15 +98,19 @@ namespace ProjectManager.CMD.Api.Application.Commands
                                                           result.Item4);
                     newFilesAttachment.SetCreate(_user);
                     newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
-                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
-                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : true;
+                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
 
                     await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
-                    await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+                    await _filesAttachmentRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                     if (existingCustomCellContent == null)
                     {
-                        newCustomCellContent.SetContents(newFilesAttachment.Host + newFilesAttachment.Url + "/" + newFilesAttachment.FileName);
-                        existingCustomCellContent.SetContents(newFilesAttachment.Host + newFilesAttachment.Url + "/" + newFilesAttachment.FileName);
+                        newCustomCellContent.SetContents((newFilesAttachment.Host + newFilesAttachment.Url + "/" + newFilesAttachment.FileName).Replace('\\','/'));
+                       
+                    }
+                    else
+                    {
+                        existingCustomCellContent.SetContents((newFilesAttachment.Host + newFilesAttachment.Url + "/" + newFilesAttachment.FileName).Replace('\\', '/'));
                         existingCustomCellContent.SetUpdate(_user, 0);
                     }
 
