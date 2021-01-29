@@ -228,6 +228,7 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
 
         public static IServiceCollection AddOptionsBuilder(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<ProfileMailOptions>(configuration.GetSection("ProfileMailOptions"));
             services.Configure<MediaOptions>(configuration.GetSection("MediaConfig"));
             services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
             services.Configure<SQLServerOptions>(configuration.GetSection("SQLServerOptions"));

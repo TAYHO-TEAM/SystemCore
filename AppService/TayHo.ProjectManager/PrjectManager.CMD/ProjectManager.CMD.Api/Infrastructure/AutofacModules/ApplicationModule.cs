@@ -16,6 +16,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterGeneric(typeof(LoggingBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
             builder.RegisterGeneric(typeof(RequestPerformanceBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
             builder.RegisterType<MediaService>().As<IMediaService>().InstancePerLifetimeScope();
+            builder.RegisterType<SendMailService>().As<ISendMailService>().InstancePerLifetimeScope();
 
             // register repositories
             builder.RegisterType<StagesRepository>().As<IStagesRepository>().InstancePerLifetimeScope();
