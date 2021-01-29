@@ -44,7 +44,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             existingNotify.SetCategory(request.Category);
             existingNotify.SetMessage(request.Message);
             existingNotify.SetLink(request.Link);
-            existingNotify.SetTemplateId(request.TemplateId);
+            existingNotify.SetNotifyTemplateId(request.NotifyTemplateId);
             existingNotify.SetTitle(request.Title);
             existingNotify.SetSub(request.Sub);
             existingNotify.SetBodyContent(request.BodyContent);
