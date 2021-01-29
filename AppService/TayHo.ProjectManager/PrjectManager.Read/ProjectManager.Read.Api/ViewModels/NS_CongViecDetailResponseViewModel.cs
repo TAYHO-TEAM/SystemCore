@@ -21,5 +21,6 @@ namespace ProjectManager.Read.Api.ViewModels
         public string DonViTinh { get; set; }
         public string Nhom { get; set; }
         public string DienGiai { get; set; }
+        public int? LuyKe { get; set; }
     }
 }
