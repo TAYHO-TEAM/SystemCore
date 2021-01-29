@@ -76,7 +76,7 @@
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
         let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
-        let customStore_DocumetnType = customStore_READ_FILTER(ACTION_READ_DOCUMENTTYPE,'status,1');
+        let customStore_DocumetnType = customStore_READ_FILTER(ACTION_READ_DOCUMENTTYPE, 'status,1');
         let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
         let customStore_Response = (id) => customStore_UPDATE_READ(id, ACTION_RESPONSE, ACTION_RESPONSEBYACC)
 
@@ -309,10 +309,18 @@
 
                     {
                         dataField: "status",
-                        caption: "Trang thái",
+                        caption: "Trạng thái",
                         dataType: "number",
                         cellTemplate: (container, options) => {
-                            container.append(options.value == 0 ? 'Chờ phản hồi' : options.value == 1 ? 'Tư vấn đã duyệt' : options.value == 2 ? 'Ban đã duyệt' : options.value == 3 ? 'Đã phản hồi' : options.value == 4 ? 'Trả lại' : '')
+                            container.append(options.value == 0 ? 'Chờ phản hồi' :
+                                options.value == 1 ? 'Tư vấn đã duyệt(A)' :
+                                    options.value == 2 ? 'Tư vấn đã duyệt(B)' :
+                                        options.value == 3 ? 'Tư vấn đã duyệt(C)' :
+                                            options.value == 4 ? 'Tư vấn đã duyệt(D)' :
+                                                options.value == 5 ? 'Ban đã duyệt(A)' :
+                                                    options.value == 6 ? 'Ban đã duyệt(B)' :
+                                                        options.value == 7 ? 'Ban đã duyệt(C)' :
+                                                            options.value == 8 ? 'Ban đã duyệt(D)' :'Đã gửi' )
                         },
                     },//status
                     {
@@ -321,7 +329,7 @@
                         dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
-                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
+                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " file(s)" : "chưa có file"));
                         },
                     },
                     {
@@ -335,7 +343,7 @@
                             },
                             onClick: function (e) {
                                 var containerE = e.component;
-                                var myJSON = JSON.stringify(e.row.data);
+                                //var myJSON = JSON.stringify(e.row.data);
                                 callPopup(
                                     "THÊM MỚI ĐĂNG KÝ",
                                     "/ThongTin/DangKy/_FormRev/" + e.row.data.id,
@@ -473,6 +481,7 @@
                             widget: "dxButton",
                             options: {
                                 text: "Thêm mới",
+                                visible: PermitInAction.insert,
                                 //icon: "add",
                                 onClick: function () {
                                     callPopup(
@@ -523,10 +532,10 @@
                 },
                 //onRowPrepared: (e) => {
                 //    if (e.rowType == "data" && e.data.rev == 0) {
-                        
+
                 //        e.rowElement.attr("style", "font-weight:bold !important; background-color: rgba(158, 158, 158,.2) !important;")
                 //    }
-                //}, 
+                //},
             });
         }
         /// Load Popup
@@ -571,7 +580,7 @@
                             items: [
                                 {
                                     colSpan: 12,
-                                    dataField: "code",
+                                    dataField: "barCode",
                                     label: { text: "Mã" },
 
                                 },//tenCongViec
@@ -598,8 +607,8 @@
                                 },
                                 {
                                     colSpan: 12,
-                                    dataField: "createPlanDate",
-                                    label: { text: "Ngày lên kế hoạch" },
+                                    dataField: "expectRequestDate",
+                                    label: { text: "Ngày dự kiến đệ trình" },
                                     dataType: "date",
                                     width: 150,
                                     alignment: "center",
@@ -607,8 +616,8 @@
                                 },
                                 {
                                     colSpan: 12,
-                                    dataField: "expectFromDate",
-                                    label: { text: "Dự kiến bắt đầu" },
+                                    dataField: "expectResponseDate",
+                                    label: { text: "Ngày dự kiến phê duyệt" },
                                     dataType: "date",
                                     width: 150,
                                     alignment: "center",
@@ -616,8 +625,8 @@
                                 },
                                 {
                                     colSpan: 12,
-                                    dataField: "expectToDate",
-                                    label: { text: "Dự kiến kết thúc" },
+                                    dataField: "createDate",
+                                    label: { text: "Ngày đệ trình" },
                                     dataType: "date",
                                     width: 150,
                                     alignment: "center",
@@ -625,24 +634,19 @@
                                 },
                                 {
                                     colSpan: 12,
-                                    dataField: "fromDate",
-                                    label: { text: "Bắt đầu" },
+                                    dataField: "updateDate",
+                                    label: { text: "Ngày duyệt" },
                                     dataType: "date",
                                     width: 150,
                                     alignment: "center",
                                     format: "dd/MM/yyyy",
-                                },
-                                {
-                                    colSpan: 12,
-                                    dataField: "toDate",
-                                    label: { text: "Kết thúc" },
-                                    alignment: "center",
-                                    format: "dd/MM/yyyy",
-                                },]
+                                }]
                         }]
                     }).appendTo(content_main);
-                    var $i = 1;
+                    console.log(masterItiem.responseRegistDTOs);
+                    var $i = 0;
                     $.each(masterItiem.responseRegistDTOs, function (key, value) {
+                        
                         var formSub = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form_Sub" + key).data('id', key).addClass("form-submit").append('<div></div>');
                         formSub.dxForm({
                             elementAttr: {
@@ -694,7 +698,7 @@
                                         label: { text: "Files" },
                                         template: (container) => {
                                             return $('<a>').click(function () {
-                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ( (value.update == true ? true : false) ) : false);
+                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
                                             }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                         },
                                     },
@@ -707,14 +711,28 @@
                                             //useSubmitBehavior: true,
                                             visible: ((value.modifyBy < 1) ? (value.update == true ? true : false) : false),
                                             onClick: function () {
+                                                //console.log(value.typeOfResult);
                                                 var request = {
                                                     'id': value.id,
                                                     'description': value.description,
                                                     'typeOfResult': value.typeOfResult
                                                 };
-                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
-                                                $("#popup-main").dxPopup("hide");
-                                                loadData();
+                                                if (value.typeOfResult == null) {
+                                                    DevExpress.ui.notify("Chưa chọn đánh giá!", "error", 3000);
+                                                }
+                                                else {
+                                                    if (value.noAttachment === null || value.noAttachment === 0) {
+                                                        DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                                            if (dialogResult) {
+                                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
+                                                                $("#popup-main").dxPopup("hide");
+                                                                loadData();
+                                                            }
+                                                        });
+                                                    }
+                                                    
+                                                }
+                                              
                                             },
                                         },
                                     }]
@@ -864,7 +882,7 @@
             }
         }).addClass("popup-priority-1");
 
-        let loadUpload = (table, item, isUpload) => $("#popup-main-upload").dxPopup({
+        let loadUpload = (table, item, isUpload, parentItem) => $("#popup-main-upload").dxPopup({
             width: "70%",
             height: "50%",
             fullScreen: false,
@@ -933,7 +951,7 @@
                                         $("<a/>").append($("<img/>").attr("src", x).attr("style", "max-width :150px;").attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")).appendTo(c);
                                     }
                                     else if (['.pdf'].includes(o.data.tail.toLowerCase(x))) {
-                                        $("<a/>").attr("href", x).addClass("far fa-file-pdf").appendTo(c);
+                                        $("<a />").attr("href", x).attr("target", "_blank").addClass("far fa-file-pdf").appendTo(c);
                                     }
                                     else {
                                     }
@@ -957,12 +975,14 @@
                                 }
                             })
                     },
+
                 });
                 scrollView.append(content, content_Upload);
                 scrollView.dxScrollView({
                     width: '100%',
                     height: '100%'
                 });
+                var isUpload = 0;
                 $(function () {
                     if (isUpload) {
                         //$("#form").append("OwnerById",1);
@@ -978,6 +998,7 @@
                             text: "Update profile",
                             type: "success",
                             onClick: function () {
+                                isUpload++;
                                 var fd = $("#form")[0];
                                 var formData = new FormData(fd);
                                 formData.append("OwnerById", item.id);
@@ -1013,11 +1034,19 @@
             //onHidden: (c) => {
             //    $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
             //},
+            onHidden: function () {
+                if (isUpload > 0) {
+                    $("#popup-main").dxPopup('instance').hide().then(() => {
+                        loadDetail(parentItem);
+                    });
+                }
+                //loadDetail(item);
+            },
         }).addClass("popup-priority-2");
 
-        function loadFileAttachment(table, item, isUpload) {
-            console.log(isUpload);
-            loadUpload(table, item, isUpload);
+        function loadFileAttachment(table, item, isUpload, parentItem) {
+            //console.log(isUpload);
+            loadUpload(table, item, isUpload, parentItem);
         }
 
         function callPopup(title, url, width, container) {

@@ -22,7 +22,7 @@
         const ACTION_READ = "/Notify";
         const ACTION_READ_NOTIFYACCOUNT = "/NotifyAccount";
         const ACTION_DOCUMENTACC = "/DocumentReleasedAccount";
-        const ACTION_DOCUMENTLOG = "/DocumentReleasedLog";
+        const ACTION_DOCUMENTLOG = "/NotifyAccount";
         const ACTION_FILEGET = "/FilesAttachment/getBy";
         const ACTION_GROUPS = "/Groups";
         const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
@@ -31,7 +31,7 @@
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
         //var DOCUMENTTYPEID = isNullOrEmpty(localStorage.getItem("documentTypeIdCurrent")) ? parseInt(localStorage.getItem("documentTypeIdCurrent")) : 7;
 
-        ///-----------------------------CMD ------------------------
+        //-----------------------------CMD ------------------------
         const ACTION_CMD = "/Notify";
         const ACTION_CMD_NOTIFYACCOUNT = "/NotifyAccount";
 
@@ -120,7 +120,7 @@
             },
 
         });
-        let customStore_NotifyAccount = (FKID) => customStore_CMD_READ_FILTER_FK(ACTION_CMD_NOTIFYACCOUNT, ACTION_CMD_NOTIFYACCOUNT, FKID);
+        let customStore_NotifyAccount = (FKID) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_NOTIFYACCOUNT, ACTION_CMD_NOTIFYACCOUNT, FKID);
         let customStore_Log = (item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -129,7 +129,7 @@
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
                     'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                    'FindId': 'documentReleasedId,' + item.id
+                    'FindId': 'notifyId,' + item.id
                 }
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
@@ -248,22 +248,31 @@
                         caption: "Loại thông báo",
                         dataType: "string",
                         validationRules: [{ type: "required" }],
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: Category,
+                            valueExpr: "CategoryName",
+                            displayExpr: "CategoryName",
+                            //itemTemplate: function (data) {
+                            //    return $("<div>").append($("<b>").append(data.CategoryName).addClass("mr-1"));
+                            //},
+                        }
                     },
-                    {
-                        dataField: "message",
-                        caption: "Lời nhắn",
-                        dataType: "string",
-                    },
+                    //{
+                    //    dataField: "message",
+                    //    caption: "Lời nhắn",
+                    //    dataType: "string",
+                    //},
                     {
                         dataField: "link",
                         caption: "Đường dẫn",
                         dataType: "string",
                     },
-                    {
-                        dataField: "sub",
-                        caption: "Lời chào",
-                        dataType: "string",
-                    },
+                    //{
+                    //    dataField: "sub",
+                    //    caption: "Lời chào",
+                    //    dataType: "string",
+                    //},
                     {
                         dataField: "bodyContent",
                         caption: "Nội dung",
@@ -272,28 +281,9 @@
                     {
                         dataField: "templateId",
                         caption: "Theo mẫu",
-                        dataType: "string",
+                        dataType: "number",
                     },
-                    {
-                        type: "buttons", caption: "Tác vụ",
-                        width: 120, alignment: "center",
-                        buttons: ["edit", "delete", {
-                            hint: "Người nhận",
-                            icon: "user",
-                            //visible: function (e) {
-                            //    return !e.row.isEditing && !isChief(e.row.data.Position);
-                            //},
-                            onClick: function (e) {
-                                //alert(1);
-                                loadAccount(e.row.data);
-                                //var clonedItem = $.extend({}, e.row.data, { ID: ++maxID });
 
-                                //employees.splice(e.row.rowIndex, 0, clonedItem);
-                                //e.component.refresh(true);
-                                //e.eve,nt.preventDefault();
-                            }
-                        }],
-                    }
                 ],
                 paging: { enabled: true, pageSize: 20 },
                 pager: {
@@ -308,9 +298,9 @@
                     visible: WIDTH_CONTAINER > 350
                 },
                 editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    //allowAdding: true,
+                    //allowUpdating: true,
+                    //allowDeleting: true,
                     mode: "popup",
                     useIcons: true,
                     confirmDelete: true,
@@ -363,11 +353,11 @@
                     if (e.rowType == "data" && e.columnIndex == 1)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
-                onCellClick: function (e) {
-                    if (e.column.dataField === "noAttachment") {
-                        loadUpload("DocumentReleased", e.row.data, false);
-                    }
-                },
+                //onCellClick: function (e) {
+                //    if (typeof e.colum !== 'undefined' && e.column.dataField !== null && e.column.dataField === "noAttachment") {
+                //        loadUpload("DocumentReleased", e.row.data, false);
+                //    }
+                //},
                 masterDetail: {
                     autoExpandAll: false,
                     component: null,
@@ -449,8 +439,69 @@
                         }).attr("style", "margin:auto; width:90%").appendTo(container);
                     },
                 },
+                selection: {
+                    mode: "single"
+                },
                 onContentReady: (e) => {
-                    e.component;
+                    $("#action-add").dxSpeedDialAction({
+                        index: 1, icon: "fas fa-plus",
+                        label: "Thêm mới",
+                        visible: PermitInAction["insert"],
+                        onClick: () => e.component.addRow()
+                    }).dxSpeedDialAction("instance");
+
+                    DevExpress.config({
+                        floatingActionButtonConfig: {
+                            icon: "rowfield",
+                            label: "Tác vụ",
+                            shading: true,
+                            position: {
+                                of: e.element,
+                                my: "right bottom",
+                                at: "right bottom",
+                                offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                            }
+                        }
+                    });
+                    DevExpress.ui.repaintFloatingActionButton();
+                },
+                onSelectionChanged: (e) => {
+                    var selectedRowData = e.selectedRowsData[0];
+                    var selectedRowKey = e.selectedRowKeys[0];
+                    console.log(selectedRowData);
+                    if (selectedRowData != null && selectedRowKey != null) {
+                        var data = e.component.getRowIndexByKey(selectedRowKey);
+                        $("#action-update").dxSpeedDialAction({
+                            index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                            visible: PermitInAction["update"],
+                            onClick: () => e.component.editRow(data)
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-delete").dxSpeedDialAction({
+                            index: 3,
+                            icon: "fas fa-trash",
+                            label: "Xoá",
+                            visible: (selectedRowData.id != null && PermitInAction["delete"] ),
+                            onClick: () => {
+                                DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                    if (dialogResult) {
+                                        var deferred = $.Deferred();
+                                        customStore.remove(selectedRowData.id).then(() => {
+                                            DevExpress.ui.notify("Xoá thành công", "success", 3000);
+                                            e.component.refresh();
+                                        }, deferred.reject);
+                                        return deferred.promise();
+                                    }
+                                });
+                            }
+                        }).dxSpeedDialAction("instance");
+                        $("#action-log").dxSpeedDialAction({
+                            index: 4, icon: "fas fa-user", label: "Thêm người nhận",
+                            onClick: () => {
+                                loadAccount(selectedRowData);
+                            }
+                        }).dxSpeedDialAction("instance");
+                    }
                 },
             });
         };
@@ -532,8 +583,6 @@
                             caption: "Lịch gửi",
                             //alignment: "datetime",
                             //dataType: "number",
-
-
                         },//gửi lúc
                         {
                             dataField: "status",
@@ -635,7 +684,6 @@
                                     editorOptions: {
                                         type: "datetime",
                                     },
-                                    validationRules: [{ type: "required" }],
                                 },
                                 {
                                     colSpan: 6,

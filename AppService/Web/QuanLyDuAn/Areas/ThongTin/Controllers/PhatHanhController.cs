@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLyDuAn.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -55,7 +56,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             return PartialView();
         }
         [HttpPost, ValidateInput(false)]
-        public async Task<JsonResult> Create(RequestOBJ requestOBJ)
+        public async Task<JsonResult> Create(DocumentReleasedOBJ requestOBJ)
         {
 
             MultipartFormDataContent mFormData = new MultipartFormDataContent();
@@ -66,6 +67,8 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             if (!string.IsNullOrEmpty(requestOBJ.Description)) mFormData.Add(new StringContent(requestOBJ.Description), nameof(requestOBJ.Description));
             if (!string.IsNullOrEmpty(requestOBJ.TagWorkItem)) mFormData.Add(new StringContent(requestOBJ.TagWorkItem), nameof(requestOBJ.TagWorkItem));
             if (!string.IsNullOrEmpty(requestOBJ.Title)) mFormData.Add(new StringContent(requestOBJ.Title), nameof(requestOBJ.Title));
+            if(!string.IsNullOrEmpty(requestOBJ.Location )) mFormData.Add(new StringContent(requestOBJ.Location), nameof(requestOBJ.Location));
+            if (requestOBJ.Calendar.HasValue) mFormData.Add(new StringContent(requestOBJ.Calendar.Value.ToString("yyyy-MM-dd HH:mm:ss")), nameof(requestOBJ.Calendar));
             if (requestOBJ.WorkItemId.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.WorkItemId).ToString()), nameof(requestOBJ.WorkItemId).ToString());
             if (listFile.Count > 0)
             {
@@ -102,18 +105,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             }
             return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
         }
-        public class RequestOBJ
-        {
-            public string Code { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public int? DocumentTypeId { get; set; }
-            public int? ProjectId { get; set; }
-            public int? WorkItemId { get; set; }
-            public string TagWorkItem { get; set; }
-            public string token { get; set; }
-
-        }
+      
 
     }
 }

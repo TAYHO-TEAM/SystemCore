@@ -5,15 +5,11 @@
         "title": ""
         , "documentTypeId": ""
         , "tagWorkItem": ""
-        , "descriptions": ""
+        , "description": ""
+        , "location": ""
+        , "calender": ""
     };
     var fdata = new FormData();
-    var fdatatest = new FormData();
-    fdatatest.append('documentTypeId', 1);
-    fdatatest.append('tagWorkItem', 2);
-    fdatatest.append('title', '123');
-    fdatatest.append('descriptions', '456');
-    function acb() { alert('fuck') };
 
 
     $(document).ready(function () {
@@ -62,11 +58,11 @@
                         },
                         {
                             colSpan: 12,
-                            dataField: "descriptions",
+                            dataField: "description",
                             label: { text: "Mô tả" },
                             editorType: "dxTextArea",
                             editorOptions: {
-                                value: formData["descriptions"],
+                                value: formData["description"],
                             },
                         },
                         {
@@ -83,6 +79,20 @@
                                 itemTemplate: function (data) {
                                     return "<div>" + data.title + "</div>";
                                 }
+                            },
+                        },
+                        {
+                            colSpan: 12,
+                            dataField: "location",
+                            label: { text: "Địa điểm" },
+                        },
+                        {
+                            colSpan: 12,
+                            dataField: "calendar",
+                            label: { text: "Lịch dự kiến" },
+                            editorType: "dxDateBox",
+                            editorOptions: {
+                                type: "datetime",
                             },
                         },
                         {
@@ -125,7 +135,13 @@
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {
-                fdata.append(key, value);
+                if (key === 'calendar') {
+                    fdata.append(key, moment(value).format('YYYY-MM-DD HH:mm:ss'));
+                }
+                else {
+                    fdata.append(key, value);
+                }
+                
             });
             console.log(PROJECTID);
             fdata.append('projectId', PROJECTID);
@@ -138,7 +154,6 @@
                 $.each(files, function (key, value) {
                     fdata.append(files[key].name, files[key]);
                 });
-
             }
             //else {
             //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);

@@ -1,5 +1,6 @@
 ﻿using ProjectManager.CMD.Domain.DomainObjects.BaseClasses;
 using Services.Common.DomainObjects.Exceptions;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -15,12 +16,14 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         private int? _projectId;
         private int? _workItemId;
         private string _tagWorkItem;
+        private string _location;
+        private DateTime? _calendar;
         private byte? _noAttachment;
         #endregion Fields
         #region Constructors
         private DocumentReleased()
         {
-           
+
         }
 
         public DocumentReleased(string Code,
@@ -30,6 +33,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
                                 int? ProjectId,
                                 int? WorkItemId,
                                 string TagWorkItem,
+                                string Location,
+                                DateTime? Calendar,
                                 byte? NoAttachment) : this()
         {
             _code = Code;
@@ -39,6 +44,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
             _projectId = ProjectId;
             _workItemId = WorkItemId;
             _tagWorkItem = TagWorkItem;
+            _location = Location;
+            _calendar = Calendar;
             _noAttachment = NoAttachment;
             if (!IsValid()) throw new DomainException(_errorMessages);
         }
@@ -51,6 +58,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public int? ProjectId { get => _projectId; }
         public int? WorkItemId { get => _workItemId; }
         public string TagWorkItem { get => _tagWorkItem; }
+        [MaxLength(512, ErrorMessage = nameof(ErrorCodeInsert.IErr512))] public string Location { get => _location; }
+        public DateTime? Calendar { get => _calendar; }
         public byte? NoAttachment { get => _noAttachment; }
         #endregion Properties
 
@@ -62,6 +71,8 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         public void SetProjectId(int? ProjectId) { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetWorkItemId(int? WorkItemId) { _workItemId = !WorkItemId.HasValue ? _workItemId : WorkItemId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetTagWorkItem(string TagWorkItem) { _tagWorkItem = TagWorkItem == null ? _tagWorkItem : TagWorkItem; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetLocation(string Location) { _location = Location == null ? _location : Location; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetCalendar(DateTime? Calender) { _calendar = !Calender.HasValue ? _calendar : Calender; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNoAttachment(byte? NoAttachment) { _noAttachment = !NoAttachment.HasValue ? _noAttachment : NoAttachment; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {

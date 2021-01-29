@@ -80,7 +80,6 @@
             },
         });
         let customStore_Detail = (id) => customStore_READ_ID(ACTION, id);
-
         let customStore_Log = (item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -335,13 +334,22 @@
                 },
                 onContentReady: (e) => {
                     e.component;
+                    if (getParamInUrl('id', location.href) !== null && getParamInUrl('id', location.href) > 0) {
+                        customStore_Detail(getParamInUrl('id', location.href)).load().then((rs) => {
+                            if (rs.length > 0) {
+                                loadDetail(rs[0]);
+                            }
+                        });
+                    }
+                  
+
                 },
                 onRowDblClick: function (e) {
-                    loadDetail(e.data)
+                    console.log(e.data);
+                    loadDetail(e.data);
                 },
             });
         };
-
         /// Load Popup
         let loadDetail = (item) => $("#popup-main").dxPopup({
             width: "60%", height: "95%",

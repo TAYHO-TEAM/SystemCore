@@ -111,9 +111,9 @@ let customStore_UPDATE_READ = (ID, CMD, READ) => new DevExpress.data.CustomStore
     },
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
 });
-let customStore_INSERT_READ = ( INSERT, READ) => new DevExpress.data.CustomStore({
+let customStore_INSERT_READ = (INSERT, READ) => new DevExpress.data.CustomStore({
     key: "id",
-    
+
     load: (values) => {
         var deferred = $.Deferred();
         var params = {
@@ -180,15 +180,15 @@ let customStore_CMD_READ_FILTER_FK = (CMD, READ, FKID) => new DevExpress.data.Cu
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
-let customStore_CMD_READ_FILTER_ID = (CMD, READ,ID) => new DevExpress.data.CustomStore({
+let customStore_CMD_READ_FILTER_ID = (CMD, READ, ID) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
-        console.log(item);
+
         var deferred = $.Deferred();
         var params = {
             'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
             'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-            'FindId':  ID
+            'FindId': ID
         }
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
@@ -217,6 +217,17 @@ let customStore_CMD_READ_FILTER_ID = (CMD, READ,ID) => new DevExpress.data.Custo
     },
     insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
+let customStore_DELETE_READDATASOURCE = (CMD, DATASOURCE) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = {};
+
+        deferred.resolve(DATASOURCE);
+
+        return deferred.promise();
+    },
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
 
@@ -391,3 +402,15 @@ function CALLPOPUP(title, url, width, container) {
         }
     });
 }
+
+
+//-----------------------Unity OBJ -----------------------
+const Category = [{
+    "CategoryName": "Email",
+},
+{
+    "CategoryName": "Notify",
+},
+{
+    "CategoryName": "SMS",
+}]

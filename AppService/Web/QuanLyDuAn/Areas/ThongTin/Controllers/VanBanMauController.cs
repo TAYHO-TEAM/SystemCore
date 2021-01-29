@@ -2,6 +2,7 @@
 using QuanLyDuAn.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -48,7 +49,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         }
         [HttpPost]
         [ResponseType(typeof(string))]
-        public JsonResult Test()
+        public JsonResult UpdateCellContent()
         {
             List<CustomCellContentOBJ> customCellContentOBJs = new List<CustomCellContentOBJ>();
           
@@ -67,12 +68,67 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 {
                     throw new ArgumentNullException();
                 }
+                HttpFileCollectionBase listFile = HttpContext.Request.Files;
+                if (listFile.Count > 0)
+                {
+                    foreach (string file in listFile)
+                    {
+                        string[] ids = new string[100];
+                        ids = file.ToString().Split('_');
+                        CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
+                        MultipartFormDataContent mFormData = new MultipartFormDataContent();
+
+                        customCellContentOBJ.CustomFormContentId = CustomFormContentId;
+                        HttpPostedFileBase fileBase = Request.Files[file];
+                        byte[] fileData = null;
+                        using (var binaryReader = new BinaryReader(fileBase.InputStream))
+                        {
+                            fileData = binaryReader.ReadBytes(fileBase.ContentLength);
+                        }
+                        ByteArrayContent b = new ByteArrayContent(fileData);
+                        b.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                        //byte[] binData = b.ReadBytes(fileBase.ContentLength);
+                        mFormData.Add(b, nameof(file), fileBase.FileName);
+                        try
+                        {
+                            customCellContentOBJ.CustomFormBodyId = Convert.ToInt32(ids[0]);
+                            customCellContentOBJ.CustomColumId = Convert.ToInt32(ids[1]);
+                            customCellContentOBJ.NoRown = Convert.ToInt32(ids[2]);
+                            customCellContentOBJ.Contents ="";
+                            if (customCellContentOBJ.CustomFormContentId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomFormContentId).ToString()), nameof(customCellContentOBJ.CustomFormContentId));
+                            if (customCellContentOBJ.CustomFormBodyId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomFormBodyId).ToString()), nameof(customCellContentOBJ.CustomFormBodyId));
+                            if (customCellContentOBJ.CustomColumId.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.CustomColumId).ToString()), nameof(customCellContentOBJ.CustomColumId));
+                            if (customCellContentOBJ.NoRown.HasValue) mFormData.Add(new StringContent(((int)customCellContentOBJ.NoRown).ToString()), nameof(customCellContentOBJ.NoRown));
+                            if (!string.IsNullOrEmpty(customCellContentOBJ.Contents)) mFormData.Add(new StringContent(customCellContentOBJ.Contents), nameof(customCellContentOBJ.Contents));
+                            using (var client = new HttpClient())
+                            {
+                                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());
+                                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                                using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/CustomCellContent/FromForm", mFormData).Result)
+                                {
+                                    if (response.StatusCode != HttpStatusCode.OK)
+                                    {
+                                        var err = response.Content.ReadAsStringAsync().Result;
+                                        return Json(new { status = "error", result = err });
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new ArgumentNullException();
+                        }
+                    }
+                }
                 foreach (var item in Request.Form)
                 {
                     string[] ids = new string[100];
                     CustomCellContentOBJ customCellContentOBJ = new CustomCellContentOBJ();
                     MultipartFormDataContent mFormData = new MultipartFormDataContent();
                     customCellContentOBJ.CustomFormContentId = CustomFormContentId;
+                    
                     if (item.ToString().Contains("_"))
                     {
                         ids = item.ToString().Split('_');
@@ -89,7 +145,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                             if (!string.IsNullOrEmpty(customCellContentOBJ.Contents)) mFormData.Add(new StringContent(customCellContentOBJ.Contents), nameof(customCellContentOBJ.Contents));
                             using (var client = new HttpClient())
                             {
-                                client.BaseAddress = new Uri("https://api-pm-cmd.tayho.com.vn/");
+                                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());
                                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -112,6 +168,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                     {
 
                     }
+                  
                 }
                 return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
             }
@@ -120,13 +177,16 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 return Json(new { status = "error", result = ex.ToString() });
             }
         }
-        [HttpPost, ValidateInput(false)]
-        public JsonResult Create(object abc)
+        // GET: ThongTin/QuanLyVanBan
+        public ActionResult QuanLyVanBan()
         {
-            var xyz = abc;
-            return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
+            return View();
         }
-      
+        // GET: ThongTin/QuanLyVanBanChiTiet
+        public ActionResult _VanBanChiTiet(int id)
+        {
+            return PartialView(id);
+        }
 
     }
 
