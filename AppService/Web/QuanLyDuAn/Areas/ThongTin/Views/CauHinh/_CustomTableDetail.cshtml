@@ -1,0 +1,138 @@
+﻿@model QuanLyDuAn.Utilities.modelPVCustomTable
+<div id="container_detail" data-id="@Model"></div>
+<script>
+
+    //--------------------READ------------------------------
+    var ACTION_CUSTOMCOLUM = "/CustomColum";
+
+    //--------------------CMD------------------------------
+    var ACTION_CMD_CUSTOMCOLUM = "/CustomColum";
+
+    var customStore_CUSTOMCOLUM = customStore_CMD_READ_FILTER_ID(ACTION_CMD_CUSTOMCOLUM, ACTION_CUSTOMCOLUM, 'CustomTableId,' + @Model.id);
+
+
+    $(function () {
+        loadMain();
+    });
+
+    var loadMain = () => {
+        $('#container_detail').dxDataGrid({
+            dataSource: customStore_CUSTOMCOLUM,
+            remoteOperations: {
+                paging: true,
+                sorting: true,
+            },
+            repaintChangesOnly: true,
+            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            paging: {
+                enabled: true,
+                pageSize: 20
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 40],
+                showInfo: true,
+            },
+            editing: {
+                mode: "cell",
+                allowEditing: true,
+                allowDeleting: true
+            },
+            columns: [
+                //{
+                //    dataField: "customTableId",
+                //    //groupIndex: 0,
+                //    caption: "Tên dữ liệu",
+                //    dataType: "number",
+                //    lookup: {
+                //        dataSource: customStore_CUSTOMTABLE,
+                //        valueExpr: "id",
+                //        displayExpr: "title",
+                //    },
+                //    editorType: "dxSelectBox",
+                //    editorOptions: {
+                //        dataSource: customStore_CUSTOMTABLE,
+                //        valueExpr: "id",
+                //        displayExpr: "title",
+                //        placeholder: "Vui lòng chọn...",
+                //        searchEnabled: true,
+                //        showClearButton: true,
+                //        itemTemplate: function (data) {
+                //            return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                //        },
+                //    },
+                //    validationRules: [{ type: "required" }],
+                //},
+                {
+                    dataField: "colIndex",
+                    caption: "Vị trí",
+                    dataType: "number",
+                },
+                {
+                    dataField: "header",
+                    caption: "Tên cột",
+                    dataType: "string",
+                },
+                {
+                    dataField: "typeParam",
+                    caption: "Kiểu dữ liệu",
+                    dataType: "string",
+                },
+                {
+                    dataField: "sourceValue",
+                    caption: "Giá trị mặc định",
+                    dataType: "string",
+                },
+                {
+                    dataField: "sourceLink",
+                    caption: "Đường dẫn",
+                    dataType: "string",
+                },
+                {
+                    dataField: "isActive",
+                    width: 100,
+                    alignment: "center",
+                    editorType: "dxSwitch",
+                },
+                //{
+                //    dataField: "isVisible",
+                //    width: 100,
+                //    alignment: "center",
+                //    editorType: "dxSwitch",
+                //},
+                {
+                    type: "buttons", caption: "Tác vụ",
+                    width: 120, alignment: "center",
+                    buttons: ["add", "edit", "delete"]
+                }
+            ],
+            onInitNewRow: (e) => {
+                e.data.isActive = true;
+                e.data.isVisible = true;
+                e.data.isLock = false;
+            },
+            onToolbarPreparing: (e) => {
+                console.log(e.element.length);
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before",
+                        widget: "dxButton",
+                        //visible:(@Html.Raw(Json.Encode(@Model.code))  == "dxCheckBox"? true : false),
+                        options: {
+                            icon: "add", text: "Thêm dữ liệu", stylingMode: "contained", type: "default",
+                            onClick: () => e.component.addRow()
+                        }
+                    },
+                    {
+                        location: "after",
+                        widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => e.component.refresh()
+                        }
+                    })
+            },
+        })
+    }
+</script>
