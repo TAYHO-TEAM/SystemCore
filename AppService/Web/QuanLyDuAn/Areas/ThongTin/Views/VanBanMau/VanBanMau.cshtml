@@ -30,14 +30,12 @@
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
-        let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_FK(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
+        let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
-
 
         $(function () {
             loadData();
         });
-
 
         let loadData = () => {
             $("#container").dxDataGrid({
@@ -88,8 +86,11 @@
                         alignment: "center",
                         editorType: "dxNumberBox",
                         editorOptions: {
-                            min: 1, step: 1, showSpinButtons: true,
-                        }, sortOrder: "desc"
+                            min: 1,
+                            step: 1,
+                            showSpinButtons: true,
+                        },
+                        sortOrder: "desc"
                     },
                     {
                         dataField: "isActive", width: 100, alignment: "center",

@@ -55,20 +55,7 @@ namespace AppWFGenProject
 
         private void btnGen_Click(object sender, EventArgs e)
         {
-            GenOB genOB = new GenOB();
-            GenCode genCode = new GenCode();
-
-            //ReadTemplate readTemplate = new ReadTemplate();
-
-            // Set rootDir
-            genOB.rootDir = txtDir.Text == "" ? @"F:\Test\" : txtDir.Text;
-            // Set common
-            genOB.common = _configuration.GetValue<string>("Common", "CmdEF").ToString();// "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
-            // Set db
-            genOB.db = "QuanLyDuAn"; // config setting tạo sau
-            // Set version 
-            genOB.version = _configuration.GetValue<string>("Common", "Version").ToString();//"v1"; // config setting tạo sau
-
+            
 
             int typeCreate = cbkOverWrite.Checked ? 1 : cbkCreateNew.Checked ? 2 : cbkBackUp.Checked ? 3 : -1;
             if (typeCreate <= 0)
@@ -79,6 +66,20 @@ namespace AppWFGenProject
             {
                 for (int i = 0; i < chlTable.Items.Count; i++)
                 {
+                    GenOB genOB = new GenOB();
+                    GenCode genCode = new GenCode();
+
+                    //ReadTemplate readTemplate = new ReadTemplate();
+
+                    // Set rootDir
+                    genOB.rootDir = txtDir.Text == "" ? @"F:\Test\" : txtDir.Text;
+                    // Set common
+                    genOB.common = _configuration.GetValue<string>("Common", "CmdEF").ToString();// "Services.Common.APIs.Cmd.EF;"; // config setting tạo sau
+                                                                                                 // Set db
+                    genOB.db = "QuanLyDuAn"; // config setting tạo sau
+                                             // Set version 
+                    genOB.version = _configuration.GetValue<string>("Common", "Version").ToString();//"v1"; // config setting tạo sau
+
                     if (chlTable.GetItemChecked(i))
                     {
                         genOB.Entity = (string)chlTable.Items[i];

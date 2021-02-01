@@ -101,8 +101,8 @@ namespace ProjectManager.CMD.Api.Application.Commands
                                                           result.Item4);
                     newFilesAttachment.SetCreate(_user);
                     newFilesAttachment.Status = request.Status.HasValue ? request.Status : newFilesAttachment.Status;
-                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : newFilesAttachment.IsActive;
-                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : newFilesAttachment.IsVisible;
+                    newFilesAttachment.IsActive = request.IsActive.HasValue ? request.IsActive : true;
+                    newFilesAttachment.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
 
                     await _filesAttachmentRepository.AddAsync(newFilesAttachment).ConfigureAwait(false);
                     await _filesAttachmentRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);

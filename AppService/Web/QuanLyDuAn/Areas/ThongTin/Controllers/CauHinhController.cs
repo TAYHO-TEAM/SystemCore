@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLyDuAn.Utilities;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -44,7 +45,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             if (result == "Ok")
                 return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
             else
-                return Json(new { status = "error", result = result});
+                return Json(new { status = "error", result = result });
         }
         public async Task<string> PostPlan(string requestOBJ, string token, string result)
         {
@@ -75,7 +76,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
-     
+
         public ActionResult CustomTable()
         {
             return View();
@@ -84,6 +85,16 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult _CustomTableDetail(int id, string code)
+        {
+
+            modelPVCustomTable model = new modelPVCustomTable();
+            model.id = id;
+            model.code = code;
+
+            return PartialView(model);
+        }
 
     }
+
 }

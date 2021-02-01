@@ -183,10 +183,11 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             return View();
         }
         // GET: ThongTin/QuanLyVanBanChiTiet
-        public ActionResult _VanBanChiTiet(int id)
+        public ActionResult _VanBanChiTiet(int id )
         {
             return PartialView(id);
         }
+
 
     }
 

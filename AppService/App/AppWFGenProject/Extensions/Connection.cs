@@ -57,7 +57,7 @@ namespace AppWFGenProject.Extensions
         {
             DataTable dt = new DataTable();
             List<string> listTable = new List<string>();
-            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME NOT LIKE 'sysdiagrams'  AND TABLE_CATALOG = '" + db + "'";
+            string queryString = @"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME NOT LIKE 'sysdiagrams'  AND TABLE_CATALOG = '" + db + "' ORDER BY TABLE_NAME ASC";
             using (SqlConnection cnn = new SqlConnection(Connect(server, user, pass, db).ConnectionString))
             {
                 try

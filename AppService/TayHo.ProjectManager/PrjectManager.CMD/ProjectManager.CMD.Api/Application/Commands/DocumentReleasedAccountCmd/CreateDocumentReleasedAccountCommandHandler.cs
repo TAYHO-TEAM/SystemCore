@@ -7,6 +7,7 @@ using Services.Common.DomainObjects;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using ProjectManager.CMD.Domain.IService;
 
 namespace ProjectManager.CMD.Api.Application.Commands
 {
@@ -14,10 +15,12 @@ namespace ProjectManager.CMD.Api.Application.Commands
     {
         private readonly IGroupAccountRepository _groupAccount;
         IDocumentReleasedRepository _documentReleasedRepository;
-        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository, IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount, IDocumentReleasedRepository DocumentReleasedRepository) : base(mapper, DocumentReleasedAccountRepository, httpContextAccessor)
+        private readonly ISendMailService _sendMailService;
+        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository, IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount, IDocumentReleasedRepository DocumentReleasedRepository, ISendMailService SendMailService) : base(mapper, DocumentReleasedAccountRepository, httpContextAccessor)
         {
             _groupAccount = GroupAccount;
             _documentReleasedRepository = DocumentReleasedRepository;
+            _sendMailService = SendMailService;
         }
 
         /// <summary>

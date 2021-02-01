@@ -56,6 +56,17 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<CustomFormBody> CustomFormBody { get; set; }
         public DbSet<CustomFormContent> CustomFormContent { get; set; }
         public DbSet<CustomTable> CustomTable { get; set; }
+        public DbSet<PlanAccount> PlanAccount { get; set; }
+        public DbSet<PlanJob> PlanJob { get; set; }
+        public DbSet<PlanMaster> PlanMaster { get; set; }
+        public DbSet<PlanProject> PlanProject { get; set; }
+        public DbSet<PlanReport> PlanReport { get; set; }
+        public DbSet<PlanSchedule> PlanSchedule { get; set; }
+        public DbSet<CustomFormAccount> CustomFormAccount { get; set; }
+        public DbSet<Conversation> Conversation { get; set; }
+        public DbSet<Notify> Notify { get; set; }
+        public DbSet<NotifyAccount> NotifyAccount { get; set; }
+        public DbSet<NotifyTemplate> NotifyTemplate { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
