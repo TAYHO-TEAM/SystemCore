@@ -27,7 +27,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
                                         request.Category,
                                         request.Message,
                                         request.Link,
-                                        request.NotifyTemplateId,
+                                        request.TemplateId,
                                         request.Title,
                                         request.Sub,
                                         request.BodyContent);

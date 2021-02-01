@@ -68,10 +68,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             }
             else
             {
-                methodResult.AddAPIErrorMessage(nameof(ErrorCodeInsert.IErr000), new[]
-               {
-                    ErrorHelpers.GetCommonErrorMessage(nameof(ErrorCodeInsert.IErr000))
-                });
+               
             }
 
 

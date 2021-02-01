@@ -25,6 +25,7 @@
         IErrN2,
         IErrN3,
         IErrN4,
+        IErrN5,
     }
     public enum ErrorCodeUpdate
     {
