@@ -21,5 +21,6 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public string DonViTinh { get; set; }
         public string Nhom { get; set; }
         public string DienGiai { get; set; }
+        public int? LuyKe { get; set; }
     }
 }
