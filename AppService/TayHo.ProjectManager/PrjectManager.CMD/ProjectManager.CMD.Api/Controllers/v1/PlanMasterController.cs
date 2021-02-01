@@ -10,6 +10,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
 {
     public class PlanMasterController : APIControllerBase
     {
+        const string FormPlanMaster = nameof(FormPlanMaster);
         public PlanMasterController(IMediator mediator) : base(mediator)
         {
         }
@@ -37,6 +38,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         /// <param name="command"></param>
         /// <returns></returns>
         [HttpPost]
+        [Route(FormPlanMaster)]
         [ProducesResponseType(typeof(MethodResult<CreateFormPlanMasterCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateFormPlanMasterAsync([FromForm] CreateFormPlanMasterCommand command)
