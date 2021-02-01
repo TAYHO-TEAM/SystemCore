@@ -97,6 +97,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<CustomFormBodyDTO>, DOBaseRepository<CustomFormBodyDTO>>();
             services.AddScoped<IDOBaseRepository<CustomFormContentDTO>, DOBaseRepository<CustomFormContentDTO>>();
             services.AddScoped<IDOBaseRepository<CustomFormDTO>, DOBaseRepository<CustomFormDTO>>();
+            services.AddScoped<IDOBaseRepository<CustomFormAccountDTO>, DOBaseRepository<CustomFormAccountDTO>>();
             services.AddScoped<IDOBaseRepository<CustomTableDTO>, DOBaseRepository<CustomTableDTO>>();
             services.AddScoped<IDOBaseRepository<NotifyDTO>, DOBaseRepository<NotifyDTO>>();
             services.AddScoped<IDOBaseRepository<NotifyAccountDTO>, DOBaseRepository<NotifyAccountDTO>>();
@@ -105,6 +106,14 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<ICustomTableRepository<CustomTableDetailDTO>, CustomTableRepository<CustomTableDetailDTO>>();
             services.AddScoped<ICustomFormRepository<CustomFormDetailDTO>, CustomFormRepository<CustomFormDetailDTO>>();
             services.AddScoped<ICustomFormContentRepository<CustomFormContentDetailDTO>, CustomFormContentRepository<CustomFormContentDetailDTO>>();
+
+            services.AddScoped<IDOBaseRepository<ConversationDTO>, DOBaseRepository<ConversationDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanAccountDTO>, DOBaseRepository<PlanAccountDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanJobDTO>, DOBaseRepository<PlanJobDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanMasterDTO>, DOBaseRepository<PlanMasterDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanProjectDTO>, DOBaseRepository<PlanProjectDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanReportDTO>, DOBaseRepository<PlanReportDTO>>();
+            services.AddScoped<IDOBaseRepository<PlanScheduleDTO>, DOBaseRepository<PlanScheduleDTO>>();
             return services;
         }
 
