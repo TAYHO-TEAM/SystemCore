@@ -2483,6 +2483,7 @@
     <Content Include="Areas\ThongTin\Views\ThongBao\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\QuanLyVanBan.cshtml" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_VanBanChiTiet.cshtml" />
+    <Content Include="Areas\ThongTin\Views\CauHinh\_CustomTableDetail.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
