@@ -66,10 +66,19 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<CustomTableRepository>().As<ICustomTableRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CustomCellContentRepository>().As<ICustomCellContentRepository>().InstancePerLifetimeScope();
             builder.RegisterType<CustomColumRepository>().As<ICustomColumRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<CustomFormAccountRepository>().As<ICustomFormAccountRepository>().InstancePerLifetimeScope();
 
             builder.RegisterType<NotifyRepository>().As<INotifyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NotifyAccountRepository>().As<INotifyAccountRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NotifyTemplateRepository>().As<INotifyTemplateRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<ConversationRepository>().As<IConversationRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanAccountRepository>().As<IPlanAccountRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanJobRepository>().As<IPlanJobRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanMasterRepository>().As<IPlanMasterRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanProjectRepository>().As<IPlanProjectRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanReportRepository>().As<IPlanReportRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<PlanScheduleRepository>().As<IPlanScheduleRepository>().InstancePerLifetimeScope();
         }
     }
 }
