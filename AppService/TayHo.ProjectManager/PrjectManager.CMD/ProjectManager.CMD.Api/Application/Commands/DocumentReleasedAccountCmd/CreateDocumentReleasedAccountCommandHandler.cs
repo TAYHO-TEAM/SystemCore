@@ -14,13 +14,15 @@ namespace ProjectManager.CMD.Api.Application.Commands
     public class CreateDocumentReleasedAccountCommandHandler : DocumentReleasedAccountCommandHandler, IRequestHandler<CreateDocumentReleasedAccountCommand, MethodResult<CreateDocumentReleasedAccountCommandResponse>>
     {
         private readonly IGroupAccountRepository _groupAccount;
-        IDocumentReleasedRepository _documentReleasedRepository;
+        private readonly IDocumentReleasedRepository _documentReleasedRepository;
         private readonly ISendMailService _sendMailService;
-        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository, IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount, IDocumentReleasedRepository DocumentReleasedRepository, ISendMailService SendMailService) : base(mapper, DocumentReleasedAccountRepository, httpContextAccessor)
+        private readonly IAccountInfoRepository _accountInfoRepository;
+        public CreateDocumentReleasedAccountCommandHandler(IMapper mapper, IDocumentReleasedAccountRepository DocumentReleasedAccountRepository, IHttpContextAccessor httpContextAccessor, IGroupAccountRepository GroupAccount, IDocumentReleasedRepository DocumentReleasedRepository, ISendMailService SendMailService, IAccountInfoRepository AccountInfoRepository) : base(mapper, DocumentReleasedAccountRepository, httpContextAccessor)
         {
             _groupAccount = GroupAccount;
             _documentReleasedRepository = DocumentReleasedRepository;
             _sendMailService = SendMailService;
+            _accountInfoRepository = AccountInfoRepository;
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             {
                 foreach (var groupAccount in existingGroupAccounts)
                 {
-                    if (!await _DocumentReleasedAccountRepository.AnyAsync(x => x.AccountId == groupAccount.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
+                    if (!await _documentReleasedAccountRepository.AnyAsync(x => x.AccountId == groupAccount.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
                     {
                         var newDocumentReleasedAccount = new DocumentReleasedAccount(groupAccount.AccountId,
                                                                                request.DocumentReleasedId,
@@ -53,7 +55,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
             }
             else if (request.AccountId > 0)
             {
-                if (!await _DocumentReleasedAccountRepository.AnyAsync(x => x.AccountId == request.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
+                if (!await _documentReleasedAccountRepository.AnyAsync(x => x.AccountId == request.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
                 {
                     var newDocumentReleasedAccount = new DocumentReleasedAccount(request.AccountId,
                                                                              request.DocumentReleasedId,
@@ -65,9 +67,14 @@ namespace ProjectManager.CMD.Api.Application.Commands
                     newDocumentReleasedAccounts.Add(newDocumentReleasedAccount);
                 }
             }
-            await _DocumentReleasedAccountRepository.AddRangeAsync(newDocumentReleasedAccounts).ConfigureAwait(false);
-            await _DocumentReleasedAccountRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            await _documentReleasedAccountRepository.AddRangeAsync(newDocumentReleasedAccounts).ConfigureAwait(false);
+            await _documentReleasedAccountRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
             await _documentReleasedRepository.DocumentReleasedProcessAsync();
+            if (request.AccountId.HasValue && request.AccountId > 0)
+            {
+                var accountInfo = await _accountInfoRepository.GetAllListAsync(x => x.AccountId == request.AccountId).ConfigureAwait(false);
+                var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
+            }
             var DocumentReleasedAccountResponseDTOs = _mapper.Map<List<DocumentReleasedAccountCommandResponseDTO>>(newDocumentReleasedAccounts);
             methodResult.Result = new CreateDocumentReleasedAccountCommandResponse(DocumentReleasedAccountResponseDTOs);
             return methodResult;

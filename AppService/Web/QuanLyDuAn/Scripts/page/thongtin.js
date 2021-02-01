@@ -219,6 +219,45 @@ let customStore_CMD_READ_FILTER_ID = (CMD, READ, ID) => new DevExpress.data.Cust
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
+let customStore_CMD_READ_FILTER_ID_KEYWORD = (CMD, READ, ID,KEYWORD) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+
+        var deferred = $.Deferred();
+        var params = {
+            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+            'FindId': ID
+        }
+        if (values.sort) {
+            params['SortCol'] = values.sort[0].selector;
+            params['SortADSC'] = values.sort[0].desc;
+        }
+        $.ajax({
+            headers: header, dataType: "json",
+            data: params,
+            url: URL_API_PM_READ + READ,
+            success: function (data) {
+                var list = data.result.items;
+                deferred.resolve(
+                    list,
+                    {
+                        totalCount: list.length,
+                    }
+                );
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr.responseJSON);
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000
+        });
+        return deferred.promise();
+    },
+    insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
+    update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
 let customStore_DELETE_READDATASOURCE = (CMD, DATASOURCE) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {

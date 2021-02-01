@@ -79,6 +79,8 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<PlanProjectRepository>().As<IPlanProjectRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PlanReportRepository>().As<IPlanReportRepository>().InstancePerLifetimeScope();
             builder.RegisterType<PlanScheduleRepository>().As<IPlanScheduleRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<AccountInfoRepository>().As<IAccountInfoRepository>().InstancePerLifetimeScope();
         }
     }
 }

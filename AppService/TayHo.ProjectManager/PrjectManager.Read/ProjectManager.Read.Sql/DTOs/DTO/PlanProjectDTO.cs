@@ -10,4 +10,9 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? Priority { get; set; }
         public int? ProjectId { get; set; }
     }
+    public class PlanProjectDetailDTO : PlanProjectDTO
+    {
+        public PlanMasterDTO planMaster { get; set; }
+        public List<PlanJobDTO> PlanJobs { get; set; } = new List<PlanJobDTO>();
+    }
 }

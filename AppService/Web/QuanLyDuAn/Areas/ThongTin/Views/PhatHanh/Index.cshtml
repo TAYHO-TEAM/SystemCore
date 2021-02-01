@@ -150,7 +150,6 @@
         let customStore_Detail = (item) => new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                console.log(item);
                 var deferred = $.Deferred();
                 var params = {
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,

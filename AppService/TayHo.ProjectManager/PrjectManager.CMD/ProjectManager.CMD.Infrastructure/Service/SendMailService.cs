@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Domain.IService;
 using Services.Common.Options;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ProjectManager.CMD.Infrastructure.Service
 {
@@ -18,7 +22,8 @@ namespace ProjectManager.CMD.Infrastructure.Service
         private readonly IWebHostEnvironment _env;
         private readonly IHttpClientFactory _clientFactory;
         private readonly ProfileMailOptions _profileMailOptions;
-        public SendMailService(IOptionsSnapshot<ProfileMailOptions> snapshotOptionsAccessor, IHttpClientFactory clientFactory, IWebHostEnvironment env)
+        private readonly QuanLyDuAnContext dbContext;
+        public SendMailService(IOptionsSnapshot<ProfileMailOptions> snapshotOptionsAccessor, IHttpClientFactory clientFactory, IWebHostEnvironment env) 
         {
             _profileMailOptions = snapshotOptionsAccessor.Value;
             _clientFactory = clientFactory;
@@ -41,7 +46,7 @@ namespace ProjectManager.CMD.Infrastructure.Service
             str.AppendLine(string.Format("DESCRIPTION:{0}", Body));
             str.AppendLine(string.Format("X-ALT-DESC;FMTTYPE=text/html:{0}", Body));
             str.AppendLine(string.Format("SUMMARY:{0}", Subject));
-            str.AppendLine(string.Format("ORGANIZER;CN=\"{0}\":MAILTO:{1}", MailFrom, MailFrom));
+            str.AppendLine(string.Format("ORGANIZER;CN=\"{0}\":MAILTO:{1}", _profileMailOptions.name, _profileMailOptions.name));
             str.AppendLine(string.Format("ATTENDEE;CN=\"{0}\";RSVP=TRUE:mailto:{1}", string.Join(",", MailTo), string.Join(",", MailTo)));
 
             str.AppendLine("BEGIN:VALARM");
@@ -84,11 +89,9 @@ namespace ProjectManager.CMD.Infrastructure.Service
             smtpclient.Host = _profileMailOptions.serverName; //-------this has to given the Mailserver IP
             smtpclient.Port = _profileMailOptions.port;
             smtpclient.EnableSsl = true;
-            smtpclient.Credentials = new NetworkCredential(_profileMailOptions.userName,_profileMailOptions.passWord);
+            smtpclient.Credentials = new NetworkCredential(_profileMailOptions.userName, _profileMailOptions.passWord);
             smtpclient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpclient.Send(msg);
         }
-
-
     }
 }

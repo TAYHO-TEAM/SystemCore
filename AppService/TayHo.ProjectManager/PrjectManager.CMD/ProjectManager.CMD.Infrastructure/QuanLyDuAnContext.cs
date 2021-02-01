@@ -11,6 +11,7 @@ namespace ProjectManager.CMD.Infrastructure
         public QuanLyDuAnContext(DbContextOptions<QuanLyDuAnContext> options, IMediator mediator) : base(options, mediator)
         {
         }
+        public DbSet<AccountInfo> AccountInfo { get; set; }
         public DbSet<Assignments> Assignments { get; set; }
         public DbSet<ContractorInfo> ContractorInfo { get; set; }
         public DbSet<DocumentReleased> DocumentReleased { get; set; }
