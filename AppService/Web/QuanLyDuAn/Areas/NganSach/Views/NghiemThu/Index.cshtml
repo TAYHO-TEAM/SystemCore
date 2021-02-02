@@ -292,7 +292,7 @@
                         },
                         {
                             dataField: "tenCongViec", caption: "Thông tin công việc", dataType: "string",
-                            width:300,
+                            width: $("#popup-main").width()>1540?null: 300,
                             cellTemplate: (c, o) => {
                                 $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
                                 $("<em/>").append(o.data.diemGiai).appendTo(c);
@@ -313,7 +313,7 @@
                         },
                         {
                             dataField: "khoiLuong", dataType: "number",
-                            width: 250, alignment: "center",
+                            width: 200, alignment: "right",
                             headerCellTemplate: (c, o) => c.append("Khối lượng<br/>giao thầu"),
                             cellTemplate: (c, o) => {
                                 $("<div />").append(o.value).addClass("font-weight-bold").appendTo(c);
@@ -322,7 +322,7 @@
                         },
                         {
                             dataField: "luyKe", dataType: "number",
-                            width: 250, alignment: "center",
+                            width: 200, alignment: "right",
                             headerCellTemplate: (c, o) => c.append("Lũy kế<br/>đến đợt này"),
                             cellTemplate: (c, o) => {
                                 $("<div />").append(o.value).addClass("font-weight-bold").appendTo(c);
@@ -331,7 +331,7 @@
                         },
                         {
                             dataField: "conLai", dataType: "number",
-                            width: 250, alignment: "center",
+                            width: 200, alignment: "right",
                             headerCellTemplate: (c, o) => c.append("Khối lượng<br/>còn lại"),
                             calculateCellValue: (rowData) => {
                                 return (rowData.khoiLuong - rowData.luyKe);
@@ -342,44 +342,66 @@
                             },
                         },
                         {
-                            dataField: "khoiLuongDotNay", dataType: "number",
-                            width: 150, alignment: "center",
-                            headerCellTemplate: (c, o) => c.append("Khối lượng<br/>Đợt này"),
-                            cellTemplate: (cellElement, cellInfo) => { 
-                                return $("<div>").dxTextBox({
-                                    elementAttr: {
-                                        id: "phanTramDotNay_" + cellInfo.key
-                                    },
-                                    value: cellInfo.value,
-                                    showSpinButtons: true,
-                                    showClearButton: true,
-                                    placeholder: "Vui lòng nhập ...",
-                                    stylingMode: "filled",
-                                    //min: 0, max: 100, value: 0,
-                                    onValueChanged: function (e) { 
-                                        var value = e.value;
-                                        var id = cellInfo.key;
-                                        if (value.index)
-                                        e.component.option('value', 500);
-                                        console.log(e);
-                                    }, 
-                                }).dxValidator({
-                                    validationRules: [{
-                                        type: "async",
-                                        validationCallback: function (params) {
-                                            return sendRequest(params, cellInfo);
-                                        }
-                                    }]
-                                });
-                            }
-                        },
-                        //{
-                        //    dataField: "thanhTien", width: 200, dataType: "number", alignment: "right", caption: "Thành tiền",
-                        //    format: { type: "currency", currency: "VND" },
-                        //    calculateCellValue: function (data) {
-                        //        return (data.khoiLuong != null || data.donGia != null) ? (data.khoiLuong * data.donGia) : 0;
-                        //    }
-                        //},
+                            caption: "Đợt này", alignment: "center",
+                            columns: [
+                                {
+                                    dataField: "khoiLuongDotNay", dataType: "number",
+                                    width: 200, alignment: "center",
+                                    caption: "Khối lượng",
+                                    cellTemplate: (cellElement, cellInfo) => {
+                                        return $("<div>").dxNumberBox({
+                                            elementAttr: {
+                                                id: "khoiLuongDotNay_" + cellInfo.key
+                                            },
+                                            value: cellInfo.value,
+                                            showSpinButtons: true,
+                                            placeholder: "Vui lòng nhập ...",
+                                            stylingMode: "filled",
+                                            onValueChanged: function (e) {
+                                                var value = e.value;
+                                                var id = cellInfo.key;
+                                                if (value.index)
+                                                    e.component.option('value', 500);
+                                                console.log(e);
+                                            },
+                                        }).dxValidator({
+                                            validationRules: [{
+                                                type: "async",
+                                                validationCallback: function (params) {
+                                                    return sendRequest(params, cellInfo);
+                                                }
+                                            }]
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "TyLeDotNay", dataType: "number", caption: "Tỷ lệ",
+                                    width: 200, alignment: "center",
+                                    cellTemplate: (c, o) => {
+                                        return $("<div>").dxNumberBox({
+                                            elementAttr: {
+                                                id: "phanTramDotNay_" + o.key
+                                            },
+                                            value: o.value,
+                                            showSpinButtons: true, showClearButton: false,
+                                            stylingMode: "filled",
+                                            placeholder: "Vui lòng nhập ...",
+                                            format: "#0%",
+                                            min: 0, max: 1, step:0.1,
+                                            onValueChanged: function (e) {
+                                                var value = e.value;
+                                                //var id = o.key;
+                                                //if (value.index)
+                                                //    e.component.option('value', 500);
+                                                var data = ((o.data.khoiLuong * value));
+                                                console.log(value);
+                                                $("#khoiLuongDotNay_" + o.key).dxNumberBox('instance').option("value", data);
+                                            },
+                                        });
+                                    }
+                                },
+                            ]
+                        },                        
                     ],
                     selection: {
                         mode: "multiple",
@@ -410,37 +432,40 @@
                                     text: "LỰA CHỌN", icon: "check",
                                     disabled: true,
                                     onClick: function () {
-                                        var flag = false;
+                                        var flag = true;
                                         $.each(e.component.getSelectedRowKeys(), function (index, value) {
-                                            var item = $("#phanTramDotNay_" + value).dxNumberBox('instance');
-                                            flag = (item.option('value') != null);
+                                            var item = $("#khoiLuongDotNay_" + value).dxNumberBox('instance');
+                                            console.log(item.option('value') );
+                                            if ((item.option('value') == null || item.option('value') <= 0)) {
+                                                flag = false;
+                                                return flag;
+                                            }
                                         });
-                                        if (!flag) DevExpress.ui.notify("Vui lòng nhập đầu đủ khối lượng đợt này", "error", 3000);
+                                        if (!flag) DevExpress.ui.notify("Vui lòng nhập đầy đủ khối lượng đợt này cho các công việc đã chọn", "error", 3000);
                                         else {
+                                            var dotTT = $("#txtDotThanhToan").dxNumberBox('instance').option('value')
+                                            if (dotTT != null && dotTT > MAXDOT) {
+                                                let d = $.Deferred();
+                                                $.each(e.component.getSelectedRowKeys(), function (index, value) {
+                                                    var item = $("#khoiLuongDotNay_" + value).dxNumberBox('instance');
 
-                                        var dotTT = $("#txtDotThanhToan").dxNumberBox('instance').option('value')
-                                        if (dotTT != null && dotTT > MAXDOT) {
-                                            let d = $.Deferred();
-                                            $.each(e.component.getSelectedRowKeys(), function (index, value) {
-                                                var item = $("#phanTramDotNay_" + value).dxNumberBox('instance');
-                                                    customStore_NghiemThu().insert(
-                                                        {
-                                                            congViecDetailId: value,
-                                                            goiThauId: idGoiThau,
-                                                            giaiDoanId: idGiaiDoan,
-                                                            dot: dotTT,
-                                                            khoiLuong: item.option('value'),
-                                                            isActive: true,
-                                                            isVisible: true,
-                                                            status: 0
-                                                        }
-                                                    ).then(() => { d.resolve() }, d.reject);
-                                            });
-                                            $("#popup-main").dxPopup('instance').hide();
-                                            return d.promise();
-                                        }
-                                        else DevExpress.ui.notify("Vui lòng chọn đợt nghiệm thu (Lớn hơn đợt hiện tại: " + MAXDOT + ")", "error", 3000);
-
+                                                    //customStore_NghiemThu().insert(
+                                                    //    {
+                                                    //        congViecDetailId: value,
+                                                    //        goiThauId: idGoiThau,
+                                                    //        giaiDoanId: idGiaiDoan,
+                                                    //        dot: dotTT,
+                                                    //        khoiLuong: item.option('value'),
+                                                    //        isActive: true,
+                                                    //        isVisible: true,
+                                                    //        status: 0
+                                                    //    }
+                                                    //).then(() => { d.resolve() }, d.reject);
+                                                });
+                                                $("#popup-main").dxPopup('instance').hide();
+                                                return d.promise();
+                                            }
+                                            else DevExpress.ui.notify("Vui lòng chọn đợt nghiệm thu (Lớn hơn đợt hiện tại: " + MAXDOT + ")", "error", 3000);
                                         }
                                     }
                                 }

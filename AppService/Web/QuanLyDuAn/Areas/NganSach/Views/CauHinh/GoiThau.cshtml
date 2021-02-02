@@ -63,6 +63,9 @@
                 });
                 return deferred.promise();
             },
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONTRACTORINFO, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CONTRACTORINFO, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONTRACTORINFO, key),
         });
 
         $(function () {
@@ -116,7 +119,7 @@
                     validationRules: [{ type: "required" }]
                 },//contractorInfoId
                 {
-                    dataField: "contractorInfoId", caption: "Nhà thầu", width: 250, alignment: "left",
+                    dataField: "contractorInfoId", caption: "Nhà thầu", alignment: "left", width: $("#container").width() < 1450 ? 250 : null,
                     lookup: {
                         dataSource: customStore_ContractorInfo,
                         valueExpr: "id", displayExpr: "name",
@@ -130,6 +133,73 @@
                         itemTemplate: function (data) {
                             return $("<div>").append($("<b>").append(data.name).addClass("mr-1"), $("<em>").append(data.descriptions));
                         },
+                        buttons: [
+                            'dropDown',
+                            {
+                                name: 'buttonOpenCreateNhaThau',
+                                location: 'after',
+                                options: {
+                                    icon: "preferences", stylingMode: "contained",
+                                    onClick: () => $("#popup-main").dxPopup({
+                                        fullScreen: true,
+                                        position: { of: window },
+                                        dragEnabled: true, resizeEnabled: false, showCloseButton: true, closeOnOutsideClick: false,
+                                        showTitle: true, title: "Quản lý danh sách nhà thầu", visible: true,
+                                        contentTemplate: (c) => {
+                                            var scrollView = $("<div id='scrollView'></div>");
+                                            var content = $("<div/>");
+                                            content.dxDataGrid({
+                                                dataSource: customStore_ContractorInfo,
+                                                showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                                                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                                                columns: [ 
+                                                    {
+                                                        dataField: "name", caption: "Tên nhà thầu",
+                                                        dataType: "string", cssClass:"font-weight-bold",
+                                                        validationRules: [{ type: "required" }]
+                                                    },
+                                                    {
+                                                        dataField: "code", dataType: "string", alignment: "center",
+                                                        validationRules: [{ type: "required" }]
+                                                    },
+                                                    {
+                                                        dataField: "descriptions", caption: "Thông tin khác",
+                                                        dataType: "string",
+                                                    },
+                                                    "businessAreas", "country", "city", "district", "address", "phone", "email",
+                                                    {
+                                                        dataField: "isActive", width: 100,
+                                                        editorType: "dxSwitch", dataType: "boolean",
+                                                        allowExporting: false,
+                                                    },
+
+                                                ],
+                                                editing: {
+                                                    allowAdding: PermitInAction.insert,
+                                                    allowUpdating: PermitInAction.update,
+                                                    allowDeleting: PermitInAction.delete,
+                                                    mode: "row", useIcons: false, confirmDelete: true
+                                                },
+                                                onInitNewRow: (e) => {
+                                                    e.data.isActive = true;
+                                                    e.data.status = 1;
+                                                },
+                                            });
+                                            scrollView.append(content);
+                                            scrollView.dxScrollView({
+                                                width: '100%',
+                                                height: '100%'
+                                            });
+                                            c.append(scrollView);
+                                            return c;
+                                        }
+                                    }).dxPopup("instance")
+                                }
+                            }
+                        ],
+                    },
+                    onOpened: function (e) {
+                        e.element.dxSelectBox("getDataSource").reload();
                     },
                     validationRules: [{ type: "required" }]
                 },//contractorInfoId
@@ -157,68 +227,58 @@
                     },
                 },//dienGiai
                 {
-                    caption: "Tỷ lệ (%)", alignment: "center",
-                    columns: [
-                        {
-                            dataField: "tyLeTamUng", caption: "Tạm ứng", dataType: "number",
-                            alignment: "center", width: 100,
-                            editorType: "dxNumberBox",
-                            editorOptions: {
-                                placeholder: "Vui lòng nhập...",
-                                min: 0, max: 100
-                            }, validationRules: [{ type: "required" }]
-                        },//tyLeTamUng
-                        {
-                            dataField: "tyLeGiuLai", caption: "Giữ lại", dataType: "number",
-                            alignment: "center", width: 100,
-                            editorType: "dxNumberBox",
-                            editorOptions: {
-                                placeholder: "Vui lòng nhập...",
-                                min: 0, max: 100
-                            }, validationRules: [{ type: "required" }]
-                        },//tyLeGiuLai
-                        {
-                            dataField: "tyLeThanhToanToiDa", caption: "TT tối da", dataType: "number",
-                            alignment: "center", width: 100,
-                            editorType: "dxNumberBox",
-                            editorOptions: {
-                                placeholder: "Vui lòng nhập...",
-                                min: 0, max: 100
-                            }, validationRules: [{ type: "required" }]
-                        },//tyLeThanhToanToiDa
-                    ]
-                },
+                    dataField: "tyLeTamUng", caption: "Tỷ lệ tạm ứng", dataType: "number",
+                    alignment: "center", width: 100,
+                    editorType: "dxNumberBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        min: 0, max: 100
+                    }, validationRules: [{ type: "required" }]
+                },//tyLeTamUng
+                //{
+                //    dataField: "tyLeGiuLai", caption: "Giữ lại", dataType: "number",
+                //    alignment: "center", width: 100,
+                //    editorType: "dxNumberBox",
+                //    editorOptions: {
+                //        placeholder: "Vui lòng nhập...",
+                //        min: 0, max: 100
+                //    }, validationRules: [{ type: "required" }]
+                //},//tyLeGiuLai
                 {
-                    caption: "Thời gian (Tháng)", alignment: "center",
-                    columns: [
-                        {
-                            dataField: "thoiGianBaoHanh", caption: "Bảo hành", dataType: "number",
-                            alignment: "center", width: 100,
-                            editorOptions: {
-                                format: "#0 tháng",
-                                placeholder: "Vui lòng nhập...",
-                                min: 0, max: 120
-                            }
-                        },//thoiGianBaoHanh
-                        {
-                            dataField: "thoiGianGiuBaoHanh", caption: "Giữ bảo hành", dataType: "number",
-                            alignment: "center", width: 120,
-                            editorOptions: {
-                                format: "#0 tháng",
-                                placeholder: "Vui lòng nhập...",
-                                min: 0, max: 120
-                            }
-                        },//thoiGianGiuBaoHanh
-                    ]
-                },
+                    dataField: "tyLeThanhToanToiDa", caption: "Tỷ lệ thanh toán tối da", dataType: "number",
+                    alignment: "center", width: 100,
+                    editorType: "dxNumberBox",
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        min: 0, max: 100
+                    }, validationRules: [{ type: "required" }]
+                },//tyLeThanhToanToiDa
+                {
+                    dataField: "thoiGianGiuBaoHanh", caption: "Tỷ lệ giữ bảo hành", dataType: "number",
+                    alignment: "center", width: 120,
+                    editorOptions: {
+                        placeholder: "Vui lòng nhập...",
+                        min: 0, max: 100
+                    }
+                },//thoiGianGiuBaoHanh
 
                 {
-                    dataField: "isActive", width: 100, alignment: "center",
-                    editorType: "dxSwitch",
+                    dataField: "thoiGianBaoHanh", caption: "Thời gian bảo hành", dataType: "number", alignment: "center", width: 100,
+                    editorOptions: {
+                        format: "#0 tháng",
+                        placeholder: "Vui lòng nhập...",
+                        min: 0, max: 12
+                    }
+                },//thoiGianBaoHanh
+                {
+                    dataField: "isActive", width: 100, alignment: "center", caption: "Tình trạng",
+                    editorType: "dxSwitch", 
+                    cellTemplate: (c, o) => {
+                        $('<span/>').append(o.value ? "Hoạt động" : "Tạm dừng").addClass(o.value ? "badge bg-success" : "badge bg-danger").appendTo(c);
+                    }
                 },
                 {
-                    caption: "Tương tác",
-                    alignment: "center", width: 100,
+                    caption: "Tương tác", alignment: "center", width: 100,
                     cellTemplate: (c, o) => {
                         if (o.data.createBy_Name != null) {
                             $("<div />").attr('id', "popover-target-" + o.key).append(
@@ -242,8 +302,7 @@
                     }
                 },//nguoiTao
                 {
-                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                    caption: "Thời gian tạo",
+                    dataField: "createDate", width: 150, dataType: "date", alignment: "center", caption: "Thời gian tạo",
                     cellTemplate: (c, o) => {
                         if (o.value != null) {
                             $("<div />").append(
@@ -295,17 +354,18 @@
                         {
                             colSpan: 4, dataField: "tyLeTamUng", label: { text: "Tỷ lệ tạm ứng", },
                         },
+
                         {
-                            colSpan: 4, dataField: "tyLeGiuLai", label: { text: "Tỷ lệ giữ lại" },
+                            colSpan: 4, dataField: "thoiGianGiuBaoHanh",
                         },
+                        //{
+                        //    colSpan: 4, dataField: "tyLeGiuLai", label: { text: "Tỷ lệ giữ lại" },
+                        //},
                         {
                             colSpan: 4, dataField: "tyLeThanhToanToiDa", label: { text: "Tỷ lệ thanh toán tối đa" },
                         },
                         {
                             colSpan: 4, dataField: "thoiGianBaoHanh",
-                        },
-                        {
-                            colSpan: 4, dataField: "thoiGianGiuBaoHanh",
                         },
                         {
                             colSpan: 4, dataField: "isActive",
