@@ -26,9 +26,9 @@
                     url: URL_API_PM_READ + ACTION_NGHIEMTHU,
                     success: (data) => {
                         var list = data.result.items;
-                        MAXDOT = list.length > 0 ? Math.max.apply(Math, list.map(function (o) { return o.dot; })) : 0;
 
                         if (dotTT == null) {
+                            MAXDOT = list.length > 0 ? Math.max.apply(Math, list.map(function (o) { return o.dot; })) : 0;
                             deferred.resolve(list.filter(x => x.dot == MAXDOT), {
                                 totalCount: list.filter(x => x.dot == MAXDOT).length
                             });
@@ -156,7 +156,7 @@
             loadData();
         });
         var loadData = () => $("#container").dxDataGrid({
-            dataSource: customStore_NghiemThu(),
+            dataSource: customStore_NghiemThu(), height: heightScreen,
             onToolbarPreparing: function (e) {
                 var container = e.component;
                 e.toolbarOptions.items.unshift(
@@ -227,6 +227,12 @@
                         options: {
                             elementAttr: { id: "sel_filter_dot" },
                             width: "auto", stylingMode: "filled", showClearButton: true,
+                            value: MAXDOT,
+                            onValueChanged: function (data) {
+                                if (data.value != null) dotTT = data.value;
+                                else dotTT = MAXDOT;
+                                container.refresh();
+                            },
                         },
                     },
                     {
@@ -252,23 +258,36 @@
             },
             columns: [
                 {
-                    dataField: "congViecDetailId",
+                    dataField: "congViecDetailId", caption:"Tên công việc",
                     lookup: {
                         dataSource: customStore_CongViec(),
                         valueExpr: "id", displayExpr: "tenCongViec",
                     },
                 },
                 {
+                    caption: "Đơn vị tính", alignment: "center",
+                    cellTemplate: (c, o) => {
+                        c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donViTinh)
+                    }
+                },
+                {
+                    caption: "Đơn giá", alignment:"right",
                     cellTemplate: (c, o) => {
                         c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia)
                     }
                 },
                 {
                     dataField: "dot",
-                    groupIndex: 0, caption:"Nghiệm thu đợt"
+                    groupIndex: 1, caption:"Nghiệm thu đợt"
                 },
                 {
-                    dataField: "khoiLuong"
+                    dataField: "khoiLuong", caption: "Khối lượng", alignment: "center",
+                },
+                {
+                    dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
+                    cellTemplate: (c, o) => {
+                        c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia * o.data.khoiLuong)
+                    }
                 }
             ]
         });
@@ -348,27 +367,18 @@
                                     dataField: "khoiLuongDotNay", dataType: "number",
                                     width: 200, alignment: "center",
                                     caption: "Khối lượng",
-                                    cellTemplate: (cellElement, cellInfo) => {
+                                    cellTemplate: (c, o) => {
                                         return $("<div>").dxNumberBox({
-                                            elementAttr: {
-                                                id: "khoiLuongDotNay_" + cellInfo.key
-                                            },
-                                            value: cellInfo.value,
+                                            elementAttr: { id: "khoiLuongDotNay_" + o.key },
+                                            value: o.value,
                                             showSpinButtons: true,
                                             placeholder: "Vui lòng nhập ...",
-                                            stylingMode: "filled",
-                                            onValueChanged: function (e) {
-                                                var value = e.value;
-                                                var id = cellInfo.key;
-                                                if (value.index)
-                                                    e.component.option('value', 500);
-                                                console.log(e);
-                                            },
+                                            stylingMode: "filled", 
                                         }).dxValidator({
                                             validationRules: [{
                                                 type: "async",
                                                 validationCallback: function (params) {
-                                                    return sendRequest(params, cellInfo);
+                                                    return sendRequest(params, o);
                                                 }
                                             }]
                                         });
@@ -389,12 +399,8 @@
                                             format: "#0%",
                                             min: 0, max: 1, step:0.1,
                                             onValueChanged: function (e) {
-                                                var value = e.value;
-                                                //var id = o.key;
-                                                //if (value.index)
-                                                //    e.component.option('value', 500);
-                                                var data = ((o.data.khoiLuong * value));
-                                                console.log(value);
+                                                var value = e.value; 
+                                                var data = ((o.data.khoiLuong * value)); 
                                                 $("#khoiLuongDotNay_" + o.key).dxNumberBox('instance').option("value", data);
                                             },
                                         });
@@ -434,8 +440,7 @@
                                     onClick: function () {
                                         var flag = true;
                                         $.each(e.component.getSelectedRowKeys(), function (index, value) {
-                                            var item = $("#khoiLuongDotNay_" + value).dxNumberBox('instance');
-                                            console.log(item.option('value') );
+                                            var item = $("#khoiLuongDotNay_" + value).dxNumberBox('instance'); 
                                             if ((item.option('value') == null || item.option('value') <= 0)) {
                                                 flag = false;
                                                 return flag;
@@ -449,18 +454,18 @@
                                                 $.each(e.component.getSelectedRowKeys(), function (index, value) {
                                                     var item = $("#khoiLuongDotNay_" + value).dxNumberBox('instance');
 
-                                                    //customStore_NghiemThu().insert(
-                                                    //    {
-                                                    //        congViecDetailId: value,
-                                                    //        goiThauId: idGoiThau,
-                                                    //        giaiDoanId: idGiaiDoan,
-                                                    //        dot: dotTT,
-                                                    //        khoiLuong: item.option('value'),
-                                                    //        isActive: true,
-                                                    //        isVisible: true,
-                                                    //        status: 0
-                                                    //    }
-                                                    //).then(() => { d.resolve() }, d.reject);
+                                                    customStore_NghiemThu().insert(
+                                                        {
+                                                            congViecDetailId: value,
+                                                            goiThauId: idGoiThau,
+                                                            giaiDoanId: idGiaiDoan,
+                                                            dot: MAXDOT,
+                                                            khoiLuong: item.option('value'),
+                                                            isActive: true,
+                                                            isVisible: true,
+                                                            status: 0
+                                                        }
+                                                    ).then(() => { d.resolve() }, d.reject);
                                                 });
                                                 $("#popup-main").dxPopup('instance').hide();
                                                 return d.promise();
