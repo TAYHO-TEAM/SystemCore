@@ -5,6 +5,7 @@
 }
 <div id="popup-main-upload"></div>
 <div id="popup-register"></div>
+<div id="popup-main"></div>
 @*<div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div id="container" class="elevation-2 col-lg-8 col-md-8 col-sm-12 col-xs-12"></div>
@@ -27,22 +28,24 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/PlanMaster";
+        const ACTION = "/PlanMaster/GetWithAccount";
         const ACTION_DETAIL = "/PlanJob";
         const ACTION_SCHEDULE = "/PlanSchedule";
         const ACTION_ACCOUNTINFO = "/AccountInfo";
         const ACTION_GROUPS = "/Groups";
-        const ACTION_PLANJOB_ACCOUNT = "/PlanAccount";
+        const ACTION_PLAN_ACCOUNT = "/PlanAccount";
+        const ACTION_FILEGET = "/FilesAttachment/getBy";
+        const ACTION_CONVERSATION = "/Conversation";
 
 
         //--------------------CMD------------------------------
         const ACTION_CMD = "/PlanMaster";
         const ACTION_CMD_DETAIL = "/PlanJob";
         const ACTION_CMD_SCHEDULE = "/PlanSchedule";
-        const ACTION_CMD_PLANJOB_ACCOUNT = "/PlanAccount";
+        const ACTION_CMD_PLAN_ACCOUNT = "/PlanAccount";
+        const ACTION_CMD_CONVERSATION = "/Conversation";
 
-
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+      
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -86,11 +89,51 @@
                 return deferred.promise();
             },
         });
+        let customStore_File = (table, item) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                var deferred = $.Deferred();
+                var params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    'FindParentId': table,
+                    'FindId': item.id,
+                }
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+                $.ajax({
+                    headers: header, dataType: "json",
+                    data: params,
+                    url: URL_API_PM_READ + ACTION_FILEGET,
+                    success: function (data) {
+                        var list = data.result.items;
+                        deferred.resolve(
+                            list,
+                            {
+                                totalCount: list.length,
+                            }
+                        );
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
 
-        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+        });
+
+        let customStore = customStore_CMD_READ_WITHGROUPOWNERID(ACTION_CMD, ACTION);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
-        let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLANJOB_ACCOUNT, ACTION_PLANJOB_ACCOUNT, 'ownerById,' + id,'PlanJob');
+        let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');
+        //let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanMaster');
+        let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, "ownerById," + id+ ";OwnerTable,'PlanMaster'");
+        let customStore_CONVERSATION = (id)=> customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_CONVERSATION, ACTION_CONVERSATION, 'topicId,' + id, 'PlanMaster');
 
         $(function () {
             loadData();
@@ -118,23 +161,110 @@
                 columns: [
                     {
                         dataField: "code",
-                        caption: "Mã văn bản",
+                        width: "10%",
+                        caption: "Mã",
                         dataType: "string",
                     },
                     {
                         dataField: "title",
+                        width:"50%",
                         caption: "Tên kế hoạch CV",
                         dataType: "string",
+                        validationRules: [{ type: "required" }],
                     },
                     {
                         dataField: "importantLevel",
                         caption: "Mức độ quan trọng",
                         dataType: "number",
+                        lookup: {
+                            dataSource: important,
+                            valueExpr: "ID",
+                            displayExpr: "Name",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            value: "importantLevel",
+                            dataSource: important,
+                            valueExpr: "ID", displayExpr: "Name",
+                        },
                     },
                     {
                         dataField: "priority",
                         caption: "Mức độ ưu tiên",
                         dataType: "number",
+
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "description",
+                        label: { text: "Mô tả CV" },
+                        editorType: "dxTextArea",
+                        visible: false,
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "note",
+                        label: { text: "Lưu ý" },
+                        editorType: "dxTextArea",
+                        visible: false,
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "startDate",
+                        label: { text: "Ngày bắt đầu" },
+                        visible: false,
+                        editorType: "dxDateBox",
+                        editorOptions: {
+                            pickerType: "rollers",
+                            type: "datetime",
+                        },
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "endDate",
+                        visible: false,
+                        label: { text: "Ngày hoàn thành" },
+                        editorType: "dxDateBox",
+                        editorOptions: {
+                            pickerType: "rollers",
+                            type: "datetime",
+                        },
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "amount",
+                        visible: false,
+                        label: { text: "Khối lượng" },
+                    },
+                    {
+                        colSpan: 6,
+                        dataField: "unit",
+                        visible: false,
+                        label: { text: "Đơn vị" },
+                        lookup: {
+                            dataSource: unit,
+                            valueExpr: "ID",
+                            displayExpr: "Name",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            value: "unit",
+                            dataSource: unit,
+                            valueExpr: "ID", displayExpr: "Name",
+                        },
+                    },
+                    {
+                        dataField: "createBy",
+                        width: "20%",
+                        caption: "Người tạo",
+                        dataType: "number",
+                        lookup: {
+                            dataSource: customStore_AccountInfo,
+                            valueExpr: "accountId", displayExpr: "userName",
+                        },
+                        editorOptions: {
+                            readOnly: true,
+                        }
                     },
                 ],
                 editing: {
@@ -160,19 +290,36 @@
                         requiredMark: "(*)",
                         items: [
                             {
+                                colSpan: 2,
+                                dataField: "code",
+                                label: { text: "Mã kế hoạch cv" },
+                            },
+                            {
                                 colSpan: 4,
                                 dataField: "title",
                                 label: { text: "Kế hoạch CV" },
                             },
                             {
-                                colSpan: 4,
-                                dataField: "code",
-                                label: { text: "Mã CV" },
+                                colSpan: 3,
+                                dataField: "priority",
+                                label: { text: "Ưu tiên" },
                             },
                             {
-                                colSpan: 4,
-                                dataField: "priority",
-                                label: { text: "Độ ưu tiên" },
+                                colSpan: 3,
+                                dataField: "importantLevel",
+                                caption: "Quan trọng",
+                                dataType: "number",
+                                lookup: {
+                                    dataSource: important,
+                                    valueExpr: "ID",
+                                    displayExpr: "Name",
+                                },
+                                editorType: "dxSelectBox",
+                                editorOptions: {
+                                    value: "importantLevel",
+                                    dataSource: important,
+                                    valueExpr: "ID", displayExpr: "Name",
+                                },
                             },
                             {
                                 colSpan: 6,
@@ -238,6 +385,26 @@
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
                         {
+                            location: "before",
+                            widget: "dxSelectBox",
+                            options: {
+                                dataSource: groupOwner,
+                                valueExpr: "ID",
+                                displayExpr: "Name",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: GROUPOWNERID,
+                                onValueChanged: function (data) {
+                                    console.log(data.value);
+                                    GROUPOWNERID = data.value;
+                                    localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
+                        {
                             location: "after",
                             widget: "dxButton",
                             options: {
@@ -282,11 +449,19 @@
                     mode: "single"
                 },
                 onContentReady: (e) => {
+                    var container = e.component;
                     $("#action-add").dxSpeedDialAction({
                         index: 1, icon: "fas fa-plus",
                         label: "Thêm mới",
                         visible: !PermitInAction["insert"],
-                        onClick: () => e.component.addRow()
+                        onClick: () => {
+                            CALLPOPUP(
+                                "Tạo kế hoạch công việc",
+                                "/ThongTin/QLCongViec/_CongViecDetail",
+                                ($(window).width() > 767 ? "50%" : "80%"),
+                                container
+                            );
+                        }
                     }).dxSpeedDialAction("instance");
 
                     DevExpress.config({
@@ -313,6 +488,8 @@
                     e.component.refresh();
                     loadData_detail(selectedRowData.id);
                     //loadData_schedule(selectedRowData.id);
+                    loadAttach(selectedRowData);
+                    loadComversation(selectedRowData.id);
                     if (selectedRowData != null && selectedRowKey != null) {
                         var data = e.component.getRowIndexByKey(selectedRowKey);
                         $("#action-update").dxSpeedDialAction({
@@ -340,9 +517,9 @@
                             }
                         }).dxSpeedDialAction("instance");
                         $("#action-log").dxSpeedDialAction({
-                            index: 4, icon: "fas fa-user", label: "Thêm người nhận",
+                            index: 4, icon: "fas fa-user", label: "Thêm người thực hiện",
                             onClick: () => {
-
+                                loadAccountPlanMaster(selectedRowData);
                             }
                         }).dxSpeedDialAction("instance");
                     }
@@ -377,8 +554,9 @@
                     },
                     {
                         dataField: "title",
-                        caption: "Tên kế hoạch CV",
+                        caption: "Bước thực hiện",
                         dataType: "string",
+                        validationRules: [{ type: "required" }],
                     },
                     {
                         type: "buttons", caption: "Tác vụ",
@@ -434,6 +612,7 @@
                     e.data.isActive = true;
                     e.data.isVisible = true;
                     e.data.planMasterId = id;
+                    e.data.isDone = false;
                     //e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
@@ -484,6 +663,484 @@
         //        ],
         //    });
         //}
+        let loadAttach = (item) => {
+            $("#container_attachment").dxDataGrid({
+                height: heightScreen / 8,
+                dataSource: customStore_READDATASOURCE(item),
+                repaintChangesOnly: true,
+                remoteOperations: {
+                    filtering: true,
+                    sorting: true,
+                    grouping: false
+                },
+                scrolling: { mode: "standard" },
+                showBorders: false,
+                showColumnHeaders: true,
+                showColumnLines: false,
+                hoverStateEnabled: true,
+                showRowLines: false,
+                columnAutoWidth: true,
+                wordWrapEnabled: true,
+                rowAlternationEnabled: false,
+                columns: [{
+                    dataField: "noAttachment",
+                    caption: "File đính kèm",
+                    dataType: "number",
+                    alignment: "left",
+                    cellTemplate: (container, options) => {
+                        container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " file(s)" : "chưa có file"));
+                    },
+                },],
+                onCellClick: function (e) {
+                    if (e.column.dataField === "noAttachment") {
+                        loadUpload("PlanMaster", e.row.data, false);
+                    }
+                },
+            });
+        };
+        let loadComversation = (id) => {
+            $("#container_conversation").dxDataGrid({
+                title:"Hội thoại",
+                height: (heightScreen / 8)*3,
+                dataSource: customStore_CONVERSATION(id),
+                repaintChangesOnly: true,
+                remoteOperations: {
+                    filtering: true,
+                    sorting: true,
+                    grouping: false
+                },
+                scrolling: { mode: "standard" },
+                showBorders: false,
+                showColumnHeaders: true,
+                showColumnLines: false,
+                hoverStateEnabled: true,
+                showRowLines: true,
+                columnAutoWidth: true,
+                wordWrapEnabled: true,
+                rowAlternationEnabled: false,
+                columns: [
+                    {
+                        colSpan:8,
+                        dataField: "content",
+                        caption: "Phản hồi",
+                        dataType: "string",
+                        width: "70%",
+                    },
+                    {
+                        colSpan: 4,
+                        dataField: "createBy",
+                        caption: "Người phản hồi",
+                        dataType: "string",
+                        width:"30%",
+                        lookup: {
+                            dataSource: customStore_AccountInfo,
+                            valueExpr: "accountId", displayExpr: "userName",
+                        },
+                        editorOptions: {
+                            readOnly: true,
+                        }
+                    }
+                ],
+                paging: {
+                    enabled: true,
+                    pageSize: 20
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 20, 40],
+                    showInfo: true,
+                },
+                //searchPanel: {
+                //    highlightCaseSensitive: true,
+                //    highlightSearchText: true,
+                //    searchVisibleColumnsOnly: true,
+                //    visible: WIDTH_CONTAINER > 350
+                //},
+                editing: {
+                    allowAdding: true,
+                    allowUpdating: false,
+                    allowDeleting: false,
+                    mode: "cell",
+                    useIcons: false,
+                    confirmDelete: true,
+                },
+                onToolbarPreparing: function (e) {
+                    //e.toolbarOptions.items.unshift(
+                    //    {
+                    //        text: "Phản hồi",
+                    //        location: "before",
+                    //    },
+                    //)
+                },
+                onInitNewRow: (e) => {
+                    e.data.isActive = true;
+                    e.data.isVisible = true;
+                    e.data.TopicId = id;
+                    e.data.OwnerTable = 'PlanMaster';
+                    //e.data.ProjectId = PROJECTID;
+                },
+                onCellPrepared: (e) => {
+                    if (e.rowType == "data" && e.columnIndex == 1)
+                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
+                },
+                onRowClick: function (e) {
+
+
+                },
+                onRowDblClick: function (e) {
+                    var container = e.component;
+                    //CALLPOPUP(
+                    //    "Tạo văn bản theo mẫu:",
+                    //    "/ThongTin/VanBanMau/_VanBanChiTiet/" + e.data.id,
+                    //    ($(window).width() > 767 ? "50%" : "80%"),
+                    //    container
+                    //);
+                },
+            });
+        };
+
+
+        let loadUpload = (table, item, isUpload) => $("#popup-main-upload").dxPopup({
+            width: "70%",
+            height: "50%",
+            fullScreen: false,
+            dragEnabled: true,
+            resizeEnabled: true,
+            showTitle: true,
+            title: item.title && item.title.toUpperCase(),
+            showCloseButton: true, closeOnOutsideClick: true,
+            visible: true,
+            //elementAttr: {
+            //    class: "popup-priority-2",
+            //},
+            contentTemplate: (c) => {
+                var scrollView = $("<div id='scrollView'></div>");
+                var content = $("<div/>");
+                var content_Upload = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form").append('<div id = "fileuploader-container" ><div id="file-uploader"></div></div ><div id="button"></div>');
+                content.dxDataGrid({
+                    dataSource: customStore_File(table, item),
+                    remoteOperations: {
+                        paging: true,
+                        sorting: true,
+                    },
+                    repaintChangesOnly: true,
+                    showBorders: true,
+                    showColumnHeaders: true,
+                    showColumnLines: false,
+                    hoverStateEnabled: true,
+                    showRowLines: true,
+                    columnAutoWidth: true,
+                    wordWrapEnabled: true,
+                    wordWrapEnabled: true,
+                    rowAlternationEnabled: true,
+                    paging: {
+                        enabled: true,
+                        pageSize: 20
+                    },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [10, 20, 40],
+                        showInfo: true,
+
+                    },
+                    columns: [
+                        {
+                            caption: "STT", alignment: "center",
+                            cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
+                            width: '10%',
+                        },
+                        {
+                            dataField: "fileName",
+                            caption: "Tên file",
+                            dataType: "string",
+                            width: '50%',
+                        },//rev
+                        {
+                            caption: "File",
+                            dataType: "string",
+                            cellTemplate: (c, o) => {
+                                var x = (o.data.host + "\\" + o.data.url + "\\" + o.data.fileName).replaceAll('/', '\\');
+                                if (!x.includes('null'))
+                                    if (['.png', '.jpg', '.jpge'].includes(o.data.tail.toLowerCase(x))) {
+
+                                        $("<a/>").append($("<img/>").attr("src", x).attr("style", "max-width :150px;").attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")).appendTo(c);
+                                    }
+                                    else if (['.pdf'].includes(o.data.tail.toLowerCase(x))) {
+                                        $("<a/>").attr("href", x).addClass("far fa-file-pdf").appendTo(c);
+                                    }
+                                    else {
+                                    }
+                            },
+                        }, //url
+                    ],
+                    editing: {
+                        mode: "batch",
+                        allowAdding: false,
+                        allowDeleting: false,
+                        allowUpdating: false,
+                    },
+                    onToolbarPreparing: (e) => {
+                        var container = e.component;
+                        e.toolbarOptions.items.unshift(
+                            {
+                                location: "after", widget: "dxButton",
+                                options: {
+                                    icon: "refresh", type: "default",
+                                    onClick: () => container.refresh()
+                                }
+                            })
+                    },
+                });
+                scrollView.append(content, content_Upload);
+                scrollView.dxScrollView({
+                    width: '100%',
+                    height: '100%'
+                });
+                $(function () {
+                    if (isUpload) {
+                        //$("#form").append("OwnerById",1);
+                        $("#file-uploader").dxFileUploader({
+                            selectButtonText: "Select photo",
+                            multiple: true,
+                            //labelText: "",
+                            accept: "*",
+                            uploadMode: "useForm",
+                        });
+
+                        $("#button").dxButton({
+                            text: "Update profile",
+                            type: "success",
+                            onClick: function () {
+                                var fd = $("#form")[0];
+                                var formData = new FormData(fd);
+                                formData.append("OwnerById", item.id);
+                                if ('code' in item) {
+                                    formData.append("Code", item.code);
+                                }
+                                else {
+                                    formData.append("Code", item.title);
+                                }
+                                formData.append("OwnerByTable", table);
+                                $.ajax({
+                                    url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',
+                                    type: 'POST',
+                                    data: formData,
+                                    success: function (data) {
+                                        $('.dx-fileuploader-file-status-message').empty();
+                                        $('.dx-fileuploader-file-status-message').html('Đã up thành công!');
+                                    },
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                });
+                            }
+                        });
+                    }
+
+                });
+                c.append(scrollView);
+                return c;
+            },
+            //onHidden: (c) => {
+            //    $("#dxDataGrid_detail").dxDataGrid('instance').refresh();
+            //},
+        }).addClass("popup-priority-2");
+
+        let loadAccountPlanMaster = (item) => $("#popup-main-upload").dxPopup({
+            width: "50%",
+            height: "50%",
+            fullScreen: false,
+            dragEnabled: true,
+            resizeEnabled: true,
+            showTitle: true,
+            title: 'Thêm người thực hiện',
+            showCloseButton: true, closeOnOutsideClick: true,
+            visible: true,
+            contentTemplate: (c) => {
+                var scrollView = $("<div id='scrollView-detail'></div>");
+                var content = $("<div/>");
+                var d = $.Deferred();
+                content.dxDataGrid({
+                    elementAttr: {
+                        id: "dxDataGrid_detail"
+                    },
+                    dataSource: customStore_PLANMASTER_ACCOUNT(item.id),
+                    remoteOperations: {
+                        paging: true,
+                        sorting: true,
+                    },
+                    repaintChangesOnly: true,
+                    showBorders: true,
+                    showColumnHeaders: true,
+                    showColumnLines: false,
+                    hoverStateEnabled: true,
+                    showRowLines: true,
+                    columnAutoWidth: true,
+                    wordWrapEnabled: true,
+                    rowAlternationEnabled: true,
+                    paging: {
+                        enabled: true,
+                        pageSize: 20
+                    },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [10, 20, 40],
+                        showInfo: true,
+                    },
+                    columns: [
+                        {
+                            caption: "STT",
+                            alignment: "center",
+                            cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
+                        },
+                        {
+                            dataField: "accountId",
+                            caption: "Họ Tên",
+                            alignment: "center",
+                            //dataType: "number",
+                            lookup: {
+                                dataSource: customStore_AccountInfo,
+                                valueExpr: "accountId", displayExpr: "userName",
+                            },
+
+                        },//account
+                        {
+                            dataField: "groupId",
+                            caption: "Nhóm",
+                            alignment: "center",
+                            //dataType: "number",
+                            lookup: {
+                                dataSource: customStore_Groups,
+                                valueExpr: "id", displayExpr: "title",
+                            },
+
+                        },//nhóm
+                        //{
+                        //    colSpan: 12,
+                        //    dataField: "permissionId",
+                        //    caption: "Thực hiện",
+ 
+                        //},
+                    ],
+                    editing: {
+                        mode: "popup",
+                        allowAdding: true,
+                        allowDeleting: true,
+                        allowUpdating: false,
+                        popup: {
+                            width: 600, height: "auto",
+                            showTitle: true, title: "Trình duyệt",
+                            closeOnOutsideClick: false,
+                            showCloseButton: true,
+                        },
+                        form: {
+                            labelLocation: "left",
+                            itemType: "group",
+                            colCount: 12,
+                            showRequiredMark: true,
+                            requiredMark: "(*)",
+                            items: [
+                                {
+                                    colSpan: 12,
+                                    dataField: "groupId",
+                                    editorType: "dxSelectBox",
+                                    editorOptions: {
+                                        elementAttr: {
+                                            id: "groupIdSelect",
+                                        },
+                                        placeholder: "Vui lòng chọn...",
+                                        searchEnabled: true,
+                                        showClearButton: true,
+                                        itemTemplate: function (data) {
+                                            return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
+                                        },
+                                        validationRules: [{
+                                            type: "async",
+                                            message: "Đã có thông tin Nhóm",
+                                            validationCallback: function (params) {
+                                                var d = $.Deferred();
+                                                d.resolve(!(typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number'));
+                                                //$('#groupIdSelect').dxSelectBox('instance').option('value', null)
+                                                return d.promise();
+                                                /*sendRequest(params.value);*/
+                                            }
+                                        }]
+                                    },
+                                },
+                                {
+                                    colSpan: 12,
+                                    dataField: "accountId",
+                                    editorType: "dxSelectBox",
+                                    editorOptions: {
+                                        elementAttr: {
+                                            id: "accountIdSelect",
+                                        },
+                                        placeholder: "Vui lòng chọn...",
+                                        searchEnabled: true,
+                                        showClearButton: true,
+                                        itemTemplate: function (data) {
+                                            return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.accountName));
+                                        },
+                                    },
+                                    validationRules: [{
+                                        type: "async",
+                                        message: "Đã có thông tin Nhóm",
+                                        validationCallback: function (params) {
+                                            console.log(params);
+                                            var d = $.Deferred();
+                                            d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
+                                            return d.promise();
+                                        }
+                                    }]
+                                },
+                                //{
+                                //    colSpan: 12,
+                                //    dataField: "permissionId",
+                                //    lookup: {
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID",
+                                //        displayExpr: "Name",
+                                //    },
+                                //    editorType: "dxSelectBox",
+                                //    editorOptions: {
+                                //        value: "unit",
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID", displayExpr: "Name",
+                                //    },
+                                //    validationRules: [{ type: "required" }],
+                                //},
+                            ],
+                        },
+                    },
+                    onCellClick: function (e) {
+                        if (e.column.dataField === "noAttachment") {
+                            loadUpload("RequestRegist", e.row.data, false);
+                        }
+                    },
+                    onInitNewRow: (e) => {
+                        e.data.ownerById = item.id;
+                        e.data.isActive = true;
+                        e.data.isVisible = true;
+                        e.data.ownerTable = "PlanMaster";
+                        e.data.permistionId = 7;
+                    },
+                    onEditorPreparing: function (e) {
+                        if (e.parentType === "dataRow" && e.dataField !== "accountId") {
+                            return;
+                        }
+                        if (!e.row.isNewRow)
+                            e.editorOptions.disabled = true;
+                    },
+                });
+                scrollView.append(content);
+                scrollView.dxScrollView({
+                    width: '100%',
+                    height: '100%'
+                });
+                c.append(scrollView);
+                return c;
+            }
+        });
         let loadAccount = (item) => $("#popup-main-upload").dxPopup({
             width: "50%",
             height: "50%",
@@ -553,12 +1210,17 @@
                             },
 
                         },//nhóm
+                        //{
+                        //    colSpan: 12,
+                        //    dataField: "permissionId",
+                        //    caption: "Thực hiện",
+                        //},
                     ],
                     editing: {
                         mode: "popup",
                         allowAdding: true,
                         allowDeleting: true,
-                        allowUpdating: true,
+                        allowUpdating: false,
                         popup: {
                             width: 600, height: "auto",
                             showTitle: true, title: "Trình duyệt",
@@ -625,6 +1287,22 @@
                                         }
                                     }]
                                 },
+                                //{
+                                //    colSpan: 12,
+                                //    dataField: "permissionId",
+                                //    lookup: {
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID",
+                                //        displayExpr: "Name",
+                                //    },
+                                //    editorType: "dxSelectBox",
+                                //    editorOptions: {
+                                //        value: "unit",
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID", displayExpr: "Name",
+                                //    },
+                                //    validationRules: [{ type: "required" }],
+                                //},
                             ],
                         },
                     },
@@ -638,6 +1316,7 @@
                         e.data.isActive = true;
                         e.data.isVisible = true;
                         e.data.ownerTable = "PlanJob";
+                        e.data.permistionId = 7;
                     },
                     onEditorPreparing: function (e) {
                         if (e.parentType === "dataRow" && e.dataField !== "accountId") {
