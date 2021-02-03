@@ -193,6 +193,7 @@
     <Compile Include="Areas\ThongTin\Controllers\HomeController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\PhatHanhController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\QLCongViecController.cs" />
+    <Compile Include="Areas\ThongTin\Controllers\QLTienDoController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\ThongBaoController.cs" />
     <Compile Include="Areas\ThongTin\Controllers\VanBanMauController.cs" />
     <Compile Include="Areas\ThongTin\ThongTinAreaRegistration.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Utilities\PlanMaster.cs" />
     <Compile Include="Utilities\PlanRegistOBJ.cs" />
     <Compile Include="Utilities\CustomCellContentOBJ.cs" />
+    <Compile Include="Utilities\PlanReport.cs" />
     <Compile Include="Utilities\RequestOBJ.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2331,7 +2333,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\ThongTin\Data\" />
-    <Folder Include="Areas\ThongTin\Views\QLTienDo\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\plugins\.npmignore" />
@@ -2489,6 +2490,9 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\_CustomTableDetail.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLCongViec\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLCongViec\_CongViecDetail.cshtml" />
+    <Content Include="Areas\ThongTin\Views\QLTienDo\Index.cshtml" />
+    <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoDetail.cshtml" />
+    <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoReport.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

@@ -3,6 +3,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div id="popup-main-upload"></div>
 <div id="popup-register"></div>
 <div id="popup-main"></div>
@@ -34,6 +35,7 @@
         const ACTION_ACCOUNTINFO = "/AccountInfo";
         const ACTION_GROUPS = "/Groups";
         const ACTION_PLAN_ACCOUNT = "/PlanAccount";
+        const ACTION_PLAN_REPORT = "/PlanReport";
         const ACTION_FILEGET = "/FilesAttachment/getBy";
         const ACTION_CONVERSATION = "/Conversation";
 
@@ -44,8 +46,11 @@
         const ACTION_CMD_SCHEDULE = "/PlanSchedule";
         const ACTION_CMD_PLAN_ACCOUNT = "/PlanAccount";
         const ACTION_CMD_CONVERSATION = "/Conversation";
+        const ACTION_CMD_PLAN_REPORT = "/PlanReport";
+        if (PROJECTID === 0) {
+            PROJECTID = 1;
+        }
 
-      
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -127,13 +132,13 @@
 
         });
 
-        let customStore = customStore_CMD_READ_WITHGROUPOWNERID(ACTION_CMD, ACTION);
+        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
         let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');
         //let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanMaster');
-        let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, "ownerById," + id+ ";OwnerTable,'PlanMaster'");
-        let customStore_CONVERSATION = (id)=> customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_CONVERSATION, ACTION_CONVERSATION, 'topicId,' + id, 'PlanMaster');
+        let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, "ownerById," + id + ";OwnerTable,'PlanMaster'");
+        let customStore_CONVERSATION = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_CONVERSATION, ACTION_CONVERSATION, 'topicId,' + id, 'PlanMaster');
 
         $(function () {
             loadData();
@@ -167,7 +172,7 @@
                     },
                     {
                         dataField: "title",
-                        width:"50%",
+                        width: "50%",
                         caption: "Tên kế hoạch CV",
                         dataType: "string",
                         validationRules: [{ type: "required" }],
@@ -241,7 +246,7 @@
                         dataField: "unit",
                         visible: false,
                         label: { text: "Đơn vị" },
-                      
+
                     },
                     {
                         dataField: "createBy",
@@ -390,18 +395,18 @@
                             location: "before",
                             widget: "dxSelectBox",
                             options: {
-                                dataSource: groupOwner,
+                                dataSource: planProject,
                                 valueExpr: "ID",
                                 displayExpr: "Name",
                                 searchEnabled: true,
                                 searchMode: "contains",
                                 width: "100%",
                                 showClearButton: false,
-                                value: GROUPOWNERID,
+                                value: PROJECTID,
                                 onValueChanged: function (data) {
-                                    console.log(data.value);
-                                    GROUPOWNERID = data.value;
-                                    localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
+                                    console.log(data);
+                                    PROJECTID = data.value;
+                                    localStorage.setItem('projectIdCurrent', PROJECTID);
                                     loadData(customStore);
                                 },
                             },
@@ -415,13 +420,12 @@
                             },
 
                         },
-
                     )
                 },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    //e.data.planProjectId = 3;
+                    //e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
@@ -459,7 +463,7 @@
                         onClick: () => {
                             CALLPOPUP(
                                 "Tạo kế hoạch công việc",
-                                "/ThongTin/QLCongViec/_CongViecDetail",
+                                "/ThongTin/QLTienDo/_TienDoDetail",
                                 ($(window).width() > 767 ? "50%" : "80%"),
                                 container
                             );
@@ -564,13 +568,30 @@
                     {
                         type: "buttons", caption: "Tác vụ",
                         width: 120, alignment: "center",
-                        buttons: ["edit", "delete", {
-                            hint: "Người nhận",
-                            icon: "user",
-                            onClick: function (e) {
-                                loadAccount(e.row.data);
-                            }
-                        }],
+                        buttons: ["edit",
+                            "delete",
+                            //{
+                            //    hint: "Người nhận",
+                            //    icon: "user",
+                            //    onClick: function (e) {
+                            //        loadAccount(e.row.data);
+                            //    },
+                            //},
+                            {
+                                hint: "Báo cáo tiến độ",
+                                text: "Báo cáo",
+                                visible: true,
+                                onClick: function (e) {
+                                    console.log(e);
+                                    CALLPOPUP(
+                                        "Báo cáo tiến độ",
+                                        "/ThongTin/QLTienDo/_TienDoReport/" + e.row.data.id,
+                                        ($(window).width() > 767 ? "50%" : "80%"),
+                                        container
+                                    );
+                                },
+                            },
+                        ],
                     }
                 ],
                 paging: {
@@ -589,9 +610,9 @@
                 //    visible: WIDTH_CONTAINER > 350
                 //},
                 editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    allowAdding: false,
+                    allowUpdating: false,
+                    allowDeleting: false,
                     mode: "cell",
                     useIcons: false,
                     confirmDelete: true,
@@ -616,7 +637,7 @@
                     e.data.isVisible = true;
                     e.data.planMasterId = id;
                     e.data.isDone = false;
-                   
+                    //e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
@@ -703,8 +724,8 @@
         };
         let loadComversation = (id) => {
             $("#container_conversation").dxDataGrid({
-                title:"Hội thoại",
-                height: (heightScreen / 8)*3,
+                title: "Hội thoại",
+                height: (heightScreen / 8) * 3,
                 dataSource: customStore_CONVERSATION(id),
                 repaintChangesOnly: true,
                 remoteOperations: {
@@ -723,7 +744,7 @@
                 rowAlternationEnabled: false,
                 columns: [
                     {
-                        colSpan:8,
+                        colSpan: 8,
                         dataField: "content",
                         caption: "Phản hồi",
                         dataType: "string",
@@ -734,7 +755,7 @@
                         dataField: "createBy",
                         caption: "Người phản hồi",
                         dataType: "string",
-                        width:"30%",
+                        width: "30%",
                         lookup: {
                             dataSource: customStore_AccountInfo,
                             valueExpr: "accountId", displayExpr: "userName",
@@ -778,8 +799,8 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    e.data.TopicId = id;
-                    e.data.OwnerTable = 'PlanMaster';
+                    e.data.iopicId = id;
+                    e.data.ownerTable = 'PlanMaster';
                     //e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
@@ -1022,7 +1043,7 @@
                         //    colSpan: 12,
                         //    dataField: "permissionId",
                         //    caption: "Thực hiện",
- 
+
                         //},
                     ],
                     editing: {

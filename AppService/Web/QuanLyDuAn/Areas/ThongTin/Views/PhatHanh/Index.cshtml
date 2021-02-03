@@ -993,7 +993,6 @@
                                         type: "async",
                                         message: "Đã có thông tin Nhóm",
                                         validationCallback: function (params) {
-                                            console.log(params);
                                             var d = $.Deferred();
                                             d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
                                             //$('#accountIdSelect').dxSelectBox('instance').option('value',null)

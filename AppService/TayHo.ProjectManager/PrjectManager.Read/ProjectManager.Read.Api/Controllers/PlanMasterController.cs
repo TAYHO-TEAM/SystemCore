@@ -21,6 +21,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         private readonly IDOBaseRepository<PlanMasterDTO> _dOBaseRepository;
         private readonly IPlanMasterRepository<PlanMasterAccountDTO> _planMasterRepository;
         private const string GetWithAccount = nameof(GetWithAccount);
+        private const string GetWithAccountProgress = nameof(GetWithAccountProgress);
         public PlanMasterController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanMasterDTO> dOBaseRepository,IPlanMasterRepository<PlanMasterAccountDTO> planMasterRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
@@ -64,6 +65,33 @@ namespace ProjectManager.Read.Api.Controllers.v1
             RequestHasAccountPermitFilterParam requestFilter = _mapper.Map<RequestHasAccountPermitFilterParam>(request);
             requestFilter.AccountId = _user;
             requestFilter.TableName = QuanLyDuAnConstants.PlanMaster_TABLENAME;
+
+            var queryResult = await _planMasterRepository.GetWithPaggingPermistionAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<PlanMasterAccountResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<PlanMasterAccountResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+
+        /// <summary>
+        /// Get List of PlanMaster By Progress.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetWithAccountProgress)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<PlanMasterAccountResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetPlanMasterAccountProgressAsync([FromQuery] BasePermitRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<PlanMasterAccountResponseViewModel>>();
+            RequestHasAccountPermitFilterParam requestFilter = _mapper.Map<RequestHasAccountPermitFilterParam>(request);
+            requestFilter.AccountId = _user;
+            requestFilter.TableName = QuanLyDuAnConstants.PlanMaster_TABLENAME;
+            requestFilter.FindId = string.IsNullOrEmpty(requestFilter.FindId) ? "PlanProjectId,1" : requestFilter.FindId;
+            
 
             var queryResult = await _planMasterRepository.GetWithPaggingPermistionAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<PlanMasterAccountResponseViewModel>

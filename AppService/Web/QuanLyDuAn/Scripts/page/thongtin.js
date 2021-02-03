@@ -108,6 +108,38 @@ let customStore_CMD_READ_WITHGROUPOWNERID = (CMD, READ) => new DevExpress.data.C
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
+let customStore_CMD_READ_PLANPROJECTID = (CMD, READ) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = { 'Type': GROUPOWNERID };
+
+        if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+        if (values.sort) {
+            params['SortCol'] = values.sort[0].selector;
+            params['SortADSC'] = values.sort[0].desc;
+            params['PlanProjectId'] = GROUPOWNERID;
+        }
+        $.ajax({
+            headers: header,
+            url: URL_API_PM_READ + READ,
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                let list = data.result.items;
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000//10 giây
+        });
+
+        return deferred.promise();
+    },
+    insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
+    update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
 let customStore_UPDATE_READ = (ID, CMD, READ) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
@@ -508,12 +540,16 @@ const unit = [
         Name: 'Người'
     },
     {
-        ID: 'kg',
-        Name: 'kg'
+        ID: 'Kg',
+        Name: 'Kg'
     },
     {
         ID: 'Ngày',
         Name: 'Ngày'
+    },
+    {
+        ID: 'm2',
+        Name: 'm2'
     }
 ];
 const important = [
@@ -572,6 +608,50 @@ const permisionAassign = [
     {
         ID: '7',
         Name: 'Phân công thực hiện'
+    },
+    //{
+    //    ID: '3',
+    //    Name: 'Phân công giám sát'
+    //},
+];
+const planProject = [
+    //{
+    //    ID: '0',
+    //    Name: 'Tất cả'
+    //},
+    {
+        ID: '1',
+        Name: 'Compase One'
+    },
+    {
+        ID: '2',
+        Name: 'Long Thành'
+    },
+    //{
+    //    ID: '3',
+    //    Name: 'Phân công giám sát'
+    //},
+];
+const reportPeriodicalType = [
+    {
+        ID: '1',
+        Name: 'Hàng giờ'
+    },
+    {
+        ID: '2',
+        Name: 'Hàng ngày'
+    },
+    {
+        ID: '3',
+        Name: 'Hàng tuần'
+    },
+    {
+        ID: '4',
+        Name: 'Hàng tháng'
+    },
+    {
+        ID: '5',
+        Name: 'Hàng năm'
     },
     //{
     //    ID: '3',

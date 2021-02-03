@@ -1,11 +1,11 @@
 ﻿<form id="form-regist" action="#" method="POST" enctype="application/json">
 </form>
 <script>
-  
+
     var formData = {
         "code": ""
         , "parentId": ""
-            , "planProjectId": 3
+            , "planProjectId": ""
                 , "title": ""
                     , "timeLine": ""
                         , "description": ""
@@ -43,31 +43,82 @@
                     label: { text: "Mã CV" },
                 },
                 {
+                    colSpan: 2,
                     dataField: "title",
                     label: { text: "Kế hoạch CV" },
                     validationRules: [{ type: "required" }],
                 },
+                //{
+                //    dataField: "reportPeriodicalType",
+                //    label: { text: "Báo cáo định kỳ" },
+                //    //lookup: {
+                //    //    dataSource: reportPeriodicalType,
+                //    //    valueExpr: "Name",
+                //    //    displayExpr: "Name",
+                //    //},
+                //    editorType: "dxSelectBox",
+                //    editorOptions: {
+                //        value: "reportPeriodicalType",
+                //        dataSource: reportPeriodicalType,
+                //        //searchEnabled: true,
+                //        //showClearButton: true,
+                //        valueExpr: "Name",
+                //        displayExpr: "Name",
+                //        elementAttr: {
+                //            id: "reportPeriodicalTypeSelect",
+                //        },
+                //    },
+                //    //validationRules: [{
+                //    //    type: "async",
+                //    //    message: "Đã có thông tin tần suất",
+                //    //    validationCallback: function (params) {
+                //    //        var d = $.Deferred();
+                //    //        d.resolve(!(typeof $('#reportFrequencySelect').dxSelectBox('instance').option('value') === 'number'));
+                //    //        return  d.promise();
+                //    //    }
+                //    //}]
+                //},
                 {
-                    dataField: "priority",
-                    label: { text: "Độ ưu tiên" },
+                    dataField: "reportFrequency",
+                    label: { text: "Tần suất báo cáo" },
                     editorType: "dxNumberBox",
-                },
-                {
-                    dataField: "importantLevel",
-                    caption: "Mức độ quan trọng",
-                    dataType: "number",
-                    lookup: {
-                        dataSource: important,
-                        valueExpr: "ID",
-                        displayExpr: "Name",
-                    },
-                    editorType: "dxSelectBox",
                     editorOptions: {
-                        value: "importantLevel",
-                        dataSource: important,
-                        valueExpr: "ID", displayExpr: "Name",
+                        elementAttr: {
+                            id: "reportFrequencySelect",
+                        },
                     },
+                    validationRules: [{ type: "required" }],
+                    //validationRules: [{
+                    //    type: "async",
+                    //    message: "Đã có thông tin báo cáo định kỳ",
+                    //    validationCallback: function (params) {
+                    //        var d = $.Deferred();
+                    //        d.resolve(!(typeof $('#reportPeriodicalTypeSelect').dxSelectBox('instance').option('value') === 'number'));
+                    //        return d.promise();
+                    //    }
+                    //}]
                 },
+                //{
+                //    dataField: "priority",
+                //    label: { text: "Độ ưu tiên" },
+                //    editorType: "dxNumberBox",
+                //},
+                //{
+                //    dataField: "importantLevel",
+                //    caption: "Mức độ quan trọng",
+                //    dataType: "number",
+                //    lookup: {
+                //        dataSource: important,
+                //        valueExpr: "ID",
+                //        displayExpr: "Name",
+                //    },
+                //    editorType: "dxSelectBox",
+                //    editorOptions: {
+                //        value: "importantLevel",
+                //        dataSource: important,
+                //        valueExpr: "ID", displayExpr: "Name",
+                //    },
+                //},
                 {
                     colSpan: 4,
                     dataField: "description",
@@ -88,6 +139,7 @@
                         pickerType: "rollers",
                         type: "datetime",
                     },
+                    validationRules: [{ type: "required" }],
                 },
                 {
                     dataField: "endDate",
@@ -97,10 +149,12 @@
                         pickerType: "rollers",
                         type: "datetime",
                     },
+                    validationRules: [{ type: "required" }],
                 },
                 {
                     dataField: "amount",
                     label: { text: "Khối lượng" },
+                    validationRules: [{ type: "required" }],
                 },
                 {
                     dataField: "unit",
@@ -116,6 +170,7 @@
                         dataSource: unit,
                         valueExpr: "ID", displayExpr: "Name",
                     },
+                    validationRules: [{ type: "required" }],
                 },
                 {
                     colSpan: 4,
@@ -150,6 +205,7 @@
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
+            loadingPanel.show();
             $(this).prop("disabled", true);
             var fdata = new FormData();
             var i = 10;
@@ -162,8 +218,10 @@
                 }
 
             });
-            console.log(PROJECTID);
-            fdata.append('planProjectId', 3);
+            if (PROJECTID < 3) {
+                fdata.append('planProjectId', PROJECTID);
+            }
+            
             fdata.append('token', UserCurrentInfo.accessToken);
             //for (var pair of fdata.entries()) {
             //    console.log(pair[0] + ', ' + pair[1]);
@@ -210,4 +268,3 @@
 
 
 </script>
-

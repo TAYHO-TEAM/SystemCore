@@ -1,0 +1,132 @@
+﻿@model int
+<form id="form-regist" action="#" method="POST" enctype="application/json">
+</form>
+
+<script>
+    var formData = {
+        "PlanMasterId": "",
+        "PlanJobId": "",
+        "Content": "",
+        "Unit": "",
+        "Amount": ""
+    };
+    $(document).ready(function () {
+        var formInstance = $("#form-regist").dxForm({
+            formData: formData,
+            labelLocation: "top",
+            items: [
+                {
+                    itemType: "group",
+                    colCount: 2,
+                    items: [
+                        {
+                            colSpan: 2,
+                            dataField: "content",
+                            label: { text: "Nội dung" },
+                            editorType: "dxTextArea",
+                        },
+                        {
+                            colSpan: 1,
+                            dataField: "amount",
+                            label: { text: "Khối lượng" },
+                        },
+                        {
+                            colSpan: 1,
+                            dataField: "unit",
+                            label: { text: "Đơn vị" },
+                            lookup: {
+                                dataSource: unit,
+                                valueExpr: "ID",
+                                displayExpr: "Name",
+                            },
+                            editorOptions: {
+                                value:'%',
+                                readOnly: true,
+                            },
+                        },
+                        
+                    ]
+                },
+                {
+                    itemType: "button",
+                    horizontalAlignment: "center",
+                    buttonOptions: {
+                        text: "Lưu lại",
+                        icon: "fa fa-save",
+                        type: "success",
+                        useSubmitBehavior: true,
+                        elementAttr: {
+                            id: "submit",
+                        }
+                    }
+                },
+
+            ],
+            onFieldDataChanged: function (e) {
+                var newFormData = e.component.option("formData");
+            }
+        }).dxForm("instance");
+
+        $(".file-uploader").dxFileUploader({
+            selectButtonText: "Chọn tập tin...",
+            labelText: "Hoặc kéo thả vào đây",
+            showFileList: true,
+            multiple: true,
+            uploadMode: "useForm",
+            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
+            maxFileSize: 10000000,
+        });
+        $("#form-regist").on("submit", function (e) {
+            //test(fdatatest);
+            var fdata = new FormData();
+            $.each(formData, function (key, value) {
+                fdata.append(key, value);
+            });
+            console.log(PROJECTID);
+            fdata.append('projectId', PROJECTID);
+            fdata.append('token', UserCurrentInfo.accessToken);
+            for (var pair of fdata.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
+            var files = $(".file-uploader").dxFileUploader("instance").option("value");
+            if (files.length > 0) {
+                $.each(files, function (key, value) {
+                    fdata.append(files[key].name, files[key]);
+                });
+            }
+            else {
+                DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
+                e.preventDefault();
+                return false;
+            };
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/ThongTin/DangKy/Create",
+                data: fdata,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (rs) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify(rs.result, rs.status, 3000);
+                    if (rs.status == "success") {
+                        $("#popup-register").dxPopup('instance').hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    loadingPanel.hide();
+                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                }
+            });
+
+            e.preventDefault();
+            //return deferred.promise();
+        });
+
+    });
+
+
+</script>
