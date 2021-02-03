@@ -11,6 +11,7 @@ const ACTION_READ_ACCOUNTINFO = "/AccountInfo";
 
 const ACTION_CMD_REQUESTREGIST = "/RequestRegist";
 const ACTION_CMD_RESPONSEREGIST = "/ResponseRegist";
+var GROUPOWNERID = isNullOrEmpty(localStorage.getItem("groupOwnerIdCurrent")) ? parseInt(localStorage.getItem("groupOwnerIdCurrent")) : 0;
 ////---------------------------CMD--------------------------- 
 let customStore_CMD_READ = (CMD, READ) => new DevExpress.data.CustomStore({
     key: "id",
@@ -53,6 +54,38 @@ let customStore_CMD_READ_WITHPROJECTID = (CMD, READ) => new DevExpress.data.Cust
             params['SortCol'] = values.sort[0].selector;
             params['SortADSC'] = values.sort[0].desc;
             params['FindId'] = 'projectId,' + PROJECTID;
+        }
+        $.ajax({
+            headers: header,
+            url: URL_API_PM_READ + READ,
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                let list = data.result.items;
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000//10 giây
+        });
+
+        return deferred.promise();
+    },
+    insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
+    update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
+let customStore_CMD_READ_WITHGROUPOWNERID = (CMD, READ) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = { 'Type': GROUPOWNERID };
+
+        if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+        if (values.sort) {
+            params['SortCol'] = values.sort[0].selector;
+            params['SortADSC'] = values.sort[0].desc;
+            params['Type'] = GROUPOWNERID;
         }
         $.ajax({
             headers: header,
@@ -219,7 +252,7 @@ let customStore_CMD_READ_FILTER_ID = (CMD, READ, ID) => new DevExpress.data.Cust
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
-let customStore_CMD_READ_FILTER_ID_KEYWORD = (CMD, READ, ID,KEYWORD) => new DevExpress.data.CustomStore({
+let customStore_CMD_READ_FILTER_ID_KEYWORD = (CMD, READ, ID, KEYWORD) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
 
@@ -227,7 +260,8 @@ let customStore_CMD_READ_FILTER_ID_KEYWORD = (CMD, READ, ID,KEYWORD) => new DevE
         var params = {
             'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
             'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-            'FindId': ID
+            'FindId': ID,
+            'KeyWord': KEYWORD
         }
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
@@ -382,6 +416,16 @@ let customStore_GET_LINK = (LINK) => new DevExpress.data.CustomStore({
         return deferred.promise();
     },
 });
+let customStore_READDATASOURCE = (DATASOURCE) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = {};
+
+        deferred.resolve(DATASOURCE);
+
+        return deferred.promise();
+    },
+});
 
 var dataGridOptions = {
     height: heightScreen,
@@ -452,4 +496,87 @@ const Category = [{
 },
 {
     "CategoryName": "SMS",
-}]
+}];
+
+const unit = [
+    {
+        ID: '%',
+        Name: '%'
+    },
+    {
+        ID: 'Người',
+        Name: 'Người'
+    },
+    {
+        ID: 'kg',
+        Name: 'kg'
+    },
+    {
+        ID: 'Ngày',
+        Name: 'Ngày'
+    }
+];
+const important = [
+    {
+        ID: '0',
+        Name: 'Không quan tâm'
+    },
+    {
+        ID: '1',
+        Name: 'Có thể đợi'
+    },
+    {
+        ID: '2',
+        Name: 'Trung bình'
+    },
+    {
+        ID: '3',
+        Name: 'Cần thiết'
+    },
+    {
+        ID: '4',
+        Name: 'Cần gấp'
+    },
+    {
+        ID: '5',
+        Name: 'Cấp bách'
+    }
+];
+const groupOwner = [
+    {
+        ID: '0',
+        Name: 'Tất cả'
+    },
+    {
+        ID: '9',
+        Name: 'Của tôi'
+    },
+    {
+        ID: '7',
+        Name: 'Được phân công'
+    },
+    //{
+    //    ID: '3',
+    //    Name: 'Phân công giám sát'
+    //},
+];
+const permisionAassign = [
+    //{
+    //    ID: '0',
+    //    Name: 'Tất cả'
+    //},
+    {
+        ID: '9',
+        Name: 'Của tôi'
+    },
+    {
+        ID: '7',
+        Name: 'Phân công thực hiện'
+    },
+    //{
+    //    ID: '3',
+    //    Name: 'Phân công giám sát'
+    //},
+];
+
+

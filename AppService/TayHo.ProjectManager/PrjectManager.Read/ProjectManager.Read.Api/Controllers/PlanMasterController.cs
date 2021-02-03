@@ -19,10 +19,12 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class PlanMasterController : APIControllerBase
     {
         private readonly IDOBaseRepository<PlanMasterDTO> _dOBaseRepository;
-
-        public PlanMasterController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanMasterDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        private readonly IPlanMasterRepository<PlanMasterAccountDTO> _planMasterRepository;
+        private const string GetWithAccount = nameof(GetWithAccount);
+        public PlanMasterController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanMasterDTO> dOBaseRepository,IPlanMasterRepository<PlanMasterAccountDTO> planMasterRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _planMasterRepository = planMasterRepository;
         }
 
         /// <summary>
@@ -43,6 +45,31 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<PlanMasterResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+
+        /// <summary>
+        /// Get List of PlanMaster By Account.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetWithAccount)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<PlanMasterAccountResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetPlanMasterAccountAsync([FromQuery] BasePermitRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<PlanMasterAccountResponseViewModel>>();
+            RequestHasAccountPermitFilterParam requestFilter = _mapper.Map<RequestHasAccountPermitFilterParam>(request);
+            requestFilter.AccountId = _user;
+            requestFilter.TableName = QuanLyDuAnConstants.PlanMaster_TABLENAME;
+
+            var queryResult = await _planMasterRepository.GetWithPaggingPermistionAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<PlanMasterAccountResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<PlanMasterAccountResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }

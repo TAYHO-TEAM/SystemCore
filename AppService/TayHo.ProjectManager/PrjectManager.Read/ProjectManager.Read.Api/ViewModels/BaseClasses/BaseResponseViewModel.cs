@@ -9,7 +9,7 @@ namespace ProjectManager.Read.Api.ViewModels.BaseClasses
     {
     }
 
-    public class BaseResponseAccountInfoViewModel : BaseResponseChilCountViewModel
+    public class BaseResponseAccountInfoViewModel : DTOChilCountBase
     {
         public string CreateBy_Name { get; set; }
         public byte[] CreateBy_Avartar { get; set; }

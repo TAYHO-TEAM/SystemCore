@@ -31,7 +31,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         /// <returns></returns>
         public async Task<MethodResult<CreateFormPlanMasterCommandResponse>> Handle(CreateFormPlanMasterCommand request, CancellationToken cancellationToken)
         {
-            string tableName = QuanLyDuAnConstants.RequestRegist_TABLENAME;
+            string tableName = QuanLyDuAnConstants.PlanMaster_TABLENAME;
             var methodResult = new MethodResult<CreateFormPlanMasterCommandResponse>();
             var newPlanMaster = new PlanMaster(request.Code, request.ParentId, request.PlanProjectId, request.Title, request.TimeLine, request.Description, request.Note, request.StartDate, request.EndDate, request.Unit, request.Amount, request.ReportPeriodicalType, request.ReportPeriodical, request.ReportFrequency, request.Priority, request.ImportantLevel, request.NoAttachment);
             newPlanMaster.SetCreate(_user);
