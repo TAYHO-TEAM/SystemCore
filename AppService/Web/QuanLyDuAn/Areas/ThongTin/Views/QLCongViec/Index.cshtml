@@ -46,7 +46,10 @@
         const ACTION_CMD_CONVERSATION = "/Conversation";
 
       
-
+        if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9 ) {
+            GROUPOWNERID = 0;
+            localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
+        }
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore_AccountInfo = new DevExpress.data.CustomStore({

@@ -52,8 +52,12 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                     {
                         if (value.ToString() != "01/01/0001 12:00:00 AM")
                         {
-                            DateTime getdate = DateTime.ParseExact(value.ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                            mFormData.Add(new StringContent(getdate.ToString("yyyy-MM-dd HH:mm:ss")), name.ToString());
+                            if (value.ToString() != "01/01/0001 12:00:00 AM")
+                            {
+                                DateTime getdate = DateTime.ParseExact(value.ToString(), "dd/MM/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
+                                string convertDate = getdate.ToString("yyyy-MM-dd HH:mm:ss");
+                                mFormData.Add(new StringContent(convertDate), name.ToString());
+                            }
                         }
                     }
                     else

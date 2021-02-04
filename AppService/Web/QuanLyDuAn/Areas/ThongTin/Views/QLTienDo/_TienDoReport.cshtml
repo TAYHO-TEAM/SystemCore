@@ -5,7 +5,7 @@
 <script>
     var formData = {
         "PlanMasterId": "",
-        "PlanJobId": "",
+        "PlanJobId": @Model,
         "Content": "",
         "Unit": "",
         "Amount": ""
@@ -29,6 +29,7 @@
                             colSpan: 1,
                             dataField: "amount",
                             label: { text: "Khối lượng" },
+                            editorType: "dxNumberBox",
                         },
                         {
                             colSpan: 1,
@@ -67,23 +68,21 @@
             }
         }).dxForm("instance");
 
-        $(".file-uploader").dxFileUploader({
-            selectButtonText: "Chọn tập tin...",
-            labelText: "Hoặc kéo thả vào đây",
-            showFileList: true,
-            multiple: true,
-            uploadMode: "useForm",
-            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
-            maxFileSize: 10000000,
-        });
+        //$(".file-uploader").dxFileUploader({
+        //    selectButtonText: "Chọn tập tin...",
+        //    labelText: "Hoặc kéo thả vào đây",
+        //    showFileList: true,
+        //    multiple: true,
+        //    uploadMode: "useForm",
+        //    allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
+        //    maxFileSize: 10000000,
+        //});
         $("#form-regist").on("submit", function (e) {
-            //test(fdatatest);
+            loadingPanel.show();
             var fdata = new FormData();
             $.each(formData, function (key, value) {
                 fdata.append(key, value);
             });
-            console.log(PROJECTID);
-            fdata.append('projectId', PROJECTID);
             fdata.append('token', UserCurrentInfo.accessToken);
             for (var pair of fdata.entries()) {
                 console.log(pair[0] + ', ' + pair[1]);
@@ -103,7 +102,7 @@
             $.ajax({
                 type: "POST",
                 enctype: 'multipart/form-data',
-                url: "/ThongTin/DangKy/Create",
+                url: "/ThongTin/QLTienDo/Report",
                 data: fdata,
                 processData: false,
                 contentType: false,

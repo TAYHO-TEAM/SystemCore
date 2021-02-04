@@ -112,12 +112,11 @@ let customStore_CMD_READ_PLANPROJECTID = (CMD, READ) => new DevExpress.data.Cust
     key: "id",
     load: (values) => {
         let deferred = $.Deferred(), params = { 'Type': GROUPOWNERID };
-
         if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
             params['SortADSC'] = values.sort[0].desc;
-            params['PlanProjectId'] = GROUPOWNERID;
+            params['FindId'] = 'PlanProjectId,' + ConvertProjectToPlanProject();
         }
         $.ajax({
             headers: header,
@@ -517,7 +516,19 @@ function CALLPOPUP(title, url, width, container) {
         }
     });
 }
+function ConvertProjectToPlanProject() {
 
+    switch (PROJECTID) {
+        case 1:
+            return '1';
+            break;
+        case 2:
+            return '2';
+            break;
+        default:
+            return '1';
+    }
+}
 
 //-----------------------Unity OBJ -----------------------
 const Category = [{
@@ -580,15 +591,15 @@ const important = [
 ];
 const groupOwner = [
     {
-        ID: '0',
+        ID: 0,
         Name: 'Tất cả'
     },
     {
-        ID: '9',
+        ID: 9,
         Name: 'Của tôi'
     },
     {
-        ID: '7',
+        ID: 7,
         Name: 'Được phân công'
     },
     //{
@@ -620,11 +631,11 @@ const planProject = [
     //    Name: 'Tất cả'
     //},
     {
-        ID: '1',
+        ID: 1,
         Name: 'Compase One'
     },
     {
-        ID: '2',
+        ID: 2,
         Name: 'Long Thành'
     },
     //{

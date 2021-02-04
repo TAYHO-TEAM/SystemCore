@@ -85,22 +85,11 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 List<PlanJob> newPlanJobs = new List<PlanJob>();
                 int rangDate = ((request.EndDate == null ? DateTime.Now.Date : ((DateTime)request.EndDate).Date) - (request.StartDate == null ? DateTime.Now.Date : ((DateTime)request.StartDate).Date)).Days;
                 int stepTime = rangDate / (int)request.ReportFrequency;
-                for (int i = 1; i < (int)request.ReportFrequency; i++)
+                int amout = (int)request.Amount / (int)request.ReportFrequency;
+                for (int i = 1; i <= (int)request.ReportFrequency; i++)
                 {
                     DateTime stepDate = (request.StartDate == null ? DateTime.Now.Date : ((DateTime)request.StartDate).Date).AddDays((int)request.ReportFrequency*i);
-                    PlanJob newPlanJob = new PlanJob(newPlanMaster.Id,
-                                                    0, 
-                                                    newPlanMaster.Title +" - "+ stepDate.Date.ToString("dd-MM-yyyy"),
-                                                    "Dự toán công việc ngày:" + stepDate.Date.ToString("dd-MM-yyyy"),
-                                                    newPlanMaster.Unit,
-                                                    0,
-                                                    (DateTime)request.StartDate,
-                                                    stepDate,
-                                                    0,
-                                                    i,
-                                                    (byte)i,
-                                                    false);
-                    newPlanJobs.Add(newPlanJob);
+                    
                     if((int)request.ReportFrequency == i && ((DateTime)request.EndDate).Date  > stepDate.Date)
                     {
                         PlanJob newPlanJobEnd = new PlanJob(newPlanMaster.Id,
@@ -108,18 +97,34 @@ namespace ProjectManager.CMD.Api.Application.Commands
                                                    newPlanMaster.Title + " - " + stepDate.Date.ToString("dd-MM-yyyy"),
                                                    "Công việc ngày:" + stepDate.Date.ToString("dd-MM-yyyy"),
                                                    newPlanMaster.Unit,
-                                                   0,
+                                                   (int)request.Amount - (amout*(i-1)),
                                                    (DateTime)request.StartDate,
                                                    (DateTime)request.EndDate,
                                                    0,
                                                    i,
                                                    (byte)i,
                                                    false);
-                        newPlanJobs.Add(newPlanJob);
+                        newPlanJobs.Add(newPlanJobEnd);
                     }    
+                    else
+                    {
+                        PlanJob newPlanJob = new PlanJob(newPlanMaster.Id,
+                                                    0,
+                                                    newPlanMaster.Title + " - " + stepDate.Date.ToString("dd-MM-yyyy"),
+                                                    "Dự toán công việc ngày:" + stepDate.Date.ToString("dd-MM-yyyy"),
+                                                    newPlanMaster.Unit,
+                                                    amout * i,
+                                                    (DateTime)request.StartDate,
+                                                    stepDate,
+                                                    0,
+                                                    i,
+                                                    (byte)i,
+                                                    false);
+                        newPlanJobs.Add(newPlanJob);
+                    }                        
                 }
                 await _planJobRepository.AddRangeAsync(newPlanJobs).ConfigureAwait(false);
-                await _planJobRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+                await _planJobRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
             methodResult.Result = _mapper.Map<CreateFormProgressPlanMasterCommandResponse>(newPlanMaster);
             return methodResult;

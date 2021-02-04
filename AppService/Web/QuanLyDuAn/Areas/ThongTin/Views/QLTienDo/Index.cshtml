@@ -29,7 +29,7 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/PlanMaster/GetWithAccount";
+        const ACTION = "/PlanMaster/GetWithAccountProgress";
         const ACTION_DETAIL = "/PlanJob";
         const ACTION_SCHEDULE = "/PlanSchedule";
         const ACTION_ACCOUNTINFO = "/AccountInfo";
@@ -47,10 +47,14 @@
         const ACTION_CMD_PLAN_ACCOUNT = "/PlanAccount";
         const ACTION_CMD_CONVERSATION = "/Conversation";
         const ACTION_CMD_PLAN_REPORT = "/PlanReport";
-        if (PROJECTID === 0) {
+        if (PROJECTID !== 1 && PROJECTID !== 2) {
             PROJECTID = 1;
+            localStorage.setItem('projectIdCurrent', PROJECTID);
         }
-
+        if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9) {
+            GROUPOWNERID = 0;
+            localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
+        }
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -390,6 +394,7 @@
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
+
                     e.toolbarOptions.items.unshift(
                         {
                             location: "before",
@@ -407,6 +412,27 @@
                                     console.log(data);
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
+                                    loadData(customStore);
+                                },
+                            },
+                        },
+                        {
+                            location: "before",
+                            widget: "dxSelectBox",
+                            options: {
+                                dataSource: groupOwner,
+                                valueExpr: "ID",
+                                displayExpr: "Name",
+                                searchEnabled: true,
+                                searchMode: "contains",
+                                width: "100%",
+                                showClearButton: false,
+                                value: GROUPOWNERID,
+                                visible: PermitInAction["insert"],
+                                onValueChanged: function (data) {
+                                    console.log(data.value);
+                                    GROUPOWNERID = data.value;
+                                    localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
                                     loadData(customStore);
                                 },
                             },
@@ -561,9 +587,23 @@
                     },
                     {
                         dataField: "title",
-                        caption: "Bước thực hiện",
+                        caption: "Lịch trình",
                         dataType: "string",
-                        validationRules: [{ type: "required" }],
+                    },
+                    {
+                        dataField: "amount",
+                        caption: "Mục tiêu",
+                        dataType: "number",
+                    },
+                    {
+                        dataField: "unit",
+                        caption: "Đơn vị",
+                        dataType: "string",
+                    },
+                    {
+                        dataField: "endDate",
+                        caption: "Hạn bc",
+                        dataType: "date",
                     },
                     {
                         type: "buttons", caption: "Tác vụ",
@@ -578,11 +618,12 @@
                             //    },
                             //},
                             {
-                                hint: "Báo cáo tiến độ",
+                                hint: "Báo cáo",
                                 text: "Báo cáo",
                                 visible: true,
                                 onClick: function (e) {
                                     console.log(e);
+                                    var container = e.component;
                                     CALLPOPUP(
                                         "Báo cáo tiến độ",
                                         "/ThongTin/QLTienDo/_TienDoReport/" + e.row.data.id,
@@ -611,7 +652,7 @@
                 //},
                 editing: {
                     allowAdding: false,
-                    allowUpdating: false,
+                    allowUpdating: true,
                     allowDeleting: false,
                     mode: "cell",
                     useIcons: false,
