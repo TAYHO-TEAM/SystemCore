@@ -12,4 +12,12 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
         public int? Dot { get; set; }
         public double? KhoiLuong { get; set; }
     }
+
+    public class NS_NghiemThuDetailDTO : NS_NghiemThuDTO
+    {
+        public int? NhomCongViecId { get; set; }
+        public string TenNhomCongViec { get; set; }
+        public int? HangMucId { get; set; }
+        public string TenHangMuc { get; set; } 
+    }
 }

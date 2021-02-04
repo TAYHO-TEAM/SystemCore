@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public NS_NghiemThuProfile()
         {
             CreateMap<NS_NghiemThuDTO, NS_NghiemThuResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<NS_NghiemThuDetailDTO, NS_NghiemThuDetailViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

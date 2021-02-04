@@ -19,14 +19,18 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class NS_NghiemThuController : APIControllerBase
     {
         private readonly IDOBaseRepository<NS_NghiemThuDTO> _dOBaseRepository;
+        private readonly INS_NghiemThuRepository<NS_NghiemThuDetailDTO> _nS_NghiemThuRepository;
+        private const string Detail = nameof(Detail);
 
         public NS_NghiemThuController(
             IMapper mapper, 
             IHttpContextAccessor httpContextAccessor, 
-            IDOBaseRepository<NS_NghiemThuDTO> dOBaseRepository
+            IDOBaseRepository<NS_NghiemThuDTO> dOBaseRepository,
+            INS_NghiemThuRepository<NS_NghiemThuDetailDTO> nS_NghiemThuRepository
         ) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _nS_NghiemThuRepository = nS_NghiemThuRepository;
         }
 
         /// <summary>
@@ -35,18 +39,19 @@ namespace ProjectManager.Read.Api.Controllers.v1
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NghiemThuResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [Route(Detail)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NghiemThuDetailViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetNS_NghiemThuAsync([FromQuery]BaseRequestViewModel request)
         {
-            var methodResult = new MethodResult<PagingItems<NS_NghiemThuResponseViewModel>>();
+            var methodResult = new MethodResult<PagingItems<NS_NghiemThuDetailViewModel>>();
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.NS_NghiemThu_TABLENAME;
-            var queryResult = await _dOBaseRepository.GetWithPaggingFKAsync(requestFilter).ConfigureAwait(false);
-            methodResult.Result = new PagingItems<NS_NghiemThuResponseViewModel>
+            var queryResult = await _nS_NghiemThuRepository.GetNS_NghiemThuDetailAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<NS_NghiemThuDetailViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
-                Items = _mapper.Map<IEnumerable<NS_NghiemThuResponseViewModel>>(queryResult.Items)
+                Items = _mapper.Map<IEnumerable<NS_NghiemThuDetailViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         } 
