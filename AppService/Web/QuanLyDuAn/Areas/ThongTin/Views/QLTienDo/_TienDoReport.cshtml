@@ -4,11 +4,11 @@
 
 <script>
     var formData = {
-        "PlanMasterId": "",
-        "PlanJobId": @Model,
-        "Content": "",
-        "Unit": "",
-        "Amount": ""
+        "planMasterId": "",
+        "planJobId": @Model,
+        "content": "",
+        "unit": "",
+        "amount": ""
     };
     $(document).ready(function () {
         var formInstance = $("#form-regist").dxForm({
@@ -45,7 +45,7 @@
                                 readOnly: true,
                             },
                         },
-                        
+
                     ]
                 },
                 {
@@ -84,40 +84,50 @@
                 fdata.append(key, value);
             });
             fdata.append('token', UserCurrentInfo.accessToken);
+            var object = {};
             for (var pair of fdata.entries()) {
+                if (pair[1] !== "" && pair[1] !== null) {
+                    if (pair[0] === 'planJobId' || pair[0] === 'amount' )
+                        object[pair[0]] = pair[1] * 1;
+                    else
+                            object[pair[0]] = pair[1];
+                }
                 console.log(pair[0] + ', ' + pair[1]);
             }
-            var files = $(".file-uploader").dxFileUploader("instance").option("value");
-            if (files.length > 0) {
-                $.each(files, function (key, value) {
-                    fdata.append(files[key].name, files[key]);
-                });
-            }
-            else {
-                DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
-                e.preventDefault();
-                return false;
-            };
-
+            //var files = $(".file-uploader").dxFileUploader("instance").option("value");
+            //if (files.length > 0) {
+            //    $.each(files, function (key, value) {
+            //        fdata.append(files[key].name, files[key]);
+            //    });
+            //}
+            //else {
+            //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
+            //    e.preventDefault();
+            //    return false;
+            //};
+            e.preventDefault();
+            console.log(JSON.stringify(object));
             $.ajax({
                 type: "POST",
-                enctype: 'multipart/form-data',
-                url: "/ThongTin/QLTienDo/Report",
-                data: fdata,
+                headers: header,
+                url: URL_API_PM_CMD + ACTION_CMD_PLAN_REPORT,
+                dataType: "json",
+                data: JSON.stringify(object),
                 processData: false,
                 contentType: false,
                 cache: false,
                 timeout: 600000,
                 success: function (rs) {
                     loadingPanel.hide();
-                    DevExpress.ui.notify(rs.result, rs.status, 3000);
-                    if (rs.status == "success") {
-                        $("#popup-register").dxPopup('instance').hide();
-                    }
+                    DevExpress.ui.notify("Báo cáo thành công", "success", 3000);
+                    $("#popup-main").dxPopup('instance').hide();
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     loadingPanel.hide();
-                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    console.log(xhr);
+                    deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
                 }
             });
 

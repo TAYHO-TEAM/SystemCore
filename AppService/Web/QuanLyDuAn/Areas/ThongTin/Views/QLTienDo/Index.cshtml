@@ -620,7 +620,16 @@
                             {
                                 hint: "Báo cáo",
                                 text: "Báo cáo",
-                                visible: true,
+                                visible: function (e) {
+                                    if (e.row.data.status > 0 || e.row.data.status !== null) {
+                                        return false;
+                                    } else if (e.row.data.endDate < moment()) {
+                                        return false;
+                                    }
+                                    else {
+                                        return true;
+                                    }
+                                },
                                 onClick: function (e) {
                                     console.log(e);
                                     var container = e.component;
