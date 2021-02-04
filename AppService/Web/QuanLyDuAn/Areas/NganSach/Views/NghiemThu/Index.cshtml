@@ -265,30 +265,34 @@
 					},
 				},
 				{
-					caption: "Đơn vị tính", alignment: "center",
-					cellTemplate: (c, o) => {
-						c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donViTinh)
-					}
+                    dataField:"donViTinh",
+					caption: "Đơn vị tính", alignment: "center", 
 				},
 				{
 					caption: "Đơn giá", alignment:"right",
-					cellTemplate: (c, o) => {
-						c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia)
-					}
-				},
+                    dataField: "donGia",
+                },
+                {
+                    dataField: "tenHangMuc",
+                    groupIndex: 0, caption: "Hạng mục"
+                },
+                {
+                    dataField: "tenNhomCongViec",
+                    groupIndex: 1, caption: "Nhóm công việc"
+                },
 				{
 					dataField: "dot",
-					groupIndex: 1, caption:"Nghiệm thu đợt"
+					groupIndex: 2, caption:"Nghiệm thu đợt"
 				},
 				{
 					dataField: "khoiLuong", caption: "Khối lượng", alignment: "center",
 				},
-				{
-					dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
-					cellTemplate: (c, o) => {
-						c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia * o.data.khoiLuong)
-					}
-				}
+				//{
+				//	dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
+				//	cellTemplate: (c, o) => {
+				//		c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia * o.data.khoiLuong)
+				//	}
+				//}
 			]
 		});
 		var loadCreate = () => $("#popup-main").dxPopup({

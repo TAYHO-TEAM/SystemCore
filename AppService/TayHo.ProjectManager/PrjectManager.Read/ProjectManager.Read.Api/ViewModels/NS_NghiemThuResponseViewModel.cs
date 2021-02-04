@@ -18,5 +18,7 @@ namespace ProjectManager.Read.Api.ViewModels
         public string TenNhomCongViec { get; set; }
         public int? HangMucId { get; set; }
         public string TenHangMuc { get; set; }
+        public string DonViTinh { get; set; }
+        public decimal? DonGia { get; set; }
     }
 }

@@ -19,8 +19,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class NS_NghiemThuController : APIControllerBase
     {
         private readonly IDOBaseRepository<NS_NghiemThuDTO> _dOBaseRepository;
-        private readonly INS_NghiemThuRepository<NS_NghiemThuDetailDTO> _nS_NghiemThuRepository;
-        private const string Detail = nameof(Detail);
+        private readonly INS_NghiemThuRepository<NS_NghiemThuDetailDTO> _nS_NghiemThuRepository; 
 
         public NS_NghiemThuController(
             IMapper mapper, 
@@ -38,8 +37,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route(Detail)]
+        [HttpGet] 
         [ProducesResponseType(typeof(MethodResult<PagingItems<NS_NghiemThuDetailViewModel>>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetNS_NghiemThuAsync([FromQuery]BaseRequestViewModel request)
