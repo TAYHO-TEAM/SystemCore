@@ -11,8 +11,10 @@ namespace ProjectManager.CMD.Api.Infrastructure.Mappings
         {
             CreateMap<PlanMaster, CreatePlanMasterCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<PlanMaster, CreateFormPlanMasterCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            CreateMap<PlanMaster, CreateFormProgressPlanMasterCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<PlanMaster, UpdatePlanMasterCommandResponse>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
             CreateMap<PlanMaster, PlanMasterCommandResponseDTO>().ForMember(x => x.Id, opt => opt.MapFrom(t => t.Id));
+            
         }
     }
 }

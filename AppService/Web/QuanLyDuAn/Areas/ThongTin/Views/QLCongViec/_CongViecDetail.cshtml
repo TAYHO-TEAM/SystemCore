@@ -150,6 +150,7 @@
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
+            loadingPanel.show();
             $(this).prop("disabled", true);
             var fdata = new FormData();
             var i = 10;

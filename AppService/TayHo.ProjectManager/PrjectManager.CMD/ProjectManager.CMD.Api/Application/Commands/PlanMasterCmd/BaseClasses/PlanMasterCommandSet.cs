@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectManager.CMD.Api.Application.Commands
 {
@@ -8,6 +9,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public string Code { get; set; }
         public int? ParentId { get; set; }
         public string PlanProjectId { get; set; }
+        [Required(ErrorMessage = "Không được để trống")]
         public string Title { get; set; }
         public int? TimeLine { get; set; }
         public string Description { get; set; }

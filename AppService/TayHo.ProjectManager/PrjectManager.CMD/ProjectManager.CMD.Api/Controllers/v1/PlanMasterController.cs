@@ -11,6 +11,7 @@ namespace ProjectManager.CMD.Api.Controllers.v1
     public class PlanMasterController : APIControllerBase
     {
         const string FormPlanMaster = nameof(FormPlanMaster);
+        const string FormProgressPlanMaster = nameof(FormProgressPlanMaster);
         public PlanMasterController(IMediator mediator) : base(mediator)
         {
         }
@@ -42,6 +43,25 @@ namespace ProjectManager.CMD.Api.Controllers.v1
         [ProducesResponseType(typeof(MethodResult<CreateFormPlanMasterCommandResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateFormPlanMasterAsync([FromForm] CreateFormPlanMasterCommand command)
+        {
+            var files = Request.Form.Files;
+            if (files != null)
+            {
+                command.setFile(files);
+            }
+            var result = await _mediator.Send(command).ConfigureAwait(false);
+            return Ok(result);
+        }
+        /// <summary>
+        /// Create a new Progress PlanMaster by  Form.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(FormProgressPlanMaster)]
+        [ProducesResponseType(typeof(MethodResult<CreateFormProgressPlanMasterCommand>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> CreateFormProgressPlanMasterAsync([FromForm] CreateFormProgressPlanMasterCommand command)
         {
             var files = Request.Form.Files;
             if (files != null)

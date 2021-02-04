@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -37,27 +38,35 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             {
                 string name = propertyInfo.Name.ToString();
                 string type = propertyInfo.PropertyType.Name.ToString();
-                var value = propertyInfo.GetValue(requestOBJ);
-                if ((type != "String" || type != "string" ) && type != "DateTime")
+                try
                 {
-                    if (value != null)
+                    var value = propertyInfo.GetValue(requestOBJ);
+                    if ((type != "String" || type != "string") && type != "DateTime")
                     {
-                        mFormData.Add(new StringContent(value.ToString()), name.ToString());
-                    }    
-                }
-                else  if(type == "DateTime")
-                {
-                    if (value.ToString() != "01/01/0001 12:00:00 AM")
-                    {
-                        mFormData.Add(new StringContent(Convert.ToDateTime(value.ToString()).ToString("yyyy-MM-dd HH:mm:ss")), name.ToString());
+                        if (value != null)
+                        {
+                            mFormData.Add(new StringContent(value.ToString()), name.ToString());
+                        }
                     }
-                } 
-                else
-                {
-                    if(!string.IsNullOrEmpty(value.ToString()))
+                    else if (type == "DateTime")
                     {
-                        mFormData.Add(new StringContent(value.ToString()), name);
-                    }    
+                        if (value.ToString() != "01/01/0001 12:00:00 AM")
+                        {
+                            DateTime getdate = DateTime.ParseExact(value.ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                            mFormData.Add(new StringContent(getdate.ToString("yyyy-MM-dd HH:mm:ss")), name.ToString());
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(value.ToString()))
+                        {
+                            mFormData.Add(new StringContent(value.ToString()), name);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    
                 }
             }
             if (listFile.Count > 0)
@@ -95,8 +104,6 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             }
             return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
         }
-
-
 
     }
 }
