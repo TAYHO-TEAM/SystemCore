@@ -60,7 +60,7 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
             {
 
                 await cmd.Connection.OpenAsync();
-                cmd.CommandText = "sp_DocumentRelease_GetToMail";
+                cmd.CommandText = "sp_DocumentReleaseAccount_GetToMail";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("@DocumentTypeId", DocumentTypeId));
                 var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
