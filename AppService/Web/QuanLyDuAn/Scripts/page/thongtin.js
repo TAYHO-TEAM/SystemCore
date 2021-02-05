@@ -112,11 +112,11 @@ let customStore_CMD_READ_PLANPROJECTID = (CMD, READ) => new DevExpress.data.Cust
     key: "id",
     load: (values) => {
         let deferred = $.Deferred(), params = { 'Type': GROUPOWNERID };
+        params['FindId'] = 'PlanProjectId,' + ConvertProjectToPlanProject();
         if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
             params['SortADSC'] = values.sort[0].desc;
-            params['FindId'] = 'PlanProjectId,' + ConvertProjectToPlanProject();
         }
         $.ajax({
             headers: header,
@@ -524,6 +524,9 @@ function ConvertProjectToPlanProject() {
             break;
         case 2:
             return '2';
+            break;
+        case 3:
+            return '3';
             break;
         default:
             return '1';

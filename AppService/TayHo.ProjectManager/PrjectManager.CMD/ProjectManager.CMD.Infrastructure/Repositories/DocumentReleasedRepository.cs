@@ -54,5 +54,19 @@ namespace ProjectManager.CMD.Infrastructure.Repositories
                 await cmd.Connection.CloseAsync();
             }
         }
+        public async Task<string> IsGetToMailsAsync(int DocumentTypeId = 0)
+        {
+            await using (var cmd = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+
+                await cmd.Connection.OpenAsync();
+                cmd.CommandText = "sp_DocumentRelease_GetToMail";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("@DocumentTypeId", DocumentTypeId));
+                var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+                await cmd.Connection.CloseAsync();
+                return (string)result;
+            }
+        }
     }
 }

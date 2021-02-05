@@ -28,7 +28,7 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/PlanMaster/GetWithAccount";
+        const ACTION = "/PlanMaster/GetWithAccountProgress";
         const ACTION_DETAIL = "/PlanJob";
         const ACTION_SCHEDULE = "/PlanSchedule";
         const ACTION_ACCOUNTINFO = "/AccountInfo";
@@ -49,6 +49,10 @@
         if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9 ) {
             GROUPOWNERID = 0;
             localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
+        }
+        if (PROJECTID === 1 || PROJECTID === 2) {
+            PROJECTID = 3;
+            localStorage.setItem('projectIdCurrent', PROJECTID);
         }
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -130,7 +134,7 @@
 
         });
 
-        let customStore = customStore_CMD_READ_WITHGROUPOWNERID(ACTION_CMD, ACTION);
+        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
         let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');

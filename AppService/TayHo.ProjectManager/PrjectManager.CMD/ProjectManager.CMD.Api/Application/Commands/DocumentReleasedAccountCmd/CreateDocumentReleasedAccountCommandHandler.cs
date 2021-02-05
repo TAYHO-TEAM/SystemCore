@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ProjectManager.CMD.Domain.IService;
+using System.Linq;
+using System;
 
 namespace ProjectManager.CMD.Api.Application.Commands
 {
@@ -68,13 +70,22 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 }
             }
             await _documentReleasedAccountRepository.AddRangeAsync(newDocumentReleasedAccounts).ConfigureAwait(false);
-            await _documentReleasedAccountRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+            await _documentReleasedAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _documentReleasedRepository.DocumentReleasedProcessAsync();
-            if (request.AccountId.HasValue && request.AccountId > 0)
+            if(newDocumentReleasedAccounts.Count>0)
             {
-                var accountInfo = await _accountInfoRepository.GetAllListAsync(x => x.AccountId == request.AccountId).ConfigureAwait(false);
+                var accountInfos = await _accountInfoRepository.GetAllListAsync(x => newDocumentReleasedAccounts.Any(y => y.AccountId == x.AccountId)).ConfigureAwait(false);
+                List<string> toMails = accountInfos.Select(m => m.Email).ToList();
                 var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
-            }
+
+                _sendMailService.SendMailAppoinment((DateTime)documentRealesed.Calendar, (DateTime)documentRealesed.Calendar, documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, true);
+            }    
+          
+            //if (request.AccountId.HasValue && request.AccountId > 0)
+            //{
+            //    var accountInfo = await _accountInfoRepository.GetAllListAsync(x => x.AccountId == request.AccountId).ConfigureAwait(false);
+            //    var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
+            //}
             var DocumentReleasedAccountResponseDTOs = _mapper.Map<List<DocumentReleasedAccountCommandResponseDTO>>(newDocumentReleasedAccounts);
             methodResult.Result = new CreateDocumentReleasedAccountCommandResponse(DocumentReleasedAccountResponseDTOs);
             return methodResult;

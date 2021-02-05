@@ -558,13 +558,12 @@
                             dataField: "accountId",
                             caption: "Họ Tên",
                             alignment: "center",
-                            //dataType: "number",
-                            lookup: {
-                                dataSource: customStore_AccountInfo,
-                                valueExpr: "accountId",
-                                displayExpr: "userName",
-                            },
-
+                            ////dataType: "number",
+                            //lookup: {
+                            //    dataSource: customStore_AccountInfo,
+                            //    valueExpr: "accountId",
+                            //    displayExpr: "userName",
+                            //},
                         },//account
                         {
                             dataField: "groupId",
@@ -576,7 +575,6 @@
                                 valueExpr: "id",
                                 displayExpr: "title",
                             },
-
                         },//nhóm
                         {
                             dataField: "pushTime",
@@ -651,17 +649,44 @@
                                 {
                                     colSpan: 12,
                                     dataField: "accountId",
-                                    editorType: "dxSelectBox",
+                                    editorType: "dxDropDownBox",
                                     editorOptions: {
                                         elementAttr: {
                                             id: "accountIdSelect",
                                         },
+                                        dataSource: customStore_AccountInfo,
                                         placeholder: "Vui lòng chọn...",
                                         searchEnabled: true,
                                         showClearButton: true,
-                                        itemTemplate: function (data) {
-                                            return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.department));
-                                        },
+                                        contentTemplate: function (e) {
+                                            var value = e.component.option("value"),
+                                                $dataGrid = $("<div>").dxDataGrid({
+                                                    dataSource: e.component.getDataSource(),
+                                                    columns: ["id", "userName"],
+                                                    hoverStateEnabled: true,
+                                                    paging: { enabled: true, pageSize: 10 },
+                                                    filterRow: { visible: true },
+                                                    scrolling: { mode: "infinite" },
+                                                    height: 345,
+                                                    selection: { mode: "multiple" },
+                                                    selectedRowKeys: value,
+                                                    onSelectionChanged: function (selectedItems) {
+                                                        var keys = selectedItems.selectedRowKeys;
+                                                        e.component.option("value", keys);
+                                                    }
+                                                });
+                                            dataGrid = $dataGrid.dxDataGrid("instance");
+
+                                            e.component.on("valueChanged", function (args) {
+                                                var value = args.value;
+                                                dataGrid.selectRows(value, false);
+                                            });
+                                            console.log($dataGrid);
+                                            return $dataGrid;
+                                        }
+                                        //itemTemplate: function (data) {
+                                        //    return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.department));
+                                        //},
                                     },
                                     validationRules: [{
                                         type: "async",
