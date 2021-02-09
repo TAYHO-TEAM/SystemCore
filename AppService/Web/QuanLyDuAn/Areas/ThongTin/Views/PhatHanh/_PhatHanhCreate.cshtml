@@ -39,7 +39,7 @@
                                     id: "elementDocumentTypeId",
                                 }
                             },
-
+                            validationRules: [{ type: "required" }],
                         },
                         {
                             colSpan: 12,
@@ -92,8 +92,11 @@
                             label: { text: "Lịch dự kiến" },
                             editorType: "dxDateBox",
                             editorOptions: {
+                                pickerType: "rollers",
                                 type: "datetime",
+                                invalidDateMessage: "Sai định dạng ngày tháng"
                             },
+
                         },
                         {
                             colSpan: 12,
@@ -131,7 +134,9 @@
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
-            $(this).prop("disabled", true);
+            //$(this).prop("disabled", true);
+            var result = formInstance.validate();
+            console.log(result);
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {
@@ -141,9 +146,8 @@
                 else {
                     fdata.append(key, value);
                 }
-                
+
             });
-            console.log(PROJECTID);
             fdata.append('projectId', PROJECTID);
             fdata.append('token', UserCurrentInfo.accessToken);
             for (var pair of fdata.entries()) {

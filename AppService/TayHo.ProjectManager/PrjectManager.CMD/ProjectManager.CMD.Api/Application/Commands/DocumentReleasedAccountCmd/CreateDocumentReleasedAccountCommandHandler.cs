@@ -37,21 +37,24 @@ namespace ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateDocumentReleasedAccountCommandResponse>();
             List<DocumentReleasedAccount> newDocumentReleasedAccounts = new List<DocumentReleasedAccount>();
-            var existingGroupAccounts = await _groupAccount.GetAllListAsync(x => x.GroupId == request.GroupId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false);
-            if (request.GroupId.HasValue && existingGroupAccounts.Count > 0)
+            var existingGroupAccounts = await _groupAccount.GetAllListAsync(x => x.GroupId == (request.GroupId.HasValue ? request.GroupId : 0) && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false);
+            if (request.GroupId.HasValue && existingGroupAccounts != null)
             {
-                foreach (var groupAccount in existingGroupAccounts)
+                if (existingGroupAccounts.Count > 0)
                 {
-                    if (!await _documentReleasedAccountRepository.AnyAsync(x => x.AccountId == groupAccount.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
+                    foreach (var groupAccount in existingGroupAccounts)
                     {
-                        var newDocumentReleasedAccount = new DocumentReleasedAccount(groupAccount.AccountId,
-                                                                               request.DocumentReleasedId,
-                                                                               request.GroupId);
-                        newDocumentReleasedAccount.SetCreate(_user);
-                        newDocumentReleasedAccount.Status = request.Status.HasValue ? request.Status : 0;
-                        newDocumentReleasedAccount.IsActive = request.IsActive.HasValue ? request.IsActive : true;
-                        newDocumentReleasedAccount.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
-                        newDocumentReleasedAccounts.Add(newDocumentReleasedAccount);
+                        if (!await _documentReleasedAccountRepository.AnyAsync(x => x.AccountId == groupAccount.AccountId && x.DocumentReleasedId == request.DocumentReleasedId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false))
+                        {
+                            var newDocumentReleasedAccount = new DocumentReleasedAccount(groupAccount.AccountId,
+                                                                                   request.DocumentReleasedId,
+                                                                                   request.GroupId);
+                            newDocumentReleasedAccount.SetCreate(_user);
+                            newDocumentReleasedAccount.Status = request.Status.HasValue ? request.Status : 0;
+                            newDocumentReleasedAccount.IsActive = request.IsActive.HasValue ? request.IsActive : true;
+                            newDocumentReleasedAccount.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
+                            newDocumentReleasedAccounts.Add(newDocumentReleasedAccount);
+                        }
                     }
                 }
             }
@@ -72,14 +75,16 @@ namespace ProjectManager.CMD.Api.Application.Commands
             await _documentReleasedAccountRepository.AddRangeAsync(newDocumentReleasedAccounts).ConfigureAwait(false);
             await _documentReleasedAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await _documentReleasedRepository.DocumentReleasedProcessAsync();
-            if(newDocumentReleasedAccounts.Count>0)
+            if (newDocumentReleasedAccounts.Count > 0)
             {
-                List<string> toMails = await  _documentReleasedRepository.IsGetToMailsAsync((int)(request.DocumentReleasedId));
+                List<string> toMails = await _documentReleasedRepository.IsGetToMailsAsync((int)(request.DocumentReleasedId));
                 var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
+                if (documentRealesed.DocumentTypeId == 8)
+                {
+                    _sendMailService.SendMailAppoinment((documentRealesed.Calendar.HasValue? (DateTime)documentRealesed.Calendar:DateTime.Now), (documentRealesed.Calendar.HasValue ? (DateTime)documentRealesed.Calendar : DateTime.Now), documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, true);
+                }
+            }
 
-                _sendMailService.SendMailAppoinment((DateTime)documentRealesed.Calendar, (DateTime)documentRealesed.Calendar, documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, true);
-            }    
-          
             //if (request.AccountId.HasValue && request.AccountId > 0)
             //{
             //    var accountInfo = await _accountInfoRepository.GetAllListAsync(x => x.AccountId == request.AccountId).ConfigureAwait(false);

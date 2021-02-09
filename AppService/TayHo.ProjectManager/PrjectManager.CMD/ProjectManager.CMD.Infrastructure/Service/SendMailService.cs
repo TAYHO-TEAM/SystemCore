@@ -28,7 +28,7 @@ namespace ProjectManager.CMD.Infrastructure.Service
             _clientFactory = clientFactory;
             _env = env;
         }
-        public void SendMailAppoinment(DateTime StartDate, DateTime EndDate, string LocationTaget, string Subject, string Body, string DisplayName, string MailFrom, List<string> MailTo, List<string> MailCC, List<string> MailBCC, bool isCancel)
+        public void SendMailAppoinment(DateTime StartDate , DateTime EndDate, string LocationTaget , string Subject, string Body, string DisplayName, string MailFrom, List<string> MailTo, List<string> MailCC, List<string> MailBCC, bool isCancel)
         {
 
             StringBuilder str = new StringBuilder();
@@ -42,8 +42,8 @@ namespace ProjectManager.CMD.Infrastructure.Service
             str.AppendLine(string.Format("DTEND:{0:yyyyMMddTHHmmss}", EndDate));
             str.AppendLine("LOCATION: " + LocationTaget);
             str.AppendLine(string.Format("UID:{0}", Guid.NewGuid()));
-            str.AppendLine(string.Format("DESCRIPTION:{0}", Body.Replace("\n", "<br>")));
-            str.AppendLine(string.Format("X-ALT-DESC;FMTTYPE=text/html:{0}", Body.Replace("\n", "<br>")));
+            str.AppendLine(string.Format("DESCRIPTION:{0}",!string.IsNullOrEmpty(Body)?Body.Replace("\n", "<br>"): Body));
+            str.AppendLine(string.Format("X-ALT-DESC;FMTTYPE=text/html:{0}", !string.IsNullOrEmpty(Body) ? Body.Replace("\n", "<br>") : Body));
             str.AppendLine(string.Format("SUMMARY:{0}", Subject));
             str.AppendLine(string.Format("ORGANIZER;CN=\"{0}\":MAILTO:{1}", _profileMailOptions.name, _profileMailOptions.name));
             str.AppendLine(string.Format("ATTENDEE;CN=\"{0}\";RSVP=TRUE:mailto:{1}", string.Join(",", MailTo), string.Join(",", MailTo)));
@@ -69,6 +69,7 @@ namespace ProjectManager.CMD.Infrastructure.Service
             {
                 foreach (string tomail in MailTo)
                 {
+                    if(!string.IsNullOrEmpty(tomail) )
                     msg.To.Add(tomail);
                 }
             }
@@ -76,14 +77,16 @@ namespace ProjectManager.CMD.Infrastructure.Service
             {
                 foreach (string ccmail in MailCC)
                 {
-                    msg.CC.Add(ccmail);
+                    if (!string.IsNullOrEmpty(ccmail))
+                        msg.CC.Add(ccmail);
                 }
             }
             if (MailBCC != null && MailBCC.Count > 0)
             {
                 foreach (string bccmail in MailBCC)
                 {
-                    msg.Bcc.Add(bccmail);
+                    if (!string.IsNullOrEmpty(bccmail))
+                        msg.Bcc.Add(bccmail);
                 }
             } 
             ContentType contype = new ContentType("text/calendar");

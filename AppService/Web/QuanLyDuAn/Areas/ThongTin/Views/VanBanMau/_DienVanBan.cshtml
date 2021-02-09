@@ -51,6 +51,7 @@
 
                     groups.push({
                         itemType: "group",
+                        cssClass: "dx-field-item-label-text",
                         caption: customFormBodyDetail[i].header,
                         name: customFormBodyDetail[i].header,
                         items: getInputOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.code, customFormBodyDetail[i].id, customFormBodyDetail[i].customTableDetailDTO.noColum, customFormBodyDetail[i].customTableDetailDTO.noRow),
@@ -145,17 +146,19 @@
 
                 }
                 else if (type === "dxDateBox") {
+
                     return {
                         //dataField: customFromBodyId + '_' + object.id + '_' + index,
                         itemType: "simple",
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            pickerType: "rollers",
                             type: "datetime",
-                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : null,
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
                                 id: Id,
-                                class: "customForm_DateBox",
+                                class: "customForm_DateBox ",
                             },
                         }
                     };
@@ -213,6 +216,7 @@
                                     itemType: "simple",
                                     name: "Image",
                                     editorType: 'dxGallery',
+                                    cssClass: "custom-textbox",
                                     editorOptions: {
                                         dataSource: object.customCellContentDTOs.map(x=>x.contents),
                                         height: 300,
@@ -333,11 +337,9 @@
             }
         });
         $("#form-custom").on("submit", function (e) {
+            loadingPanel.show();
             //test(fdatatest);
             e.preventDefault();
-
-
-
 
             var fdata = new FormData();
             fdata.append("customformContentId", @Model);
@@ -384,8 +386,7 @@
                         fdata.append((res[0] + '_' + res[1] + '_' + ((1)*res[2] + key) ), files[key]);
                     });
                 }
-                console.log(uploader[j].id);
-                console.log($("#" + uploader[j].id).dxFileUploader('instance').option('value'));
+
             }
 
             @*$.each(formData, function (key, value) {
@@ -393,9 +394,9 @@
             });
 
             fdata.append('customFormContentId', @Model);*@
-            for (var pair of fdata.entries()) {
-                console.log(pair[0] + ', ' + pair[1]);
-            }
+            //for (var pair of fdata.entries()) {
+            //    console.log(pair[0] + ', ' + pair[1]);
+            //}
 
             $.ajax({
                 type: "POST",

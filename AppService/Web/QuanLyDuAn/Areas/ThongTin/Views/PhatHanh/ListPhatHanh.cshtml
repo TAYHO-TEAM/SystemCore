@@ -345,6 +345,7 @@
 
                 },
                 onRowDblClick: function (e) {
+                    e.component;
                     console.log(e.data);
                     loadDetail(e.data);
                 },
@@ -526,6 +527,9 @@
                 });
                 c.append(scrollView);
                 return c;
+            },
+            onHidden: function () {
+                loadData();
             }
         }).addClass("popup-priority-1");
 

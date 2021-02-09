@@ -28,7 +28,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         {
             var methodResult = new MethodResult<CreateNotifyAccountCommandResponse>();
             List<NotifyAccount> newNotifyAccounts = new List<NotifyAccount>();
-            var existingGroupAccounts = await _groupAccount.GetAllListAsync(x => x.GroupId == request.GroupId && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false);
+            var existingGroupAccounts = await _groupAccount.GetAllListAsync(x => x.GroupId == (request.GroupId.HasValue? request.GroupId :0) && (x.IsDelete == false || !x.IsDelete.HasValue)).ConfigureAwait(false);
             if (request.GroupId.HasValue && existingGroupAccounts.Count > 0)
             {
                 foreach (var groupAccount in existingGroupAccounts)
@@ -46,6 +46,8 @@ namespace ProjectManager.CMD.Api.Application.Commands
                         newNotifyAccounts.Add(newNotifyAccount);
                     }
                 }
+                await _notifyAccountRepository.AddRangeAsync(newNotifyAccounts).ConfigureAwait(false);
+                await _notifyAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
             else if (request.AccountId > 0)
             {
@@ -60,10 +62,12 @@ namespace ProjectManager.CMD.Api.Application.Commands
                     newNotifyAccount.IsActive = request.IsActive.HasValue ? request.IsActive : true;
                     newNotifyAccount.IsVisible = request.IsVisible.HasValue ? request.IsVisible : true;
                     newNotifyAccounts.Add(newNotifyAccount);
+                    await _notifyAccountRepository.AddAsync(newNotifyAccount).ConfigureAwait(false);
+                    await _notifyAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
+               
             }
-            await _notifyAccountRepository.AddRangeAsync(newNotifyAccounts).ConfigureAwait(false);
-            await _notifyAccountRepository.UnitOfWork.SaveChangesAndDispatchEventsAsync(cancellationToken).ConfigureAwait(false);
+           
 
             var NotifyAccountResponseDTOs = _mapper.Map<List<NotifyAccountCommandResponseDTO>>(newNotifyAccounts);
             methodResult.Result = new CreateNotifyAccountCommandResponse(NotifyAccountResponseDTOs);
