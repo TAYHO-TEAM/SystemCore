@@ -78,6 +78,17 @@
                     dataField: "typeParam",
                     caption: "Kiểu dữ liệu",
                     dataType: "string",
+                    lookup: {
+                        dataSource: Type,
+                        valueExpr: "ID",
+                        displayExpr: "Name",
+                    },
+                    editorType: "dxSelectBox",
+                    editorOptions: {
+                        dataSource: Type,
+                        valueExpr: "ID", displayExpr: "Name",
+                    },
+                    validationRules: [{ type: "required" }],
                 },
                 {
                     dataField: "sourceValue",

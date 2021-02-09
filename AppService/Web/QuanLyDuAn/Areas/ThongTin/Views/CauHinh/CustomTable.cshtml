@@ -48,6 +48,17 @@
                         dataField: "code",
                         caption: "Ký Hiệu",
                         dataType: "string",
+                        lookup: {
+                            dataSource: parameterType,
+                            valueExpr: "ID",
+                            displayExpr: "Name",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: parameterType,
+                            valueExpr: "ID", displayExpr: "Name",
+                        },
+                        validationRules: [{ type: "required" }],
                     },
                     {
                         dataField: "title",
