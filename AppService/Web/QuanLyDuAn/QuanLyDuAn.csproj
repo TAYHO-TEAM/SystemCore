@@ -2499,6 +2499,7 @@
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Account\NoAuthentication.cshtml" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
+    <None Include="Properties\PublishProfiles\web_qltt.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Content\plugins\fullcalendar-bootstrap\main.d.ts" />
