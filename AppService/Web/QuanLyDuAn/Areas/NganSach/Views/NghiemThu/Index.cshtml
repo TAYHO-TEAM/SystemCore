@@ -157,6 +157,8 @@
 		});
 		var loadData = () => $("#container").dxDataGrid({
 			dataSource: customStore_NghiemThu(), height: heightScreen,
+            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
 			onToolbarPreparing: function (e) {
 				var container = e.component;
 				e.toolbarOptions.items.unshift(
@@ -264,13 +266,17 @@
 						valueExpr: "id", displayExpr: "tenCongViec",
 					},
 				},
+                {
+                    dataField: "dot", caption: "Đợt Nghiệm thu", alignment: "center", width: 100,
+                },
 				{
                     dataField:"donViTinh",
 					caption: "Đơn vị tính", alignment: "center", 
 				},
 				{
 					caption: "Đơn giá", alignment:"right",
-                    dataField: "donGia",
+                    dataField: "donGia", width: 150,
+                    format: { type: "currency", currency: "VND" },
                 },
                 {
                     dataField: "tenHangMuc",
@@ -281,18 +287,15 @@
                     groupIndex: 1, caption: "Nhóm công việc"
                 },
 				{
-					dataField: "dot",
-					groupIndex: 2, caption:"Nghiệm thu đợt"
+                    dataField: "khoiLuong", caption: "Khối lượng", alignment: "right", width: 100,
 				},
 				{
-					dataField: "khoiLuong", caption: "Khối lượng", alignment: "center",
-				},
-				//{
-				//	dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
-				//	cellTemplate: (c, o) => {
-				//		c.append(o.row.cells[1].column.lookup.items.filter(x => x.id == o.data.congViecDetailId)[0].donGia * o.data.khoiLuong)
-				//	}
-				//}
+					dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
+                    calculateCellValue: (rowData) => {
+                        return (rowData.donGia * rowData.khoiLuong);
+                    },
+                    format: { type: "currency", currency: "VND" },
+				}
 			]
 		});
 		var loadCreate = () => $("#popup-main").dxPopup({
