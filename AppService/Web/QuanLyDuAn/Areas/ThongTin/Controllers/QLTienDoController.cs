@@ -26,6 +26,10 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return PartialView();
         }
+        public ActionResult _TienDoCreate()
+        {
+            return PartialView();
+        }
         public ActionResult _TienDoReport(int id)
         {
             return PartialView(id);

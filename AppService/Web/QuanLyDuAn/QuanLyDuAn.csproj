@@ -2493,6 +2493,7 @@
     <Content Include="Areas\ThongTin\Views\QLTienDo\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoDetail.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoReport.cshtml" />
+    <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoCreate.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
