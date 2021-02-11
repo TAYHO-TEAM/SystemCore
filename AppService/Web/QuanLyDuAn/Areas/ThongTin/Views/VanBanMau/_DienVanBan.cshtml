@@ -24,6 +24,9 @@
                 colCount: 1,
                 formData: rs,
                 height: "90vh",
+                //options: {
+                //    stylingMode: "filled",
+                //},
                 items: [
                     {
                         itemType: "group",
@@ -79,6 +82,7 @@
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            stylingMode: "filled",
                             placeholder: "Vui lòng điền thông tin",
                             value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
@@ -97,6 +101,7 @@
                             editorType: type,
                             cssClass: "custom-textbox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 searchEnabled: true,
                                 value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                                 elementAttr: {
@@ -117,6 +122,7 @@
                             editorType: type,
                             cssClass: "custom-textbox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                                 searchEnabled: true,
                                 elementAttr: {
@@ -153,7 +159,28 @@
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
-                            pickerType: "rollers",
+                            //buttons: [
+                            //    'clear',
+                            //    {
+                            //        name: 'customButtonName1',
+                            //        location: 'after',
+                            //        options: { icon: 'event' }
+                            //    },
+                            //    'dropDown'
+                            //],
+                            dropDownOptions: {
+                                buttons: [
+                                {
+                                    name: 'customButtonName1',
+                                    location: 'after',
+                                    options: { icon: 'event' }
+                                    }],
+                            },
+                            width: "100%",
+                            stylingMode: "filled",
+                            pickerType: "calendar",
+                            showClearButton: true,
+                            useMaskBehavior: true,
                             type: "datetime",
                             value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
@@ -170,6 +197,7 @@
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            stylingMode: "filled",
                             text: object.sourceValue,
                             value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents === 'true'?true:false : false,
                             elementAttr: {
@@ -218,6 +246,7 @@
                                     editorType: 'dxGallery',
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         dataSource: object.customCellContentDTOs.map(x=>x.contents),
                                         height: 300,
                                         width: 'auto',
@@ -235,6 +264,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: 'image/*',
@@ -275,6 +305,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: 'application/*',
@@ -313,6 +344,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: '*/*',

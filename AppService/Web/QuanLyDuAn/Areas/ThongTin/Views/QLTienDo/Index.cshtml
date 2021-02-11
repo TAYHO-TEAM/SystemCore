@@ -397,7 +397,6 @@
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
-
                     e.toolbarOptions.items.unshift(
                         {
                             location: "before",
@@ -406,10 +405,11 @@
                                 dataSource: planProject,
                                 valueExpr: "ID",
                                 displayExpr: "Name",
+                                width: "100%",
                                 searchEnabled: true,
                                 searchMode: "contains",
-                                width: "100%",
                                 showClearButton: false,
+                                stylingMode: "filled",
                                 value: PROJECTID,
                                 onValueChanged: function (data) {
                                     console.log(data);
@@ -426,10 +426,11 @@
                                 dataSource: groupOwner,
                                 valueExpr: "ID",
                                 displayExpr: "Name",
+                                width: "100%",
                                 searchEnabled: true,
                                 searchMode: "contains",
-                                width: "100%",
                                 showClearButton: false,
+                                stylingMode: "filled",
                                 value: GROUPOWNERID,
                                 visible: PermitInAction["insert"],
                                 onValueChanged: function (data) {
