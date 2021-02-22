@@ -81,7 +81,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
                 if (documentRealesed.DocumentTypeId == 8)
                 {
-                    _sendMailService.SendMailAppoinment((documentRealesed.Calendar.HasValue? (DateTime)documentRealesed.Calendar:DateTime.Now), (documentRealesed.Calendar.HasValue ? (DateTime)documentRealesed.Calendar : DateTime.Now), documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, true);
+                    _sendMailService.SendMailAppoinment((documentRealesed.Calendar.HasValue? (DateTime)documentRealesed.Calendar:DateTime.Now), (documentRealesed.Calendar.HasValue ? (DateTime)documentRealesed.Calendar : DateTime.Now), documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, false);
                 }
             }
 
