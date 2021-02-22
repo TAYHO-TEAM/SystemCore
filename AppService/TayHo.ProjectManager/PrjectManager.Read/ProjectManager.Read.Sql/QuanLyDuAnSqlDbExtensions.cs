@@ -43,6 +43,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<OperationProcessDTO>, DOBaseRepository<OperationProcessDTO>>();
             services.AddScoped<IDOBaseRepository<StepsProcessDTO>, DOBaseRepository<StepsProcessDTO>>();
 
+            #region NGÂN SÁCH
             services.AddScoped<IDOBaseRepository<NS_CongViecDTO>, DOBaseRepository<NS_CongViecDTO>>();
             services.AddScoped<INS_CongViecRepository<NS_CongViec_CongViecDetailDTO>, NS_CongViecRepository<NS_CongViec_CongViecDetailDTO>>();
 
@@ -74,7 +75,11 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<NS_TamUng_TheoDoiDTO>, DOBaseRepository<NS_TamUng_TheoDoiDTO>>();
 
             services.AddScoped<IDOBaseRepository<NS_NghiemThuDTO>, DOBaseRepository<NS_NghiemThuDTO>>(); 
-            services.AddScoped<INS_NghiemThuRepository<NS_NghiemThuDetailDTO>, NS_NghiemThuRepository<NS_NghiemThuDetailDTO>>(); 
+            services.AddScoped<INS_NghiemThuRepository<NS_NghiemThuDetailDTO>, NS_NghiemThuRepository<NS_NghiemThuDetailDTO>>();
+
+            services.AddScoped<IDOBaseRepository<NS_DuChiDTO>, DOBaseRepository<NS_DuChiDTO>>();
+            services.AddScoped<IDOBaseRepository<NS_ThucChiDTO>, DOBaseRepository<NS_ThucChiDTO>>();
+            #endregion
 
             services.AddScoped<IDOBaseRepository<RequestRegistDTO>, DOBaseRepository<RequestRegistDTO>>();
             services.AddScoped<IDOBaseRepository<ResponseRegistDTO>, DOBaseRepository<ResponseRegistDTO>>();

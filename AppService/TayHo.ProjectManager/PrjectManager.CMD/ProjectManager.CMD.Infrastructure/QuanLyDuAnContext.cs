@@ -22,6 +22,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<GroupAccount> GroupAccount { get; set; }
         public DbSet<Groups> Groups { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
+        #region Ngân sách
         public DbSet<NS_CongViec> NS_CongViec { get; set; }
         public DbSet<NS_CongViecDetail> NS_CongViecDetail { get; set; }
         public DbSet<NS_GiaiDoan> NS_GiaiDoan { get; set; }
@@ -40,6 +41,9 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<NS_Reason> NS_Reason { get; set; }
         public DbSet<NS_TamUng> NS_TamUng { get; set; }
         public DbSet<NS_TamUng_TheoDoi> NS_TamUng_TheoDoi { get; set; }
+        public DbSet<NS_DuChi> NS_DuChi { get; set; }
+        public DbSet<NS_ThucChi> NS_ThucChi { get; set; }
+        #endregion
         public DbSet<OperationProcess> OperationProcess { get; set; }
         public DbSet<PlanRegister> PlanRegister { get; set; }
         public DbSet<ProblemCategory> ProblemCategory { get; set; }

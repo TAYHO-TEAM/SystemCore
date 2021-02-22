@@ -31,7 +31,7 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<AssignmentsRepository>().As<IAssignmentsRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ReplyRepository>().As<IReplyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ContractorInfoRepository>().As<IContractorInfoRepository>().InstancePerLifetimeScope();
-
+            #region NGÂN SÁCH
             builder.RegisterType<NS_GiaiDoanRepository>().As<INS_GiaiDoanRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_HangMucRepository>().As<INS_HangMucRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_HangMucDetailRepository>().As<INS_HangMucDetailRepository>().InstancePerLifetimeScope();
@@ -51,7 +51,9 @@ namespace ProjectManager.CMD.Api.Infrastructure.AutofacModules
             builder.RegisterType<NS_KhauTruRepository>().As<INS_KhauTruRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_KhauTru_TheoDoiRepository>().As<INS_KhauTru_TheoDoiRepository>().InstancePerLifetimeScope();
             builder.RegisterType<NS_NghiemThuRepository>().As<INS_NghiemThuRepository>().InstancePerLifetimeScope();
-
+            builder.RegisterType<NS_DuChiRepository>().As<INS_DuChiRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<NS_ThucChiRepository>().As<INS_ThucChiRepository>().InstancePerLifetimeScope();
+            #endregion
             builder.RegisterType<RequestRegistRepository>().As<IRequestRegistRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistReplyRepository>().As<IResponseRegistReplyRepository>().InstancePerLifetimeScope();
             builder.RegisterType<ResponseRegistRepository>().As<IResponseRegistRepository>().InstancePerLifetimeScope();
