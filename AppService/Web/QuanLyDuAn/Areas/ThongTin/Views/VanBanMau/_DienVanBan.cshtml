@@ -24,6 +24,9 @@
                 colCount: 1,
                 formData: rs,
                 height: "90vh",
+                //options: {
+                //    stylingMode: "filled",
+                //},
                 items: [
                     {
                         itemType: "group",
@@ -48,8 +51,10 @@
             function getGroupOptions(customFormBodyDetail) {
                 var groups = [];
                 for (var i = 0; i < customFormBodyDetail.length; i++) {
+
                     groups.push({
                         itemType: "group",
+                        cssClass: "dx-field-item-label-text",
                         caption: customFormBodyDetail[i].header,
                         name: customFormBodyDetail[i].header,
                         items: getInputOptions(customFormBodyDetail[i].customTableDetailDTO.customColumDetailDTOs, customFormBodyDetail[i].customTableDetailDTO.code, customFormBodyDetail[i].id, customFormBodyDetail[i].customTableDetailDTO.noColum, customFormBodyDetail[i].customTableDetailDTO.noRow),
@@ -57,7 +62,7 @@
                 }
                 return groups;
             }
-            function getInputOptions(colums,type,customFromBodyId,limtCol, limitRow) {
+            function getInputOptions(colums, type, customFromBodyId, limtCol, limitRow) {
                 var options = [];
                 for (var i = 0; i < colums.length; i++) {
                     var opt = generateNewInputOptions(colums[i], i, type, customFromBodyId, limtCol, limitRow);
@@ -65,21 +70,19 @@
                         options.push(opt);
                     }
                 }
-                $(function () {
-                });
                 return options;
             }
 
             function generateNewInputOptions(object, index, type, customFromBodyId, limtCol, limitRow) {
-                var Id = customFromBodyId + '_' + object.id + '_' + (index+1);
+                var Id = customFromBodyId + '_' + object.id + '_' + (index + 1);
                 if (type === "dxTextBox") {
                     return {
                         itemType: "simple",
-                        dataField: Id,
                         label: { text: " " },
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            stylingMode: "filled",
                             placeholder: "Vui lòng điền thông tin",
                             value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
@@ -91,39 +94,98 @@
                 }
                 else if (type === "dxSelectBox")
                 {
-                    return {
-                        //dataField: customFromBodyId+'_'+ object.id + '_' + index,
-                        itemType: "simple",
-                        displayExpr: "userName",
-                        valueExpr: "userName",
-                        editorType: type,
-                        cssClass: "custom-textbox",
-                        editorOptions: {
-                            searchEnabled: true,
-                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
-                            elementAttr: {
-                                id: Id,
-                                class: "customForm_SelectBox",
-                            },
-                            dataSource: customStore_SELECT(object.sourceLink),
-                            displayExpr: "userName",
-                            valueExpr: "userName",
-                        }
-                    };
+                    console.log(object.sourceValue);
+                    if (object.sourceLink !== "" && object.sourceLink !== null) {
+                        return {
+                            itemType: "simple",
+                            editorType: type,
+                            cssClass: "custom-textbox",
+                            editorOptions: {
+                                stylingMode: "filled",
+                                searchEnabled: true,
+                                value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                                elementAttr: {
+                                    id: Id,
+                                    class: "customForm_SelectBox",
+                                },
+                                dataSource: customStore_SELECT(object.sourceLink),
+                                displayExpr: object.sourceValue,
+                                valueExpr: object.sourceValue,
+                            }
+                        };
+                    }
+                    else if (object.sourceValue !== "" && object.sourceValue !== null) {
+                        var listOBJ = object.sourceValue.split(";");
+                        console.log(listOBJ);
+                        return {
+                            itemType: "simple",
+                            editorType: type,
+                            cssClass: "custom-textbox",
+                            editorOptions: {
+                                stylingMode: "filled",
+                                value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                                searchEnabled: true,
+                                elementAttr: {
+                                    id: Id,
+                                    class: "customForm_SelectBox",
+                                },
+                                dataSource: listOBJ,
+                            }
+                        };
+                    }
+                    else {
+                        //return {
+                        //    itemType: "simple",
+                        //    label: { text: " " },
+                        //    editorType: type,
+                        //    cssClass: "custom-textbox",
+                        //    editorOptions: {
+                        //        placeholder: "Vui lòng điền thông tin",
+                        //        value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                        //        elementAttr: {
+                        //            id: Id,
+                        //            class: "customForm_TextBox",
+                        //        },
+                        //    }
+                        //};
+                    }
 
                 }
                 else if (type === "dxDateBox") {
+
                     return {
                         //dataField: customFromBodyId + '_' + object.id + '_' + index,
                         itemType: "simple",
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            //buttons: [
+                            //    'clear',
+                            //    {
+                            //        name: 'customButtonName1',
+                            //        location: 'after',
+                            //        options: { icon: 'event' }
+                            //    },
+                            //    'dropDown'
+                            //],
+                            dropDownOptions: {
+                                buttons: [
+                                {
+                                    name: 'customButtonName1',
+                                    location: 'after',
+                                    options: { icon: 'event' }
+                                    }],
+                            },
+                            width: "100%",
+                            stylingMode: "filled",
+                            pickerType: "calendar",
+                            showClearButton: true,
+                            useMaskBehavior: true,
                             type: "datetime",
-                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : null,
+                            value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
                             elementAttr: {
                                 id: Id,
-                                class: "customForm_DateBox",
+                                class: "customForm_DateBox ",
                             },
                         }
                     };
@@ -135,6 +197,7 @@
                         editorType: type,
                         cssClass: "custom-textbox",
                         editorOptions: {
+                            stylingMode: "filled",
                             text: object.sourceValue,
                             value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents === 'true'?true:false : false,
                             elementAttr: {
@@ -181,7 +244,9 @@
                                     itemType: "simple",
                                     name: "Image",
                                     editorType: 'dxGallery',
+                                    cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         dataSource: object.customCellContentDTOs.map(x=>x.contents),
                                         height: 300,
                                         width: 'auto',
@@ -199,6 +264,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: 'image/*',
@@ -239,6 +305,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: 'application/*',
@@ -277,6 +344,7 @@
                                     editorType: type,
                                     cssClass: "custom-textbox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         visible: limitRow === 0 ? true : !(object.customCellContentDTOs.length >= limitRow),
                                         multiple: true,
                                         accept: '*/*',
@@ -301,11 +369,9 @@
             }
         });
         $("#form-custom").on("submit", function (e) {
+            loadingPanel.show();
             //test(fdatatest);
             e.preventDefault();
-
-
-
 
             var fdata = new FormData();
             fdata.append("customformContentId", @Model);
@@ -352,18 +418,17 @@
                         fdata.append((res[0] + '_' + res[1] + '_' + ((1)*res[2] + key) ), files[key]);
                     });
                 }
-                console.log(uploader[j].id);
-                console.log($("#" + uploader[j].id).dxFileUploader('instance').option('value'));
+
             }
 
             @*$.each(formData, function (key, value) {
                 fdata.append(key, value);
-            }); 
+            });
 
             fdata.append('customFormContentId', @Model);*@
-            for (var pair of fdata.entries()) {
-                console.log(pair[0] + ', ' + pair[1]);
-            }
+            //for (var pair of fdata.entries()) {
+            //    console.log(pair[0] + ', ' + pair[1]);
+            //}
 
             $.ajax({
                 type: "POST",

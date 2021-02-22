@@ -2493,12 +2493,14 @@
     <Content Include="Areas\ThongTin\Views\QLTienDo\Index.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoDetail.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoReport.cshtml" />
+    <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoCreate.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Account\NoAuthentication.cshtml" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
+    <None Include="Properties\PublishProfiles\web_qltt.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Content\plugins\fullcalendar-bootstrap\main.d.ts" />

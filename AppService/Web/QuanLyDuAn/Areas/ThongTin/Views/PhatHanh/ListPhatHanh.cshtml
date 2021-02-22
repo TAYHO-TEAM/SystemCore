@@ -297,6 +297,7 @@
                                 searchEnabled: true,
                                 searchMode: "contains",
                                 width: "100%",
+                                stylingMode: "filled",
                                 showClearButton: false,
                                 value: PROJECTID,
                                 onValueChanged: function (data) {
@@ -345,6 +346,7 @@
 
                 },
                 onRowDblClick: function (e) {
+                    e.component;
                     console.log(e.data);
                     loadDetail(e.data);
                 },
@@ -526,6 +528,9 @@
                 });
                 c.append(scrollView);
                 return c;
+            },
+            onHidden: function () {
+                loadData();
             }
         }).addClass("popup-priority-1");
 

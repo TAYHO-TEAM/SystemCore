@@ -469,6 +469,7 @@
                                 searchEnabled: true,
                                 searchMode: "contains",
                                 width: "100%",
+                                stylingMode: "filled",
                                 showClearButton: false,
                                 value: PROJECTID,
                                 onValueChanged: function (data) {
@@ -618,7 +619,6 @@
                         label: "Thêm mới",
                         visible: PermitInAction["insert"],
                         onClick: () => {
-                            console.log('abc');
                             callPopup(
                                 "THÊM MỚI PHÁT HÀNH",
                                 "/ThongTin/PhatHanh/_PhatHanhCreate",

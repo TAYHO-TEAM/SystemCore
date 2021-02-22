@@ -400,10 +400,11 @@
                                 dataSource: groupOwner,
                                 valueExpr: "ID",
                                 displayExpr: "Name",
+                                width: "100%",
                                 searchEnabled: true,
                                 searchMode: "contains",
-                                width: "100%",
                                 showClearButton: false,
+                                stylingMode: "filled",
                                 value: GROUPOWNERID,
                                 onValueChanged: function (data) {
                                     console.log(data.value);
@@ -526,8 +527,10 @@
                             }
                         }).dxSpeedDialAction("instance");
                         $("#action-log").dxSpeedDialAction({
-                            index: 4, icon: "fas fa-user", label: "Thêm người thực hiện",
-                            visible: (selectedRowData.createBy == UserCurrentInfo.accountId),
+                            index: 4,
+                            icon: "fas fa-user",
+                            label: "Phân công",
+                            visible: (selectedRowData.createBy === UserCurrentInfo.accountId),
                             onClick: () => {
                                 loadAccountPlanMaster(selectedRowData);
                             }

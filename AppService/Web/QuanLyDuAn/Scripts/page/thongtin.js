@@ -672,5 +672,54 @@ const reportPeriodicalType = [
     //    Name: 'Phân công giám sát'
     //},
 ];
-
+const parameterType = [
+    {
+        ID: 'dxTextBox',
+        Name: 'TextBox',
+        Type:'string'
+    },
+    {
+        ID: 'dxDateBox',
+        Name: 'Ngày tháng',
+        Type: 'datetime'
+    },
+    {
+        ID: 'dxCheckBox',
+        Name: 'CheckBox',
+        Type: 'string'
+    },
+    {
+        ID: 'dxSelectBox',
+        Name: 'SelectBox',
+        Type: 'bool'
+    },
+    //{
+    //    ID: 'dxFileUploader',
+    //    Name: 'UpImages',
+    //    Type: 'img'
+    //},
+    {
+        ID: 'dxFileUploader',
+        Name: 'UpFile',
+        Type: 'file'
+    },
+    //{
+    //    ID: '3',
+    //    Name: 'Phân công giám sát'
+    //},
+];
+const Type = [
+    {
+        ID: 'string',
+        Name: 'Chữ',
+    },
+    {
+        ID: 'datetime',
+        Name: 'Ngày tháng',
+    },
+    {
+        ID: 'number',
+        Name: 'Số',
+    },
+];
 
