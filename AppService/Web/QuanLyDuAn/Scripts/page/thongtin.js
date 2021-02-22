@@ -486,7 +486,8 @@ function CALLPOPUP(title, url, width, container) {
     if (width == "100%") isFullscreen = true;
 
     $("#popup-main").dxPopup({
-        width: width, height: "auto",
+        width: width,
+        height: "auto",
         fullScreen: isFullscreen,
         position: { my: 'top', at: 'top', of: window },
         dragEnabled: true,

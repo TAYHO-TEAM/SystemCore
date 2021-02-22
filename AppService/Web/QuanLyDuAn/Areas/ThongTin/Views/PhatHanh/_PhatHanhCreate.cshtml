@@ -135,8 +135,8 @@
         });
         $("#form-regist").on("submit", function (e) {
             //$(this).prop("disabled", true);
+            loadingPanel.show();
             var result = formInstance.validate();
-            console.log(result);
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {

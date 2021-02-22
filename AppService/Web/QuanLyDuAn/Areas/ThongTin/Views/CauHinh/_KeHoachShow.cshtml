@@ -31,12 +31,12 @@
         //let jsonObject = "";
         var urlFileTemplate = "https://duan.tayho.com.vn/Content/Template/PlanRegister/Temp_PlanRegister_001.xlsm",
             columnConfig = [
-                {
-                    dataField: "code",
-                    caption: "Mã",
-                    width: '10%',
+                //{
+                //    dataField: "code",
+                //    caption: "Mã",
+                //    width: '10%',
                    
-                },
+                //},
                 {
                     dataField: "workItemId",
                     caption: "Hạng Mục",
@@ -234,7 +234,6 @@
         });
         $(document).on('change', '#file-upload', function () {
             readXlsxFile(this.files[0]).then((rows) => {
-                console.log(rows);
                 if (rows.length > 1) {
                     //if (rows[0].join(' | ').toUpperCase().trim().includes(header)) {
                     $.each(rows, (index, item) => {
@@ -243,29 +242,27 @@
                                     {
                                         //id: item[0],
                                         projectId: PROJECTID,
-                                        code: item[1],
-                                        workItemId: item[2],
-                                        contractorInfoId: item[3],
-                                        documentTypeId: item[4],
-                                        title: item[5],
-                                        requestDate: item[6],
-                                        responseDate: item[7],
-                                        expectRequestDate: item[8],
-                                        expectResponseDate: item[9],
+                                        //code: item[1],
+                                        workItemId: item[1],
+                                        contractorInfoId: item[2],
+                                        documentTypeId: item[3],
+                                        title: item[4],
+                                        requestDate: item[5],
+                                        responseDate: item[6],
+                                        expectRequestDate: item[7],
+                                        expectResponseDate: item[8],
                                         isActive : true,
                                         isVisible : true,
                                         isDelete : false,
                                     }
                                 );
                             }
-                        });
-                        $("#container-import").dxDataGrid('instance').refresh();
-                        $("#container-import").dxDataGrid('instance').selectAll();
+                    });
+                    $("#container-import").dxDataGrid('instance').refresh().then(function () { $("#container-import").dxDataGrid('instance').selectAll();});
                     //} 
                     //else DevExpress.ui.notify("Vui lòng chọn đúng file theo template sẵn có", "error", 3000);
                 } else DevExpress.ui.notify("Không tìm thấy dữ liệu cần import, Vui lòng thử lại", "error", 3000);
             });
-            console.log(dataTemp);
         });
     });
 

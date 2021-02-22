@@ -45,6 +45,7 @@
 <div id="popup-main-sub"></div>
 <div id="popup-register"></div>
 
+
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
@@ -69,8 +70,7 @@
         const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
         var code = "";
 
-        //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
-
+        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
         var WIDTH_CONTAINER = $("#container").width();
         let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
@@ -183,6 +183,7 @@
                         dataField: "barCode",
                         caption: "Mã",
                         dataType: "string",
+                        alignment: "left",
                         editorOptions: {
                             readOnly: true,
                             placeholder: "auto gen",
@@ -193,6 +194,7 @@
                         caption: "REV",
                         dataType: "string",
                         allowEditing: false,
+                        alignment: "left",
                         editorOptions: {
                             readOnly: true,
                             //visible: false,
@@ -206,6 +208,7 @@
                             valueExpr: "id", displayExpr: "title",
                         },
                         editorType: "dxLookup",
+                        alignment: "left",
                         editorOptions: {
                             dataSource: customStore_HangMuc,
                             valueExpr: "id",
@@ -224,6 +227,7 @@
                         caption: "Người đệ trình",
                         dataType: "number",
                         allowEditing: false,
+                        alignment: "left",
                         lookup: {
                             dataSource: customStore_AccountInfo,
                             valueExpr: "accountId", displayExpr: "avatarImg",
@@ -258,7 +262,9 @@
                     },//account
 
                     {
-                        dataField: "documentTypeId", caption: "Loại tài liệu",
+                        dataField: "documentTypeId",
+                        caption: "Loại tài liệu",
+                        alignment: "left",
                         lookup: {
                             dataSource: customStore_DocumetnType,
                             valueExpr: "id",
@@ -280,12 +286,13 @@
                         dataField: "title",
                         caption: "Tiêu đề",
                         dataType: "string",
-
+                        alignment: "left",
                     },//tiêu đề
                     {
                         dataField: "planRegisterId",
                         caption: "Kế hoạch",
                         visible: false,
+                        alignment: "left",
                     },//hangMucId
 
                     {
@@ -293,6 +300,7 @@
                         caption: "Ngày đệ trình",
                         dataType: "date",
                         format: "dd/MM/yyyy",
+                        alignment: "left",
                     },//date
                     {
                         dataField: "descriptions",
@@ -311,16 +319,17 @@
                         dataField: "status",
                         caption: "Trạng thái",
                         dataType: "number",
+                        alignment: "left",
                         cellTemplate: (container, options) => {
                             container.append(options.value == 0 ? 'Chờ phản hồi' :
-                                options.value == 1 ? 'Tư vấn đã duyệt(A)' :
-                                    options.value == 2 ? 'Tư vấn đã duyệt(B)' :
-                                        options.value == 3 ? 'Tư vấn đã duyệt(C)' :
-                                            options.value == 4 ? 'Tư vấn đã duyệt(D)' :
-                                                options.value == 5 ? 'Ban đã duyệt(A)' :
-                                                    options.value == 6 ? 'Ban đã duyệt(B)' :
-                                                        options.value == 7 ? 'Ban đã duyệt(C)' :
-                                                            options.value == 8 ? 'Ban đã duyệt(D)' : 'Đã gửi')
+                                options.value == 1 ? 'Tư vấn phản hồi(A)' :
+                                    options.value == 2 ? 'Tư vấn phản hồi(B)' :
+                                        options.value == 3 ? 'Tư vấn phản hồi(C)' :
+                                            options.value == 4 ? 'Tư vấn phản hồi(D)' :
+                                                options.value == 5 ? 'Ban phản hồi(A)' :
+                                                    options.value == 6 ? 'Ban phản hồi(B)' :
+                                                        options.value == 7 ? 'Ban phản hồi(C)' :
+                                                            options.value == 8 ? 'Ban phản hồi(D)' : 'Đã gửi')
                         },
                     },//status
                     {
@@ -335,6 +344,7 @@
                     {
                         type: "buttons",
                         width: 110,
+                        alignment: "right",
                         buttons: ["edit", "delete", {
                             icon: "add",
                             visible: function (e) {
@@ -592,8 +602,25 @@
                                 },//rev
                                 {
                                     colSpan: 12,
-                                    dataField: "accountName",
+                                    dataField: "createBy",
                                     label: { text: "Người đệ trình" },
+                                    //lookup: {
+                                    //    dataSource: customStore_AccountInfo,
+                                    //    valueExpr: "accountId",
+                                    //    displayExpr: "accountName",
+                                    //},
+                                    editorType: "dxLookup",
+                                    alignment: "left",
+                                    editorOptions: {
+                                        dataSource: customStore_AccountInfo,
+                                        valueExpr: "accountId",
+                                        displayExpr: "accountName",
+                                        searchEnabled: true,
+                                        showClearButton: true,
+                                        itemTemplate: function (data) {
+                                            return $("<div>").append($("<b>").append(data.accountName).addClass("mr-1"));
+                                        },
+                                    },
                                 },//account
                                 {
                                     colSpan: 12,
@@ -647,11 +674,20 @@
                                 }]
                         }]
                     }).appendTo(content_main);
-                    console.log(masterItiem.responseRegistDTOs);
                     var $i = 0;
                     $.each(masterItiem.responseRegistDTOs, function (key, value) {
+                        var $checkNexStepDone = false;
+                        if ($i === 0) {
+                            if (masterItiem.responseRegistDTOs[1] !== null) {
+                                if (masterItiem.responseRegistDTOs[1].modifyBy > 0)
+                                    $checkNexStepDone = true;
+                            }
+                        }
 
                         var formSub = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form_Sub" + key).data('id', key).addClass("form-submit").append('<div></div>');
+                        if ($i < 1 && $checkNexStepDone) {
+
+                        }
                         formSub.dxForm({
                             elementAttr: {
                                 id: "dxForm_Sub" + key,
@@ -699,7 +735,7 @@
                                     {
                                         colSpan: 12,
                                         dataField: "noAttachment",
-                                        label: { text: "Files" },
+                                        label: { text: "File(s)" },
                                         template: (container) => {
                                             return $('<a>').click(function () {
                                                 loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
@@ -713,9 +749,8 @@
                                             text: "Đánh giá",
                                             type: "success",
                                             //useSubmitBehavior: true,
-                                            visible: ((value.modifyBy < 1) ? (value.update == true ? true : false) : false),
+                                            visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
                                             onClick: function () {
-                                                //console.log(value.typeOfResult);
                                                 var request = {
                                                     'id': value.id,
                                                     'description': value.description,
@@ -774,7 +809,8 @@
                     },
                     columns: [
                         {
-                            caption: "STT", alignment: "center",
+                            caption: "STT",
+                            alignment: "center",
                             cellTemplate: (c, o) => $("<div/>").append(o.rowIndex + 1).appendTo(c),
                         },//STT
                         {
@@ -794,12 +830,13 @@
                             dataField: "rev",
                             caption: "REV",
                             dataType: "string",
+                            alignment: "left",
                         },//rev
                         {
                             dataField: "accountName",
                             caption: "Người đệ trình",
                             dataType: "string",
-
+                            alignment: "left",
                         },//account
                         {
                             dataField: "descriptions",
@@ -818,7 +855,7 @@
                             caption: "Ngày lên kế hoạch",
                             dataType: "date",
                             width: 150,
-                            alignment: "center",
+                            alignment: "left",
                             format: "dd/MM/yyyy",
                         },
 
@@ -827,7 +864,7 @@
                             caption: "Dự kiến bắt đầu",
                             dataType: "date",
                             width: 150,
-                            alignment: "center",
+                            alignment: "left",
                             format: "dd/MM/yyyy",
                         },
                         {
@@ -835,7 +872,7 @@
                             caption: "Dự kiến kết thúc",
                             dataType: "date",
                             width: 150,
-                            alignment: "center",
+                            alignment: "left",
                             format: "dd/MM/yyyy",
                         },
                         {
@@ -843,7 +880,7 @@
                             caption: "Bắt đầu",
                             dataType: "date",
                             width: 150,
-                            alignment: "center",
+                            alignment: "left",
                             format: "dd/MM/yyyy",
                         },
                         {
@@ -851,7 +888,7 @@
                             caption: "Kết thúc",
                             dataType: "date",
                             width: 150,
-                            alignment: "center",
+                            alignment: "left",
                             format: "dd/MM/yyyy",
                         },
                         {
@@ -987,7 +1024,6 @@
                     width: '100%',
                     height: '100%'
                 });
-                var isUpload = 0;
                 $(function () {
                     if (isUpload) {
                         //$("#form").append("OwnerById",1);
@@ -1050,17 +1086,15 @@
         }).addClass("popup-priority-2");
 
         function loadFileAttachment(table, item, isUpload, parentItem) {
-            //console.log(isUpload);
             loadUpload(table, item, isUpload, parentItem);
         }
 
         function callPopup(title, url, width, container) {
-
             var isFullscreen = false;
             if (width == "100%") isFullscreen = true;
-
             $("#popup-register").dxPopup({
-                width: width, height: "auto",
+                width: width,
+                height: "100vh",
                 fullScreen: isFullscreen,
                 position: { my: 'top', at: 'top', of: window },
                 dragEnabled: true,

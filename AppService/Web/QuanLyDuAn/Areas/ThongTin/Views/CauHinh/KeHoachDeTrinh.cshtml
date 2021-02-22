@@ -20,7 +20,7 @@
         const ACTION_CONTRACTORINFO = "/ContractorInfo";
         const ACTION_HANGMUC = "/WorkItems";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
+        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -162,11 +162,11 @@
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [
-                    {
-                        dataField: "code",
-                        caption: "Mã",
-                        dataType: "string",
-                    },
+                    //{
+                    //    dataField: "code",
+                    //    caption: "Mã",
+                    //    dataType: "string",
+                    //},
                     {
                         dataField: "workItemId",
                         caption: "Hạng mục",
@@ -333,6 +333,7 @@
                                 width: "100%",
                                 showClearButton: false,
                                 value: PROJECTID,
+                                stylingMode: "filled",
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
