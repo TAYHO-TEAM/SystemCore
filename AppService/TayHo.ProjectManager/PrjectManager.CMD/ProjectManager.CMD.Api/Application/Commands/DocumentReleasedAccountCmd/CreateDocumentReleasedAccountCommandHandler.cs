@@ -78,7 +78,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
                 List<string> toMails = accountInfos.Select(m => m.Email).ToList();
                 var documentRealesed = await _documentReleasedRepository.SingleOrDefaultAsync(x => x.Id == request.DocumentReleasedId).ConfigureAwait(false);
 
-                _sendMailService.SendMailAppoinment((DateTime)documentRealesed.Calendar, (DateTime)documentRealesed.Calendar, documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, true);
+                _sendMailService.SendMailAppoinment((DateTime)documentRealesed.Calendar, (DateTime)documentRealesed.Calendar, documentRealesed.Location, documentRealesed.Title, documentRealesed.Description, documentRealesed.Title, "", toMails, null, null, false);
             }    
           
             //if (request.AccountId.HasValue && request.AccountId > 0)
