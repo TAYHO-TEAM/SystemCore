@@ -21,7 +21,8 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         private readonly IDOBaseRepository<CustomFormDTO> _dOBaseRepository;
         private readonly ICustomFormRepository<CustomFormDetailDTO> _customFormRepository;
-        private const string Detail = nameof(Detail);
+        private const string Detail = nameof(Detail); 
+        private const string GetOwner = nameof(GetOwner);
 
         public CustomFormController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<CustomFormDTO> dOBaseRepository, ICustomFormRepository<CustomFormDetailDTO> customFormRepository) : base(mapper,httpContextAccessor)
         {
@@ -43,6 +44,29 @@ namespace ProjectManager.Read.Api.Controllers.v1
             RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.CustomForm_TABLENAME;
             var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<CustomFormResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<CustomFormResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+        /// <summary>
+        /// Get List of CustomFormOwner.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetOwner)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<CustomFormResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetCustomFormOwnerAsync([FromQuery] BasePermitRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<CustomFormResponseViewModel>>();
+            RequestHasAccountPermitFilterParam requestFilter = _mapper.Map<RequestHasAccountPermitFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.CustomForm_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAccountPermitAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<CustomFormResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
