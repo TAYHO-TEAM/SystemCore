@@ -49,15 +49,10 @@
         const ACTION_CMD_PLAN_ACCOUNT = "/PlanAccount";
         const ACTION_CMD_CONVERSATION = "/Conversation";
         const ACTION_CMD_PLAN_REPORT = "/PlanReport";
-        if (PROJECTID !== 1 && PROJECTID !== 2) {
-            PROJECTID = 1;
-            localStorage.setItem('projectIdCurrent', PROJECTID);
-        }
         if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9) {
             GROUPOWNERID = 0;
             localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
         }
-
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore_AccountInfo = new DevExpress.data.CustomStore({
@@ -138,7 +133,7 @@
 
         });
 
-        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION);
+        var customStore = (id) => customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION, id);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
         let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');
@@ -148,13 +143,13 @@
         let customStore_ItemDetail = (item) => customStore_READDATASOURCE(item);
 
         $(function () {
-            loadData();
+            loadData(PROJECTID);
         });
 
-        let loadData = () => {
+        var loadData = (proId) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: customStore,
+                dataSource: customStore(proId),
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
@@ -270,9 +265,6 @@
                     },
                 ],
                 editing: {
-                    //allowAdding: true,
-                    //allowUpdating: true,
-                    //allowDeleting: true,
                     mode: "popup",
                     useIcons: true,
                     confirmDelete: true,
@@ -412,10 +404,9 @@
                                 stylingMode: "filled",
                                 value: PROJECTID,
                                 onValueChanged: function (data) {
-                                    console.log(data);
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
+                                    loadData(PROJECTID);
                                 },
                             },
                         },
@@ -434,7 +425,6 @@
                                 value: GROUPOWNERID,
                                 visible: PermitInAction["insert"],
                                 onValueChanged: function (data) {
-                                    console.log(data.value);
                                     GROUPOWNERID = data.value;
                                     localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
                                     loadData(customStore);

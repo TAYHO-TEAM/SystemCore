@@ -18,8 +18,6 @@
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomTable";
 
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
-
         var WIDTH_CONTAINER = $("#container").width();
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);

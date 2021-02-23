@@ -108,11 +108,11 @@ let customStore_CMD_READ_WITHGROUPOWNERID = (CMD, READ) => new DevExpress.data.C
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
-let customStore_CMD_READ_PLANPROJECTID = (CMD, READ) => new DevExpress.data.CustomStore({
+var customStore_CMD_READ_PLANPROJECTID = (CMD, READ, ID ) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
         let deferred = $.Deferred(), params = { 'Type': GROUPOWNERID };
-        params['FindId'] = 'PlanProjectId,' + ConvertProjectToPlanProject();
+        params['FindId'] = 'PlanProjectId,' + ConvertProjectToPlanProject(ID);
         if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
         if (values.sort) {
             params['SortCol'] = values.sort[0].selector;
@@ -544,9 +544,9 @@ function CALLPOPUP(title, url, width, container) {
         }
     });
 }
-function ConvertProjectToPlanProject() {
+function ConvertProjectToPlanProject(PLANPROJECT) {
 
-    switch (PROJECTID) {
+    switch (PLANPROJECT) {
         case 1:
             return '1';
             break;

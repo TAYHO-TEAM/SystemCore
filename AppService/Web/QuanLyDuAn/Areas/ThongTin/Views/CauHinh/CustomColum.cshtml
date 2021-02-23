@@ -19,7 +19,6 @@
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomColum";
 
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -48,7 +47,9 @@
                     visible: true
                 },
                 scrolling: { mode: "standard" },
-                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
+                rootValue: 0,
+                parentIdExpr: "parentId",
+                keyExpr: "id",
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                 columns: [

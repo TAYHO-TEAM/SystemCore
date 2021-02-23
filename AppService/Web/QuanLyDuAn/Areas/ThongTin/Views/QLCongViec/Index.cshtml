@@ -134,7 +134,7 @@
 
         });
 
-        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION);
+        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION,3);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
         let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');
@@ -410,7 +410,7 @@
                                     console.log(data.value);
                                     GROUPOWNERID = data.value;
                                     localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
-                                    loadData(customStore);
+                                    loadData();
                                 },
                             },
                         },
