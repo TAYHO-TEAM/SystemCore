@@ -457,6 +457,33 @@ let customStore_READDATASOURCE = (DATASOURCE) => new DevExpress.data.CustomStore
         return deferred.promise();
     },
 });
+let customStore_READ_FILTER_KEYWORD = (READ,KEYWORD) => new DevExpress.data.CustomStore({
+    key: "id", loadMode: "raw",
+    load: (values) => {
+        var deferred = $.Deferred();
+        var params = {
+            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+            'KeyWord': KEYWORD
+        }
+        $.ajax({
+            headers: header,
+            dataType: "json",
+            data: params,
+            url: URL_API_PM_READ + READ,
+            success: function (data) {
+                var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
+                deferred.resolve(list);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log(xhr.responseJSON);
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000
+        });
+        return deferred.promise();
+    },
+});
 
 var dataGridOptions = {
     height: heightScreen,
