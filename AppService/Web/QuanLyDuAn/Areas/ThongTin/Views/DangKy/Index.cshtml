@@ -685,98 +685,101 @@
                         }
 
                         var formSub = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form_Sub" + key).data('id', key).addClass("form-submit").append('<div></div>');
-                        if ($i < 1 && $checkNexStepDone) {
+                        if ($i == 1 && (masterItiem.responseRegistDTOs[1].modifyBy == 0 || masterItiem.responseRegistDTOs[1].modifyBy === null) && !masterItiem.responseRegistDTOs[1].update) {
 
                         }
-                        formSub.dxForm({
-                            elementAttr: {
-                                id: "dxForm_Sub" + key,
-                            },
-                            formData: value,
-                            readOnly: ((value.modifyBy < 1) ? (value.update == true ? false : true) : true),
-                            items: [{
-                                itemType: "group",
-                                caption: key == 0 ? "Đánh giá Tư vấn" : "Đánh giá Ban",
-                                colCountByScreen: {
-                                    md: 1,
-                                    lg: 1,
-                                    xs: 1,
-                                    sm: 1
+                        else {
+                            formSub.dxForm({
+                                elementAttr: {
+                                    id: "dxForm_Sub" + key,
                                 },
-                                items: [
-                                    {
-                                        //id:'file-loadder'+key,
-                                        dataField: "typeOfResult",
-                                        label: {
-                                            text: "Đánh giá"
-                                        },
-                                        dataType: "number",
-                                        alignment: "left",
-                                        editorType: "dxSelectBox",
-                                        editorOptions: {
-                                            disabled: 0,
-                                            dataSource: typeApprove,
-                                            displayExpr: "text",
-                                            valueExpr: "value",
-                                        },
-                                        editorType: "dxSelectBox",
-                                        validationRules: [{ type: "required" }],
-                                        cellTemplate: (container, options) => {
-                                            container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
-                                        },
-                                    },//AttachmentisApprove
-                                    {
-                                        colSpan: 12,
-                                        dataField: "description",
-                                        label: { text: "Ý kiến" },
-                                        //editorType: "dxTextArea",
-
+                                formData: value,
+                                readOnly: ((value.modifyBy < 1) ? (value.update == true ? false : true) : true),
+                                items: [{
+                                    itemType: "group",
+                                    caption: key == 0 ? "Đánh giá Tư vấn" : "Đánh giá Ban",
+                                    colCountByScreen: {
+                                        md: 1,
+                                        lg: 1,
+                                        xs: 1,
+                                        sm: 1
                                     },
-                                    {
-                                        colSpan: 12,
-                                        dataField: "noAttachment",
-                                        label: { text: "File(s)" },
-                                        template: (container) => {
-                                            return $('<a>').click(function () {
-                                                loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
-                                            }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
+                                    items: [
+                                        {
+                                            //id:'file-loadder'+key,
+                                            dataField: "typeOfResult",
+                                            label: {
+                                                text: "Đánh giá"
+                                            },
+                                            dataType: "number",
+                                            alignment: "left",
+                                            editorType: "dxSelectBox",
+                                            editorOptions: {
+                                                disabled: 0,
+                                                dataSource: typeApprove,
+                                                displayExpr: "text",
+                                                valueExpr: "value",
+                                            },
+                                            editorType: "dxSelectBox",
+                                            validationRules: [{ type: "required" }],
+                                            cellTemplate: (container, options) => {
+                                                container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
+                                            },
+                                        },//AttachmentisApprove
+                                        {
+                                            colSpan: 12,
+                                            dataField: "description",
+                                            label: { text: "Ý kiến" },
+                                            //editorType: "dxTextArea",
+
                                         },
-                                    },
-                                    {
-                                        itemType: "button",
-                                        horizontalAlignment: "center",
-                                        buttonOptions: {
-                                            text: "Đánh giá",
-                                            type: "success",
-                                            //useSubmitBehavior: true,
-                                            visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
-                                            onClick: function () {
-                                                var request = {
-                                                    'id': value.id,
-                                                    'description': value.description,
-                                                    'typeOfResult': value.typeOfResult
-                                                };
-                                                if (value.typeOfResult == null) {
-                                                    DevExpress.ui.notify("Chưa chọn đánh giá!", "error", 3000);
-                                                }
-                                                else {
-                                                    if (value.noAttachment === null || value.noAttachment === 0) {
-                                                        DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
-                                                            if (dialogResult) {
-                                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
-                                                                $("#popup-main").dxPopup("hide");
-                                                                loadData();
-                                                            }
-                                                        });
-                                                    }
-
-                                                }
-
+                                        {
+                                            colSpan: 12,
+                                            dataField: "noAttachment",
+                                            label: { text: "File(s)" },
+                                            template: (container) => {
+                                                return $('<a>').click(function () {
+                                                    loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
+                                                }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                             },
                                         },
-                                    }]
-                            }]
-                        }).appendTo(content_sub);
+                                        {
+                                            itemType: "button",
+                                            horizontalAlignment: "center",
+                                            buttonOptions: {
+                                                text: "Đánh giá",
+                                                type: "success",
+                                                //useSubmitBehavior: true,
+                                                visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
+                                                onClick: function () {
+                                                    var request = {
+                                                        'id': value.id,
+                                                        'description': value.description,
+                                                        'typeOfResult': value.typeOfResult
+                                                    };
+                                                    if (value.typeOfResult == null) {
+                                                        DevExpress.ui.notify("Chưa chọn đánh giá!", "error", 3000);
+                                                    }
+                                                    else {
+                                                        if (value.noAttachment === null || value.noAttachment === 0) {
+                                                            DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                                                if (dialogResult) {
+                                                                    ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
+                                                                    $("#popup-main").dxPopup("hide");
+                                                                    loadData();
+                                                                }
+                                                            });
+                                                        }
+
+                                                    }
+
+                                                },
+                                            },
+                                        }]
+                                }]
+                            }).appendTo(content_sub);
+                        }
+                       
                         $i++;
                     });
                 }, d.reject);
