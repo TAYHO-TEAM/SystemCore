@@ -183,6 +183,7 @@
     <Compile Include="Areas\Admin\Controllers\WorkItemsConfigController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CauHinhController.cs" />
     <Compile Include="Areas\NganSach\Controllers\CongViecController.cs" />
+    <Compile Include="Areas\NganSach\Controllers\DongChiController.cs" />
     <Compile Include="Areas\NganSach\Controllers\HangMucController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NghiemThuController.cs" />
     <Compile Include="Areas\NganSach\Controllers\NhomCongViecController.cs" />
@@ -2494,6 +2495,7 @@
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoDetail.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoReport.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoCreate.cshtml" />
+    <Content Include="Areas\NganSach\Views\DongChi\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
