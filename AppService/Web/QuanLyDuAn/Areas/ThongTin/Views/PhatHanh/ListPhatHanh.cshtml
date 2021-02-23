@@ -242,8 +242,8 @@
                         cellTemplate: (container, options) => {
                             container
                                 .attr('id', "popover-target-" + options.key)
-                                .append(options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '')
-                                .addClass(options.value == 0 ? 'text-danger font-weight-bold' : options.value == 1 ? 'text-success font-weight-bold' : options.value == 2 ? 'text-primary font-weight-bold' : options.value == 3 ? 'text-info font-weight-bold' : '');
+                                .append(options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Chưa xem' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '')
+                                .addClass(options.value == 0 ? 'text-danger font-weight-bold' : options.value == 1 ? 'text-danger font-weight-bold' : options.value == 2 ? 'text-primary font-weight-bold' : options.value == 3 ? 'text-info font-weight-bold' : '');
                             $("<div />")
                                 .attr('id', "popover-detail-" + options.key)
                                 .append("<div>( " + (options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '') + ' ' + moment(options.data.createDate).locale("vi").fromNow() + ")" + "</div>")
@@ -267,6 +267,12 @@
                         cellTemplate: (container, options) => {
                             container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
                         },
+                    },
+                    {
+                        dataField: "createDate",
+                        caption: "Ngày",
+                        dataType: "date",
+                        alignment: "left",
                     },
                 ],
                 paging: { enabled: true, pageSize: 20 },
@@ -330,7 +336,7 @@
                 },
                 onCellClick: function (e) {
                     if (e.column.dataField === "noAttachment") {
-                        loadUpload("DocumentReleased", e.row.data, false);
+                        //loadUpload("DocumentReleased", e.row.data, false);
                     }
                 },
                 onContentReady: (e) => {
