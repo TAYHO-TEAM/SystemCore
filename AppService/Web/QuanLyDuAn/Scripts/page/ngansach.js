@@ -21,6 +21,9 @@ const ACTION_TAMUNG_THEODOI     = "/NS_TamUng_TheoDoi";
 const ACTION_KHAUTRU            = "/NS_KhauTru";
 const ACTION_KHAUTRU_THEODOI    = "/NS_KhauTru_TheoDoi";
 
+const ACTION_DUCHI              = "/NS_DuChi";
+const ACTION_THUCCHI            = "/NS_ThucChi";
+
 var customStore_Projects = new DevExpress.data.CustomStore({
     key: "id", loadMode: "raw",
     load: (values) => {

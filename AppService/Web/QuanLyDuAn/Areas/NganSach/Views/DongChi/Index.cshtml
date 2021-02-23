@@ -1,0 +1,244 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Kế hoạch dòng chi 6 tháng";
+}
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+        <div id="container2" class="elevation-2"></div>
+    </div>
+</div>
+
+@section script{
+    <script src="~/Scripts/page/ngansach.js"></script>
+    <script>  
+        var ds_main = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION_DUCHI,
+                    dataType: "json",
+                    success: function (data) {
+                        var list = data.result.items;
+                        deferred.resolve(list, { totalCount: data.result.pagingInfo.totalItems });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 5000
+                });
+                return deferred.promise();
+            },
+            insert: (values) => {
+                console.log(values)
+            },
+        });
+        var ds_nhomcv = new DevExpress.data.CustomStore({
+            key: "id", loadMode: "raw",
+            load: (values) => {
+                let deferred = $.Deferred(); 
+                $.ajax({
+                    headers: header, dataType: "json", 
+                    url: URL_API_PM_READ + ACTION_NHOMCONGVIEC + '/Detail',
+                    success: function (data) {
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseJSON);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    },
+                    timeout: 10000
+                });
+                return deferred.promise();
+            },
+            reshapeOnPush: true,
+        });
+
+        $(function () {
+           loadData();
+            //loadData2();
+        });
+
+        var loadData = () => $("#container").dxDataGrid({
+            dataSource: ds_main, height: heightScreen,
+            paging: { enabled: true, pageSize: 21 },
+            showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+            sorting: {
+                mode: "multiple"
+            },
+            columns: [  
+                {
+                    dataField: "id", caption: "id", width: 80, alignment: "center", 
+                },
+                {
+                    dataField: "nhomCongViecId", caption: "Nhóm công việc", alignment: "center", 
+                    lookup: {
+                        dataSource: ds_nhomcv,
+                        valueExpr: "id", displayExpr: "tenNhomCongViec",
+                    },
+                },
+                {
+                    dataField: "thoiGianBaoCao", dataType: 'date', //groupIndex: 0, 
+                    caption: "Tháng kế hoạch", sortIndex: 0, sortOrder: "desc",
+                    //groupCellTemplate: (c, o) => c.append("Tháng báo cáo: " + moment(o.value).format("MM/YYYY")),
+                    calculateDisplayValue: (o)=> {
+                        return moment(o.thoiGianBaoCao).format("MM/YYYY");
+                    },
+                },
+                {
+                    dataField: "thoiGianDuChi", alignment:"center",
+                    caption: "Tháng dự chi", sortIndex: 1, sortOrder: "asc",
+                    calculateCellValue: (e) => {
+                        return moment(e.thoiGianDuChi).format("MM/YYYY");
+                    },
+                },
+                {
+                    dataField: "giaTri", alignment: "right",
+                    caption:"Giá trị",
+                    format: { type: "currency", currency: "VND" },
+                },
+                {
+                    caption: "Người tạo", dataField:"createBy",
+                    alignment: "center", width: 200,
+                    cellTemplate: (c, o) => {
+                        if (o.value != null) {
+                            $("<div />").attr("style","d-flextext-align: center; display: -webkit-inline-box;").append(
+                                $("<img />")
+                                    .attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30")
+                                    .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                    .attr("alt", o.data.createBy_Name),
+                                $("<div />").addClass("ml-2 text-left").append(
+                                    $("<div />").addClass("font-weight-bold").append(o.data.createBy_Name),
+                                    $("<em />").addClass("small text-muted").append(o.data.createBy_Title)
+                                )
+                            ).appendTo(c);
+                        }
+                    }
+                },
+                {
+                    dataField: "createDate", width: 150, dataType: "date", alignment: "center",
+                    caption: "Thời gian tạo",
+                    cellTemplate: (c, o) => {
+                        if (o.value != null) {
+                            $("<div />").append(
+                                $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY")),
+                                $("<em />").addClass("small text-muted").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
+                            ).appendTo(c);
+                        }
+                    }
+                },
+            ],
+            onToolbarPreparing: function (e) {
+                var container = e.component;
+                e.toolbarOptions.items.unshift(
+                    {
+                        location: "before", widget: "dxButton",
+                        options: {
+                            icon: "add", stylingMode: "filled", type: "default", text:"Tạo kế hoạch dự chi 6 tháng",
+                            onClick: () => container.addRow()
+                        },
+                    },
+                    {
+                        location: "after", widget: "dxButton",
+                        options: {
+                            icon: "refresh", type: "default",
+                            onClick: () => container.refresh()
+                        }
+                    }
+                )
+            },
+            @*editing: {
+                mode: "popup", useIcons: false, confirmDelete: true,
+                popup: {
+                    width: 500, height: "auto",
+                    showTitle: false, fullScreen: $(document).width() <= 500, closeOnOutsideClick: true,
+                },
+                form: {
+                    labelLocation: "top", itemType: "group", colCount: 12,
+                    showRequiredMark: true, requiredMark: "(*)", showValidationSummary: true,
+                    items: [
+                        {
+                            colSpan: 12, dataField: "thoiGianBaoCao", label: { text: "Tháng kế hoạch" },
+                            editorType: "dxDateBox",
+                            editorOptions: {
+                                calendarOptions: {
+                                    maxZoomLevel: "year",
+                                    minZoomLevel: "decade"
+                                },
+                                displayFormat: "'Tháng' MM 'năm' yyyy",
+                                pickerType: "calendar",
+                                type: "date",
+                                useMaskBehavior: true
+                            },
+                            validationRules: [
+                                {
+                                    type: "required",
+                                    message: "Vui lòng chọn tháng/năm kế hoạch"
+                                },
+                                {
+                                    type: "async", 
+                                    message: "Tháng kế hoạch không hợp hệ hoặc đã được tạo",
+                                    validationCallback: function (params) {
+                                        return checkThoiGianBaoCao(params);
+                                    }
+                                }
+                            ]
+                        }, 
+                    ]
+                }
+            },
+            onInitNewRow: (e) => {
+                e.data.thoiGianBaoCao = new Date();
+            },
+                *@
+        });
+
+        var loadData2 = () => $("#container2").dxPivotGrid({
+            allowFiltering: true,
+            fieldChooser: {
+                enabled: true,
+                height: 400
+            },
+            dataSource: {
+                fields: [
+                    {
+                        dataField: "thoiGianBaoCao",
+                        width: 150,
+                        area: "row"
+                    },
+                    {
+                        dataField: "thoiGianDuChi",
+                        dataType: "date",
+                        area: "column"
+                    },
+                    {
+                        groupName: "date",
+                        groupInterval: "month",
+                        visible: false,
+                        expanded: true
+                    },
+                    {
+                        caption: "giaTri",
+                        dataField: "giaTri",
+                        dataType: "number",
+                        format: { type: "currency", currency: "VND" },
+                        summaryType: "sum",
+                        area: "data"
+                    }
+                ],
+                store: ds_main
+            }
+        });
+
+        var checkThoiGianBaoCao = (data) => {
+            var d = $.Deferred();
+            console.log(data);
+            d.resolve(true);
+            return d.promise();
+        }
+    </script>
+}

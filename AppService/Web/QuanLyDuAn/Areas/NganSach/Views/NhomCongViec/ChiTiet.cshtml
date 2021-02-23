@@ -336,7 +336,16 @@
             },
             onSelectionChanged: function (e) {
                 var data = e.selectedRowsData[0];
+                console.log(data)
                 if (data != null) {
+                    if (GIAIDOANID != null) {
+                        $("#action-add-sub").dxSpeedDialAction({
+                            index: 5, icon: "columnfield", label: "Tách nhóm công việc",
+                            visible: (PermitInAction["insert"] && listGD.filter(x => x.capDo == 'NCV' && x.id == data.giaiDoanId).length > 0) && data.chilCount>0,
+                            onClick: () => genTachNhomForm(data)
+                        }).dxSpeedDialAction("instance");
+                    }
+
                     $("#action-add").dxSpeedDialAction({
                         index: 1, icon: "fas fa-plus", label: "Thêm giá trị",
                         visible: (PermitInAction["insert"] && listGD.filter(x => x.capDo == 'NCV' && x.id == data.giaiDoanId).length > 0),
@@ -530,5 +539,8 @@
             e.preventDefault();
             return deferred.promise();
         });
+
+
+        var genTachNhomForm = (data) => DevExpress.ui.notify("Đang cập nhật", "error", 3000);
     </script>
 }
