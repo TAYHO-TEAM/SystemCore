@@ -26,8 +26,21 @@
 
 <script>
     var customFormId = 0;
+    var WORKITEMCODE = "";
+    var PROJECTCODE = "";
+    function convertCode() {
+        var d = $.Deferred();
+        customStore_HANGMUC.load().then((rs) => {
+            WORKITEMCODE = rs.filter(x => x.id == WORKITEMS)[0].code;
+        });
+        customStore_PROJECT.load().then((rs) => {
+            PROJECTCODE = rs.filter(x => x.id == PROJECTID)[0].code;
+        });
+
+        return d.promise();
+    };
     $(function () {
-        console.log("abc");
+        convertCode();
         loadData_List();
     });
     var insertButton = $("#insertButton").dxButton({
@@ -125,6 +138,7 @@
                             value: PROJECTID,
                             onValueChanged: function (data) {
                                 PROJECTID = data.value;
+                                convertCode();
                             },
                         },
                     },
@@ -143,6 +157,7 @@
                             value: WORKITEMS,
                             onValueChanged: function (data) {
                                 WORKITEMS = data.value;
+                                convertCode();
                             },
                         },
                     },
@@ -174,9 +189,10 @@
                 mode: "single"
             },
             onSelectionChanged: function (data) {
-                console.log(data.selectedRowKeys);
                 customFormId = data.selectedRowKeys;
-                insertButton.option("disabled", !data.selectedRowsData.length);
+                if (PROJECTCODE !== "" && WORKITEMCODE !== "" && customFormId > 0) {
+                    insertButton.option("disabled", !data.selectedRowsData.length);
+                }
             },
         });
     }
