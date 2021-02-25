@@ -28,7 +28,7 @@
         const ACTION_CMD = "/CustomFormContent";
         const ACTION_CMD_CUSTOMFORMCONTENT = "/CustomFormContent";
         var WIDTH_CONTAINER = $("#container").width();
-        var WORKITEMS =  1;
+        var WORKITEMS = 1;
 
 
         let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
@@ -40,7 +40,7 @@
         var customStore_CUSTOMFORMLIST = customStore_READ_ALL(ACTION_CUSTOMFORM);
         var customStore_PROJECT = customStore_READ_ALL(ACTION_PROJECT);
         var customStore_HANGMUC = customStore_READ_ALL(ACTION_HANGMUC);
-        let customStore_AccountInfo = new DevExpress.data.CustomStore({
+        let customStore_ACCOUNTINFO = new DevExpress.data.CustomStore({
             key: "accountId",
             load: (values) => {
                 var deferred = $.Deferred();
@@ -91,6 +91,9 @@
                         caption: "Ký Hiệu",
                         dataType: "string",
                         alignment: "left",
+                        editorOptions: {
+                            readOnly: true,
+                        },
                     },
                     {
                         dataField: "customFormId",
@@ -102,6 +105,9 @@
                             valueExpr: "id",
                             displayExpr: "title",
                         },
+                        editorOptions: {
+                            readOnly: true,
+                        },
                     },
                     {
                         dataField: "createBy",
@@ -109,9 +115,12 @@
                         dataType: "int",
                         alignment: "left",
                         lookup: {
-                            dataSource: customStore_AccountInfo,
+                            dataSource: customStore_ACCOUNTINFO,
                             valueExpr: "accountId",
                             displayExpr: "userName",
+                        },
+                        editorOptions: {
+                            readOnly: true,
                         },
                     },
                     {
@@ -119,6 +128,9 @@
                         caption: "Ngày tạo văn bản",
                         dataType: "date",
                         alignment: "center",
+                        editorOptions: {
+                            readOnly: true,
+                        },
                     },
                     {
                         dataField: "status",
@@ -126,10 +138,22 @@
                         dataType: "number",
                         width: 110,
                         alignment: "center",
-                        editorType: "dxNumberBox",
-                        editorOptions: {
-                            min: 1, step: 1, showSpinButtons: true,
-                        }, sortOrder: "desc"
+                        editorType: "dxSelectBox",
+                        lookup: {
+                            dataSource: Approve,
+                            valueExpr: "ID",
+                            displayExpr: "Name",
+                        },
+                        //editorOptions: {
+                        //    disabled: 0,
+                        //    dataSource: Approve,
+                        //    displayExpr: "Name",
+                        //    valueExpr: "ID",
+                        //    min: 1,
+                        //    step: 1,
+                        //    showSpinButtons: true,
+                        //},
+                        sortOrder: "desc"
                     },
                 ],
                 paging: {
@@ -146,6 +170,14 @@
                     highlightSearchText: true,
                     searchVisibleColumnsOnly: true,
                     visible: WIDTH_CONTAINER > 350
+                },
+                editing: {
+                    //allowAdding: true,
+                    allowUpdating: true,
+                    //allowDeleting: true,
+                    mode: "cell",
+                    useIcons: true,
+                    confirmDelete: false,
                 },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
@@ -231,33 +263,33 @@
                     //        }
                     //    }).dxSpeedDialAction("instance");
 
-                        //$("#action-delete").dxSpeedDialAction({
-                        //    index: 3,
-                        //    icon: "fas fa-trash",
-                        //    label: "Xoá",
-                        //    visible: (selectedRowData.id != null && PermitInAction["delete"] && selectedRowData.createBy == UserCurrentInfo.accountId),
-                        //    onClick: () => {
-                        //        DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
-                        //            if (dialogResult) {
-                        //                var deferred = $.Deferred();
-                        //                customStore.remove(selectedRowData.id).then(() => {
-                        //                    DevExpress.ui.notify("Xoá thành công", "success", 3000);
-                        //                    e.component.refresh();
-                        //                }, deferred.reject);
-                        //                return deferred.promise();
-                        //            }
-                        //        });
-                        //    }
-                        //}).dxSpeedDialAction("instance");
-                        //$("#action-log").dxSpeedDialAction({
-                        //    index: 4,
-                        //    icon: "fas fa-user",
-                        //    label: "Phân công",
-                        //    visible: (selectedRowData.createBy === UserCurrentInfo.accountId),
-                        //    onClick: () => {
-                        //        loadAccountPlanMaster(selectedRowData);
-                        //    }
-                        //}).dxSpeedDialAction("instance");
+                    //$("#action-delete").dxSpeedDialAction({
+                    //    index: 3,
+                    //    icon: "fas fa-trash",
+                    //    label: "Xoá",
+                    //    visible: (selectedRowData.id != null && PermitInAction["delete"] && selectedRowData.createBy == UserCurrentInfo.accountId),
+                    //    onClick: () => {
+                    //        DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                    //            if (dialogResult) {
+                    //                var deferred = $.Deferred();
+                    //                customStore.remove(selectedRowData.id).then(() => {
+                    //                    DevExpress.ui.notify("Xoá thành công", "success", 3000);
+                    //                    e.component.refresh();
+                    //                }, deferred.reject);
+                    //                return deferred.promise();
+                    //            }
+                    //        });
+                    //    }
+                    //}).dxSpeedDialAction("instance");
+                    //$("#action-log").dxSpeedDialAction({
+                    //    index: 4,
+                    //    icon: "fas fa-user",
+                    //    label: "Phân công",
+                    //    visible: (selectedRowData.createBy === UserCurrentInfo.accountId),
+                    //    onClick: () => {
+                    //        loadAccountPlanMaster(selectedRowData);
+                    //    }
+                    //}).dxSpeedDialAction("instance");
                     //}
                 },
             });

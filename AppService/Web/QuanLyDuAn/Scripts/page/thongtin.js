@@ -829,4 +829,19 @@ const Type = [
         Name: 'Số',
     },
 ];
+const Approve = [
+    {
+        ID: 10,
+        Name: 'Chưa duyệt',
+    },
+    {
+        ID: 1,
+        Name: 'Duyệt',
+    },
+    {
+        ID: 2,
+        Name: 'Từ chối duyệt',
+    },
+    
+];
 
