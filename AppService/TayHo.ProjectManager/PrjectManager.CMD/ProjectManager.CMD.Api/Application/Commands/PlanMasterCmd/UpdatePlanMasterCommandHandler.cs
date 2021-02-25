@@ -40,7 +40,7 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingPlanMaster.Status = request.Status.HasValue ? request.Status : existingPlanMaster.Status;
 
             existingPlanMaster.SetCode(request.Code);
-	existingPlanMaster.SetParentId(request.ParentId);
+	        existingPlanMaster.SetParentId(request.ParentId);
 			existingPlanMaster.SetPlanProjectId(request.PlanProjectId);
 			existingPlanMaster.SetTitle(request.Title);
 			existingPlanMaster.SetTimeLine(request.TimeLine);

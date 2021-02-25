@@ -166,6 +166,12 @@
                 rowAlternationEnabled: false,
                 columns: [
                     {
+                        dataField: "isVisible",
+                        caption: "Hoàn thành",
+                        dataType: "boolean",
+                        editorType: "dxCheckBox",
+                    },
+                    {
                         dataField: "code",
                         width: "10%",
                         caption: "Mã",
@@ -295,11 +301,11 @@
                                 dataField: "title",
                                 label: { text: "Kế hoạch CV" },
                             },
-                            {
-                                colSpan: 3,
-                                dataField: "priority",
-                                label: { text: "Ưu tiên" },
-                            },
+                            //{
+                            //    colSpan: 3,
+                            //    dataField: "priority",
+                            //    label: { text: "Ưu tiên" },
+                            //},
                             {
                                 colSpan: 3,
                                 dataField: "importantLevel",
@@ -350,12 +356,12 @@
                                 },
                             },
                             {
-                                colSpan: 6,
+                                colSpan: 4,
                                 dataField: "amount",
                                 label: { text: "Khối lượng" },
                             },
                             {
-                                colSpan: 6,
+                                colSpan: 4,
                                 dataField: "unit",
                                 label: { text: "Đơn vị" },
                                 lookup: {
@@ -370,6 +376,12 @@
                                     valueExpr: "ID",
                                     displayExpr: "Name",
                                 },
+                            },
+                            {
+                                colSpan: 4,
+                                dataField: "isVisible",
+                                label: { text: "Đã Hoàn thành" },
+                                editorType: "dxCheckBox",
                             },
                         ],
                     },

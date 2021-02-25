@@ -72,7 +72,7 @@
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
         var WIDTH_CONTAINER = $("#container").width();
-        let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
+        let customStore = customStore_CMD_READ_WITHPROJECTID_PAGGING(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
         let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
@@ -154,6 +154,7 @@
                 remoteOperations: {
                     filtering: true,
                     sorting: true,
+                    pagging: true,
                     grouping: false
                 },
                 scrolling: { mode: "standard" },

@@ -44,6 +44,7 @@ let customStore_CMD_READ = (CMD, READ) => new DevExpress.data.CustomStore({
     update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
+
 let customStore_CMD_READ_WITHPROJECTID = (CMD, READ) => new DevExpress.data.CustomStore({
     key: "id",
     load: (values) => {
@@ -334,7 +335,44 @@ let customStore_DELETE_READDATASOURCE = (CMD, DATASOURCE) => new DevExpress.data
     },
     remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
 });
+let customStore_CMD_READ_WITHPROJECTID_PAGGING = (CMD, READ) => new DevExpress.data.CustomStore({
+    key: "id",
+    load: (values) => {
+        let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
+        params = {
+            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+        }
+        if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
+        if (values.sort) {
 
+            params['SortCol'] = values.sort[0].selector;
+            params['SortADSC'] = values.sort[0].desc;
+            params['FindId'] = 'projectId,' + PROJECTID;
+        }
+        $.ajax({
+            headers: header,
+            url: URL_API_PM_READ + READ,
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                let list = data.result.items;
+                deferred.resolve(list, {
+                    totalCount: data.result.pagingInfo.totalItems,
+                });
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+            },
+            timeout: 10000//10 giây
+        });
+
+        return deferred.promise();
+    },
+    insert: (values) => ajax_insert(URL_API_PM_CMD + CMD, values),
+    update: (key, values) => ajax_update(URL_API_PM_CMD + CMD, key, values),
+    remove: (key) => ajax_delete(URL_API_PM_CMD + CMD, key),
+});
 ////---------------------------READ--------------------------- 
 let customStore_READ_ALL_ACC = (READ) => new DevExpress.data.CustomStore({
     key: "id",
