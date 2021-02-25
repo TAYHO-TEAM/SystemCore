@@ -24,10 +24,10 @@ namespace  ProjectManager.CMD.Api.Application.Commands
         public async Task<MethodResult<CreateNS_DuChiCommandResponse>> Handle(CreateNS_DuChiCommand request, CancellationToken cancellationToken)
         {
             var methodResult = new MethodResult<CreateNS_DuChiCommandResponse>();
-            var newNS_DuChi = new NS_DuChi(request.NhomCongViecId,
-                request.GoiThauId,
-                request.ThangBaoCao,
-                request.ThangDuChi,
+            var newNS_DuChi = new NS_DuChi(request.ProjectId, request.NhomCongViecId,
+                request.GroupId,
+                request.ThoiGianBaoCao,
+                request.ThoiGianDuChi,
                 request.GiaTri);
             newNS_DuChi.SetCreate(_user);
             newNS_DuChi.Status = request.Status.HasValue ? request.Status : newNS_DuChi.Status;

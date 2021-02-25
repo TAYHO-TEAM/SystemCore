@@ -7,6 +7,7 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
 {
     public class NS_DuChiDTO: DTOAccountInfoBase
     {
+        public int? ProjectId { get; set; }
         public int? NhomCongViecId { get; set; }
         public int? GoiThauId { get; set; }
         public DateTime? ThoiGianBaoCao { get; set; }
