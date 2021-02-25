@@ -6,7 +6,7 @@
 
 <div id="popup-main"></div>
 <div class="row">
-    <div class="col-12">
+    <div class="col-12" id="div_container">
         <div id="container" class="elevation-2"></div>
     </div>
 </div>
@@ -14,35 +14,36 @@
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
         //--------------------READ------------------------------
-        const ACTION = "/CustomForm";
+        const ACTION = "/CustomFormContent";
         const ACTION_CUSTOMTABLE = "/CustomTable";
-        const ACTION_PROJECT = "/Project";
+        const ACTION_PROJECT = "/Projects";
         const ACTION_CUSTOMFORMCONTENTDETAIL = "/CustomFormContent/Detail";
         const ACTION_DETAIL = "/CustomForm/Detail";
         const ACTION_CUSTOMFORM = "/CustomForm";
         const ACTION_LISTOWNER = "/CustomFormContent/ListOwner";
         const ACTION_CELLCONTENT = "/CustomCellContent";
+        const ACTION_HANGMUC = "/WorkItems";
 
         //--------------------CMD------------------------------
-        const ACTION_CMD = "/CustomForm";
+        const ACTION_CMD = "/CustomFormContent";
         const ACTION_CMD_CUSTOMFORMCONTENT = "/CustomFormContent";
-
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 0;
-
         var WIDTH_CONTAINER = $("#container").width();
+        var WORKITEMS =  1;
 
-        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+
+        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION_LISTOWNER);
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
         let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
         let customStore_LISTOWNER = (id) => customStore_READ_FILTER(ACTION_LISTOWNER, 'customFormId,' + id);
-        let customStore_CUSTOMFORM = customStore_INSERT_READ(ACTION_CMD_CUSTOMFORMCONTENT,ACTION_CUSTOMFORM);
-
+        let customStore_CUSTOMFORM = customStore_INSERT_READ(ACTION_CMD_CUSTOMFORMCONTENT, ACTION_CUSTOMFORM);
+        var customStore_CUSTOMFORMLIST = customStore_READ_ALL(ACTION_CUSTOMFORM);
+        var customStore_PROJECT = customStore_READ_ALL(ACTION_PROJECT);
+        var customStore_HANGMUC = customStore_READ_ALL(ACTION_HANGMUC);
 
         $(function () {
             loadData();
         });
-
 
         let loadData = () => {
             $("#container").dxDataGrid({
@@ -63,35 +64,34 @@
                 columnAutoWidth: true,
                 wordWrapEnabled: true,
                 rowAlternationEnabled: false,
+                groupPanel: { visible: true },
                 columns: [
-                    {
-                        dataField: "title",
-                        caption: "Tên mẫu văn bản",
-                        dataType: "string",
-                    },
-                    {
-                        dataField: "header",
-                        caption: "Đầu đề (Header)",
-                        dataType: "string",
-                    },
                     {
                         dataField: "code",
                         caption: "Ký Hiệu",
                         dataType: "string",
+                        alignment: "left",
                     },
                     {
-                        dataField: "descriptions",
-                        caption: "Mô tả",
+                        dataField: "customFormId",
+                        caption: "Tên mẫu văn bản",
                         dataType: "string",
+                        alignment: "left",
+                        lookup: {
+                            dataSource: customStore_CUSTOMFORMLIST,
+                            valueExpr: "id",
+                            displayExpr: "title",
+                        },
                     },
                     {
                         dataField: "createDate",
-                        caption: "Ngày phát hành",
+                        caption: "Ngày tạo văn bản",
                         dataType: "date",
+                        alignment: "center",
                     },
                     {
                         dataField: "status",
-                        caption: "Sắp xếp",
+                        caption: "Trạng thái",
                         dataType: "number",
                         width: 110,
                         alignment: "center",
@@ -128,13 +128,13 @@
                             },
 
                         },
-                        
+
                     )
                 },
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    //e.data.ProjectId = PROJECTID;
+                    e.data.ProjectId = PROJECTID;
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
@@ -143,109 +143,92 @@
                 onRowDblClick: function (e) {
                     var container = e.component;
                 },
-                masterDetail: {
-                autoExpandAll: false,
-                component: null,
-                enabled: true,
-                render: null,
-                template: function (container, options) {
-                    $("<div>").dxDataGrid({
-                        showBorders: false,
-                        showColumnHeaders: true,
-                        showColumnLines: false,
-                        hoverStateEnabled: true,
-                        showRowLines: true,
-                        columnAutoWidth: true,
-                        wordWrapEnabled: true,
-                        rowAlternationEnabled: true,
-                        columnAutoWidth: true,
-                        showBorders: true,
-                        dataSource: customStore_LISTOWNER(options.data.id),
-                        columns: [
-                            {
-                                caption: "STT", width: 80, alignment: "center",
-                                cellTemplate: (c, o) => c.append(o.rowIndex + 1)
-                            },
-                            {
-                                dataField: "id",
-                                caption: "Mã VB",
-                                dataType: "string",
-                            },
-                            {
-                                dataField: "createDate",
-                                caption: "Ngày thực hiện",
-                                dataType: "date",
-                            },
-                            {
-                                dataField: "updateDate",
-                                caption: "Ngày sửa",
-                                dataType: "date",
-                            },
-                        ],
-                        editing: {
-                            //allowAdding: true,
-                            allowUpdating: false,
-                            allowDeleting: false,
-                            mode: "popup",
-                            useIcons: true,
-                            confirmDelete: true,
-                            popup: {
-                                width: 600, height: "auto",
-                                showTitle: true, title: "Trình duyệt",
-                                closeOnOutsideClick: false, showCloseButton: true,
-                            },
-                        },
-                        onInitNewRow: (e) => {
-                            e.data.isActive = true;
-                            e.data.isVisible = true;
-                            
-                        },
-                        onToolbarPreparing: function (e) {
-                            var container = e.component;
-                            e.toolbarOptions.items.unshift(
-                                {
-                                    location: "after",
-                                    widget: "dxButton",
-                                    options: {
-                                        text: "Thêm mới",
-                                        //icon: "add",
-                                        onClick: function () {
-                                            var d = $.Deferred();
-                                            customStore_CUSTOMFORM.insert({ customFormId : options.data.id, isActive : true , isVisible : true}).then((rs) => {
-                                                CALLPOPUP(
-                                                    "Tạo văn bản theo mẫu: \"" + options.data.header + "\"",
-                                                    "/ThongTin/VanBanMau/_DienVanBan/" + rs.id,
-                                                    ($(window).width() > 767 ? "50%" : "80%"),
-                                                    container
-                                                );
-                                            }, d.reject);
-                                        }
-                                    }
-                                },
-                                {
-                                    location: "after",
-                                    widget: "dxButton",
-                                    options: {
-                                        icon: "refresh",
-                                        stylingMode: "filled",
-                                        type: "default",
-                                        onClick: () => container.refresh()
-                                    }
-                                },
-                            )
-                        },
-                        onRowDblClick: function (e) {
-                            var container = e.component;
+                selection: {
+                    mode: "single"
+                },
+                onContentReady: (e) => {
+                    var container = e.component;
+                    $("#action-add").dxSpeedDialAction({
+                        index: 1, icon: "fas fa-plus",
+                        label: "Thêm mới",
+                        visible: PermitInAction["insert"],
+                        onClick: () => {
                             CALLPOPUP(
-                                "Tạo văn bản theo mẫu: \"" + options.data.header + "\"",
-                                "/ThongTin/VanBanMau/_DienVanBan/" + e.data.id,
+                                "Tạo kế hoạch công việc",
+                                "/ThongTin/VanBanMau/_DanhSachVanBan",
                                 ($(window).width() > 767 ? "50%" : "80%"),
                                 container
                             );
-                        },
-                    }).attr("style", "margin:auto; width:90%").appendTo(container);
+                        }
+                    }).dxSpeedDialAction("instance");
+
+                    DevExpress.config({
+                        floatingActionButtonConfig: {
+                            icon: "rowfield",
+                            label: "Tác vụ",
+                            shading: true,
+                            position: {
+                                of: e.element,
+                                my: "right bottom",
+                                at: "right bottom",
+                                offset: e.component.pageCount() > 1 ? "-15 -60" : "-15 -15"
+                            }
+                        }
+                    });
+                    DevExpress.ui.repaintFloatingActionButton();
                 },
-            },
+                onSelectionChanged: (e) => {
+                    var selectedRowData = e.selectedRowsData[0];
+                    var selectedRowKey = e.selectedRowKeys[0];
+                    var container = document.getElementById("div_container");
+                    var containerE = e.component;
+                    container.classList.replace("col-lg-12", "col-lg-8");
+                    container.classList.replace("col-md-12", "col-md-8");
+                    e.component.refresh();
+                    if (selectedRowData != null && selectedRowKey != null) {
+                        var data = e.component.getRowIndexByKey(selectedRowKey);
+                        $("#action-update").dxSpeedDialAction({
+                            index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
+                            visible: PermitInAction["update"] && (selectedRowData.createBy == UserCurrentInfo.accountId),
+                            onClick: () => {
+                                CALLPOPUP(
+                                    "Tạo kế hoạch công việc",
+                                    "/ThongTin/VanBanMau/_DienVanBan?id=" + selectedRowKey,
+                                    ($(window).width() > 767 ? "50%" : "80%"),
+                                    containerE
+                                );
+                            }
+                        }).dxSpeedDialAction("instance");
+
+                        $("#action-delete").dxSpeedDialAction({
+                            index: 3,
+                            icon: "fas fa-trash",
+                            label: "Xoá",
+                            visible: (selectedRowData.id != null && PermitInAction["delete"] && selectedRowData.createBy == UserCurrentInfo.accountId),
+                            onClick: () => {
+                                DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                    if (dialogResult) {
+                                        var deferred = $.Deferred();
+                                        customStore.remove(selectedRowData.id).then(() => {
+                                            DevExpress.ui.notify("Xoá thành công", "success", 3000);
+                                            e.component.refresh();
+                                        }, deferred.reject);
+                                        return deferred.promise();
+                                    }
+                                });
+                            }
+                        }).dxSpeedDialAction("instance");
+                        //$("#action-log").dxSpeedDialAction({
+                        //    index: 4,
+                        //    icon: "fas fa-user",
+                        //    label: "Phân công",
+                        //    visible: (selectedRowData.createBy === UserCurrentInfo.accountId),
+                        //    onClick: () => {
+                        //        loadAccountPlanMaster(selectedRowData);
+                        //    }
+                        //}).dxSpeedDialAction("instance");
+                    }
+                },
             });
         }
     </script>
