@@ -5,6 +5,7 @@
 }
 
 <div id="popup-main"></div>
+<div id="popup-sub"></div>
 <div class="row">
     <div class="col-12" id="div_container">
         <div id="container" class="elevation-2"></div>
@@ -36,7 +37,7 @@
         let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
         let customStore_LISTOWNER = (id) => customStore_READ_FILTER(ACTION_LISTOWNER, 'customFormId,' + id);
-        let customStore_CUSTOMFORM = customStore_INSERT_READ(ACTION_CMD_CUSTOMFORMCONTENT, ACTION_CUSTOMFORM);
+        var customStore_CUSTOMFORM = customStore_INSERT_READ(ACTION_CMD, ACTION_CUSTOMFORM);
         var customStore_CUSTOMFORMLIST = customStore_READ_ALL(ACTION_CUSTOMFORM);
         var customStore_PROJECT = customStore_READ_ALL(ACTION_PROJECT);
         var customStore_HANGMUC = customStore_READ_ALL(ACTION_HANGMUC);
@@ -140,9 +141,9 @@
                     if (e.rowType == "data" && e.columnIndex == 1)
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
-                onRowDblClick: function (e) {
-                    var container = e.component;
-                },
+                //onRowDblClick: function (e) {
+                //    var container = e.component;
+                //},
                 selection: {
                     mode: "single"
                 },
@@ -183,8 +184,7 @@
                     var container = document.getElementById("div_container");
                     var containerE = e.component;
                     container.classList.replace("col-lg-12", "col-lg-8");
-                    container.classList.replace("col-md-12", "col-md-8");
-                    e.component.refresh();
+                    container.classList.replace("col-md-12", "col-md-8");    
                     if (selectedRowData != null && selectedRowKey != null) {
                         var data = e.component.getRowIndexByKey(selectedRowKey);
                         $("#action-update").dxSpeedDialAction({
@@ -192,7 +192,7 @@
                             visible: PermitInAction["update"] && (selectedRowData.createBy == UserCurrentInfo.accountId),
                             onClick: () => {
                                 CALLPOPUP(
-                                    "Tạo kế hoạch công việc",
+                                    "Danh sách văn bảo mẫu",
                                     "/ThongTin/VanBanMau/_DienVanBan?id=" + selectedRowKey,
                                     ($(window).width() > 767 ? "50%" : "80%"),
                                     containerE

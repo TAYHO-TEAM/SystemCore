@@ -13,6 +13,9 @@
 </form>
 
 <style>
+    .custom-img img{
+        max-height: 300px;
+    }
 </style>
 <script>
     var customStore_SELECT = (link) => customStore_GET_LINK(link);
@@ -94,7 +97,6 @@
                 }
                 else if (type === "dxSelectBox")
                 {
-                    console.log(object.sourceValue);
                     if (object.sourceLink !== "" && object.sourceLink !== null) {
                         return {
                             itemType: "simple",
@@ -116,7 +118,62 @@
                     }
                     else if (object.sourceValue !== "" && object.sourceValue !== null) {
                         var listOBJ = object.sourceValue.split(";");
-                        console.log(listOBJ);
+                        return {
+                            itemType: "simple",
+                            editorType: type,
+                            cssClass: "custom-textbox",
+                            editorOptions: {
+                                stylingMode: "filled",
+                                value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                                searchEnabled: true,
+                                elementAttr: {
+                                    id: Id,
+                                    class: "customForm_SelectBox",
+                                },
+                                dataSource: listOBJ,
+                            }
+                        };
+                    }
+                    else {
+                        //return {
+                        //    itemType: "simple",
+                        //    label: { text: " " },
+                        //    editorType: type,
+                        //    cssClass: "custom-textbox",
+                        //    editorOptions: {
+                        //        placeholder: "Vui lòng điền thông tin",
+                        //        value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                        //        elementAttr: {
+                        //            id: Id,
+                        //            class: "customForm_TextBox",
+                        //        },
+                        //    }
+                        //};
+                    }
+
+                }
+                else if (type === "dxRadioGroup") {
+                    if (object.sourceLink !== "" && object.sourceLink !== null) {
+                        return {
+                            itemType: "simple",
+                            editorType: type,
+                            cssClass: "custom-textbox",
+                            editorOptions: {
+                                stylingMode: "filled",
+                                searchEnabled: true,
+                                value: (object.customCellContentDTOs.length > 0 && typeof object.customCellContentDTOs[0].contents !== 'undefined') ? object.customCellContentDTOs[0].contents : '',
+                                elementAttr: {
+                                    id: Id,
+                                    class: "customForm_RadioGroup",
+                                },
+                                dataSource: customStore_SELECT(object.sourceLink),
+                                displayExpr: object.sourceValue,
+                                valueExpr: object.sourceValue,
+                            }
+                        };
+                    }
+                    else if (object.sourceValue !== "" && object.sourceValue !== null) {
+                        var listOBJ = object.sourceValue.split(";");
                         return {
                             itemType: "simple",
                             editorType: type,
@@ -244,7 +301,7 @@
                                     itemType: "simple",
                                     name: "Image",
                                     editorType: 'dxGallery',
-                                    cssClass: "custom-textbox",
+                                    cssClass: "custom-textbox custom-img",
                                     editorOptions: {
                                         stylingMode: "filled",
                                         dataSource: object.customCellContentDTOs.map(x=>x.contents),
@@ -395,6 +452,11 @@
             for (var j = 0; j < selectBox.length; j++) {
                 fdata.append(selectBox[j].id, $("#" + selectBox[j].id).dxSelectBox('instance').option('value'));
             }
+            //Get and Append CustomCellContent of RadioGroup
+            var selectBox = document.getElementsByClassName("customForm_RadioGroup");
+            for (var j = 0; j < selectBox.length; j++) {
+                fdata.append(selectBox[j].id, $("#" + selectBox[j].id).dxRadioGroup('instance').option('value'));
+            }
             //Get and Append CustomCellContent of DateBox
             var dateBox = document.getElementsByClassName("customForm_DateBox");
             for (var j = 0; j < dateBox.length; j++) {
@@ -444,6 +506,7 @@
                     DevExpress.ui.notify(rs.result, rs.status, 3000);
                     if (rs.status == "success") {
                         $("#popup-main").dxPopup('instance').hide();
+                        $("#popup-sub").dxPopup('instance').hide();
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {

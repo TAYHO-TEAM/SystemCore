@@ -544,6 +544,42 @@ function CALLPOPUP(title, url, width, container) {
         }
     });
 }
+function CALLPOPUPMULTI(title, url, width, container, popupId) {
+    var isFullscreen = false;
+    if (width == "100%") isFullscreen = true;
+
+    $("#" + popupId).dxPopup({
+        width: width,
+        height: "auto",
+        fullScreen: isFullscreen,
+        position: { my: 'top', at: 'top', of: window },
+        dragEnabled: true,
+        resizeEnabled: true,
+        visible: true,
+        showTitle: true,
+        closeOnOutsideClick: false,
+        showCloseButton: true,
+        title: title,
+        contentTemplate: function (container) {
+            var scrollView = $("<div id='scrollView'></div>");
+            var content = $("<div/>");
+            content.load(url);
+            scrollView.append(content);
+            scrollView.dxScrollView({
+                width: '100%',
+                height: '100%'
+            });
+            container.append(scrollView);
+            return container;
+        },
+        onHiding: function () {
+            container.refresh();
+        },
+        onHidden: function () {
+            loadData();
+        }
+    });
+}
 function ConvertProjectToPlanProject(PLANPROJECT) {
 
     switch (PLANPROJECT) {
@@ -730,6 +766,11 @@ const parameterType = [
         ID: 'dxFileUploader',
         Name: 'UpFile',
         Type: 'file'
+    },
+    {
+        ID: 'dxRadioGroup',
+        Name: 'RadioGroup',
+        Type: 'string'
     },
     //{
     //    ID: '3',
