@@ -27,14 +27,14 @@
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                console.log(values)
+
                 let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
                 //if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
                 }
-                //params = { 'FindId': 'ProjectId,' + PROJECTID },
+                params = { 'FindId': 'ProjectId,' + PROJECTID },
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION,

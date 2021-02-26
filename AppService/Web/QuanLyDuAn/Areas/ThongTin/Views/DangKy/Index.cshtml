@@ -350,7 +350,7 @@
                             icon: "add",
                             visible: function (e) {
 
-                                return e.row.data.parentId === 0 && e.row.data.insert;
+                                return (e.row.data.parentId === 0 && e.row.data.insert && e.row.data.isVisible === true);
                             },
                             onClick: function (e) {
                                 var containerE = e.component;
@@ -1006,20 +1006,20 @@
                     editing: {
                         mode: "batch",
                         allowAdding: false,
-                        allowDeleting: false,
+                        allowDeleting: true,
                         allowUpdating: false,
                     },
                     onToolbarPreparing: (e) => {
-                        var container = e.component;
-                        e.toolbarOptions.items.unshift(
-                            {
-                                location: "after", widget: "dxButton",
-                                options: {
-                                    stylingMode: "filled",
+                    //    var container = e.component;
+                    //    e.toolbarOptions.items.unshift(
+                    //        {
+                    //            location: "after", widget: "dxButton",
+                    //            options: {
+                    //                stylingMode: "filled",
                                     
-                                    onClick: () => container.refresh()
-                                }
-                            })
+                    //                onClick: () => container.refresh()
+                    //            }
+                    //        })
                     },
 
                 });
