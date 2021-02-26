@@ -7,7 +7,6 @@
 
     //--------------------CMD------------------------------
     var ACTION_CMD_CUSTOMCOLUM = "/CustomColum";
-
     var customStore_CUSTOMCOLUM = customStore_CMD_READ_FILTER_ID(ACTION_CMD_CUSTOMCOLUM, ACTION_CUSTOMCOLUM, 'CustomTableId,' + @Model.id);
 
 
@@ -37,30 +36,20 @@
             editing: {
                 mode: "cell",
                 allowEditing: true,
-                allowDeleting: true
+                allowUpdating: true,
+                allowDeleting: true,
             },
             columns: [
                 //{
                 //    dataField: "customTableId",
                 //    //groupIndex: 0,
-                //    caption: "Tên dữ liệu",
+                //    caption: "Mã dữ liệu",
                 //    dataType: "number",
-                //    lookup: {
-                //        dataSource: customStore_CUSTOMTABLE,
-                //        valueExpr: "id",
-                //        displayExpr: "title",
+                //    calculateCellValue: function () {
+                //        return CustomTableId;
                 //    },
-                //    editorType: "dxSelectBox",
                 //    editorOptions: {
-                //        dataSource: customStore_CUSTOMTABLE,
-                //        valueExpr: "id",
-                //        displayExpr: "title",
-                //        placeholder: "Vui lòng chọn...",
-                //        searchEnabled: true,
-                //        showClearButton: true,
-                //        itemTemplate: function (data) {
-                //            return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                //        },
+                //        readOnly: true,
                 //    },
                 //    validationRules: [{ type: "required" }],
                 //},
@@ -121,10 +110,9 @@
             onInitNewRow: (e) => {
                 e.data.isActive = true;
                 e.data.isVisible = true;
-                e.data.isLock = false;
+                e.data.customTableId = @Model.id;
             },
             onToolbarPreparing: (e) => {
-                console.log(e.element.length);
                 e.toolbarOptions.items.unshift(
                     {
                         location: "before",

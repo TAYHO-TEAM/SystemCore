@@ -38,20 +38,22 @@
             colCount: 4,
             labelLocation: "top",
             items: [
+               
                 {
                     dataField: "code",
                     label: { text: "Mã CV" },
                 },
                 {
                     dataField: "title",
-                    label: { text: "Kế hoạch CV" },
+                    colSpan: 2,
+                    label: { text: "Tên công việc" },
                     validationRules: [{ type: "required" }],
                 },
-                {
-                    dataField: "priority",
-                    label: { text: "Độ ưu tiên" },
-                    editorType: "dxNumberBox",
-                },
+                //{
+                //    dataField: "priority",
+                //    label: { text: "Độ ưu tiên" },
+                //    editorType: "dxNumberBox",
+                //},
                 {
                     dataField: "importantLevel",
                     caption: "Mức độ quan trọng",
@@ -146,7 +148,7 @@
             showFileList: true,
             multiple: true,
             uploadMode: "useForm",
-            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".xlsm"],
+            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx"],
             maxFileSize: 10000000,
         });
         $("#form-regist").on("submit", function (e) {
@@ -163,7 +165,6 @@
                 }
 
             });
-            console.log(PROJECTID);
             fdata.append('planProjectId', 3);
             fdata.append('token', UserCurrentInfo.accessToken);
             //for (var pair of fdata.entries()) {

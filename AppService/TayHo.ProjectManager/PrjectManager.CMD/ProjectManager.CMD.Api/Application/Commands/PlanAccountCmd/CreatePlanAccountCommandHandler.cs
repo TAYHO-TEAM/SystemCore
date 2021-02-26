@@ -57,7 +57,9 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             }
             await _planAccountRepository.AddRangeAsync(newPlanAccounts).ConfigureAwait(false);
             await _planAccountRepository.UnitOfWork.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            methodResult.Result = _mapper.Map<CreatePlanAccountCommandResponse>(newPlanAccounts);
+            var PlanAccountCommandResponseDTOs = _mapper.Map<List<PlanAccountCommandResponseDTO>>(newPlanAccounts);
+            methodResult.Result = new CreatePlanAccountCommandResponse(PlanAccountCommandResponseDTOs);
+
             return methodResult;
         }
     }

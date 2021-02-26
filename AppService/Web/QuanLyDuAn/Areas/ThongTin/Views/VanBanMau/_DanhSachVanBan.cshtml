@@ -49,12 +49,21 @@
         height: 34,
         disabled: true,
         alignment: "center",
-        onClick: function () {
-            console.log(customFormId);
-            //$.each(loadData_List.getSelectedRowKeys(), function () {
-            //    //employeesStore.remove(this);
-            //});
-            dataGrid.refresh();
+        onClick: function (e) {
+            var containerE = e.component;
+            var code = PROJECTCODE + "-" + WORKITEMCODE + "-";
+            var d = $.Deferred();
+            customStore_CUSTOMFORM.insert({ customFormId: customFormId[0], isActive: true, isVisible: true , code : code }).then((rs) => {
+                CALLPOPUPMULTI(
+                    "Tạo văn bản theo mẫu ",
+                    "/ThongTin/VanBanMau/_DienVanBan/" + rs.id,
+                    ($(window).width() > 767 ? "50%" : "80%"),
+                    $("#container").dxDataGrid('instance'),
+                    'popup-sub'
+                );
+                $("#popup-main").dxPopup('instance').hide();
+            }, d.reject);
+            return d.promise();
         }
     }).dxButton("instance");
     var loadData_List = () => {

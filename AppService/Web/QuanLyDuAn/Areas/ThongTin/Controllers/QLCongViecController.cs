@@ -67,6 +67,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                             mFormData.Add(new StringContent(value.ToString()), name);
                         }
                     }
+                    mFormData.Add(new StringContent("false"), "IsVisible");
                 }
                 catch(Exception ex)
                 {

@@ -9,7 +9,7 @@ namespace ProjectManager.CMD.Api.Application.Commands
         public string Code { get; set; }
         public int? ParentId { get; set; }
         public string PlanProjectId { get; set; }
-        [Required(ErrorMessage = "Không được để trống")]
+        //[Required(ErrorMessage = "Không được để trống")]
         public string Title { get; set; }
         public int? TimeLine { get; set; }
         public string Description { get; set; }

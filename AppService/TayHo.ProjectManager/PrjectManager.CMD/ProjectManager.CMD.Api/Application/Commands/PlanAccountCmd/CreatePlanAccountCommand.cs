@@ -1,6 +1,7 @@
 using MediatR;
 using Services.Common.DomainObjects;
 using System;
+using System.Collections.Generic;
 
 namespace  ProjectManager.CMD.Api.Application.Commands
 {
@@ -8,6 +9,14 @@ namespace  ProjectManager.CMD.Api.Application.Commands
     {
        
     }
+    public class CreatePlanAccountCommandResponse
+    {
+        public CreatePlanAccountCommandResponse(List<PlanAccountCommandResponseDTO> PlanAccount)
+        {
+            _PlanAccount = PlanAccount;
+        }
 
-    public class CreatePlanAccountCommandResponse : PlanAccountCommandResponseDTO { }
+        public List<PlanAccountCommandResponseDTO> _PlanAccount { get; }
+    }
+    //public class CreatePlanAccountCommandResponse : PlanAccountCommandResponseDTO { }
 }
