@@ -39,10 +39,11 @@ namespace  ProjectManager.CMD.Api.Application.Commands
             existingNS_DuChi.IsActive = request.IsActive.HasValue ? request.IsActive : existingNS_DuChi.IsActive;
             existingNS_DuChi.IsVisible = request.IsVisible.HasValue ? request.IsVisible : existingNS_DuChi.IsVisible;
             existingNS_DuChi.Status = request.Status.HasValue ? request.Status : existingNS_DuChi.Status;
+            existingNS_DuChi.SetProjectId(request.ProjectId);
             existingNS_DuChi.SetNhomCongViecId(request.NhomCongViecId);
-            existingNS_DuChi.SetGoiThauId(request.GoiThauId);
-            existingNS_DuChi.SetThangBaoCao(request.ThangBaoCao);
-            existingNS_DuChi.SetThangDuChi(request.ThangDuChi);
+            existingNS_DuChi.SetGroupId(request.GroupId);
+            existingNS_DuChi.SetThoiGianBaoCao(request.ThoiGianBaoCao);
+            existingNS_DuChi.SetThoiGianDuChi(request.ThoiGianDuChi);
             existingNS_DuChi.SetGiaTri(request.GiaTri);
             existingNS_DuChi.SetUpdate(_user,0);
             _NS_DuChiRepository.Update(existingNS_DuChi);

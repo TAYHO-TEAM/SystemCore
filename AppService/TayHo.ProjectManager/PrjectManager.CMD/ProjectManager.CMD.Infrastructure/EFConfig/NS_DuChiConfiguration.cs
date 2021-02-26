@@ -11,10 +11,11 @@ namespace ProjectManager.CMD.Infrastructure.EFConfig
         public void Configure(EntityTypeBuilder<NS_DuChi> builder)
         {
             builder.ToTable(QuanLyDuAnConstants.NS_DuChi_TABLENAME);
+            builder.Property(x => x.ProjectId).HasField("_projectId").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.NhomCongViecId).HasField("_nhomCongViecId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.GoiThauId).HasField("_goiThauId").UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.ThangBaoCao).HasField("_thangBaoCao").HasMaxLength(100).UsePropertyAccessMode(PropertyAccessMode.Field);
-            builder.Property(x => x.ThangDuChi).HasField("_thangDuChi").HasMaxLength(100).UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.GroupId).HasField("_groupId").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ThoiGianBaoCao).HasField("_thoiGianBaoCao").UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.Property(x => x.ThoiGianDuChi).HasField("_thoiGianDuChi").UsePropertyAccessMode(PropertyAccessMode.Field);
             builder.Property(x => x.GiaTri).HasField("_giaTri").UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }

@@ -8,10 +8,11 @@ namespace ProjectManager.CMD.Domain.DomainObjects
     public class NS_DuChi : DOBase
     {
         #region Fields
+        private int? _projectId;
         private int? _nhomCongViecId;
-        private int? _goiThauId;
-        private string _thangBaoCao;
-        private string _thangDuChi;
+        private int? _groupId;
+        private DateTime? _thoiGianBaoCao;
+        private DateTime? _thoiGianDuChi;
         private decimal? _giaTri;
         #endregion Fields
 
@@ -21,33 +22,37 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
 
         public NS_DuChi(
+            int? ProjectId,
             int? NhomCongViecId,
-            int? GoiThauId,
-            string ThangBaoCao,
-            string ThangDuChi,
+            int? GroupId,
+            DateTime? ThoiGianBaoCao,
+            DateTime? ThoiGianDuChi,
             decimal? GiaTri) : this()
         {
+            _projectId = ProjectId;
             _nhomCongViecId = NhomCongViecId;
-            _goiThauId = GoiThauId;
-            _thangBaoCao = ThangBaoCao;
-            _thangDuChi = ThangDuChi;
+            _groupId = GroupId;
+            _thoiGianBaoCao = ThoiGianBaoCao;
+            _thoiGianDuChi = ThoiGianDuChi;
             _giaTri = GiaTri;
         }
         #endregion Constructors
 
         #region Properties
+        public int? ProjectId { get => _projectId; }
         public int? NhomCongViecId { get => _nhomCongViecId; }
-        public int? GoiThauId { get => _goiThauId; }
-        [MaxLength(100, ErrorMessage = nameof(ErrorCodeInsert.IErr100))] public string ThangBaoCao { get => _thangBaoCao; }
-        [MaxLength(100, ErrorMessage = nameof(ErrorCodeInsert.IErr100))] public string ThangDuChi { get => _thangDuChi; }
+        public int? GroupId { get => _groupId; }
+        public DateTime? ThoiGianBaoCao { get => _thoiGianBaoCao; }
+        public DateTime? ThoiGianDuChi { get => _thoiGianDuChi; }
         public decimal? GiaTri { get => _giaTri; }
         #endregion Properties
 
         #region Behaviours
+        public void SetProjectId(int? ProjectId) { _projectId = !ProjectId.HasValue ? _projectId : ProjectId; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetNhomCongViecId(int? NhomCongViecId) { _nhomCongViecId = !NhomCongViecId.HasValue ? _nhomCongViecId : NhomCongViecId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetGoiThauId(int? GoiThauId) { _goiThauId = !GoiThauId.HasValue ? _goiThauId : GoiThauId; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetThangBaoCao(string ThangBaoCao) { _thangBaoCao = ThangBaoCao == null ? _thangBaoCao : ThangBaoCao; if (!IsValid()) throw new DomainException(_errorMessages); }
-        public void SetThangDuChi(string ThangDuChi) { _thangDuChi = ThangDuChi == null ? _thangDuChi : ThangDuChi; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetGroupId(int? GroupId) { _groupId = !GroupId.HasValue ? _groupId : GroupId; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetThoiGianBaoCao(DateTime? ThoiGianBaoCao) { _thoiGianBaoCao = !ThoiGianBaoCao.HasValue ? _thoiGianBaoCao : ThoiGianBaoCao; if (!IsValid()) throw new DomainException(_errorMessages); }
+        public void SetThoiGianDuChi(DateTime? ThoiGianDuChi) { _thoiGianDuChi = !ThoiGianDuChi.HasValue ? _thoiGianDuChi : ThoiGianDuChi; if (!IsValid()) throw new DomainException(_errorMessages); }
         public void SetGiaTri(decimal? GiaTri) { _giaTri = !GiaTri.HasValue ? _giaTri : GiaTri; if (!IsValid()) throw new DomainException(_errorMessages); }
         public sealed override bool IsValid()
         {
