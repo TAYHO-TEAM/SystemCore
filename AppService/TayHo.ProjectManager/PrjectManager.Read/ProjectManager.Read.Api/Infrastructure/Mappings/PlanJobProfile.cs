@@ -9,6 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         public PlanJobProfile()
         {
             CreateMap<PlanJobDTO, PlanJobResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<PlanJobAccountPermitDTO, PlanJobAccountPermitResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

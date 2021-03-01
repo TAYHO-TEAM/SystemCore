@@ -19,10 +19,12 @@ namespace ProjectManager.Read.Api.Controllers.v1
     public class PlanJobController : APIControllerBase
     {
         private readonly IDOBaseRepository<PlanJobDTO> _dOBaseRepository;
-
-        public PlanJobController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanJobDTO> dOBaseRepository) : base(mapper,httpContextAccessor)
+        private readonly IPlanJobRepository<PlanJobAccountPermitDTO> _planJobRepository;
+        private const string GetWithAccount = nameof(GetWithAccount);
+        public PlanJobController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IDOBaseRepository<PlanJobDTO> dOBaseRepository, IPlanJobRepository<PlanJobAccountPermitDTO> PlanJobRepository) : base(mapper,httpContextAccessor)
         {
             _dOBaseRepository = dOBaseRepository;
+            _planJobRepository = PlanJobRepository;
         }
 
         /// <summary>
@@ -43,6 +45,31 @@ namespace ProjectManager.Read.Api.Controllers.v1
             {
                 PagingInfo = queryResult.PagingInfo,
                 Items = _mapper.Map<IEnumerable<PlanJobResponseViewModel>>(queryResult.Items)
+            };
+            return Ok(methodResult);
+        }
+
+
+        /// <summary>
+        /// Get List of PlanJobAccount.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(GetWithAccount)]
+        [ProducesResponseType(typeof(MethodResult<PagingItems<PlanJobAccountPermitResponseViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetPlanJobAccountAsync([FromQuery] BasePermitRequestViewModel request)
+        {
+            var methodResult = new MethodResult<PagingItems<PlanJobAccountPermitResponseViewModel>>();
+            RequestHasAccountPermitFilterParam requestFilter = _mapper.Map<RequestHasAccountPermitFilterParam>(request);
+            requestFilter.TableName = QuanLyDuAnConstants.PlanJob_TABLENAME;
+            requestFilter.AccountId = _user;
+            var queryResult = await _planJobRepository.GetWithPaggingPermistionAsync(requestFilter).ConfigureAwait(false);
+            methodResult.Result = new PagingItems<PlanJobAccountPermitResponseViewModel>
+            {
+                PagingInfo = queryResult.PagingInfo,
+                Items = _mapper.Map<IEnumerable<PlanJobAccountPermitResponseViewModel>>(queryResult.Items)
             };
             return Ok(methodResult);
         }
