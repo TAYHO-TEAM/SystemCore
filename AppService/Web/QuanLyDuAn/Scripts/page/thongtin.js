@@ -844,4 +844,17 @@ const Approve = [
     },
     
 ];
-
+const SetPermit = [
+    {
+        ID: 6,
+        Name: 'Quyền quản trị',
+    },
+    {
+        ID: 7,
+        Name: 'Quyền phân công',
+    },
+    {
+        ID: 8,
+        Name: 'Quyền thực hiện',
+    },
+];

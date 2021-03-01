@@ -1039,12 +1039,17 @@
                             },
 
                         },//nhóm
-                        //{
-                        //    colSpan: 12,
-                        //    dataField: "permissionId",
-                        //    caption: "Thực hiện",
- 
-                        //},
+                        {
+                            dataField: "permissionId",
+                            caption: "Thực hiện",
+                            alignment: "center",
+                            dataType: "number",
+                            lookup: {
+                                dataSource: SetPermit,
+                                valueExpr: "ID",
+                                displayExpr: "Name",
+                            },
+                        },
                     ],
                     editing: {
                         mode: "popup",
@@ -1117,22 +1122,22 @@
                                         }
                                     }]
                                 },
-                                //{
-                                //    colSpan: 12,
-                                //    dataField: "permissionId",
-                                //    lookup: {
-                                //        dataSource: permisionAassign,
-                                //        valueExpr: "ID",
-                                //        displayExpr: "Name",
-                                //    },
-                                //    editorType: "dxSelectBox",
-                                //    editorOptions: {
-                                //        value: "unit",
-                                //        dataSource: permisionAassign,
-                                //        valueExpr: "ID", displayExpr: "Name",
-                                //    },
-                                //    validationRules: [{ type: "required" }],
-                                //},
+                                {
+                                    colSpan: 12,
+                                    dataField: "permissionId",
+                                    lookup: {
+                                        dataSource: permisionAassign,
+                                        valueExpr: "ID",
+                                        displayExpr: "Name",
+                                    },
+                                    editorType: "dxSelectBox",
+                                    editorOptions: {
+                                        value: "unit",
+                                        dataSource: permisionAassign,
+                                        valueExpr: "ID", displayExpr: "Name",
+                                    },
+                                    validationRules: [{ type: "required" }],
+                                },
                             ],
                         },
                     },
