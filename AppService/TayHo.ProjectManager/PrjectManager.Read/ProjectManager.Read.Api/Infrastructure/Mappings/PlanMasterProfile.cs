@@ -10,6 +10,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
         {
             CreateMap<PlanMasterDTO, PlanMasterResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
             CreateMap<PlanMasterAccountDTO, PlanMasterAccountResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
+            CreateMap<PlanMasterAccountPermitDTO, PlanMasterAccountPermitResponseViewModel>().ForMember(target => target.Id, m => m.MapFrom(source => source.Id));
         }
     }
 }

@@ -21,4 +21,8 @@ namespace ProjectManager.Read.Api.ViewModels.BaseClasses
         public string ModifyBy_Title { get; set; }
         public string ModifyBy_Department { get; set; }
     }
+    public class BaseResponseAccountInfoPermitViewModel : BaseResponseAccountInfoViewModel
+    {
+        public int PermistionId { get; set; }
+    }
 }

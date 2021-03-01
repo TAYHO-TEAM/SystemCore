@@ -33,7 +33,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 }
             };
             using var conn = await _connectionFactory.CreateConnectionAsync();
-            using var rs = conn.QueryMultipleAsync("sp_GetDataPlan_WithPage_Acc_Permit", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            using var rs = conn.QueryMultipleAsync("sp_GetDataTableSS_WithPage_Acc_Permit_PlanJob", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
             result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
             result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
 

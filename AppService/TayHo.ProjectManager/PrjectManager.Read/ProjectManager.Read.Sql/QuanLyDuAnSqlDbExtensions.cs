@@ -121,7 +121,7 @@ namespace ProjectManager.Read.Sql
             services.AddScoped<IDOBaseRepository<PlanProjectDTO>, DOBaseRepository<PlanProjectDTO>>();
             services.AddScoped<IDOBaseRepository<PlanReportDTO>, DOBaseRepository<PlanReportDTO>>();
             services.AddScoped<IDOBaseRepository<PlanScheduleDTO>, DOBaseRepository<PlanScheduleDTO>>();
-            services.AddScoped<IPlanMasterRepository<PlanMasterAccountDTO>, PlanMasterRepository<PlanMasterAccountDTO>>();
+            services.AddScoped<IPlanMasterRepository<PlanMasterAccountPermitDTO>, PlanMasterRepository<PlanMasterAccountPermitDTO>>();
             return services;
         }
 
