@@ -95,7 +95,7 @@
                     lookup: {
                         dataSource: ds_nhomcv,
                         valueExpr: "id", displayExpr: "tenNhomCongViec",
-                    },
+                    }, 
                 },
                 {
                     allowEditing: false,
@@ -265,7 +265,12 @@
         var checkThoiGianBaoCao = (data) => {
             var d = $.Deferred();
             console.log(data);
-            d.resolve(true);
+            var nhomcv = $('#txtNhomCongViecId').dxLookup('instance').option('value');
+            if (nhomcv != null) {
+                ds_main.load().then((rs) => {
+                    d.resolve(nhomcv != null && (rs.filter(x => moment(x.thoiGianBaoCao).format("MM/YYYY") == moment(data.value).format("MM/YYYY") && x.nhomCongViecId == nhomcv).length == 0));
+                });
+            }
             return d.promise();
         }
 
@@ -309,6 +314,7 @@
                                     //itemTemplate: function (data) {
                                     //    return $("<div>").append($("<b>").append(data.tenGiaiDoan).addClass("mr-1"), $("<em>").append(data.dienGiai));
                                     //},
+                                    elementAttr: { id: "txtNhomCongViecId" },
                                 },
                                 validationRules: [{ type: "required" }]
                             },
@@ -336,7 +342,16 @@
                                         content.dxForm("instance").itemOption("giatri-ketiep.giatri-thang05", "label", { text: "Tháng " + moment(data.value).add(5, 'M').format("MM/YYYY"), location: "left" });
                                     }
                                 },
-                                validationRules: [{ type: "required" }]
+                                validationRules: [
+                                    { type: "required" },
+                                    {
+                                        type: "async",
+                                        message: "Tháng dự chi không hợp lệ",
+                                        validationCallback: function (params) {
+                                            return checkThoiGianBaoCao(params);
+                                        }
+                                    }
+                                ]
                             },
                             {
                                 colSpan: 6,
