@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
@@ -233,12 +234,12 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
             services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
             services.Configure<SQLServerOptions>(configuration.GetSection("SQLServerOptions"));
             services.Configure<RedisServerOptions>(configuration.GetSection("RedisServerOptions"));
-            //services.Configure<FormOptions>(x =>
-            //{
-            //    x.ValueLengthLimit = 5000; // Limit on individual form values
-            //    x.MultipartBodyLengthLimit = 737280000; // Limit on form body size
-            //    x.MultipartHeadersLengthLimit = 737280000; // Limit on form header size
-            //});
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = 5000; // Limit on individual form values
+                x.MultipartBodyLengthLimit = 737280000; // Limit on form body size
+                x.MultipartHeadersLengthLimit = 737280000; // Limit on form header size
+            });
             //services.Configure<IISServerOptions>(options =>
             //{
             //    options.MaxRequestBodySize = 837280000; // Limit on request body size

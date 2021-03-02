@@ -1031,19 +1031,22 @@
                 $(function () {
                     if (isUpload) {
                         //$("#form").append("OwnerById",1);
+                       
                         $("#file-uploader").dxFileUploader({
                             selectButtonText: "Select photo",
                             multiple: true,
-                            //labelText: "",
-                            accept: "*",
+                            labelText: "",
+                            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
                             uploadMode: "useForm",
+                            showFileList: true,
                         });
 
                         $("#button").dxButton({
-                            text: "Update profile",
+                            text: "Lưu ảnh",
                             type: "success",
                             onClick: function () {
                                 isUpload++;
+                                loadingPanel.show();
                                 var fd = $("#form")[0];
                                 var formData = new FormData(fd);
                                 formData.append("OwnerById", item.id);
@@ -1053,21 +1056,40 @@
                                 else {
                                     formData.append("Code", code);
                                 }
+                                formData.append('token', UserCurrentInfo.accessToken);
+                                for (var pair of formData.entries()) {
+                                    console.log(pair[0] + ', ' + pair[1]);
+                                }
+                                var files = $("#file-uploader").dxFileUploader("instance").option("value");
+                                if (files.length > 0) {
+                                    $.each(files, function (key, value) {
+                                        formData.append(files[key].name, files[key]);
+                                    });
+                                }
                                 //formData.append("Code", item.code);
                                 formData.append("OwnerByTable", table);
                                 $.ajax({
-                                    url: 'https://api-pm-cmd.tayho.com.vn/api/cmd/v1/FilesAttachment/UploadFile',
-                                    type: 'POST',
+                                    type: "POST",
+                                    enctype: 'multipart/form-data',
+                                    url: "/ThongTin/DangKy/CreateFile",
                                     data: formData,
-                                    success: function (data) {
-                                        $('.dx-fileuploader-file-status-message').empty();
-                                        $('.dx-fileuploader-file-status-message').html('Đã up thành công!');
-                                        $('#dx-upload-file-1').dxDataGrid('instance').refresh();
-                                    },
-                                    cache: false,
-                                    contentType: false,
                                     processData: false,
+                                    contentType: false,
+                                    cache: false,
+                                    timeout: 600000,
+                                    success: function (rs) {
+                                        loadingPanel.hide();
+                                        DevExpress.ui.notify(rs.result, rs.status, 3000);
+                                        //if (rs.status == "success") {
+                                        //    $("#popup-register").dxPopup('instance').hide();
+                                        //}
+                                    },
+                                    error: function (xhr, textStatus, errorThrown) {
+                                        loadingPanel.hide();
+                                        DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                                    }
                                 });
+                                //e.preventDefault();
                             }
                         });
                     }

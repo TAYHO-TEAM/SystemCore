@@ -86,6 +86,51 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
             }
             return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
         }
+        [HttpPost, ValidateInput(false)]
+        public JsonResult CreateFile(FilesAttachmentOBJ requestOBJ)
+        {
+
+            MultipartFormDataContent mFormData = new MultipartFormDataContent();
+            HttpFileCollectionBase listFile = HttpContext.Request.Files;
+            string token = requestOBJ.token;
+            if (requestOBJ.ownerById.HasValue) mFormData.Add(new StringContent(((int)requestOBJ.ownerById).ToString()), nameof(requestOBJ.ownerById));
+            if (!string.IsNullOrEmpty(requestOBJ.ownerByTable)) mFormData.Add(new StringContent(requestOBJ.ownerByTable), nameof(requestOBJ.ownerByTable));
+            if (!string.IsNullOrEmpty(requestOBJ.code)) mFormData.Add(new StringContent(requestOBJ.code), nameof(requestOBJ.code));          
+            if (listFile.Count > 0)
+            {
+                int i = 1;
+                foreach (string file in listFile)
+                {
+                    HttpPostedFileBase fileBase = Request.Files[file];
+                    byte[] fileData = null;
+                    using (var binaryReader = new BinaryReader(fileBase.InputStream))
+                    {
+                        fileData = binaryReader.ReadBytes(fileBase.ContentLength);
+                    }
+                    ByteArrayContent b = new ByteArrayContent(fileData);
+                    b.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                    //byte[] binData = b.ReadBytes(fileBase.ContentLength);
+                    mFormData.Add(b, nameof(file) + i++.ToString(), fileBase.FileName);
+                }
+
+            }
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ConfigurationSettings.AppSettings["pmCMD"].ToString());//http://localhost:50999/,https://api-pm-cmd.tayho.com.vn/
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/FilesAttachment/UploadFile", mFormData).Result)
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        var err = response.Content.ReadAsStringAsync().Result;
+                        return Json(new { status = "error", result = err });
+                    }
+                }
+            }
+            return Json(new { status = "success", result = "Đã lưu thông tin yêu cầu thành công" });
+        }
         //public async Task PostRegist(MultipartFormDataContent mFormData, string token)
         //{
         //    using (var client = new HttpClient())
