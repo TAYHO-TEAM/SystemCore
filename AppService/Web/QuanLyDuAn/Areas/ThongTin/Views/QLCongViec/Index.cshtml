@@ -45,8 +45,8 @@
         const ACTION_CMD_PLAN_ACCOUNT = "/PlanAccount";
         const ACTION_CMD_CONVERSATION = "/Conversation";
 
-      
-        if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9 ) {
+
+        if (GROUPOWNERID !== 0 && GROUPOWNERID !== 7 && GROUPOWNERID !== 9) {
             GROUPOWNERID = 0;
             localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
         }
@@ -133,13 +133,13 @@
 
         });
 
-        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION,3);
+        let customStore = customStore_CMD_READ_PLANPROJECTID(ACTION_CMD, ACTION, 3);
         let customStore_DETAIL = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_DETAIL, ACTION_DETAIL, 'planMasterId,' + id);
         let customStore_SCHEDULE = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_SCHEDULE, ACTION_SCHEDULE, 'planMasterId,' + id);
         let customStore_PLANJOB_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanJob');
         //let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, 'ownerById,' + id, 'PlanMaster');
-        let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, "ownerById," + id+ ";OwnerTable,'PlanMaster'");
-        let customStore_CONVERSATION = (id)=> customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_CONVERSATION, ACTION_CONVERSATION, 'topicId,' + id, 'PlanMaster');
+        let customStore_PLANMASTER_ACCOUNT = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CMD_PLAN_ACCOUNT, ACTION_PLAN_ACCOUNT, "ownerById," + id + ";OwnerTable,'PlanMaster'");
+        let customStore_CONVERSATION = (id) => customStore_CMD_READ_FILTER_ID_KEYWORD(ACTION_CMD_CONVERSATION, ACTION_CONVERSATION, 'topicId,' + id, 'PlanMaster');
 
         $(function () {
             loadData();
@@ -153,7 +153,8 @@
                 remoteOperations: {
                     filtering: true,
                     sorting: true,
-                    grouping: false
+                    grouping: false,
+
                 },
                 scrolling: { mode: "standard" },
                 showBorders: false,
@@ -169,7 +170,14 @@
                         dataField: "isVisible",
                         caption: "Hoàn thành",
                         dataType: "boolean",
+                        groupIndex: 0,
+                        groupCellTemplate: (c, o) => {
+                            o.value ? c.append($("<div>").addClass("text-success").append("Đã Hoàn Thành(" + o.summaryItems[0].value + ")")) : c.append($("<div>").addClass("text-danger").append("Chưa Hoàn Thành(" + o.summaryItems[0].value + ")"));
+                        },
                         editorType: "dxCheckBox",
+                        editorOptions: {
+                            
+                        }
                     },
                     {
                         dataField: "code",
@@ -179,7 +187,7 @@
                     },
                     {
                         dataField: "title",
-                        width:"50%",
+                        width: "50%",
                         caption: "Tên kế hoạch CV",
                         dataType: "string",
                         validationRules: [{ type: "required" }],
@@ -253,7 +261,7 @@
                         dataField: "unit",
                         visible: false,
                         label: { text: "Đơn vị" },
-                      
+
                     },
                     {
                         dataField: "createBy",
@@ -269,6 +277,13 @@
                         }
                     },
                 ],
+                summary: {
+                    groupItems: [{
+                        column: "isVisible",
+                        summaryType: "count"
+                    },
+                    ]
+                },
                 editing: {
                     //allowAdding: true,
                     //allowUpdating: true,
@@ -292,12 +307,12 @@
                         requiredMark: "(*)",
                         items: [
                             {
-                                colSpan: 2,
+                                colSpan: 3,
                                 dataField: "code",
                                 label: { text: "Mã " },
                             },
                             {
-                                colSpan: 4,
+                                colSpan: 5,
                                 dataField: "title",
                                 label: { text: "Kế hoạch CV" },
                             },
@@ -307,7 +322,7 @@
                             //    label: { text: "Ưu tiên" },
                             //},
                             {
-                                colSpan: 3,
+                                colSpan: 4,
                                 dataField: "importantLevel",
                                 caption: "Quan trọng",
                                 dataType: "number",
@@ -324,27 +339,27 @@
                                 },
                             },
                             {
-                                colSpan: 6,
+                                colSpan: 12,
                                 dataField: "description",
                                 label: { text: "Mô tả CV" },
                                 editorType: "dxTextArea",
                             },
-                            {
-                                colSpan: 6,
-                                dataField: "note",
-                                label: { text: "Lưu ý" },
-                                editorType: "dxTextArea",
-                            },
-                            {
-                                colSpan: 6,
-                                dataField: "startDate",
-                                label: { text: "Bắt đầu" },
-                                editorType: "dxDateBox",
-                                editorOptions: {
-                                    pickerType: "rollers",
-                                    type: "datetime",
-                                },
-                            },
+                            //{
+                            //    colSpan: 6,
+                            //    dataField: "note",
+                            //    label: { text: "Lưu ý" },
+                            //    editorType: "dxTextArea",
+                            //},
+                            //{
+                            //    colSpan: 6,
+                            //    dataField: "startDate",
+                            //    label: { text: "Bắt đầu" },
+                            //    editorType: "dxDateBox",
+                            //    editorOptions: {
+                            //        pickerType: "rollers",
+                            //        type: "datetime",
+                            //    },
+                            //},
                             {
                                 colSpan: 6,
                                 dataField: "endDate",
@@ -355,28 +370,28 @@
                                     type: "datetime",
                                 },
                             },
-                            {
-                                colSpan: 4,
-                                dataField: "amount",
-                                label: { text: "Khối lượng" },
-                            },
-                            {
-                                colSpan: 4,
-                                dataField: "unit",
-                                label: { text: "Đơn vị" },
-                                lookup: {
-                                    dataSource: unit,
-                                    valueExpr: "ID",
-                                    displayExpr: "Name",
-                                },
-                                editorType: "dxSelectBox",
-                                editorOptions: {
-                                    value: "unit",
-                                    dataSource: unit,
-                                    valueExpr: "ID",
-                                    displayExpr: "Name",
-                                },
-                            },
+                            //{
+                            //    colSpan: 4,
+                            //    dataField: "amount",
+                            //    label: { text: "Khối lượng" },
+                            //},
+                            //{
+                            //    colSpan: 4,
+                            //    dataField: "unit",
+                            //    label: { text: "Đơn vị" },
+                            //    lookup: {
+                            //        dataSource: unit,
+                            //        valueExpr: "ID",
+                            //        displayExpr: "Name",
+                            //    },
+                            //    editorType: "dxSelectBox",
+                            //    editorOptions: {
+                            //        value: "unit",
+                            //        dataSource: unit,
+                            //        valueExpr: "ID",
+                            //        displayExpr: "Name",
+                            //    },
+                            //},
                             {
                                 colSpan: 4,
                                 dataField: "isVisible",
@@ -418,7 +433,6 @@
                                 stylingMode: "filled",
                                 value: GROUPOWNERID,
                                 onValueChanged: function (data) {
-                                    console.log(data.value);
                                     GROUPOWNERID = data.value;
                                     localStorage.setItem('groupOwnerIdCurrent', GROUPOWNERID);
                                     loadData();
@@ -515,7 +529,7 @@
                         var data = e.component.getRowIndexByKey(selectedRowKey);
                         $("#action-update").dxSpeedDialAction({
                             index: 2, icon: "fas fa-edit", label: "Cập nhật thông tin",
-                            visible: PermitInAction["update"] && (selectedRowData.createBy == UserCurrentInfo.accountId),
+                            visible: PermitInAction["update"] && (selectedRowData.permistionId == 9 || selectedRowData.permistionId == 7),
                             onClick: () => e.component.editRow(data)
                         }).dxSpeedDialAction("instance");
 
@@ -580,7 +594,22 @@
                         dataField: "title",
                         caption: "Bước thực hiện",
                         dataType: "string",
+                        //editorOptions:
+                        //{
+                        //    readOnly: (e) => {
+                        //        //if (e.row.data.permistionId === 9 || e.row.data.permistionId === 7)
+                        //           return false;
+                        //        //else
+                        //           //return true;
+                        //    },
+                        //},
                         validationRules: [{ type: "required" }],
+                    },
+                    {
+                        dataField: "permissionId",
+                        caption: "Quyền",
+                        dataType: "number",
+                        visible: false,
                     },
                     {
                         type: "buttons", caption: "Tác vụ",
@@ -588,6 +617,12 @@
                         buttons: ["edit", "delete", {
                             hint: "Người nhận",
                             icon: "user",
+                            visible: (e) => {
+                                if (e.row.data.permistionId === 9 || e.row.data.permistionId === 7)
+                                    return true;
+                                else
+                                    return false;
+                            },
                             onClick: function (e) {
                                 loadAccount(e.row.data);
                             }
@@ -611,8 +646,18 @@
                 //},
                 editing: {
                     allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
+                    allowUpdating: (e) => {
+                        if (e.row.data.permistionId === 9 || e.row.data.permistionId === 7 || e.row.data.permistionId === 8)
+                            return true;
+                        else
+                            return false;
+                    },
+                    allowDeleting: (e) => {
+                        if (e.row.data.permistionId === 9 || e.row.data.permistionId === 7)
+                            return true;
+                        else
+                            return false;
+                    },
                     mode: "cell",
                     useIcons: false,
                     confirmDelete: true,
@@ -637,7 +682,7 @@
                     e.data.isVisible = true;
                     e.data.planMasterId = id;
                     e.data.isDone = false;
-                   
+
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)
@@ -724,8 +769,8 @@
         };
         let loadComversation = (id) => {
             $("#container_conversation").dxDataGrid({
-                title:"Hội thoại",
-                height: (heightScreen / 8)*3,
+                title: "Hội thoại",
+                height: (heightScreen / 8) * 3,
                 dataSource: customStore_CONVERSATION(id),
                 repaintChangesOnly: true,
                 remoteOperations: {
@@ -744,18 +789,19 @@
                 rowAlternationEnabled: false,
                 columns: [
                     {
-                        colSpan:8,
+                        colSpan: 8,
                         dataField: "content",
                         caption: "Phản hồi",
                         dataType: "string",
                         width: "70%",
+                      
                     },
                     {
                         colSpan: 4,
                         dataField: "createBy",
                         caption: "Người phản hồi",
                         dataType: "string",
-                        width:"30%",
+                        width: "30%",
                         lookup: {
                             dataSource: customStore_AccountInfo,
                             valueExpr: "accountId", displayExpr: "userName",
@@ -1028,17 +1074,17 @@
                             },
 
                         },//account
-                        {
-                            dataField: "groupId",
-                            caption: "Nhóm",
-                            alignment: "center",
-                            //dataType: "number",
-                            lookup: {
-                                dataSource: customStore_Groups,
-                                valueExpr: "id", displayExpr: "title",
-                            },
+                        //{
+                        //    dataField: "groupId",
+                        //    caption: "Nhóm",
+                        //    alignment: "center",
+                        //    //dataType: "number",
+                        //    lookup: {
+                        //        dataSource: customStore_Groups,
+                        //        valueExpr: "id", displayExpr: "title",
+                        //    },
 
-                        },//nhóm
+                        //},//nhóm
                         {
                             dataField: "permissionId",
                             caption: "Thực hiện",
@@ -1115,29 +1161,28 @@
                                         type: "async",
                                         message: "Đã có thông tin Nhóm",
                                         validationCallback: function (params) {
-                                            console.log(params);
                                             var d = $.Deferred();
                                             d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
                                             return d.promise();
                                         }
                                     }]
                                 },
-                                {
-                                    colSpan: 12,
-                                    dataField: "permissionId",
-                                    lookup: {
-                                        dataSource: permisionAassign,
-                                        valueExpr: "ID",
-                                        displayExpr: "Name",
-                                    },
-                                    editorType: "dxSelectBox",
-                                    editorOptions: {
-                                        value: "unit",
-                                        dataSource: permisionAassign,
-                                        valueExpr: "ID", displayExpr: "Name",
-                                    },
-                                    validationRules: [{ type: "required" }],
-                                },
+                                //{
+                                //    colSpan: 12,
+                                //    dataField: "permissionId",
+                                //    lookup: {
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID",
+                                //        displayExpr: "Name",
+                                //    },
+                                //    editorType: "dxSelectBox",
+                                //    editorOptions: {
+                                //        value: "unit",
+                                //        dataSource: permisionAassign,
+                                //        valueExpr: "ID", displayExpr: "Name",
+                                //    },
+                                //    validationRules: [{ type: "required" }],
+                                //},
                             ],
                         },
                     },
@@ -1228,22 +1273,28 @@
                             },
 
                         },//account
-                        {
-                            dataField: "groupId",
-                            caption: "Nhóm",
-                            alignment: "center",
-                            //dataType: "number",
-                            lookup: {
-                                dataSource: customStore_Groups,
-                                valueExpr: "id", displayExpr: "title",
-                            },
-
-                        },//nhóm
                         //{
-                        //    colSpan: 12,
-                        //    dataField: "permissionId",
-                        //    caption: "Thực hiện",
-                        //},
+                        //    dataField: "groupId",
+                        //    caption: "Nhóm",
+                        //    alignment: "center",
+                        //    //dataType: "number",
+                        //    lookup: {
+                        //        dataSource: customStore_Groups,
+                        //        valueExpr: "id", displayExpr: "title",
+                        //    },
+
+                        //},//nhóm
+                        {
+                            colSpan: 12,
+                            dataField: "permistionId",
+                            caption: "quyền",
+                            dataType: "number",
+                            lookup: {
+                                dataSource: SetPermit,
+                                valueExpr: "ID",
+                                displayExpr: "Name",
+                            },
+                        },
                     ],
                     editing: {
                         mode: "popup",
@@ -1309,29 +1360,27 @@
                                         type: "async",
                                         message: "Đã có thông tin Nhóm",
                                         validationCallback: function (params) {
-                                            console.log(params);
                                             var d = $.Deferred();
                                             d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
                                             return d.promise();
                                         }
                                     }]
                                 },
-                                //{
-                                //    colSpan: 12,
-                                //    dataField: "permissionId",
-                                //    lookup: {
-                                //        dataSource: permisionAassign,
-                                //        valueExpr: "ID",
-                                //        displayExpr: "Name",
-                                //    },
-                                //    editorType: "dxSelectBox",
-                                //    editorOptions: {
-                                //        value: "unit",
-                                //        dataSource: permisionAassign,
-                                //        valueExpr: "ID", displayExpr: "Name",
-                                //    },
-                                //    validationRules: [{ type: "required" }],
-                                //},
+                                {
+                                    colSpan: 12,
+                                    dataField: "permistionId",
+                                    lookup: {
+                                        dataSource: SetPermit,
+                                        valueExpr: "ID",
+                                        displayExpr: "Name",
+                                    },
+                                    editorType: "dxSelectBox",
+                                    editorOptions: {
+                                        dataSource: SetPermit,
+                                        valueExpr: "ID", displayExpr: "Name",
+                                    },
+                                    validationRules: [{ type: "required" }],
+                                },
                             ],
                         },
                     },
@@ -1345,7 +1394,6 @@
                         e.data.isActive = true;
                         e.data.isVisible = true;
                         e.data.ownerTable = "PlanJob";
-                        e.data.permistionId = 7;
                     },
                     onEditorPreparing: function (e) {
                         if (e.parentType === "dataRow" && e.dataField !== "accountId") {

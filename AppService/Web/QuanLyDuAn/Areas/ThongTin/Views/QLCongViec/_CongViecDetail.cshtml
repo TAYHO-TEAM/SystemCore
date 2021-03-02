@@ -76,22 +76,23 @@
                     label: { text: "Mô tả CV" },
                     editorType: "dxTextArea",
                 },
+                //{
+                //    colSpan: 4,
+                //    dataField: "note",
+                //    label: { text: "Lưu ý" },
+                //    editorType: "dxTextArea",
+                //},
+                //{
+                //    dataField: "startDate",
+                //    label: { text: "Ngày bắt đầu" },
+                //    editorType: "dxDateBox",
+                //    editorOptions: {
+                //        pickerType: "rollers",
+                //        type: "datetime",
+                //    },
+                //},
                 {
-                    colSpan: 4,
-                    dataField: "note",
-                    label: { text: "Lưu ý" },
-                    editorType: "dxTextArea",
-                },
-                {
-                    dataField: "startDate",
-                    label: { text: "Ngày bắt đầu" },
-                    editorType: "dxDateBox",
-                    editorOptions: {
-                        pickerType: "rollers",
-                        type: "datetime",
-                    },
-                },
-                {
+                    colSpan: 2,
                     dataField: "endDate",
                     label: { text: "Ngày hoàn thành" },
                     editorType: "dxDateBox",
@@ -100,30 +101,31 @@
                         type: "datetime",
                     },
                 },
+                //{
+                //    dataField: "amount",
+                //    label: { text: "Khối lượng" },
+                //},
+                //{
+                //    dataField: "unit",
+                //    label: { text: "Đơn vị" },
+                //    lookup: {
+                //        dataSource: unit,
+                //        valueExpr: "ID",
+                //        displayExpr: "Name",
+                //    },
+                //    editorType: "dxSelectBox",
+                //    editorOptions: {
+                //        value: "unit",
+                //        dataSource: unit,
+                //        valueExpr: "ID", displayExpr: "Name",
+                //    },
+                //},
                 {
-                    dataField: "amount",
-                    label: { text: "Khối lượng" },
-                },
-                {
-                    dataField: "unit",
-                    label: { text: "Đơn vị" },
-                    lookup: {
-                        dataSource: unit,
-                        valueExpr: "ID",
-                        displayExpr: "Name",
-                    },
-                    editorType: "dxSelectBox",
-                    editorOptions: {
-                        value: "unit",
-                        dataSource: unit,
-                        valueExpr: "ID", displayExpr: "Name",
-                    },
-                },
-                {
-                    colSpan: 4,
+                    colSpan: 2,
                     template: '<span class="dx-field-item-label-text font-bold">Các tập tin đính kèm</span><div class="file-uploader"></div>',
                 },
                 {
+                    colSpan: 4,
                     itemType: "button",
                     horizontalAlignment: "center",
                     buttonOptions: {
