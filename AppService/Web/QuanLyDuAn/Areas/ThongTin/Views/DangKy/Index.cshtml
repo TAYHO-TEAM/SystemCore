@@ -322,6 +322,7 @@
                         dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
+                            console.log(options.value);
                             container.append(options.value == 0 ? 'Chờ phản hồi' :
                                 options.value == 1 ? 'Tư vấn phản hồi(A)' :
                                     options.value == 2 ? 'Tư vấn phản hồi(B)' :
@@ -684,7 +685,6 @@
                                     $checkNexStepDone = true;
                             }
                         }
-
                         var formSub = $("<form />").attr("method", "POST").attr("enctype", "multipart/form-data").attr("id", "form_Sub" + key).data('id', key).addClass("form-submit").append('<div></div>');
                         if ($i == 1 && (masterItiem.responseRegistDTOs[1].modifyBy == 0 || masterItiem.responseRegistDTOs[1].modifyBy === null) && !masterItiem.responseRegistDTOs[1].update) {
 
@@ -765,11 +765,14 @@
                                                         if (value.noAttachment === null || value.noAttachment === 0) {
                                                             DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
                                                                 if (dialogResult) {
-                                                                    ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request);
-                                                                    $("#popup-main").dxPopup("hide");
-                                                                    loadData();
+                                                                    ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
                                                                 }
                                                             });
+                                                        }
+                                                        else {
+                                                            ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData();});});
+                                                           
+                                                         
                                                         }
 
                                                     }
@@ -1006,7 +1009,7 @@
                     editing: {
                         mode: "batch",
                         allowAdding: false,
-                        allowDeleting: true,
+                        allowDeleting: () => { (item.modifyBy > 0 && item.modifyBy !== null) ? false : true },
                         allowUpdating: false,
                     },
                     onToolbarPreparing: (e) => {

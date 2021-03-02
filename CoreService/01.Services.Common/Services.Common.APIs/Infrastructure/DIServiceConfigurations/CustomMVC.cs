@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -240,10 +241,10 @@ namespace Services.Common.APIs.Infrastructure.DIServiceConfigurations
                 x.MultipartBodyLengthLimit = 737280000; // Limit on form body size
                 x.MultipartHeadersLengthLimit = 737280000; // Limit on form header size
             });
-            //services.Configure<IISServerOptions>(options =>
-            //{
-            //    options.MaxRequestBodySize = 837280000; // Limit on request body size
-            //});
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = 837280000; // Limit on request body size
+            });
             services.AddSingleton<IOptionsBuilder, OptionsBuilder>();
             return services;
         }
