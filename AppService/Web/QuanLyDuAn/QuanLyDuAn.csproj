@@ -2497,6 +2497,7 @@
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoReport.cshtml" />
     <Content Include="Areas\ThongTin\Views\QLTienDo\_TienDoCreate.cshtml" />
     <Content Include="Areas\NganSach\Views\DongChi\Index.cshtml" />
+    <Content Include="Content\Template\PlanRegister\Temp_PlanRegister_001.xlsm" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

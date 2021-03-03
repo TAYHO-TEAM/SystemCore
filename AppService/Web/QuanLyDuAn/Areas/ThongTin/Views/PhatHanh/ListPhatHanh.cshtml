@@ -265,7 +265,7 @@
                         dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
-                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " fiels" : "chưa có file"));
+                            container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " File(s)" : "chưa có file"));
                         },
                     },
                     {
@@ -513,7 +513,7 @@
                                         $("<a/>").append($("<img/>").attr("src", x).attr("style", "max-width :150px;").attr("onerror", "this.onerror=null;this.src='https://qlcv.tayho.com.vn/Content/user-avartar/avartar-default.jpg';")).appendTo(c);
                                     }
                                     else if (['.pdf'].includes(o.data.tail.toLowerCase(x))) {
-                                        $("<a/>").attr("href", x).addClass("far fa-file-pdf").appendTo(c);
+                                        $("<a/>").attr("href", x).attr("target", "_blank").addClass("far fa-file-pdf").appendTo(c);
                                     }
                                     else {
                                     }

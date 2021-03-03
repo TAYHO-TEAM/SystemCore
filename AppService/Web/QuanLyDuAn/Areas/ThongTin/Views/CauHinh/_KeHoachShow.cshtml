@@ -40,7 +40,7 @@
                 {
                     dataField: "workItemId",
                     caption: "Hạng Mục",
-                    width: '10%',
+                    width: '15%',
                     lookup: {
                         dataSource: customStore_HangMuc,
                         valueExpr: "id",
@@ -63,7 +63,7 @@
                 {
                     dataField: "contractorInfoId",
                     caption: "Nhà thầu",
-                    width: '10%',
+                    width: '25%',
                     lookup: {
                         dataSource: customStore_ContractorInfo,
                         valueExpr: "id",
@@ -86,7 +86,7 @@
                 {
                     dataField: "documentTypeId",
                     caption: "Loại tài liệu",
-                    width: '10%',
+                    width: '15%',
                     lookup: {
                         dataSource: customStore_DocumetnType,
                         valueExpr: "id",
@@ -105,20 +105,41 @@
                     validationRules: [{ type: "required" }],
                 },
                 {
+                    dataField: "projectId",
+                    caption: "Dự án",
+                    width: '10%',
+                    lookup: {
+                        dataSource: customStore_Projects,
+                        valueExpr: "id",
+                        displayExpr: "title",
+                    },
+                    editorType: "dxLookup",
+                    editorOptions: {
+                        dataSource: customStore_Projects,
+                        valueExpr: "id", displayExpr: "title",
+                        placeholder: "Vui lòng chọn...",
+                        searchEnabled: true, showClearButton: true,
+                        itemTemplate: function (data) {
+                            return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                        },
+                    },
+                    validationRules: [{ type: "required" }],
+                },
+                {
                     dataField: "title",
                     caption: "Tiêu đề",
-                    width: '10%',
+                    width: '30%',
                 },
-                {
-                    dataField: "requestDate",
-                    caption: "Ngày gửi",
-                    width: '10%',
-                },
-                {
-                    dataField: "responseDate",
-                    caption: "Ngày duyệt",
-                    width: '10%',
-                },
+                //{
+                //    dataField: "requestDate",
+                //    caption: "Ngày gửi",
+                //    width: '10%',
+                //},
+                //{
+                //    dataField: "responseDate",
+                //    caption: "Ngày duyệt",
+                //    width: '10%',
+                //},
                 {
                     dataField: "expectRequestDate",
                     caption: "Ngày gửi dự kiến",
@@ -180,6 +201,7 @@
                             stylingMode: "filled", type: "default",
                             icon: "save", text: "Lưu dữ liệu",
                             onClick: function () {
+                                loadingPanel.show();
                                 var list = container.getSelectedRowsData();
                                 console.log(list);
                                 if (list.length > 0) {
@@ -200,11 +222,12 @@
                                                     else {
                                                         deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
                                                     }
-                                                   
+                                                    loadingPanel.hide();
                                                     deferred.resolve();
                                                 },
                                                 error: function (xhr, textStatus, errorThrown) {
                                                     console.log(xhr);
+                                                    loadingPanel.hide();
                                                     deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
                                                 },
                                            
@@ -241,16 +264,17 @@
                                 dataTemp.push(
                                     {
                                         //id: item[0],
-                                        projectId: PROJECTID,
+                                        
                                         //code: item[1],
                                         workItemId: item[1],
-                                        contractorInfoId: item[2],
-                                        documentTypeId: item[3],
-                                        title: item[4],
-                                        requestDate: item[5],
-                                        responseDate: item[6],
-                                        expectRequestDate: item[7],
-                                        expectResponseDate: item[8],
+                                        contractorInfoId: item[3],
+                                        documentTypeId: item[5],
+                                        projectId: item[7],
+                                        title: item[9],
+                                        //requestDate: item[5],
+                                        //responseDate: item[6],
+                                        expectRequestDate: item[10],
+                                        expectResponseDate: item[11],
                                         isActive : true,
                                         isVisible : true,
                                         isDelete : false,

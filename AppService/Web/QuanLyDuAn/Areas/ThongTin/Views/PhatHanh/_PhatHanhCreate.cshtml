@@ -124,69 +124,85 @@
             }
         }).dxForm("instance");
 
-        $(".file-uploader").dxFileUploader({
+        var fileUploader = $(".file-uploader").dxFileUploader({
             selectButtonText: "Chọn tập tin...",
             labelText: "Hoặc kéo thả vào đây",
             showFileList: true,
             multiple: true,
             uploadMode: "useForm",
+            accept: ".jpg,.jpeg,.gif,.png,.pdf",
             allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
-            maxFileSize: 10000000,
-        });
+            maxFileSize: 52428800,
+        }).dxFileUploader("instance");
         $("#form-regist").on("submit", function (e) {
             //$(this).prop("disabled", true);
-            loadingPanel.show();
-            var result = formInstance.validate();
-            var fdata = new FormData();
-            var i = 10;
-            $.each(formData, function (key, value) {
-                if (key === 'calendar') {
-                    fdata.append(key, moment(value).format('YYYY-MM-DD HH:mm:ss'));
+            var fileWrappers = fileUploader._files;
+            console.log(fileWrappers);
+            var resValid = true
+            for (var i = 0; i < fileWrappers.length; i++) {
+                if (fileWrappers[i].isValid() === false) {
+                    resValid = false;
                 }
-                else {
-                    fdata.append(key, value);
-                }
-
-            });
-            fdata.append('projectId', PROJECTID);
-            fdata.append('token', UserCurrentInfo.accessToken);
-            for (var pair of fdata.entries()) {
-                console.log(pair[0] + ', ' + pair[1]);
             }
-            var files = $(".file-uploader").dxFileUploader("instance").option("value");
-            if (files.length > 0) {
-                $.each(files, function (key, value) {
-                    fdata.append(files[key].name, files[key]);
-                });
+            if (!resValid) {
+                e.preventDefault();
+                DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
             }
-            //else {
-            //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
-            //    e.preventDefault();
-            //    return false;
-            //};
-
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: "/ThongTin/PhatHanh/Create",
-                data: fdata,
-                processData: false,
-                contentType: false,
-                cache: false,
-                timeout: 600000,
-                success: function (rs) {
-                    loadingPanel.hide();
-                    DevExpress.ui.notify(rs.result, rs.status, 3000);
-                    if (rs.status == "success") {
-                        $("#popup-register").dxPopup('instance').hide();
+            else {
+                loadingPanel.show();
+                
+                var fdata = new FormData();
+                var i = 10;
+                $.each(formData, function (key, value) {
+                    if (key === 'calendar') {
+                        fdata.append(key, moment(value).format('YYYY-MM-DD HH:mm:ss'));
                     }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    loadingPanel.hide();
-                    DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                    else {
+                        fdata.append(key, value);
+                    }
+
+                });
+                fdata.append('projectId', PROJECTID);
+                fdata.append('token', UserCurrentInfo.accessToken);
+                for (var pair of fdata.entries()) {
+                    console.log(pair[0] + ', ' + pair[1]);
                 }
-            });
-            e.preventDefault();
+                var files = $(".file-uploader").dxFileUploader("instance").option("value");
+                if (files.length > 0) {
+                    $.each(files, function (key, value) {
+                        fdata.append(files[key].name, files[key]);
+                    });
+                }
+                //else {
+                //    DevExpress.ui.notify("Vui lòng chọn file đính kèm", "error", 3000);
+                //    e.preventDefault();
+                //    return false;
+                //};
+
+                $.ajax({
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    url: "/ThongTin/PhatHanh/Create",
+                    data: fdata,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 600000,
+                    success: function (rs) {
+                        loadingPanel.hide();
+                        DevExpress.ui.notify(rs.result, rs.status, 3000);
+                        if (rs.status == "success") {
+                            $("#popup-register").dxPopup('instance').hide();
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        loadingPanel.hide();
+                        DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                    }
+                });
+               
+            }
+
             //return deferred.promise();
         });
 
