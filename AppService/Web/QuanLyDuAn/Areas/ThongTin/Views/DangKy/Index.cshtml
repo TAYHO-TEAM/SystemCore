@@ -1035,66 +1035,82 @@
                     if (isUpload) {
                         //$("#form").append("OwnerById",1);
                        
-                        $("#file-uploader").dxFileUploader({
+                        var fileUploader = $("#file-uploader").dxFileUploader({
                             selectButtonText: "Select photo",
                             multiple: true,
                             labelText: "",
-                            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
-                            uploadMode: "useForm",
                             showFileList: true,
-                        });
+                            uploadMode: "useForm",
+                            accept: ".jpg,.jpeg,.gif,.png,.pdf",
+                            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
+                            maxFileSize: 52428800,
+                        }).dxFileUploader("instance");
 
                         $("#button").dxButton({
                             text: "Lưu ảnh",
                             type: "success",
-                            onClick: function () {
+                            onClick: function (e) {
                                 isUpload++;
-                                loadingPanel.show();
-                                var fd = $("#form")[0];
-                                var formData = new FormData(fd);
-                                formData.append("OwnerById", item.id);
-                                if ('code' in item) {
-                                    formData.append("Code", item.code);
+                                var fileWrappers = fileUploader._files;
+                                var resValid = true
+                                for (var i = 0; i < fileWrappers.length; i++) {
+                                    if (fileWrappers[i].isValid() === false) {
+                                        resValid = false;
+                                    }
                                 }
-                                else {
-                                    formData.append("Code", code);
+                                if (!resValid) {
+                                   
+                                    DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
                                 }
-                                formData.append('token', UserCurrentInfo.accessToken);
-                                for (var pair of formData.entries()) {
-                                    console.log(pair[0] + ', ' + pair[1]);
-                                }
-                                var files = $("#file-uploader").dxFileUploader("instance").option("value");
-                                if (files.length > 0) {
-                                    $.each(files, function (key, value) {
-                                        formData.append(files[key].name, files[key]);
+                                else
+                                {
+                                    loadingPanel.show();
+                                    var fd = $("#form")[0];
+                                    var formData = new FormData(fd);
+                                    formData.append("OwnerById", item.id);
+                                    if ('code' in item) {
+                                        formData.append("Code", item.code);
+                                    }
+                                    else {
+                                        formData.append("Code", code);
+                                    }
+                                    formData.append('token', UserCurrentInfo.accessToken);
+                                    for (var pair of formData.entries()) {
+                                        console.log(pair[0] + ', ' + pair[1]);
+                                    }
+                                    var files = $("#file-uploader").dxFileUploader("instance").option("value");
+                                    if (files.length > 0) {
+                                        $.each(files, function (key, value) {
+                                            formData.append(files[key].name, files[key]);
+                                        });
+                                    }
+                                    //formData.append("Code", item.code);
+                                    formData.append("OwnerByTable", table);
+                                    $.ajax({
+                                        type: "POST",
+                                        enctype: 'multipart/form-data',
+                                        url: "/ThongTin/DangKy/CreateFile",
+                                        data: formData,
+                                        processData: false,
+                                        contentType: false,
+                                        cache: false,
+                                        timeout: 600000,
+                                        success: function (rs) {
+                                            loadingPanel.hide();
+                                            DevExpress.ui.notify(rs.result, rs.status, 3000);
+                                            //if (rs.status == "success") {
+                                            //    $("#popup-register").dxPopup('instance').hide();
+                                            //}
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            loadingPanel.hide();
+                                            DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                                        }
                                     });
                                 }
-                                //formData.append("Code", item.code);
-                                formData.append("OwnerByTable", table);
-                                $.ajax({
-                                    type: "POST",
-                                    enctype: 'multipart/form-data',
-                                    url: "/ThongTin/DangKy/CreateFile",
-                                    data: formData,
-                                    processData: false,
-                                    contentType: false,
-                                    cache: false,
-                                    timeout: 600000,
-                                    success: function (rs) {
-                                        loadingPanel.hide();
-                                        DevExpress.ui.notify(rs.result, rs.status, 3000);
-                                        //if (rs.status == "success") {
-                                        //    $("#popup-register").dxPopup('instance').hide();
-                                        //}
-                                    },
-                                    error: function (xhr, textStatus, errorThrown) {
-                                        loadingPanel.hide();
-                                        DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
-                                    }
-                                });
                                 //e.preventDefault();
                             }
-                        });
+                        }).dxFileUploader("instance");
                     }
 
                 });

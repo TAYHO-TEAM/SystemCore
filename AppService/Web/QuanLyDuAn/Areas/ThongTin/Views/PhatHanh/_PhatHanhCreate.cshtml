@@ -137,7 +137,6 @@
         $("#form-regist").on("submit", function (e) {
             //$(this).prop("disabled", true);
             var fileWrappers = fileUploader._files;
-            console.log(fileWrappers);
             var resValid = true
             for (var i = 0; i < fileWrappers.length; i++) {
                 if (fileWrappers[i].isValid() === false) {
