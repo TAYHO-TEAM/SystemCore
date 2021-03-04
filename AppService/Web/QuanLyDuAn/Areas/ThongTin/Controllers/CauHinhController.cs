@@ -29,14 +29,14 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
-        public ActionResult KeHoachDeTrinh()
-        {
-            return View();
-        }
-        public ActionResult _KeHoachShow()
-        {
-            return PartialView();
-        }
+        //public ActionResult KeHoachDeTrinh()
+        //{
+        //    return View();
+        //}
+        //public ActionResult _KeHoachShow()
+        //{
+        //    return PartialView();
+        //}
         [HttpPost, ValidateInput(false)]
         public async Task<JsonResult> postPlanRegist(string requestOBJ, string token)
         {

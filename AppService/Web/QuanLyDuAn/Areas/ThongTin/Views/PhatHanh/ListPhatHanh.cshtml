@@ -40,7 +40,7 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         //..........................Get data -------------------------------------------------------------
-        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+        let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
 
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_DOCUMENTTYPE);
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({

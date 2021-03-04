@@ -2461,7 +2461,7 @@
     <Content Include="Areas\ThongTin\Views\CauHinh\PhanQuyenPheDuyet.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\QuyTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_DetailRequestRegist.cshtml" />
-    <Content Include="Areas\ThongTin\Views\CauHinh\KeHoachDeTrinh.cshtml" />
+    <Content Include="Areas\ThongTin\Views\DangKy\KeHoachDeTrinh.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\TaiLieu.cshtml" />
     <Content Include="Areas\NganSach\Views\HangMuc\ChiTiet.cshtml" />
     <Content Include="Areas\NganSach\Views\NhomCongViec\ChiTiet.cshtml" />
@@ -2474,7 +2474,7 @@
     <Content Include="Areas\NganSach\Views\ThanhToan\KhauTru.cshtml" />
     <Content Include="Areas\NganSach\Views\ThanhToan\TamUng.cshtml" />
     <Content Include="Areas\ThongTin\Views\DangKy\_FormRev.cshtml" />
-    <Content Include="Areas\ThongTin\Views\CauHinh\_KeHoachShow.cshtml" />
+    <Content Include="Areas\ThongTin\Views\DangKy\_KeHoachShow.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\ListPhatHanh.cshtml" />
     <Content Include="Areas\ThongTin\Views\PhatHanh\_PhatHanhCreate.cshtml" />
     <Content Include="Areas\ThongTin\Views\CauHinh\CustomTable.cshtml" />

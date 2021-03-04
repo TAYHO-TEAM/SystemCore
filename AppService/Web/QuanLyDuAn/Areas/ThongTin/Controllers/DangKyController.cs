@@ -19,6 +19,14 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        public ActionResult KeHoachDeTrinh()
+        {
+            return View();
+        }
+        public ActionResult _KeHoachShow()
+        {
+            return PartialView();
+        }
         public ActionResult PheDuyet()
         {
             return View();
