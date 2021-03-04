@@ -24,7 +24,7 @@
         //--------------------CMD------------------------------
         const ACTION_CMD = "/CustomForm";
 
- 
+
 
         var WIDTH_CONTAINER = $("#container").width();
 
@@ -32,7 +32,7 @@
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
         let customStore_CUSTOMFORMBODY = (id) => customStore_CMD_READ_FILTER_ID(ACTION_CUSTOMFORMBODY, ACTION_CUSTOMFORMBODY, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
-        let customStore_VALIDATECODE = (keyword) => customStore_READ_ID(ACTION, "Code,'"+keyword+"'");
+        let customStore_VALIDATECODE = (keyword) => customStore_READ_ID(ACTION, "Code,'" + keyword + "'");
 
         $(function () {
             loadData();
@@ -107,26 +107,31 @@
                                         else {
                                             d.resolve(true);
                                         }
-                                        });
-                                   //sendRequest(params.value);
+                                    });
+                                    //sendRequest(params.value);
                                     return d.promise();
                                 }
                             }
                         ]
                     },
-                    {
-                        dataField: "descriptions",
-                        caption: "Mô tả",
-                        width: 150,
-                        dataType: "string",
-                        alignment: "left",
-                    },
+                    //{
+                    //    dataField: "descriptions",
+                    //    caption: "Mô tả",
+                    //    width: 150,
+                    //    dataType: "string",
+                    //    alignment: "left",
+                    //},
                     {
                         dataField: "createDate",
                         caption: "Ngày tạo",
                         dataType: "date",
                         width: 110,
                         alignment: "left",
+                        allowEditing: false,
+                        //editing: {
+                        //    allowEditing: false,
+                        //    allowAdding: false,
+                        //}, 
                     },
                     {
                         dataField: "status",
@@ -142,7 +147,7 @@
                         },
                         sortOrder: "desc"
                     },
-                  
+
                 ],
                 paging: {
                     enabled: true,
@@ -198,7 +203,7 @@
                 onInitNewRow: (e) => {
                     e.data.isActive = true;
                     e.data.isVisible = true;
-                    //e.data.ProjectId = PROJECTID;
+                    e.data.createDate = moment();
                 },
                 onCellPrepared: (e) => {
                     if (e.rowType == "data" && e.columnIndex == 1)

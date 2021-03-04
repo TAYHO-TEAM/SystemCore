@@ -47,6 +47,11 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return PartialView(id);
         }
+        // GET: ThongTin/_DienVanBan
+        public ActionResult _DuyetVanBan(int id)
+        {
+            return PartialView(id);
+        }
         [HttpPost]
         [ResponseType(typeof(string))]
         public JsonResult UpdateCellContent()

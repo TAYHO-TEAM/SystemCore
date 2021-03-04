@@ -204,7 +204,14 @@
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0)
                 },
                 onRowDblClick: function (e) {
-                    var container = e.component;
+                    var containerE = e.component;
+                    console.log(e);
+                    CALLPOPUP(
+                        "Danh sách văn bảo mẫu",
+                        "/ThongTin/VanBanMau/_DuyetVanBan?id=" + e.data.id,
+                        ($(window).width() > 767 ? "50%" : "80%"),
+                        containerE
+                    );
                 },
                 selection: {
                     mode: "single"
