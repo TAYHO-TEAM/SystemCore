@@ -23,6 +23,11 @@
         <div id="container_conversation" class="elevation-2 col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
     </div>
 </div>
+<style>
+  /*  .card-header {
+        background-color: #ffd6ae !important;
+    }*/
+</style>
 
 @section script{
     <script src="~/Scripts/page/thongtin.js"></script>
@@ -164,7 +169,7 @@
                 showRowLines: true,
                 columnAutoWidth: true,
                 wordWrapEnabled: true,
-                rowAlternationEnabled: false,
+                rowAlternationEnabled: true,
                 columns: [
                     {
                         dataField: "isVisible",
@@ -172,12 +177,9 @@
                         dataType: "boolean",
                         groupIndex: 0,
                         groupCellTemplate: (c, o) => {
-                            o.value ? c.append($("<div>").addClass("text-success").append("Đã Hoàn Thành(" + o.summaryItems[0].value + ")")) : c.append($("<div>").addClass("text-danger").append("Chưa Hoàn Thành(" + o.summaryItems[0].value + ")"));
+                            o.value ? c.append($("<div>").addClass("text-success card-header-custom").append("Đã Hoàn Thành(" + o.summaryItems[0].value + ")")) : c.append($("<div>").addClass("text-danger card-header-custom").append("Chưa Hoàn Thành(" + o.summaryItems[0].value + ")"));
                         },
                         editorType: "dxCheckBox",
-                        editorOptions: {
-                            
-                        }
                     },
                     {
                         dataField: "code",
@@ -270,9 +272,11 @@
                         dataType: "number",
                         lookup: {
                             dataSource: customStore_AccountInfo,
-                            valueExpr: "accountId", displayExpr: "userName",
+                            valueExpr: "accountId",
+                            displayExpr: "userName",
                         },
                         editorOptions: {
+                         
                             readOnly: true,
                         }
                     },
@@ -310,11 +314,19 @@
                                 colSpan: 3,
                                 dataField: "code",
                                 label: { text: "Mã " },
+                                editorOptions: {
+                                    stylingMode: "filled",
+                                    placeholder: "Vui lòng nhập...",
+                                },
                             },
                             {
                                 colSpan: 5,
                                 dataField: "title",
                                 label: { text: "Kế hoạch CV" },
+                                editorOptions: {
+                                    stylingMode: "filled",
+                                    placeholder: "Vui lòng nhập...",
+                                },
                             },
                             //{
                             //    colSpan: 3,
@@ -333,6 +345,7 @@
                                 },
                                 editorType: "dxSelectBox",
                                 editorOptions: {
+                                    stylingMode: "filled",
                                     value: "importantLevel",
                                     dataSource: important,
                                     valueExpr: "ID", displayExpr: "Name",
@@ -343,6 +356,10 @@
                                 dataField: "description",
                                 label: { text: "Mô tả CV" },
                                 editorType: "dxTextArea",
+                                editorOptions: {
+                                    stylingMode: "filled",
+                                    placeholder: "Vui lòng nhập...",
+                                },
                             },
                             //{
                             //    colSpan: 6,
@@ -366,6 +383,7 @@
                                 label: { text: "Hoàn thành" },
                                 editorType: "dxDateBox",
                                 editorOptions: {
+                                    stylingMode: "filled",
                                     pickerType: "rollers",
                                     type: "datetime",
                                 },
@@ -397,6 +415,9 @@
                                 dataField: "isVisible",
                                 label: { text: "Đã Hoàn thành" },
                                 editorType: "dxCheckBox",
+                                editorOptions: {
+                                    stylingMode: "filled",
+                                },
                             },
                         ],
                     },

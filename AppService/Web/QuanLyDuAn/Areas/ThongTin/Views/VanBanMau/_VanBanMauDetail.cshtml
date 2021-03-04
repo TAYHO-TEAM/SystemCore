@@ -35,6 +35,10 @@
                     dataField: "header",
                     caption: "Tiêu đề",
                     dataType: "string",
+                    editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
+                    },
                 },
                 {
                     dataField: "customTableId",
@@ -47,10 +51,11 @@
                     },
                     editorType: "dxLookup",
                     editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng chọn...",
                         dataSource: customStore_CUSTOMTABLE,
                         valueExpr: "id",
                         displayExpr: "title",
-                        placeholder: "Vui lòng chọn...",
                         searchEnabled: true,
                         showClearButton: true,
                         itemTemplate: function (data) {
@@ -63,10 +68,16 @@
                     dataField: "priority",
                     caption: "Thứ tự",
                     dataType: "number",
+                    editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
+                    }
                 },
                 {
-                    type: "buttons", caption: "Tác vụ",
-                    width: 120, alignment: "center",
+                    type: "buttons",
+                    caption: "Tác vụ",
+                    width: 120,
+                    alignment: "center",
                     buttons: ["edit", "delete"],
                 }
             ],

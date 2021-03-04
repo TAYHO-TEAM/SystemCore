@@ -22,7 +22,7 @@
                     colCount: 12,
                     items: [
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             dataField: "documentTypeId",
                             label: { text: "Loại tài liệu" },
                             lookup: {
@@ -32,6 +32,7 @@
                             },
                             editorType: "dxSelectBox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 value: formData["documentTypeId"],
                                 dataSource: customStore_DocumetnType,
                                 valueExpr: "id", displayExpr: "title",
@@ -42,11 +43,12 @@
                             validationRules: [{ type: "required" }],
                         },
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             dataField: "title",
                             label: { text: "Tiêu đề" },
                             editorType: "dxTextBox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 value: formData["title"],
                                 dataSource: customStore_HangMuc,
                                 valueExpr: "id",
@@ -62,15 +64,17 @@
                             label: { text: "Mô tả" },
                             editorType: "dxTextArea",
                             editorOptions: {
+                                stylingMode: "filled",
                                 value: formData["description"],
                             },
                         },
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             dataField: "tagWorkItem",
                             label: { text: "Nhóm hạng mục" },
                             editorType: "dxTagBox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 dataSource: customStore_HangMuc,
                                 displayExpr: "title",
                                 valueExpr: "title",
@@ -82,16 +86,20 @@
                             },
                         },
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             dataField: "location",
                             label: { text: "Địa điểm" },
+                            editorOptions: {
+                                stylingMode: "filled",
+                            }
                         },
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             dataField: "calendar",
                             label: { text: "Lịch dự kiến" },
                             editorType: "dxDateBox",
                             editorOptions: {
+                                stylingMode: "filled",
                                 pickerType: "rollers",
                                 type: "datetime",
                                 invalidDateMessage: "Sai định dạng ngày tháng"
@@ -99,7 +107,7 @@
 
                         },
                         {
-                            colSpan: 12,
+                            colSpan: 6,
                             template: '<span class="dx-field-item-label-text font-bold">Các tập tin đính kèm</span><div class="file-uploader"></div>',
                         },
                     ]
@@ -136,6 +144,7 @@
         }).dxFileUploader("instance");
         $("#form-regist").on("submit", function (e) {
             //$(this).prop("disabled", true);
+            e.preventDefault();
             var fileWrappers = fileUploader._files;
             var resValid = true
             for (var i = 0; i < fileWrappers.length; i++) {
@@ -144,7 +153,6 @@
                 }
             }
             if (!resValid) {
-                e.preventDefault();
                 DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
             }
             else {
@@ -163,9 +171,7 @@
                 });
                 fdata.append('projectId', PROJECTID);
                 fdata.append('token', UserCurrentInfo.accessToken);
-                for (var pair of fdata.entries()) {
-                    console.log(pair[0] + ', ' + pair[1]);
-                }
+              
                 var files = $(".file-uploader").dxFileUploader("instance").option("value");
                 if (files.length > 0) {
                     $.each(files, function (key, value) {
@@ -177,7 +183,11 @@
                 //    e.preventDefault();
                 //    return false;
                 //};
-
+                for (var pair of fdata.entries()) {
+                    console.log(pair[0] + ', ' + pair[1]);
+                }
+                
+                var deferred = $.Deferred();
                 $.ajax({
                     type: "POST",
                     enctype: 'multipart/form-data',
@@ -186,8 +196,8 @@
                     processData: false,
                     contentType: false,
                     cache: false,
-                    timeout: 600000,
                     success: function (rs) {
+                        deferred.resolve(true);
                         loadingPanel.hide();
                         DevExpress.ui.notify(rs.result, rs.status, 3000);
                         if (rs.status == "success") {
@@ -197,12 +207,14 @@
                     error: function (xhr, textStatus, errorThrown) {
                         loadingPanel.hide();
                         DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+                       
                     }
                 });
-               
+                //e.preventDefault();
+                return deferred.promise();
             }
 
-            //return deferred.promise();
+           
         });
 
     });

@@ -1,36 +1,37 @@
 ﻿<form id="form-regist" action="#" method="POST" enctype="application/json">
 </form>
 <script>
-  
+
     var formData = {
         "code": ""
         , "parentId": ""
-            , "planProjectId": 3
-                , "title": ""
-                    , "timeLine": ""
-                        , "description": ""
-                            , "note": ""
-                                , "startDate": ""
-                                    , "endDate": ""
-                                        , "unit": ""
-                                            , "amount": ""
-                                                , "reportPeriodicalType": ""
-                                                    , "reportPeriodical": ""
-                                                        , "reportFrequency": ""
-                                                            , "priority": ""
-                                                                , "importantLevel": ""
-                                                                    , "noAttachment": ""
-                                                                        , "isDelete": ""
-                                                                            , "isActive": ""
-                                                                                , "isVisible": ""
-                                                                                    , "isModify": ""
-                                                                                        , "createBy": ""
-                                                                                            , "createDateUTC": ""
-                                                                                                , "createDate": ""
-                                                                                                    , "modifyBy": ""
-                                                                                                        , "updateDateUTC": ""
-                                                                                                            , "updateDate": ""
-                                                                                                                , "status": ""};
+        , "planProjectId": 3
+        , "title": ""
+        , "timeLine": ""
+        , "description": ""
+        , "note": ""
+        , "startDate": ""
+        , "endDate": ""
+        , "unit": ""
+        , "amount": ""
+        , "reportPeriodicalType": ""
+        , "reportPeriodical": ""
+        , "reportFrequency": ""
+        , "priority": ""
+        , "importantLevel": ""
+        , "noAttachment": ""
+        , "isDelete": ""
+        , "isActive": ""
+        , "isVisible": ""
+        , "isModify": ""
+        , "createBy": ""
+        , "createDateUTC": ""
+        , "createDate": ""
+        , "modifyBy": ""
+        , "updateDateUTC": ""
+        , "updateDate": ""
+        , "status": ""
+    };
 
     $(document).ready(function () {
         var formInstance = $("#form-regist").dxForm({
@@ -38,16 +39,24 @@
             colCount: 4,
             labelLocation: "top",
             items: [
-               
+
                 {
                     dataField: "code",
                     label: { text: "Mã CV" },
+                    editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
+                    }
                 },
                 {
                     dataField: "title",
                     colSpan: 2,
                     label: { text: "Tên công việc" },
                     validationRules: [{ type: "required" }],
+                    editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
+                    }
                 },
                 //{
                 //    dataField: "priority",
@@ -65,9 +74,12 @@
                     },
                     editorType: "dxSelectBox",
                     editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng chọn...",
                         value: "importantLevel",
                         dataSource: important,
-                        valueExpr: "ID", displayExpr: "Name",
+                        valueExpr: "ID",
+                        displayExpr: "Name",
                     },
                 },
                 {
@@ -75,6 +87,10 @@
                     dataField: "description",
                     label: { text: "Mô tả CV" },
                     editorType: "dxTextArea",
+                    editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
+                    }
                 },
                 //{
                 //    colSpan: 4,
@@ -97,6 +113,8 @@
                     label: { text: "Ngày hoàn thành" },
                     editorType: "dxDateBox",
                     editorOptions: {
+                        stylingMode: "filled",
+                        placeholder: "Vui lòng nhập...",
                         pickerType: "rollers",
                         type: "datetime",
                     },

@@ -242,6 +242,10 @@
                         dataField: "title",
                         caption: "Tiêu đề",
                         dataType: "string",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        }
                     },
                     {
                         dataField: "category",
@@ -250,6 +254,8 @@
                         validationRules: [{ type: "required" }],
                         editorType: "dxSelectBox",
                         editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng chọn...",
                             dataSource: Category,
                             valueExpr: "CategoryName",
                             displayExpr: "CategoryName",
@@ -267,6 +273,10 @@
                         dataField: "link",
                         caption: "Đường dẫn",
                         dataType: "string",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        },
                     },
                     //{
                     //    dataField: "sub",
@@ -274,14 +284,23 @@
                     //    dataType: "string",
                     //},
                     {
+
                         dataField: "bodyContent",
                         caption: "Nội dung",
                         dataType: "string",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        }
                     },
                     {
                         dataField: "templateId",
                         caption: "Theo mẫu",
                         dataType: "number",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        }
                     },
 
                 ],
@@ -482,7 +501,7 @@
                             index: 3,
                             icon: "fas fa-trash",
                             label: "Xoá",
-                            visible: (selectedRowData.id != null && PermitInAction["delete"] ),
+                            visible: (selectedRowData.id != null && PermitInAction["delete"]),
                             onClick: () => {
                                 DevExpress.ui.dialog.confirm("Bạn có chắc là muốn hủy bỏ giá trị của hạng mục?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
                                     if (dialogResult) {

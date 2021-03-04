@@ -40,7 +40,7 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         //..........................Get data -------------------------------------------------------------
-        let customStore = customStore_CMD_READ(ACTION_CMD,ACTION);
+        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
 
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_DOCUMENTTYPE);
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
@@ -348,7 +348,7 @@
                             }
                         });
                     }
-                  
+
 
                 },
                 onRowDblClick: function (e) {
@@ -403,6 +403,7 @@
                                     dataField: "code",
                                     label: { text: "Mã" },
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         readOnly: true,
                                     }
                                 },//tenCongViec
@@ -411,6 +412,7 @@
                                     dataField: "title",
                                     label: { text: "Tên" },
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         readOnly: true,
                                     }
                                 },//tenphathanh
@@ -419,6 +421,7 @@
                                     dataField: "accountName",
                                     label: { text: "Người phát hành" },
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         readOnly: true,
                                     }
                                 },//account
@@ -427,6 +430,7 @@
                                     dataField: "description",
                                     label: { text: "Mô tả" },
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         readOnly: true,
                                     }
                                 },
@@ -437,15 +441,16 @@
                                     alignment: "left",
                                     editorType: "dxTextBox",
                                     editorOptions: {
+                                        stylingMode: "filled",
                                         readOnly: readonly,
                                         elementAttr: {
-                                            id:"noteContent"
+                                            id: "noteContent"
                                         },
                                         buttons: [{
                                             name: "note",
                                             location: "after",
                                             options: {
-                                                
+
                                                 icon: "save",
                                                 type: "default",
                                                 onClick: function (e) {

@@ -94,7 +94,7 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                using (HttpResponseMessage response = client.PostAsync("api/cmd/v1/DocumentReleased", mFormData).Result)
+                using (HttpResponseMessage response =  client.PostAsync("api/cmd/v1/DocumentReleased", mFormData).Result)
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                     {

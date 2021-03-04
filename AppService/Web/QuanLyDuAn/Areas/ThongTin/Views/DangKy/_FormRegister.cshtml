@@ -209,6 +209,7 @@
         });
         $("#form-regist").on("submit", function (e) {
             //test(fdatatest);
+            e.preventDefault();
             loadingPanel.show();
             var fdata = new FormData();
             $.each(formData, function (key, value) {

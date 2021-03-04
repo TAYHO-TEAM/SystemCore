@@ -63,6 +63,10 @@
                         caption: "Tên mẫu văn bản",
                         dataType: "string",
                         alignment: "left",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        },
                         validationRules: [
                             {
                                 type: "required",
@@ -75,6 +79,10 @@
                         caption: "Đầu đề (Header)",
                         dataType: "string",
                         alignment: "left",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        },
                         validationRules: [
                             {
                                 type: "required",
@@ -86,6 +94,10 @@
                         dataField: "code",
                         caption: "Ký Hiệu",
                         dataType: "string",
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        },
                         validationRules: [
                             {
                                 type: "required",
@@ -128,10 +140,10 @@
                         width: 110,
                         alignment: "left",
                         allowEditing: false,
-                        //editing: {
-                        //    allowEditing: false,
-                        //    allowAdding: false,
-                        //}, 
+                        editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập...",
+                        },
                     },
                     {
                         dataField: "status",
@@ -141,6 +153,8 @@
                         alignment: "left",
                         editorType: "dxNumberBox",
                         editorOptions: {
+                            stylingMode: "filled",
+                            placeholder: "Vui lòng nhập số...",
                             min: 1,
                             step: 1,
                             showSpinButtons: true,
