@@ -5,6 +5,7 @@
 <div class="row">
     <div class="col-12">
         <div id="container" class="elevation-2"></div>
+        <hr />
         <div id="container2" class="elevation-2"></div>
     </div>
 </div>
@@ -71,11 +72,11 @@
 
         $(function () {
            loadData();
-            //loadData2();
+           loadData2();
         });
 
         var loadData = () => $("#container").dxDataGrid({
-            dataSource: ds_main, height: heightScreen,
+            dataSource: ds_main, //height: heightScreen,
             paging: { enabled: true },
             showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
@@ -241,7 +242,7 @@
                     {
                         dataField: "thoiGianDuChi",
                         dataType: "date",
-                        area: "column"
+                        area: "column", expanded: true
                     },
                     {
                         groupName: "date",

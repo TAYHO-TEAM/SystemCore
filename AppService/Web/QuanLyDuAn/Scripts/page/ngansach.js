@@ -22,7 +22,12 @@ const ACTION_KHAUTRU            = "/NS_KhauTru";
 const ACTION_KHAUTRU_THEODOI    = "/NS_KhauTru_TheoDoi";
 
 const ACTION_DUCHI              = "/NS_DuChi";
-const ACTION_THUCCHI            = "/NS_ThucChi";
+const ACTION_THUCCHI = "/NS_ThucChi";
+
+var listActiveStatus = [
+    { value: true, text: "Hoạt động", color: "success", icon: 'fa fa-check-circle' },
+    { value: false, text: "Tạm dừng", color: "danger", icon: 'fa fa-minus-circle' },
+]
 
 var customStore_Projects = new DevExpress.data.CustomStore({
     key: "id", loadMode: "raw",
