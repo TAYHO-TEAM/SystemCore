@@ -169,7 +169,7 @@ var ajax_insert = (url, values) => {
             console.log(xhr);
             deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
         },
-        timeout: 5000
+        timeout: 10000
     });
     return deferred.promise();
 }
