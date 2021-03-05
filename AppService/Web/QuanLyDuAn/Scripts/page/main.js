@@ -35,9 +35,12 @@ function loadMenu() {
         'Authorization': 'Bearer ' + UserCurrentInfo.accessToken,
     };
     //loadInfo
-    $('.user-panel div.image img').attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg).attr("alt", UserCurrentInfo.UserCurrent);
-    $('.user-panel div.info a').html(UserCurrentInfo.userName);
-    $('.user-panel div.info span').html(UserCurrentInfo.title);
+    $('.user-panel div.image img')
+        .attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg)
+        .attr("alt", UserCurrentInfo.UserCurrent)
+        .attr("onerror","this.onerror=null;this.src='https://duan.tayho.com.vn/Content/img/avatar.png';");
+    $('.user-panel div.info a').html(UserCurrentInfo.userName != null ? UserCurrentInfo.userName : UserCurrent);
+    $('.user-panel div.info span').html(UserCurrentInfo.title != null ? UserCurrentInfo.title:"Không xác định");
     //LoadMenu
     var rs = "", url = URL_API_ACC_READ + "/Actions/getMenuOfUser";
     var container = $(".list-menu-left");

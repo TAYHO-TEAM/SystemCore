@@ -68,11 +68,15 @@
         var ds_hangmuc = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
+                console.log(values.filter) 
                 let deferred = $.Deferred();
                 let params = {
                     'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1',
                     'TypeStore': GIAIDOANID
-                };
+                }; 
+                if (typeof (values.filter.filterValue) == 'string') {
+                    params['KeyWord'] = values.filter.filterValue;
+                }
                 if (values.filter && values.filter[0] == "parentId")
                     params['FindParentId'] = values.filter[2];
                 if (values.sort) {
@@ -88,10 +92,10 @@
                             totalCount: data.result.pagingInfo.totalItems
                         });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
-                    }
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Loại công việc'. Mở Console để xem chi tiết.");
+                    },
                 });
                 return deferred.promise();
             },
@@ -152,11 +156,10 @@
                     success: function (data) {
                         deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Loại công việc'. Mở Console để xem chi tiết.");
                     },
-                    timeout: 10000
                 });
                 return deferred.promise();
             },
@@ -220,11 +223,10 @@
                         var data = rs.result.items;
                         deferred.resolve(data);
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Loại công việc'. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000
+                    }
                 });
                 return deferred.promise();
             },
@@ -407,24 +409,25 @@
                 sorting: true,
                 grouping: false
             },
+            searchPanel: {
+                highlightCaseSensitive: true, highlightSearchText: true,                
+                visible: ($("#container-main").width() > 445), searchVisibleColumnsOnly: true,
+            }, 
+            filterMode: "matchOnly",
             rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
             showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false, 
             columns: [
                 {
-                    dataField: "tenHangMuc", caption: "Thông tin", dataType: "string",
+                    dataField: "tenHangMuc", caption: "Thông tin", dataType: "string", width: "50%",
                     cellTemplate: (c, o) => {
                         if (o.data.chilCount > 0) c.parent().parent().attr("style", "background-color: #cccccc; font-weight: bold");
-                        $("<div/>").append(o.value).appendTo(c);
+                        $("<div/>").append(o.value, $("<em />").addClass("small").append(" (" + o.data.kyHieu+")")).appendTo(c);
                     },
                     allowEditing: false,
-                },
+                }, 
                 {
-                    dataField: "kyHieu", caption: "Ký hiệu", dataType: "string",
-                    allowEditing: false,
-                },
-                {
-                    width: 200,
+                    width: "30%", allowFiltering:false,
                     dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "right",
                     format: { type: "currency", currency: "VND" },
                     editorType: "dxNumberBox",
@@ -486,6 +489,7 @@
         });
         var loadSubData = (item) => $("#container-sub").dxDataGrid({
             dataSource: ds_nhomcongviec(item.id),
+
             height: heightScreen - $("#container-filter").parent().parent().parent().parent().height(),
             showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
@@ -918,9 +922,7 @@
                 giaidoan = rs.find(x => x.id == formData.giaiDoanId);
                 ds_group_account.load().then((rs2) => {
                     var group = rs2.filter(x => x.groupId == giaidoan.groupId);
-                    quyen = (group != null && group.length > 0) ? true : false;
-                    console.log(giaidoan);
-                    console.log(rs2);
+                    quyen = (group != null && group.length > 0) ? true : false; 
                     loadData();
                 });
             });
@@ -929,8 +931,7 @@
         $(document).on('submit', '#form-ncv', function (e) {
             var form = $(this);
             var type = form.data('type');
-            var data = form.dxForm('instance').option("formData");
-            console.log(data);
+            var data = form.dxForm('instance').option("formData"); 
 
             var deferred = $.Deferred();
             e.preventDefault();
