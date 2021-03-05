@@ -322,7 +322,6 @@
                         dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
-                            console.log(options.value);
                             container.append(options.value == 0 ? 'Chờ phản hồi' :
                                 options.value == 1 ? 'Tư vấn phản hồi(A)' :
                                     options.value == 2 ? 'Tư vấn phản hồi(B)' :
@@ -740,7 +739,8 @@
                                             label: { text: "File(s)" },
                                             template: (container) => {
                                                 return $('<a>').click(function () {
-                                                    loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
+                                                    console.log(masterItiem);
+                                                    loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? (masterItiem.status <5 ? true: false) : false)) : false, item);
                                                 }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                             },
                                         },
@@ -916,7 +916,9 @@
                     },
                     onCellClick: function (e) {
                         if (e.column.dataField === "noAttachment") {
-                            loadUpload("RequestRegist", e.row.data, true);
+
+                            console.log(item);
+                            loadUpload("RequestRegist", e.row.data, false);
                         }
                     },
                 });
@@ -1009,7 +1011,7 @@
                     editing: {
                         mode: "batch",
                         allowAdding: false,
-                        allowDeleting: () => { (item.modifyBy > 0 && item.modifyBy !== null) ? false : true },
+                        allowDeleting: (e) => { e.row.data.createBy === UserCurrentInfo.id ? true : false },
                         allowUpdating: false,
                     },
                     onToolbarPreparing: (e) => {
@@ -1031,27 +1033,18 @@
                     width: '100%',
                     height: '100%'
                 });
+               
                 $(function () {
                     if (isUpload) {
                         //$("#form").append("OwnerById",1);
-                       
-                        var fileUploader = $("#file-uploader").dxFileUploader({
-                            selectButtonText: "Select photo",
-                            multiple: true,
-                            labelText: "",
-                            showFileList: true,
-                            uploadMode: "useForm",
-                            accept: ".jpg,.jpeg,.gif,.png,.pdf",
-                            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
-                            maxFileSize: 52428800,
-                        }).dxFileUploader("instance");
+                        fileUploader();
 
                         $("#button").dxButton({
                             text: "Lưu ảnh",
                             type: "success",
                             onClick: function (e) {
                                 isUpload++;
-                                var fileWrappers = fileUploader._files;
+                                var fileWrappers = fileUploader()._files;
                                 var resValid = true
                                 for (var i = 0; i < fileWrappers.length; i++) {
                                     if (fileWrappers[i].isValid() === false) {
@@ -1078,7 +1071,7 @@
                                     for (var pair of formData.entries()) {
                                         console.log(pair[0] + ', ' + pair[1]);
                                     }
-                                    var files = $("#file-uploader").dxFileUploader("instance").option("value");
+                                    var files = fileUploader().dxFileUploader("instance").option("value");
                                     if (files.length > 0) {
                                         $.each(files, function (key, value) {
                                             formData.append(files[key].name, files[key]);
@@ -1129,7 +1122,16 @@
                 //loadDetail(item);
             },
         }).addClass("popup-priority-2");
-
+        var fileUploader = () => $("#file-uploader").dxFileUploader({
+            selectButtonText: "Chọn tập tin...",
+            labelText: "Hoặc kéo thả vào đây",
+            showFileList: true,
+            multiple: true,
+            uploadMode: "useForm",
+            accept: ".jpg,.jpeg,.gif,.png,.pdf",
+            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
+            maxFileSize: 52428800,
+        }).dxFileUploader("instance");
         function loadFileAttachment(table, item, isUpload, parentItem) {
             loadUpload(table, item, isUpload, parentItem);
         }
