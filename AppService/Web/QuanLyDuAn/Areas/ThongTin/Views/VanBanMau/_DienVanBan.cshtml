@@ -184,7 +184,7 @@
                                 searchEnabled: true,
                                 elementAttr: {
                                     id: Id,
-                                    class: "customForm_SelectBox",
+                                    class: "customForm_RadioGroup",
                                 },
                                 dataSource: listOBJ,
                             }
@@ -453,9 +453,9 @@
                 fdata.append(selectBox[j].id, $("#" + selectBox[j].id).dxSelectBox('instance').option('value'));
             }
             //Get and Append CustomCellContent of RadioGroup
-            var selectBox = document.getElementsByClassName("customForm_RadioGroup");
-            for (var j = 0; j < selectBox.length; j++) {
-                fdata.append(selectBox[j].id, $("#" + selectBox[j].id).dxRadioGroup('instance').option('value'));
+            var radioGroupBox = document.getElementsByClassName("customForm_RadioGroup");
+            for (var j = 0; j < radioGroupBox.length; j++) {
+                fdata.append(radioGroupBox[j].id, $("#" + radioGroupBox[j].id).dxRadioGroup('instance').option('value'));
             }
             //Get and Append CustomCellContent of DateBox
             var dateBox = document.getElementsByClassName("customForm_DateBox");

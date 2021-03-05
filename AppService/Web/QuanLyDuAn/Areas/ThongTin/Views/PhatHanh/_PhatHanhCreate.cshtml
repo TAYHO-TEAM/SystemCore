@@ -162,11 +162,10 @@
             }
         }
         if (!resValid) {
-            DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
+            DevExpress.ui.notify("Vui lòng kiểm tra lại file đính kèm!", "error", 3000);
         }
         else {
             loadingPanel.show();
-
             var fdata = new FormData();
             var i = 10;
             $.each(formData, function (key, value) {
