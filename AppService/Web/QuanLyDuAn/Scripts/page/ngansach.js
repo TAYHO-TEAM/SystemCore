@@ -52,6 +52,15 @@ var customStore_Projects = new DevExpress.data.CustomStore({
         });
         return deferred.promise();
     },
+    byKey: function (key) {
+        var d = new $.Deferred();
+        $.get(URL_API_PM_READ + ACTION_PROJECT, { 'FindId': key })
+            .done((rs) => { 
+                d.resolve(rs.result.items[0]);
+            })
+            .fail(() => d.reject());
+        return d.promise();
+    },
 });
 
 var customStore_Phat_Nhom = new DevExpress.data.CustomStore({

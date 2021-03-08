@@ -2500,6 +2500,8 @@
     <Content Include="Areas\NganSach\Views\DongChi\Index.cshtml" />
     <Content Include="Content\Template\PlanRegister\Temp_PlanRegister_001.xlsm" />
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DuyetVanBan.cshtml" />
+    <Content Include="Areas\NganSach\Views\GiaTri\Index.cshtml" />
+    <Content Include="Areas\NganSach\Views\NghiemThu\Index - Copy.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
