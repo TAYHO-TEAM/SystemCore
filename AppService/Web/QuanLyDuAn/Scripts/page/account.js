@@ -123,38 +123,6 @@
             DevExpress.ui.notify(rs.errorMessages[0].errorMessage, "error", 3000);
         });
     });
-
-
-    if (typeof Notification === 'undefined') {
-        DevExpress.ui.notify("Trình duyệt của bạn không hỗ trợ hiển thị thông báo.", "error", 3000);
-    } else {
-        Notification.requestPermission(function (permission) {
-            if (permission != "granted")
-                DevExpress.ui.notify("Bạn đã không cấp quyền cho hệ thống gửi các thông báo.", "error", 3000);
-        });
-    }
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-    messaging.getToken().then((currentToken) => {
-        if (currentToken) {
-            console.log(currentToken)
-            form.updateData(
-                {
-                    deviceToken: currentToken,
-                    device: "Website"
-                }
-            );
-        } else {
-            form.updateData(
-                {
-                    deviceToken: null,
-                    device: null
-                }
-            );
-        }
-    }).catch((err) => {
-        console.log("Có lỗi xảy ra trong quá trình lấy token Firebase");
-    });
 });
 
 function getParamInUrl(name, url) {

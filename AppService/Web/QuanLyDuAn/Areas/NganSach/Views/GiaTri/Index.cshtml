@@ -67,8 +67,7 @@
         });
         var ds_hangmuc = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => {
-                console.log(values.filter) 
+            load: (values) => { 
                 let deferred = $.Deferred();
                 let params = {
                     'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1',
@@ -272,8 +271,8 @@
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CONGVIEC, values),
             update: (key, values) => {
                 var deferred = $.Deferred();
-                if (values.khoiLuong != null && values.donGia != null) {
-                    if (values.donGia > 0) {
+                if (values.khoiLuong != null || values.donGia != null) {
+                    if (values.donGia > 0 || values.khoiLuong > 0) {
                         if (values.congViecDetailId != null) {
                             ds_congviec_detail.update(values.congViecDetailId, { donGia: values.donGia, khoiLuong: values.khoiLuong }).then(() => {
                                 $("#container-sub2").dxDataGrid('instance').refresh(true);
@@ -452,7 +451,7 @@
                 }
             },
             editing: {
-                mode: "batch",
+                mode: "cell",
                 allowUpdating: function (e) {
                     return giaidoan.capDo.toUpperCase() == "HM" && (e.row.data.chilCount == 0) && quyen;
                 },
@@ -548,7 +547,7 @@
                 },
             ],
             editing: {
-                mode: "batch", useIcons: true, confirmDelete: true,
+                mode: "cell", useIcons: true, confirmDelete: true,
                 allowUpdating: function (e) { 
                     return giaidoan.capDo == "NCV" && PermitInAction["update"] && quyen;
                 },
@@ -683,7 +682,7 @@
                             },
                         ],
                         editing: {
-                            mode: "batch", useIcons: true, confirmDelete: true,
+                            mode: "cell", useIcons: true, confirmDelete: true,
                             allowUpdating: function (e) {
                                 return giaidoan.capDo == "CV" && PermitInAction["update"] && quyen;
                             },

@@ -2254,7 +2254,6 @@
     <Content Include="Content\plugins\toastr\toastr.min.js" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
-    <Content Include="firebase-messaging-sw.js" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\aspnet\dx.aspnet.data.js" />
     <Content Include="Scripts\aspnet\dx.aspnet.mvc.js" />
@@ -2435,7 +2434,6 @@
     <Content Include="Content\icons\dxiconsmaterial.ttf" />
     <Content Include="Content\icons\dxiconsmaterial.woff" />
     <Content Include="Content\icons\dxiconsmaterial.woff2" />
-    <Content Include="manifest.json" />
     <Content Include="Areas\NganSach\Views\web.config" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\ThongTin\Views\web.config" />
@@ -2502,6 +2500,7 @@
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DuyetVanBan.cshtml" />
     <Content Include="Areas\NganSach\Views\GiaTri\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\NghiemThu\Index - Copy.cshtml" />
+    <Content Include="Areas\Admin\Views\AccountConfig\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

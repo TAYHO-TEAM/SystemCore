@@ -14,16 +14,9 @@ $(function () {
 });
 
 function logout(url) {
-    //CLEAR TOKEN FIREBASE
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-    messaging.getToken().then((currentToken) => {
-        messaging.deleteToken(currentToken, "*").then(() => {
-            if (url == null || url.length == 0 || url == "/") url = "/Home";
-            localStorage.clear();
-            window.location = "/Account/Login?url=" + url;
-        });
-    });
+    if (url == null || url.length == 0 || url == "/") url = "/Home";
+    localStorage.clear();
+    window.location = "/Account/Login?url=" + url;
 }
 
 function loadMenu() {
