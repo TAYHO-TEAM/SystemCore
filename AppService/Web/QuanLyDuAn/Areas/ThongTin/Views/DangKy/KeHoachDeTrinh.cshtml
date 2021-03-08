@@ -27,14 +27,23 @@
         let customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-
-                let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
+                console.log(values);
+                let deferred = $.Deferred();
                 //if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
                 if (values.sort) {
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
                 }
-                params = { 'FindId': 'ProjectId,' + PROJECTID },
+                let params = {
+                    'FindId': 'projectId,' + PROJECTID,
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                if (typeof (values.filter) !== "undefined") {
+                    if (typeof (values.filter.filterValue) == 'string') {
+                        params['KeyWord'] = values.filter.filterValue;
+                    };
+                };
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION,
@@ -147,8 +156,7 @@
         });
 
         let loadData = (dataSource) => {
-            $("#container").dxTreeList({
-
+            $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
                 repaintChangesOnly: true,
@@ -156,6 +164,10 @@
                     filtering: true,
                     sorting: true,
                     grouping: false
+                },
+                searchPanel: {
+                    highlightCaseSensitive: true, highlightSearchText: true,
+                    searchVisibleColumnsOnly: true, visible: true
                 },
                 scrolling: { mode: "standard" },
                 rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
@@ -170,6 +182,7 @@
                     {
                         dataField: "workItemId",
                         caption: "Hạng mục",
+                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_HangMuc,
                             valueExpr: "id",
@@ -192,6 +205,7 @@
                     {
                         dataField: "contractorInfoId",
                         caption: "Nhà thầu", width: 250,
+                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_ContractorInfo,
                             valueExpr: "id",
@@ -216,7 +230,9 @@
                         validationRules: [{ type: "required" }],
                     },//contractorInfoId
                     {
-                        dataField: "documentTypeId", caption: "Loại tài liệu",
+                        dataField: "documentTypeId",
+                        caption: "Loại tài liệu",
+                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_DocumetnType,
                             valueExpr: "id",
@@ -238,6 +254,7 @@
                         dataField: "projectId",
                         caption: "Dự án",
                         width: '10%',
+                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_Projects,
                             valueExpr: "id",
@@ -259,6 +276,7 @@
                         dataField: "title",
                         caption: "Tiêu đề",
                         dataType: "string",
+                        allowFiltering: true,
                     },//title
                     //{
                     //    dataField: "requestDate",
@@ -278,6 +296,7 @@
                     //},
                     {
                         dataField: "expectRequestDate",
+                        allowFiltering: false,
                         caption: "Ngày dự kiến đệ trình",
                         dataType: "date",
                         width: 150,
@@ -286,6 +305,7 @@
                     },
                     {
                         dataField: "expectResponseDate",
+                        allowFiltering: false,
                         caption: "Ngày dự kiến phê duyệt",
                         dataType: "date",
                         width: 150,
@@ -294,6 +314,7 @@
                     },
                     {
                         dataField: "isActive",
+                        allowFiltering: false,
                         caption: "Kích hoạt",
                         width: 100,
                         alignment: "center",
@@ -301,6 +322,7 @@
                     },
                     {
                         type: "buttons", caption: "Tác vụ",
+                        allowFiltering: false,
                         width: 120, alignment: "center",
                         buttons: [ "edit", "delete"]
                     }
