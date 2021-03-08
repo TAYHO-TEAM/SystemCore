@@ -62,6 +62,7 @@
         const ACTION_READ_PLAN = "/PlanRegister/GetByContractorID";
         const ACTION_RESPONSE = "/ResponseRegist";
         const ACTION_FILEGET = "/FilesAttachment/getBy";
+        const ACTION_REMOVE_FILE = "/FilesAttachment";
         const ACTION_CMD = "/RequestRegist";
         const ACTION_PROJECT = "/Projects";
         const ACTION_HANGMUC = "/WorkItems";
@@ -69,6 +70,8 @@
         const ACTION_REPLY = "/ResponseRegistReply";
         const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
         var code = "";
+        var typeRes = 0;
+        var noteRes = '';
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
         var WIDTH_CONTAINER = $("#container").width();
@@ -109,12 +112,13 @@
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Hạng mục'. Mở Console để xem chi tiết.");
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'file'. Mở Console để xem chi tiết.");
                     },
                     timeout: 10000
                 });
                 return deferred.promise();
             },
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_REMOVE_FILE, key),
         });
         //let customStore_AccountInfo = customStore_READ_ALL_ACC(ACTION_READ_ACCOUNTINFO);
         let customStore_AccountInfo = new DevExpress.data.CustomStore({
@@ -322,7 +326,6 @@
                         dataType: "number",
                         alignment: "left",
                         cellTemplate: (container, options) => {
-                            console.log(options.value);
                             container.append(options.value == 0 ? 'Chờ phản hồi' :
                                 options.value == 1 ? 'Tư vấn phản hồi(A)' :
                                     options.value == 2 ? 'Tư vấn phản hồi(B)' :
@@ -357,7 +360,7 @@
                                 var containerE = e.component;
                                 //var myJSON = JSON.stringify(e.row.data);
                                 callPopup(
-                                    "THÊM MỚI REVERSION",
+                                    "THÊM MỚI Revision",
                                     "/ThongTin/DangKy/_FormRev/" + e.row.data.id,
                                     ($(window).width() > 767 ? "50%" : "80%"),
                                     containerE
@@ -367,6 +370,7 @@
                     },
                 ],
                 onCellClick: function (e) {
+
                     if (e.column.dataField === "noAttachment") {
                         loadUpload("RequestRegist", e.row.data, false);
                     }
@@ -384,7 +388,7 @@
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
                     searchVisibleColumnsOnly: true,
-                    visible: WIDTH_CONTAINER > 350
+                    visible: false,
                 },
                 editing: {
                     allowUpdating: false,
@@ -476,7 +480,7 @@
                                 dataSource: customStore_Projects,
                                 valueExpr: "id",
                                 displayExpr: "title",
-                                searchEnabled: true,
+                                searchEnabled: false,
                                 searchMode: "contains",
                                 width: "100%",
                                 stylingMode: "filled",
@@ -524,6 +528,8 @@
                     e.data.ProjectId = PROJECTID;
                 },
                 onRowDblClick: function (e) {
+                    typeRes = 0;
+                    noteRes = '';
                     loadDetail(e.data)
                 },
                 onContextMenuPreparing: function (e) {
@@ -679,6 +685,12 @@
                     var $i = 0;
                     $.each(masterItiem.responseRegistDTOs, function (key, value) {
                         var $checkNexStepDone = false;
+                        if (typeRes > 0 && value.update == true) {
+                            value.typeOfResult = typeRes;
+                        }
+                        if (noteRes !== null && noteRes !== '' && value.update == true) {
+                            value.description = noteRes;
+                        }
                         if ($i === 0) {
                             if (masterItiem.responseRegistDTOs[1] !== null) {
                                 if (masterItiem.responseRegistDTOs[1].modifyBy > 0)
@@ -690,100 +702,119 @@
 
                         }
                         else {
-                            formSub.dxForm({
-                                elementAttr: {
-                                    id: "dxForm_Sub" + key,
-                                },
-                                formData: value,
-                                readOnly: ((value.modifyBy < 1) ? (value.update == true ? false : true) : true),
-                                items: [{
-                                    itemType: "group",
-                                    caption: key == 0 ? "Đánh giá Tư vấn" : "Đánh giá Ban",
-                                    colCountByScreen: {
-                                        md: 1,
-                                        lg: 1,
-                                        xs: 1,
-                                        sm: 1
+                            if (value.update || (value.modifyBy !== 0 && value.modifyBy !== null)) {
+                                formSub.dxForm({
+                                    elementAttr: {
+                                        id: "dxForm_Sub" + key,
                                     },
-                                    items: [
-                                        {
-                                            //id:'file-loadder'+key,
-                                            dataField: "typeOfResult",
-                                            label: {
-                                                text: "Đánh giá"
-                                            },
-                                            dataType: "number",
-                                            alignment: "left",
-                                            editorType: "dxSelectBox",
-                                            editorOptions: {
-                                                disabled: 0,
-                                                dataSource: typeApprove,
-                                                displayExpr: "text",
-                                                valueExpr: "value",
-                                            },
-                                            editorType: "dxSelectBox",
-                                            validationRules: [{ type: "required" }],
-                                            cellTemplate: (container, options) => {
-                                                container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
-                                            },
-                                        },//AttachmentisApprove
-                                        {
-                                            colSpan: 12,
-                                            dataField: "description",
-                                            label: { text: "Ý kiến" },
-                                            //editorType: "dxTextArea",
-
+                                    formData: value,
+                                    readOnly: ((value.modifyBy < 1) ? (value.update == true ? false : true) : true),
+                                    items: [{
+                                        itemType: "group",
+                                        caption: key == 0 ? "Đánh giá Tư vấn" : "Đánh giá Ban",
+                                        colCountByScreen: {
+                                            md: 1,
+                                            lg: 1,
+                                            xs: 1,
+                                            sm: 1
                                         },
-                                        {
-                                            colSpan: 12,
-                                            dataField: "noAttachment",
-                                            label: { text: "File(s)" },
-                                            template: (container) => {
-                                                return $('<a>').click(function () {
-                                                    loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? true : false)) : false, item);
-                                                }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
+                                        items: [
+                                            {
+                                                dataField: "typeOfResult",
+                                                label: {
+                                                    text: "Đánh giá"
+                                                },
+                                                dataType: "number",
+                                                alignment: "left",
+                                                editorType: "dxSelectBox",
+                                                editorOptions: {
+                                                    disabled: 0,
+                                                    dataSource: typeApprove,
+                                                    displayExpr: "text",
+                                                    valueExpr: "value",
+                                                    elementAttr: {
+                                                        id: "typeOfResult_Sub_" + key,
+                                                    },
+                                                },
+                                                editorType: "dxSelectBox",
+                                                validationRules: [{ type: "required" }],
+                                                cellTemplate: (container, options) => {
+                                                    container.append(options.value == 1 ? 'Đồng ý' : options.value == 2 ? 'Đồng ý kèm ý kiến' : options.value == 3 ? 'Từ chối' : options.value == 4 ? 'Trả lại' : '')
+                                                },
+                                            },//AttachmentisApprove
+                                            {
+                                                colSpan: 12,
+                                                dataField: "description",
+                                                label: { text: "Ý kiến" },
+                                                //editorOptions: {
+                                                //    value: noteRes !== '' ? noteRes : (value.description !== '' && value.description !== null)?value.description:null,
+                                                //}
+                                                //editorType: "dxTextArea",
                                             },
-                                        },
-                                        {
-                                            itemType: "button",
-                                            horizontalAlignment: "center",
-                                            buttonOptions: {
-                                                text: "Đánh giá",
-                                                type: "success",
-                                                //useSubmitBehavior: true,
-                                                visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
-                                                onClick: function () {
-                                                    var request = {
-                                                        'id': value.id,
-                                                        'description': value.description,
-                                                        'typeOfResult': value.typeOfResult
-                                                    };
-                                                    if (value.typeOfResult == null) {
-                                                        DevExpress.ui.notify("Chưa chọn đánh giá!", "error", 3000);
-                                                    }
-                                                    else {
-                                                        if (value.noAttachment === null || value.noAttachment === 0) {
-                                                            DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
-                                                                if (dialogResult) {
-                                                                    ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
-                                                                }
-                                                            });
-                                                        }
-                                                        else {
-                                                            ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData();});});
-                                                           
-                                                         
-                                                        }
-
-                                                    }
-
+                                            {
+                                                colSpan: 12,
+                                                dataField: "noAttachment",
+                                                label: { text: "File(s)" },
+                                                template: (container) => {
+                                                    return $('<a>').click(function () {
+                                                        loadFileAttachment("ResponseRegist", value, (value.modifyBy == null || value.modifyBy == 0) ? ((value.update == true ? (masterItiem.status < 5 ? true : false) : false)) : false, item);
+                                                    }).attr("href", "javaScript:void(0)").text(container.editorOptions.value !== null ? container.editorOptions.value + " fiels" : "Chưa có file");
                                                 },
                                             },
-                                        }]
-                                }]
-                            }).appendTo(content_sub);
+                                            {
+                                                itemType: "button",
+                                                horizontalAlignment: "center",
+                                                buttonOptions: {
+                                                    text: "Đánh giá",
+                                                    type: "success",
+                                                    //useSubmitBehavior: true,
+                                                    visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
+                                                    onClick: function () {
+                                                        console.log(value.typeOfResult);
+                                                        console.log(value);
+                                                        var request = {
+                                                            'id': value.id,
+                                                            'description': value.description,
+                                                            'typeOfResult': value.typeOfResult
+                                                        };
+                                                        if (value.typeOfResult == null) {
+                                                            DevExpress.ui.notify("Chưa chọn đánh giá!", "error", 3000);
+                                                        }
+                                                        else {
+                                                            if (value.noAttachment === null || value.noAttachment === 0) {
+                                                                DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
+                                                                    if (dialogResult) {
+                                                                        ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
+                                                                    }
+                                                                });
+                                                            }
+                                                            else {
+                                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
+
+
+                                                            }
+
+                                                        }
+
+                                                    },
+                                                },
+                                            }]
+                                    }],
+                                    onFieldDataChanged: function (e) {
+                                        console.log(e);
+                                        if (e.dataField === 'typeOfResult') {
+                                            typeRes = e.value;
+                                        }
+                                        if (e.dataField === 'description') {
+                                            noteRes = e.value;
+                                        }
+
+                                        // Event handling commands go here
+                                    }
+                                }).appendTo(content_sub);
+                            }
                         }
-                       
+
                         $i++;
                     });
                 }, d.reject);
@@ -916,7 +947,9 @@
                     },
                     onCellClick: function (e) {
                         if (e.column.dataField === "noAttachment") {
-                            loadUpload("RequestRegist", e.row.data, true);
+
+                            console.log(item);
+                            loadUpload("RequestRegist", e.row.data, false);
                         }
                     },
                 });
@@ -1009,49 +1042,39 @@
                     editing: {
                         mode: "batch",
                         allowAdding: false,
-                        allowDeleting: () => { (item.modifyBy > 0 && item.modifyBy !== null) ? false : true },
+                        allowDeleting: (e) => { return (e.row.data.createBy === UserCurrentInfo.accountId && isUpload) ? true : false; },
                         allowUpdating: false,
                     },
                     onToolbarPreparing: (e) => {
-                    //    var container = e.component;
-                    //    e.toolbarOptions.items.unshift(
-                    //        {
-                    //            location: "after", widget: "dxButton",
-                    //            options: {
-                    //                stylingMode: "filled",
-                                    
-                    //                onClick: () => container.refresh()
-                    //            }
-                    //        })
+                        //    var container = e.component;
+                        //    e.toolbarOptions.items.unshift(
+                        //        {
+                        //            location: "after", widget: "dxButton",
+                        //            options: {
+                        //                stylingMode: "filled",
+
+                        //                onClick: () => container.refresh()
+                        //            }
+                        //        })
                     },
 
-                });
+                }).dxDataGrid("instance");
                 scrollView.append(content, content_Upload);
                 scrollView.dxScrollView({
                     width: '100%',
                     height: '100%'
                 });
+
                 $(function () {
                     if (isUpload) {
-                        //$("#form").append("OwnerById",1);
-                       
-                        var fileUploader = $("#file-uploader").dxFileUploader({
-                            selectButtonText: "Select photo",
-                            multiple: true,
-                            labelText: "",
-                            showFileList: true,
-                            uploadMode: "useForm",
-                            accept: ".jpg,.jpeg,.gif,.png,.pdf",
-                            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
-                            maxFileSize: 52428800,
-                        }).dxFileUploader("instance");
-
+                        fileUploader();
                         $("#button").dxButton({
                             text: "Lưu ảnh",
                             type: "success",
                             onClick: function (e) {
+
                                 isUpload++;
-                                var fileWrappers = fileUploader._files;
+                                var fileWrappers = fileUploader()._files;
                                 var resValid = true
                                 for (var i = 0; i < fileWrappers.length; i++) {
                                     if (fileWrappers[i].isValid() === false) {
@@ -1059,11 +1082,10 @@
                                     }
                                 }
                                 if (!resValid) {
-                                   
+
                                     DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
                                 }
-                                else
-                                {
+                                else {
                                     loadingPanel.show();
                                     var fd = $("#form")[0];
                                     var formData = new FormData(fd);
@@ -1098,6 +1120,7 @@
                                         success: function (rs) {
                                             loadingPanel.hide();
                                             DevExpress.ui.notify(rs.result, rs.status, 3000);
+                                            loadUpload(table, item, isUpload, parentItem);
                                             //if (rs.status == "success") {
                                             //    $("#popup-register").dxPopup('instance').hide();
                                             //}
@@ -1108,11 +1131,10 @@
                                         }
                                     });
                                 }
-                                //e.preventDefault();
-                            }
-                        }).dxFileUploader("instance");
-                    }
 
+                            }
+                        }).dxButton("instance");
+                    }
                 });
                 c.append(scrollView);
                 return c;
@@ -1129,11 +1151,141 @@
                 //loadDetail(item);
             },
         }).addClass("popup-priority-2");
-
+        var fileUploader = () => $("#file-uploader").dxFileUploader({
+            selectButtonText: "Chọn tập tin...",
+            labelText: "Hoặc kéo thả vào đây",
+            showFileList: true,
+            multiple: true,
+            uploadMode: "useForm",
+            accept: ".jpg,.jpeg,.gif,.png,.pdf",
+            allowedFileExtensions: [".jpg", ".jpeg", ".png", ".pdf"],
+            maxFileSize: 52428800,
+        }).dxFileUploader("instance");
         function loadFileAttachment(table, item, isUpload, parentItem) {
             loadUpload(table, item, isUpload, parentItem);
         }
+        //function uploadProcess(item) {
+        //    console.log(item);
+        //    //$(this).prop("disabled", true);
+        //    //isUpload++;
+        //    var fileWrappers = fileUploader()._files;
+        //    var resValid = true
+        //    for (var i = 0; i < fileWrappers.length; i++) {
+        //        if (fileWrappers[i].isValid() === false) {
+        //            resValid = false;
+        //        }
+        //    }
+        //    if (!resValid) {
 
+        //        DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
+        //    }
+        //    else {
+        //        loadingPanel.show();
+        //        var fd = $("#form")[0];
+        //        var formData = new FormData(fd);
+        //        formData.append("OwnerById", item.id);
+        //        if ('code' in item) {
+        //            formData.append("Code", item.code);
+        //        }
+        //        else {
+        //            formData.append("Code", code);
+        //        }
+        //        formData.append('token', UserCurrentInfo.accessToken);
+        //        for (var pair of formData.entries()) {
+        //            console.log(pair[0] + ', ' + pair[1]);
+        //        }
+        //        var files = $("#file-uploader").dxFileUploader("instance").option("value");
+        //        if (files.length > 0) {
+        //            $.each(files, function (key, value) {
+        //                formData.append(files[key].name, files[key]);
+        //            });
+        //        }
+        //        //formData.append("Code", item.code);
+        //        formData.append("OwnerByTable", table);
+        //        $.ajax({
+        //            type: "POST",
+        //            enctype: 'multipart/form-data',
+        //            url: "/ThongTin/DangKy/CreateFile",
+        //            data: formData,
+        //            processData: false,
+        //            contentType: false,
+        //            cache: false,
+        //            timeout: 600000,
+        //            success: function (rs) {
+        //                loadingPanel.hide();
+        //                DevExpress.ui.notify(rs.result, rs.status, 3000);
+        //                //if (rs.status == "success") {
+        //                //    $("#popup-register").dxPopup('instance').hide();
+        //                //}
+        //            },
+        //            error: function (xhr, textStatus, errorThrown) {
+        //                loadingPanel.hide();
+        //                DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+        //            }
+        //        });
+        //    }
+        //}
+        //$(document).on('click', '#file-uploader', function (e) {
+        //    //console.log(e);
+        //    ////$(this).prop("disabled", true);
+        //    ////isUpload++;
+        //    //var fileWrappers = fileUploader()._files;
+        //    //var resValid = true
+        //    //for (var i = 0; i < fileWrappers.length; i++) {
+        //    //    if (fileWrappers[i].isValid() === false) {
+        //    //        resValid = false;
+        //    //    }
+        //    //}
+        //    //if (!resValid) {
+
+        //    //    DevExpress.ui.notify("Vui lòng kiểm tra lại!", "error", 3000);
+        //    //}
+        //    //else {
+        //    //    loadingPanel.show();
+        //    //    var fd = $("#form")[0];
+        //    //    var formData = new FormData(fd);
+        //    //    formData.append("OwnerById", item.id);
+        //    //    if ('code' in item) {
+        //    //        formData.append("Code", item.code);
+        //    //    }
+        //    //    else {
+        //    //        formData.append("Code", code);
+        //    //    }
+        //    //    formData.append('token', UserCurrentInfo.accessToken);
+        //    //    for (var pair of formData.entries()) {
+        //    //        console.log(pair[0] + ', ' + pair[1]);
+        //    //    }
+        //    //    var files = fileUploader().dxFileUploader("instance").option("value");
+        //    //    if (files.length > 0) {
+        //    //        $.each(files, function (key, value) {
+        //    //            formData.append(files[key].name, files[key]);
+        //    //        });
+        //    //    }
+        //    //    //formData.append("Code", item.code);
+        //    //    formData.append("OwnerByTable", table);
+        //    //    $.ajax({
+        //    //        type: "POST",
+        //    //        enctype: 'multipart/form-data',
+        //    //        url: "/ThongTin/DangKy/CreateFile",
+        //    //        data: formData,
+        //    //        processData: false,
+        //    //        contentType: false,
+        //    //        cache: false,
+        //    //        timeout: 600000,
+        //    //        success: function (rs) {
+        //    //            loadingPanel.hide();
+        //    //            DevExpress.ui.notify(rs.result, rs.status, 3000);
+        //    //            //if (rs.status == "success") {
+        //    //            //    $("#popup-register").dxPopup('instance').hide();
+        //    //            //}
+        //    //        },
+        //    //        error: function (xhr, textStatus, errorThrown) {
+        //    //            loadingPanel.hide();
+        //    //            DevExpress.ui.notify("Có lỗi xảy ra: " + errorThrown, "error", 3000);
+        //    //        }
+        //    //    });
+        //    //}
+        //});
         function callPopup(title, url, width, container) {
             var isFullscreen = false;
             if (width == "100%") isFullscreen = true;

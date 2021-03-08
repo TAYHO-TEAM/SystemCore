@@ -72,6 +72,7 @@
         });
         let customStore_AccountInfo = new DevExpress.data.CustomStore({
             key: "accountId",
+            loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
@@ -224,6 +225,7 @@
         });
         let customStore_Groups = new DevExpress.data.CustomStore({
             key: "id",
+            loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
@@ -430,7 +432,7 @@
                                 dataField: "documentTypeId",
                                 label: { text: "Loại tài liệu" },
                             },
-                          
+
                             {
                                 colSpan: 12,
                                 dataField: "tagWorkItem",
@@ -453,7 +455,7 @@
                                 label: { text: "Mô tả" },
                                 editorType: "dxTextArea",
                             },
-                          
+
                         ],
                     },
                 },
@@ -651,7 +653,7 @@
                 },
                 onSelectionChanged: (e) => {
                     var selectedRowData = e.selectedRowsData[0];
-                    var selectedRowKey = e.selectedRowKeys[0]; 
+                    var selectedRowKey = e.selectedRowKeys[0];
                     if (selectedRowData != null && selectedRowKey != null) {
                         var data = e.component.getRowIndexByKey(selectedRowKey);
 
@@ -890,7 +892,8 @@
                             //dataType: "number",
                             lookup: {
                                 dataSource: customStore_AccountInfo,
-                                valueExpr: "accountId", displayExpr: "userName",
+                                valueExpr: "accountId",
+                                displayExpr: "userName",
                             },
 
                         },//account
@@ -901,28 +904,30 @@
                             //dataType: "number",
                             lookup: {
                                 dataSource: customStore_Groups,
-                                valueExpr: "id", displayExpr: "title",
+                                valueExpr: "id",
+                                displayExpr: "title",
                             },
 
                         },//nhóm
-                        {
-                            dataField: "isActive",
-                            width: 100,
-                            alignment: "center",
-                            editorType: "dxSwitch",
-                        },
-                        {
-                            dataField: "isVisible",
-                            width: 100,
-                            alignment: "center",
-                            editorType: "dxSwitch",
-                        },
+                        //{
+                        //    dataField: "isActive",
+                        //    width: 100,
+                        //    alignment: "center",
+                        //    editorType: "dxSwitch",
+                        //},
+                        //{
+                        //    dataField: "isVisible",
+                        //    width: 100,
+                        //    alignment: "center",
+                        //    editorType: "dxSwitch",
+                        //},
                     ],
                     editing: {
                         mode: "popup",
                         allowAdding: true,
                         allowDeleting: true,
-                        allowUpdating: true,
+                        allowUpdating: false,
+
                         popup: {
                             width: 600, height: "auto",
                             showTitle: true, title: "Trình duyệt",
@@ -939,7 +944,7 @@
                                 {
                                     colSpan: 12,
                                     dataField: "groupId",
-                                    editorType: "dxSelectBox",
+                                    editorType: "dxLookup",
                                     editorOptions: {
                                         elementAttr: {
                                             id: "groupIdSelect",
@@ -947,6 +952,7 @@
                                         placeholder: "Vui lòng chọn...",
                                         searchEnabled: true,
                                         showClearButton: true,
+                                        searchExpr: ['descriptions', 'title'],
                                         itemTemplate: function (data) {
                                             return $("<div>").append($("<b>").append(data.title).addClass("mr-1"), $("<em>").append(data.descriptions));
                                         },
@@ -955,7 +961,7 @@
                                             message: "Đã có thông tin Nhóm",
                                             validationCallback: function (params) {
                                                 var d = $.Deferred();
-                                                d.resolve(!(typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number'));
+                                                d.resolve(!(typeof $('#accountIdSelect').dxLookup('instance').option('value') === 'number'));
                                                 //$('#groupIdSelect').dxSelectBox('instance').option('value', null)
                                                 return d.promise();
                                                 /*sendRequest(params.value);*/
@@ -974,7 +980,7 @@
                                 {
                                     colSpan: 12,
                                     dataField: "accountId",
-                                    editorType: "dxSelectBox",
+                                    editorType: "dxLookup",
                                     editorOptions: {
                                         elementAttr: {
                                             id: "accountIdSelect",
@@ -982,6 +988,7 @@
                                         placeholder: "Vui lòng chọn...",
                                         searchEnabled: true,
                                         showClearButton: true,
+                                        searchExpr: ['userName', 'accountName'],
                                         itemTemplate: function (data) {
                                             return $("<div>").append($("<b>").append(data.userName).addClass("mr-1"), $("<em>").append(data.accountName));
                                         },
@@ -1000,7 +1007,7 @@
                                         message: "Đã có thông tin Nhóm",
                                         validationCallback: function (params) {
                                             var d = $.Deferred();
-                                            d.resolve(!((typeof $('#accountIdSelect').dxSelectBox('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxSelectBox('instance').option('value') === 'number')));
+                                            d.resolve(!((typeof $('#accountIdSelect').dxLookup('instance').option('value') === 'number') && (typeof $('#groupIdSelect').dxLookup('instance').option('value') === 'number')));
                                             //$('#accountIdSelect').dxSelectBox('instance').option('value',null)
                                             return d.promise();
                                             /*sendRequest(params.value);*/
@@ -1008,18 +1015,18 @@
                                     }]
                                 },
 
-                                {
-                                    colSpan: 6,
-                                    dataField: "isActive",
-                                    alignment: "center",
-                                    editorType: "dxSwitch",
-                                },
-                                {
-                                    colSpan: 6,
-                                    dataField: "isVisible",
-                                    alignment: "center",
-                                    editorType: "dxSwitch",
-                                },
+                                //{
+                                //    colSpan: 6,
+                                //    dataField: "isActive",
+                                //    alignment: "center",
+                                //    editorType: "dxSwitch",
+                                //},
+                                //{
+                                //    colSpan: 6,
+                                //    dataField: "isVisible",
+                                //    alignment: "center",
+                                //    editorType: "dxSwitch",
+                                //},
                             ],
                         },
                     },
@@ -1040,6 +1047,7 @@
                         if (!e.row.isNewRow)
                             e.editorOptions.disabled = true;
                     },
+
                 });
                 scrollView.append(content);
                 scrollView.dxScrollView({
@@ -1048,7 +1056,8 @@
                 });
                 c.append(scrollView);
                 return c;
-            }
+            },
+            onHidden: () => { $("#container").dxDataGrid('instance').refresh();},
         });
 
         function callPopup(title, url, width, container) {

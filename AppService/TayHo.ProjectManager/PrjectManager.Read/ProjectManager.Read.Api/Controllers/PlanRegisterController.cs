@@ -39,10 +39,10 @@ namespace ProjectManager.Read.Api.Controllers.v1
         public async Task<IActionResult> GetPlanRegistAsync([FromQuery] BaseRequestViewModel request)
         {
             var methodResult = new MethodResult<PagingItems<PlanRegisterResponseViewModel>>();
-            RequestHasAccountIdFilterParam requestFilter = _mapper.Map<RequestHasAccountIdFilterParam>(request);
+            RequestBaseFilterParam requestFilter = _mapper.Map<RequestBaseFilterParam>(request);
             requestFilter.TableName = QuanLyDuAnConstants.PlanRegister_TABLENAME;
-            requestFilter.AccountId = _user;
-            var queryResult = await _dOBaseRepository.GetWithPaggingAccountFKAsync(requestFilter).ConfigureAwait(false);
+            //requestFilter.AccountId = _user;
+            var queryResult = await _dOBaseRepository.GetWithPaggingAsync(requestFilter).ConfigureAwait(false);
             methodResult.Result = new PagingItems<PlanRegisterResponseViewModel>
             {
                 PagingInfo = queryResult.PagingInfo,
