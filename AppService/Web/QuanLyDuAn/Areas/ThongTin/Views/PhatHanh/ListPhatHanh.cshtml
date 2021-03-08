@@ -119,6 +119,7 @@
         });
         let customStore_Groups = new DevExpress.data.CustomStore({
             key: "id",
+            loadMode:"raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({
