@@ -10,17 +10,17 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-body" style="padding-bottom: 1rem;">
+            <div class="card-body" style="padding: 0.7rem;">
                 <form id="container-filter"></form>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-5">
+    <div class="col-lg-5">
         <div id="container-main" class="elevation-2"></div>
     </div>
-    <div class="col-7">
+    <div class="col-lg-7">
         <div id="container-sub" class="elevation-2"></div>
     </div>
 </div>
@@ -67,12 +67,12 @@
         });
         var ds_hangmuc = new DevExpress.data.CustomStore({
             key: "id",
-            load: (values) => { 
+            load: (values) => {
                 let deferred = $.Deferred();
                 let params = {
                     'FindId': 'projectId,' + PROJECTID + ';isActive,1;isVisible,1',
                     'TypeStore': GIAIDOANID
-                }; 
+                };
                 if (typeof (values.filter.filterValue) == 'string') {
                     params['KeyWord'] = values.filter.filterValue;
                 }
@@ -190,7 +190,7 @@
                     }
                 } else {
                     ajax_update(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key, values);
-                }                
+                }
             },
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_NHOMCONGVIEC, key),
             reshapeOnPush: true,
@@ -296,7 +296,7 @@
                     }
                 } else {
                     ajax_update(URL_API_PM_CMD + ACTION_CONGVIEC, key, values);
-                }                
+                }
             },
             remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CONGVIEC, key),
             reshapeOnPush: true,
@@ -340,7 +340,7 @@
         });
 
         var loadFilter = () => $("#container-filter").dxForm({
-            labelLocation: "left",
+            labelLocation: "top", requiredMark: "(*)",
             items: [
                 {
                     itemType: "group",
@@ -352,13 +352,15 @@
                             editorType: "dxLookup",
                             editorOptions: {
                                 dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
+                                valueExpr: "id", displayExpr: (item) => { return item && item.title + " - " + item.code; },
                                 searchEnabled: true, searchMode: "contains",
                                 placeholder: "Vui lòng chọn...",
+                                itemTemplate: (data, index) => {
+                                    return $("<div>").html("<b>" + data.title + "</b> - <em>" + data.code + "</em>");
+                                },
                                 value: PROJECTID,
-                                onValueChanged: (data) => {
-                                    PROJECTID = data.value;
-                                    localStorage.setItem('projectIdCurrent', PROJECTID);
+                                onValueChanged: (data) => { 
+                                    localStorage.setItem('projectIdCurrent', data.value);
                                     location.reload();
                                 },
                             },
@@ -378,26 +380,37 @@
                                     return $("<div>").append($("<b>").append(data.tenGiaiDoan).addClass("mr-1"), $("<em>").append(data.dienGiai));
                                 },
                                 onValueChanged: (data) => {
-                                    GIAIDOANID = data.value;
-                                    localStorage.setItem('giaiDoanIdCurrent', GIAIDOANID);
-                                    $("#container-filter").trigger("submit");
+                                    localStorage.setItem('giaiDoanIdCurrent', data.value); 
                                 },
                             },
                             validationRules: [{ type: "required" }]
                         },
-                        {
-                            itemType: "button", colSpan: 3,
-                            horizontalAlignment: "left",
-                            buttonOptions: {
-                                //height: 35, width: "100%",
-                                text: "Load Data",
-                                type: "success", icon: "refresh",
-                                useSubmitBehavior: true
-                            }
-                        }
+                        //{
+                        //    itemType: "button", colSpan: 3,
+                        //    horizontalAlignment: "left",
+                        //    buttonOptions: {
+                        //        //height: 35, width: "100%",
+                        //        text: "Load Data",
+                        //        type: "success", icon: "refresh",
+                        //        useSubmitBehavior: true
+                        //    }
+                        //}
                     ]
                 }
-            ]
+            ],
+            onFieldDataChanged: (e) => {
+                var formData = $("#container-filter").dxForm('instance').option("formData");
+                if (formData.projectId != null && formData.giaiDoanId != null) {
+                    ds_giaidoan.load().then((rs) => {
+                        giaidoan = rs.find(x => x.id == formData.giaiDoanId);
+                        ds_group_account.load().then((rs2) => {
+                            var group = rs2.filter(x => x.groupId == giaidoan.groupId);
+                            quyen = (group != null && group.length > 0) ? true : false;
+                            loadData();
+                        });
+                    });
+                }
+            },
         }).dxForm("instance");
         var loadData = () => $("#container-main").dxTreeList({
             height: heightScreen - $("#container-filter").parent().parent().parent().parent().height(),
@@ -409,13 +422,13 @@
                 grouping: false
             },
             searchPanel: {
-                highlightCaseSensitive: true, highlightSearchText: true,                
+                highlightCaseSensitive: true, highlightSearchText: true,
                 visible: ($("#container-main").width() > 445), searchVisibleColumnsOnly: true,
-            }, 
+            },
             filterMode: "matchOnly",
             rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
             showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false, 
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             columns: [
                 {
                     dataField: "tenHangMuc", caption: "Thông tin", dataType: "string", width: "50%",
@@ -424,7 +437,7 @@
                         $("<div/>").append(o.value, $("<em />").addClass("small").append(" (" + o.data.kyHieu+")")).appendTo(c);
                     },
                     allowEditing: false,
-                }, 
+                },
                 {
                     width: "30%", allowFiltering:false,
                     dataField: "giaTri", caption: "Giá trị", dataType: "number", alignment: "right",
@@ -548,7 +561,7 @@
             ],
             editing: {
                 mode: "cell", useIcons: true, confirmDelete: true,
-                allowUpdating: function (e) { 
+                allowUpdating: function (e) {
                     return giaidoan.capDo == "NCV" && PermitInAction["update"] && quyen;
                 },
                 allowDeleting: function (e) {
@@ -605,7 +618,7 @@
                 enabled: (giaidoan.capDo.toUpperCase() == "CV") && PermitInAction["view"],
                 template: function (container, options) {
                     container.attr("style", "background-color: rgb(248,141,43) !important; padding: 10px !important;")
-                    var data = options.data; 
+                    var data = options.data;
                     $("<div>").addClass("elevation-2").dxDataGrid({
                         elementAttr: { id: "container-sub2" },
                         dataSource: ds_congviec(data.id),
@@ -841,7 +854,7 @@
                 content.dxForm({
                     formData: type ? {
                         "nhomCongViecId": data.nhomCongViecId,
-                        "nhom": "", 
+                        "nhom": "",
                         "tenCongViec": "",
                         "dienGiai": "",
                         "donViTinh":""
@@ -912,25 +925,12 @@
                 c.append(scrollView);
                 return c;
             }
-        }).dxPopup('instance');
-
-        $(document).on('submit', '#container-filter', function (e) {
-            var formData = $(this).dxForm('instance').option("formData");
-            e.preventDefault();
-            ds_giaidoan.load().then((rs) => {
-                giaidoan = rs.find(x => x.id == formData.giaiDoanId);
-                ds_group_account.load().then((rs2) => {
-                    var group = rs2.filter(x => x.groupId == giaidoan.groupId);
-                    quyen = (group != null && group.length > 0) ? true : false; 
-                    loadData();
-                });
-            });
-        });
+        }).dxPopup('instance'); 
 
         $(document).on('submit', '#form-ncv', function (e) {
             var form = $(this);
             var type = form.data('type');
-            var data = form.dxForm('instance').option("formData"); 
+            var data = form.dxForm('instance').option("formData");
 
             var deferred = $.Deferred();
             e.preventDefault();
@@ -993,7 +993,7 @@
             fullScreen: $(window).width() <= 800,
             dragEnabled: true, resizeEnabled: false,
             showTitle: true, title:"Import dữ liệu công việc", visible: true,
-            showCloseButton: true, closeOnOutsideClick: false,           
+            showCloseButton: true, closeOnOutsideClick: false,
             contentTemplate: (c) => {
                 var scrollView = $("<div id='scrollView'></div>");
                 var content = $("<div />");
@@ -1002,7 +1002,7 @@
                     showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                     showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
                     paging: { enabled: false},
-                    columns: [ 
+                    columns: [
                         {
                             dataField: "0",
                             caption: "Tên công việc"
@@ -1018,7 +1018,7 @@
                         {
                             dataField: "3",
                             caption: "Đơn vị tính"
-                        }, 
+                        },
                     ],
                     selection: {
                         allowSelectAll: true,
@@ -1033,7 +1033,7 @@
                     },
                     onToolbarPreparing: (e) => {
                         var container = e.component;
-                        e.toolbarOptions.items.unshift( 
+                        e.toolbarOptions.items.unshift(
                             {
                                 location: "before", widget: "dxButton",
                                 options: {
@@ -1084,7 +1084,7 @@
                 c.append(scrollView);
                 return c;
             }
-        }).dxPopup('instance'); 
+        }).dxPopup('instance');
 
         $(document).on('paste', '#scrollView', function (e) {
             e.preventDefault();
@@ -1117,7 +1117,7 @@
                     }
                 }
                 jsonObj.push(item);
-            } 
+            }
             var temp = $("#container-sub3").dxDataGrid("instance");
             temp.option("dataSource", jsonObj);
             temp.refresh(true);

@@ -15,6 +15,8 @@ namespace ProjectManager.Read.Sql.DTOs.DTO
 
     public class NS_NghiemThuDetailDTO : NS_NghiemThuDTO
     {
+        public double? KhoiLuongLuyKe { get; set; }
+        public double? KhoiLuongGiaoThau { get; set; }
         public int? NhomCongViecId { get; set; }
         public string TenNhomCongViec { get; set; }
         public int? HangMucId { get; set; }

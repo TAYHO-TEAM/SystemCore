@@ -39,5 +39,23 @@ namespace ProjectManager.Read.Sql.Repositories
 
             return result;
         }
+        public async Task<PagingItems<T>> GetHangMuc_GetBy_GoiThauAsync(RequestBaseFilterParam requestBaseFilterParam)
+        {
+            requestBaseFilterParam.ColumName = requestBaseFilterParam.ColumName ?? "*";
+            var result = new PagingItems<T>
+            {
+                PagingInfo = new PagingInfo
+                {
+                    PageNumber = requestBaseFilterParam.PageNumber,
+                    PageSize = requestBaseFilterParam.PageSize
+                }
+            };
+            using var conn = await _connectionFactory.CreateConnectionAsync();
+            using var rs = conn.QueryMultipleAsync("sp_HangMuc_GetBy_GoiThau", requestBaseFilterParam, commandType: CommandType.StoredProcedure).Result;
+            result.PagingInfo.TotalItems = await rs.ReadSingleAsync<int>().ConfigureAwait(false);
+            result.Items = await rs.ReadAsync<T>().ConfigureAwait(false);
+
+            return result;
+        }
     }
 }

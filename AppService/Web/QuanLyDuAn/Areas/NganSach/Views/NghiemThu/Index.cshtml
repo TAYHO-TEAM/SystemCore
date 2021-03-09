@@ -21,7 +21,8 @@
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
-        var MAXDOT; 
+
+        var MAX_DOT=0;
         var ds_nghiemthu = (idGoiThau, idGiaiDoan, dot)=> new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -33,21 +34,20 @@
                     headers: header, dataType: "json",
                     url: URL_API_PM_READ + ACTION_NGHIEMTHU,
                     success: (data) => {
-                        var list = data.result.items; 
-                        MAXDOT = list.length > 0 ? Math.max.apply(Math, list.map(function (o) { return o.dot; })) : 0;
-                        deferred.resolve(list.filter(x => x.dot == MAXDOT), {
-                            totalCount: list.filter(x => x.dot == MAXDOT).length
+                        var list = data.result.items;
+                        deferred.resolve(list, {
+                            totalCount: data.result.pagingInfo.totalItems
                         });
-                        console.log(MAXDOT);
                     },
                     error: function (e) {
                         console.log(e);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                    }, 
+                    },
                 });
                 return deferred.promise();
             },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_NGHIEMTHU, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_NGHIEMTHU, key, values),
         });
         var ds_goithau = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -121,8 +121,57 @@
             },
         });
 
+        var ds_hangmuc = (idGoiThau) => new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                $.ajax({
+                    data: {
+                        FindId: idGoiThau
+                    },
+                    headers: header, dataType: "json",
+                    url: URL_API_PM_READ + ACTION_HANGMUC +"/GetBy_GoiThau",
+                    success: (data) => {
+                        var list = data.result.items;
+                        deferred.resolve(list, {
+                            totalCount: data.result.pagingInfo.totalItems
+                        });
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    },
+                });
+                return deferred.promise();
+            },
+        });
+
         $(function () {
             loadFilter();
+        });
+
+        var listDot = (goiThauId, giaiDoanId) => {
+            var d = $.Deferred();
+            if (goiThauId != null && goiThauId > 0 && giaiDoanId != null && giaiDoanId > 0) {
+                ds_nghiemthu(goiThauId, giaiDoanId, 0).load().done((rs) => {
+                    const result = [];
+                    const map = new Map();
+                    for (const item of rs) {
+                        if (!map.has(item.dot)) {
+                            map.set(item.dot, true);
+                            result.push(item.dot);
+                        }
+                    }
+                    d.resolve(result);
+                });
+            } else d.resolve(null);
+            return d.promise();
+        }
+
+        $(document).on('submit', '#container-filter', function (e) {
+            var formData = $(this).dxForm('instance').option("formData");
+            e.preventDefault();
+            loadCreate(formData);
         });
 
         var loadFilter = () => $("#container-filter").dxForm({
@@ -144,110 +193,102 @@
                                     return $("<div>").html("<b>" + data.title + "</b> - <em>" + data.code + "</em>");
                                 },
                                 value: PROJECTID,
-                                onValueChanged: (data) => { 
+                                onValueChanged: (data) => {
                                     localStorage.setItem('projectIdCurrent', data.value);
                                     location.reload();
                                 },
                             },
                             validationRules: [{ type: "required" }]
-                        }, 
+                        },
                         {
-                            colSpan: 2, dataField: "goiThauId", label: { text: "Gói thầu" }, 
+                            colSpan: 2, dataField: "goiThauId", label: { text: "Gói thầu" },
                             editorType: "dxLookup",
                             editorOptions: {
-                                elementAttr: {id:"goiThauIdFilter"},
+                                elementAttr: { id: "goiThauIdFilter" },
                                 dataSource: ds_goithau,
                                 valueExpr: "id", displayExpr: (item) => { return item && item.soHopDong + " - " + item.dienGiai; },
-                                searchEnabled: true, searchMode: "contains", 
+                                searchEnabled: true, searchMode: "contains",
                                 placeholder: "Vui lòng chọn...",
                                 itemTemplate: (data) => {
                                     return $("<div>").html("<b>" + data.soHopDong + "</b> - <em>" + data.dienGiai + "</em>");
                                 },
                                 onValueChanged: function (data) {
-                                    listDot().done((rs) => $("#dotFilter").dxSelectBox("instance").option("dataSource", rs));
+                                    listDot(
+                                        data.value, $("#giaiDoanIdFilter").dxLookup('instance').option('value'), 0
+                                    ).done((rs) => {
+                                        $("#dotFilter").dxSelectBox("instance").option("dataSource", rs);
+                                        MAX_DOT = rs.length > 0 ? Math.max.apply(Math, rs.map(function (o) { return o; })) : 0;
+                                        $("#dotFilter").dxSelectBox("instance").option("value", MAX_DOT);
+                                    });
                                 }
                             },
                             validationRules: [{ type: "required" }]
-                        }, 
+                        },
                         {
-                            colSpan: 2, dataField: "giaiDoanId", label: { text: "Giai đoạn" }, 
+                            colSpan: 2, dataField: "giaiDoanId", label: { text: "Giai đoạn" },
                             editorType: "dxLookup",
-                            editorOptions: { 
-                                dataSource: ds_giaidoan,
+                            editorOptions: {
+                                dataSource: ds_giaidoan, value: 13,
                                 elementAttr: { id: "giaiDoanIdFilter" },
                                 valueExpr: "id", displayExpr: (item) => { return item && item.tenGiaiDoan + " - " + item.dienGiai; },
-                                searchEnabled: true, searchMode: "contains", 
+                                searchEnabled: true, searchMode: "contains",
                                 placeholder: "Vui lòng chọn...",
                                 itemTemplate: (data) => {
                                     return $("<div>").html("<b>" + data.tenGiaiDoan + "</b> - <em>" + data.dienGiai + "</em>");
                                 },
                                 onValueChanged: function (data) {
-                                    listDot().done((rs) => $("#dotFilter").dxSelectBox("instance").option("dataSource", rs));
+                                    listDot(
+                                        $("#goiThauIdFilter").dxLookup('instance').option('value'), data.value, 0
+                                    ).done((rs) => {
+                                        $("#dotFilter").dxSelectBox("instance").option("dataSource", rs);
+                                        MAX_DOT = rs.length > 0 ? Math.max.apply(Math, rs.map(function (o) { return o; })) : 0;
+                                        $("#dotFilter").dxSelectBox("instance").option("value", MAX_DOT);
+                                    });
                                 }
                             },
                             validationRules: [{ type: "required" }]
-                        }, 
+                        },
                         {
-                            colSpan: 2, dataField: "dot", label: { text: "Đợt nghiệm thu" }, 
+                            colSpan: 2, dataField: "dot", label: { text: "Đợt nghiệm thu" },
                             editorType: "dxSelectBox",
                             editorOptions: {
                                 elementAttr: { id: "dotFilter" },
-                                placeholder: "Vui lòng nhập...", 
+                                placeholder: "Vui lòng nhập...",
                                 itemTemplate: (data) => {
-                                    return $("<div>").html("Đợt "+data);
+                                    return $("<div>").html("Đợt " + data);
                                 },
                             },
                             validationRules: [{ type: "required" }]
                         },
                         {
-                            colSpan: 2,itemType: "button", 
-                            horizontalAlignment: "center", verticalAlignment:"center",
+                            colSpan: 2, itemType: "button",
+                            horizontalAlignment: "center", verticalAlignment: "center",
                             buttonOptions: {
+                                elementAttr: { id: "btnSubmitFilter" },
                                 height: "50", width: "100%",
-                                text: "Tìm kiếm", icon:"search",
-                                type: "default",
+                                text: "Tạo đợt mới", icon: "add",
+                                type: "default", disabled: true,
                                 useSubmitBehavior: true
                             }
                         }
                     ]
                 }
-            ]
-        }).dxForm("instance");
-
-        var listDot = () => {
-            var d = $.Deferred();            
-            ds_nghiemthu(
-                $("#goiThauIdFilter").dxLookup('instance').option('value'),
-                $("#giaiDoanIdFilter").dxLookup('instance').option('value'),
-                0
-            ).load().done((rs) => {
-                console.log(rs);
-                const result = [];
-                const map = new Map();
-                for (const item of rs) {
-                    if (!map.has(item.dot)) {
-                        map.set(item.dot, true);
-                        result.push(item.dot);
-                    }
+            ],
+            onFieldDataChanged: (e) => {
+                var formData = $("#container-filter").dxForm('instance').option("formData");
+                if (formData != null && formData.giaiDoanId != null && formData.goiThauId != null && formData.projectId != null && formData.dot != null) {
+                    $("#btnSubmitFilter").dxButton('instance').option('disabled', false);
+                    loadPanel(formData);
                 }
-                d.resolve(result);
-            });            
-            return d.promise();
-        }
-
-        $(document).on('submit', '#container-filter', function (e) {
-            var formData = $(this).dxForm('instance').option("formData");
-            e.preventDefault();
-            loadPanel(formData);
-        });
-
+            },
+        }).dxForm("instance");
         var loadPanel = (filter) => $("#container-main").dxTabPanel({
             height: heightScreen - $("#container-filter").parent().parent().parent().parent().height(),
             dataSource: [
                 {
                     text: "Công việc",
                     icon: "fas fa-circle",
-                    template: () => loadDataMain(filter)
+                   template: () => loadDataMain_Left(filter)
                 },
                 {
                     text: "Phạt",
@@ -265,146 +306,587 @@
                     template: () => loadDataSub(filter, "KHAUTRU")
                 }
             ],
-            selectedIndex: 1, loop: true, animationEnabled: true, swipeEnabled: false,
-            scrollByContent: true, showNavButtons: true,  
+            deferRendering: true,
+            selectedIndex: 0, loop: true, animationEnabled: true, swipeEnabled: true,
+            scrollByContent: true, showNavButtons: true,
             itemTitleTemplate: function (data, index, element) {
                 const $item = $("<div>").append(
                     $("<i>").addClass(data.icon),
                     $("<span />").addClass("ml-2 font-weight-bold").text(data.text));
                 element.append($item);
-            } 
-        }).dxTabPanel("instance"); 
-
-        var loadDataMain = (filter) => $("<div />").dxDataGrid({
-            dataSource: ds_nghiemthu(filter.goiThauId, filter.giaiDoanId, filter.dot),  
+            }, 
+        }).dxTabPanel("instance");
+        var loadDataMain_Left = (filter) => $("<div />").addClass("row").append(
+            $("<div />")
+                .addClass("col-lg-3 pl-2 pr-1")
+                .attr("id", "container-hangmuc")
+                .dxTreeList({
+                    dataSource: ds_hangmuc(filter.goiThauId),
+                    rootValue: 0, parentIdExpr: "parentId", keyExpr: "id", autoExpandAll: true,
+                    showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                    showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                    columns: [{
+                        dataField: "tenHangMuc", caption: "Thông tin hạng mục",
+                        dataType: "string"
+                    }],
+                    selection: { mode: "single" },
+                    onSelectionChanged: (e) => {
+                        var data = e.selectedRowsData[0];
+                        if (data.chilCount == 0) {
+                            loadDataMain_Right(filter, data.id)
+                        }
+                    },
+                    onContentReady: (e) => {
+                        var list = e.component.getDataSource().items().filter(x => !x.hasChildren);
+                        if (list != null && list.length > 0) {
+                            e.component.selectRows([list[0].key], true)
+                        }
+                    }
+                }),
+            $("<div />").addClass("col-lg-9 pl-1 pr-2").attr("id", "container-congviec")
+        );
+        var loadDataMain_Right = (filter, id) => $("#container-congviec").dxDataGrid({
+            dataSource: ds_nghiemthu(filter.goiThauId, filter.giaiDoanId, filter.dot),
             showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
             showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
             columns: [
                 {
-                    dataField: "congViecDetailId", caption: "Tên công việc",
+                    caption: "STT", alignment: "center", width: 80, allowEditing: false,
+                    cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
+                },
+                {
+                    dataField: "congViecDetailId", caption: "Tên công việc", allowEditing: false,
+                    width: ($("#container-congviec").width() <= 1100 ? 250 : null),
                     lookup: {
                         dataSource: ds_congviec_detail(filter.goiThauId, filter.giaiDoanId),
                         valueExpr: "id", displayExpr: "tenCongViec",
                     },
+                    cellTemplate: (c, o) => { 
+                        $("<div />").append(o.text).addClass('font-weight-bold').appendTo(c);
+                        var detail = o.column.lookup.items.filter(x => x.id == o.value);
+                        if (detail != null && detail.length>0 && detail[0].dienGiai != null && detail[0].dienGiai.length > 0)
+                            $("<em />").addClass("text-muted").append("Diễn giải: " + detail[0].dienGiai).appendTo(c); 
+                    },
                 },
                 {
-                    dataField: "dot", caption: "Đợt Nghiệm thu", alignment: "center", width: 100,
+                    dataField: "dot", caption: "Đợt nghiệm thu", alignment: "center", width: 100, allowEditing: false,
+                    headerCellTemplate: (c, o) => c.append("Đợt<br/>Nghiệm thu"), visible: false
                 },
                 {
-                    dataField: "donViTinh",
-                    caption: "Đơn vị tính", alignment: "center",
+                    dataField: "donViTinh", width: 100,
+                    caption: "Đơn vị tính", alignment: "center", allowEditing: false,
+                    headerCellTemplate: (c, o) => c.append("Đơn<br/>vị tính"),
                 },
                 {
                     caption: "Đơn giá", alignment: "right",
-                    dataField: "donGia", width: 150,
+                    dataField: "donGia", width: 150, allowEditing: false,
+                    headerCellTemplate: (c, o) => c.append("Đơn giá<br/>giao thầu"),
                     format: { type: "currency", currency: "VND" },
                 },
                 {
-                    dataField: "tenHangMuc",
-                    groupIndex: 0, caption: "Hạng mục"
+                    caption: "Khối lượng", alignment: "center",
+                    columns: [
+                        {
+                            dataField: "khoiLuongGiaoThau", caption: "Giao thầu", alignment: "right", width: 180, 
+                            format: { type: "fixedPoint", precision: 1 },
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass('font-weight-bold').appendTo(c);
+                                $("<em />").append((o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' })).addClass('text-muted').appendTo(c);
+                            },
+                        },
+                        {
+                            dataField: "khoiLuongLuyKe", caption: "Lũy kế đến đợt", alignment: "right", width: 180, 
+                            format: { type: "fixedPoint", precision: 1 }, allowEditing: false,
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass('font-weight-bold').appendTo(c);
+                                $("<em />").append((o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' })).addClass('text-muted').appendTo(c);
+                            },
+                        },
+                        {
+                            dataField: "khoiLuong", caption: "Nghiệm thu", alignment: "right", width: 180, 
+                            format: { type: "fixedPoint", precision: 1 }, allowEditing: true,
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass('font-weight-bold').appendTo(c);
+                                $("<em />").append((o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' })).addClass('text-muted').appendTo(c);
+                            },
+                            validationRules: [{
+                                type: "async",
+                                validationCallback: function (params) {
+                                    var d = $.Deferred();
+                                    d.resolve(params.value <= (params.data.khoiLuongGiaoThau - params.data.khoiLuongLuyKe));
+                                    return d.promise();
+                                }
+                            }]
+                        },
+                    ]
+                },                
+                {
+                    dataField: "hangMucId", visible: false
                 },
                 {
-                    dataField: "tenNhomCongViec",
-                    groupIndex: 1, caption: "Nhóm công việc"
+                    dataField: "tenNhomCongViec", allowEditing: false,
+                    groupIndex: 0, caption: "Nhóm công việc"
                 },
-                {
-                    dataField: "khoiLuong", caption: "Khối lượng", alignment: "right", width: 100,
-                },
-                {
-                    dataField: "thanhTien", caption: "Thành tiền", alignment: "right",
-                    calculateCellValue: (rowData) => {
-                        return (rowData.donGia * rowData.khoiLuong);
-                    },
-                    format: { type: "currency", currency: "VND" },
-                }
-            ]
+            ],
+            filterValue: ["hangMucId", "=", id],
+            editing: {
+                mode: "cell", useIcons: false, confirmDelete: true,
+                allowUpdating: (filter.dot == MAX_DOT)
+            }, 
         });
-
         var loadDataSub = (filter, type) => {
+            var ds_sub = new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => {
+                    let deferred = $.Deferred(), params = {};
+                    params = {
+                        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                        'FindId': 'projectId,' + PROJECTID + ';goiThauId,' + filter.goiThauId,
+                        'FindParentId': (type == "PHAT") ? 'phatId,0' : ((type == "TAMUNG") ? 'tamUngId,0' :'khauTruId,0'),
+                    };
+                    if (values.sort) {
+                        params['SortCol'] = values.sort[0].selector;
+                        params['SortADSC'] = values.sort[0].desc;
+                    }
+                    var url = (type == "PHAT") ? ACTION_PHAT : ((type == "TAMUNG") ? ACTION_TAMUNG : ACTION_KHAUTRU);
+
+                    $.ajax({
+                        headers: header,
+                        url: URL_API_PM_READ + url,
+                        dataType: "json",
+                        data: params,
+                        success: function (data) {
+                            deferred.resolve(data.result.items, {
+                                totalCount: data.result.pagingInfo.totalItems
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(xhr.responseJSON);
+                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        }
+                    });
+                    return deferred.promise();
+                },
+                insert: (values) => ajax_insert(URL_API_PM_CMD + url, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + url, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + url, key),
+                onInserted: (key, values) => ajax_log_insert("Insert", url, values, key),
+                onUpdated: (key, values) => ajax_log_insert("Update", url, key, values),
+                onRemoved: (key) => ajax_log_insert("Delete", url, key, null),
+            });
             if (type == "PHAT") {
-                var ds_phat = new DevExpress.data.CustomStore({
-                    key: "id",
-                    load: (values) => {
-                        let deferred = $.Deferred(), params = {};
-                        params = {
-                            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                            'FindId': 'projectId,' + PROJECTID + ';goiThauId,' + filter.goiThauId,
-                            'FindParentId': 'phatId,0',
-                        };
-                        if (values.sort) {
-                            params['SortCol'] = values.sort[0].selector;
-                            params['SortADSC'] = values.sort[0].desc;
-                        }
-
-                        $.ajax({
-                            headers: header,
-                            url: URL_API_PM_READ + ACTION_PHAT,
-                            dataType: "json",
-                            data: params,
-                            success: function (data) {
-                                deferred.resolve(data.result.items, {
-                                    totalCount: data.result.pagingInfo.totalItems
-                                });
+                var config = [
+                    {
+                        caption: "#", alignment: "center", width: 50, allowEditing: false,
+                        cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
+                    },
+                    {
+                        dataField: "noiDung", alignment: "left",
+                        caption: "Nội dung / Thông tin phạt", width: ($("#container-main").width() <= 990 ? 250 : null),
+                        cellTemplate: (c, o) => {
+                            $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
+                            if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
+                                $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
+                        },
+                        editorOptions: { placeholder: "Vui lòng nhập..." },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "nhomPhatId", caption: "Nhóm", width: 200,
+                        lookup: {
+                            dataSource: customStore_Phat_Nhom,
+                            valueExpr: "id", displayExpr: "tenNhomPhat",
+                        },
+                        editorType: "dxSelectBox",
+                        editorOptions: {
+                            dataSource: customStore_Phat_Nhom,
+                            valueExpr: "id", displayExpr: "tenNhomPhat",
+                            placeholder: "Vui lòng chọn...",
+                            searchEnabled: true,
+                            itemTemplate: function (data) {
+                                return $("<div>").append(
+                                    $("<b>").append(data.tenNhomPhat).addClass("mr-1"),
+                                    $("<em>").append(data.dienGiai));
                             },
-                            error: function (xhr, textStatus, errorThrown) {
-                                console.log(xhr.responseJSON);
-                                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        },
+                        groupIndex: 0, autoExpandGroup: true,
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "dienGiai", alignment: "left", visible: false,
+                        editorOptions: { placeholder: "Vui lòng nhập..." }
+                    },
+                    {
+                        caption: "Giá trị", alignment: "center",
+                        columns: [
+                            {
+                                dataField: "giaTri", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Phạt",
+                                editorType: "dxNumberBox",
+                                editorOptions: {
+                                    placeholder: "Vui lòng nhập giá trị...",
+                                    showClearButton: true,
+                                    format: "#,##0 đ",
+                                    min: 1000000, step: 1000000, showSpinButtons: true,
+                                },
+                                validationRules: [{ type: "required" }]
+                            },
+                            {
+                                dataField: "giaTriThuHoi", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Đã thu hồi",
+                                calculateCellValue: function (data) {
+                                    var value = (data.giaTriCon == null) ? 0 : (data.giaTri - data.giaTriCon);
+                                    return (value != null) ? value : 0;
+                                }
+                            },
+                            {
+                                dataField: "giaTriCon", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Còn lại",
+                                calculateCellValue: function (data) {
+                                    return (data.giaTriCon != null) ? data.giaTriCon : 0;
+                                }
+                            },
+                        ]
+                    },
+                    {
+                        dataField: "chilCount", dataType: "number", alignment: "center",
+                        width: 110, caption: "Số đợt đã thu hồi",
+                        headerCellTemplate: (c, o) => c.append("Số đợt<br/>đã thu hồi"),
+                        customizeText: function (cellInfo) {
+                            return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
+                        }
+                    },
+                    {
+                        caption: "Tương tác",
+                        alignment: "center", width: 220,
+                        cellTemplate: (c, o) => {
+                            if (o.data.createBy_Name != null) {
+                                $("<div />").attr("id", "popover-target-" + o.key).addClass("d-flex").append(
+                                    $("<img />")
+                                        .addClass("img-circle elevation-2 img-size-30")
+                                        .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
+                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("alt", o.data.createBy_Name),
+                                    $("<div />").addClass("ml-2 text-left").append(
+                                        $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
+                                        $("<em />").addClass("small").append("Tạo cách đây " + moment(o.data.createDate).locale('vi').fromNow())
+                                    )
+                                ).appendTo(c);
+                                $("<div/>").attr("id", "popover-detail-" + o.key).append(
+                                    $("<div />").addClass("font-weight-bold mt-1").append(o.data.createBy_Name),
+                                    $("<div />").addClass("small mb-2 mt-1").append(o.data.createBy_Title + " - " + o.data.createBy_Department),
+                                ).appendTo(c);
+                                $("#popover-detail-" + o.key).dxTooltip({
+                                    target: "#popover-target-" + o.key,
+                                    hideEvent: "mouseleave",
+                                    position: "top",
+                                    showEvent: {
+                                        name: "mouseenter",
+                                        delay: 200
+                                    },
+                                });
                             }
-                        });
-                        return deferred.promise();
-                    },
-                    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT, values),
-                    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT, key, values),
-                    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT, key),
-                    onInserted: (key, values) => ajax_log_insert("Insert", ACTION_PHAT, values, key),
-                    onUpdated: (key, values) => ajax_log_insert("Update", ACTION_PHAT, key, values),
-                    onRemoved: (key) => ajax_log_insert("Delete", ACTION_PHAT, key, null),
-                }); 
-                var ds_phat_theodoi = (id) => new DevExpress.data.CustomStore({
-                    key: "id",
-                    load: (values) => {
-                        let deferred = $.Deferred();
-                        var params = {
-                            'FindId': "phatId," + id,
-                            'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                            'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                        };
-                        if (values.sort) {
-                            params['SortCol'] = values.sort[0].selector;
-                            params['SortADSC'] = values.sort[0].desc;
                         }
-
-                        $.ajax({
-                            headers: header,
-                            url: URL_API_PM_READ + ACTION_PHAT_THEODOI,
-                            dataType: "json", async: false,
-                            data: params,
-                            success: function (data) {
-                                var list = data.result.items;
-                                deferred.resolve(list, {
-                                    totalCount: data.result.pagingInfo.totalItems
+                    },
+                ];
+                var editForm = {
+                    labelLocation: "top", itemType: "group", colCount: 6,
+                    showRequiredMark: true, requiredMark: "(*)",
+                    items: [
+                        {
+                            colSpan: 3, dataField: "nhomPhatId", label: { text: "Nhóm phạt" },
+                        },
+                        {
+                            colSpan: 3, dataField: "noiDung", label: { text: "Nội dung phạt" },
+                        },
+                        {
+                            colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
+                        },
+                        {
+                            colSpan: 6, dataField: "giaTri", label: { text: "Số tiền phạt" },
+                        },
+                    ]
+                };
+                var summary = {
+                    totalItems: [
+                        {
+                            column: "giaTri", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriThuHoi", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriCon", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                    ],
+                };
+            } else if (type == "TAMUNG") {
+                var config = [
+                    {
+                        caption: "#", alignment: "center", width: 50, allowEditing: false,
+                        cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
+                    },
+                    {
+                        dataField: "noiDung", alignment: "left",
+                        caption: "Nội dung / Thông tin tạm ứng", width: ($("#container-main").width() <= 990 ? 250 : null),
+                        cellTemplate: (c, o) => {
+                            $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
+                            if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
+                                $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
+                        },
+                        editorOptions: { placeholder: "Vui lòng nhập..." },
+                        validationRules: [{ type: "required" }]
+                    }, 
+                    {
+                        dataField: "dienGiai", alignment: "left", visible: false,
+                        editorOptions: { placeholder: "Vui lòng nhập..." }
+                    },
+                    {
+                        caption: "Giá trị", alignment: "center",
+                        columns: [
+                            {
+                                dataField: "giaTri", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Tạm ứng",
+                                editorType: "dxNumberBox",
+                                editorOptions: {
+                                    placeholder: "Vui lòng nhập giá trị...",
+                                    showClearButton: true,
+                                    format: "#,##0 đ",
+                                    min: 1000000, step: 1000000, showSpinButtons: true,
+                                },
+                                validationRules: [{ type: "required" }]
+                            },
+                            {
+                                dataField: "giaTriThuHoi", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Đã thu hồi",
+                                calculateCellValue: function (data) {
+                                    var value = (data.giaTriCon == null) ? 0 : (data.giaTri - data.giaTriCon);
+                                    return (value != null) ? value : 0;
+                                }
+                            },
+                            {
+                                dataField: "giaTriCon", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "chưa hoàn",
+                                calculateCellValue: function (data) {
+                                    return (data.giaTriCon != null) ? data.giaTriCon : 0;
+                                }
+                            },
+                        ]
+                    },
+                    {
+                        dataField: "chilCount", dataType: "number", alignment: "center",
+                        width: 110, caption: "Số đợt đã thu hồi",
+                        headerCellTemplate: (c, o) => c.append("Số đợt<br/>đã thu hồi"),
+                        customizeText: function (cellInfo) {
+                            return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
+                        }
+                    },
+                    {
+                        caption: "Tương tác",
+                        alignment: "center", width: 220,
+                        cellTemplate: (c, o) => {
+                            if (o.data.createBy_Name != null) {
+                                $("<div />").attr("id", "popover-target-" + o.key).addClass("d-flex").append(
+                                    $("<img />")
+                                        .addClass("img-circle elevation-2 img-size-30")
+                                        .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
+                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("alt", o.data.createBy_Name),
+                                    $("<div />").addClass("ml-2 text-left").append(
+                                        $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
+                                        $("<em />").addClass("small").append("Tạo cách đây " + moment(o.data.createDate).locale('vi').fromNow())
+                                    )
+                                ).appendTo(c);
+                                $("<div/>").attr("id", "popover-detail-" + o.key).append(
+                                    $("<div />").addClass("font-weight-bold mt-1").append(o.data.createBy_Name),
+                                    $("<div />").addClass("small mb-2 mt-1").append(o.data.createBy_Title + " - " + o.data.createBy_Department),
+                                ).appendTo(c);
+                                $("#popover-detail-" + o.key).dxTooltip({
+                                    target: "#popover-target-" + o.key,
+                                    hideEvent: "mouseleave",
+                                    position: "top",
+                                    showEvent: {
+                                        name: "mouseenter",
+                                        delay: 200
+                                    },
                                 });
-                            },
-                            error: function (xhr, textStatus, errorThrown) {
-                                console.log(xhr.responseJSON);
-                                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                            },
-                        });
-                        return deferred.promise();
+                            }
+                        }
                     },
-                    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_PHAT_THEODOI, values),
-                    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key, values),
-                    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_PHAT_THEODOI, key),
-                    //onInserted: (key, values) => ajax_log_insert("Insert", ACTION_PHAT_THEODOI, values, key),
-                    //onUpdated: (key, values) => ajax_log_insert("Update", ACTION_PHAT_THEODOI, key, values),
-                    //onRemoved: (key) => ajax_log_insert("Delete", ACTION_PHAT_THEODOI, key, null),
-                });
-                return $("<div />").dxDataGrid({
-                    dataSource: ds_phat,
-                    remoteOperations: {
-                        paging: true, sorting: true,
+                ];
+                var editForm = {
+                    labelLocation: "top", itemType: "group", colCount: 6,
+                    showRequiredMark: true, requiredMark: "(*)",
+                    items: [ 
+                        {
+                            colSpan: 6, dataField: "noiDung", label: { text: "Nội dung phạt" },
+                        },
+                        {
+                            colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
+                        },
+                        {
+                            colSpan: 6, dataField: "giaTri", label: { text: "Số tiền phạt" },
+                        },
+                    ]
+                };
+                var summary = {
+                    totalItems: [
+                        {
+                            column: "giaTri", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriThuHoi", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriCon", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                    ],
+                };
+            } else {
+                var config = [
+                    {
+                        caption: "#", alignment: "center", width: 50, allowEditing: false,
+                        cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
                     },
+                    {
+                        dataField: "noiDung", alignment: "left",
+                        caption: "Nội dung / Thông tin cần khấu trừ", width: ($("#container-main").width() <= 990 ? 250 : null),
+                        cellTemplate: (c, o) => {
+                            $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
+                            if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
+                                $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
+                        },
+                        editorOptions: { placeholder: "Vui lòng nhập..." },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "dienGiai", alignment: "left", visible: false,
+                        editorOptions: { placeholder: "Vui lòng nhập..." }
+                    },
+                    {
+                        caption: "Giá trị", alignment: "center",
+                        columns: [
+                            {
+                                dataField: "giaTri", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Khấu trừ",
+                                editorType: "dxNumberBox",
+                                editorOptions: {
+                                    placeholder: "Vui lòng nhập giá trị...",
+                                    showClearButton: true,
+                                    format: "#,##0 đ",
+                                    min: 1000000, step: 1000000, showSpinButtons: true,
+                                },
+                                validationRules: [{ type: "required" }]
+                            },
+                            {
+                                dataField: "giaTriThuHoi", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Đã thu hồi",
+                                calculateCellValue: function (data) {
+                                    var value = (data.giaTriCon == null) ? 0 : (data.giaTri - data.giaTriCon);
+                                    return (value != null) ? value : 0;
+                                }
+                            },
+                            {
+                                dataField: "giaTriCon", width: 130, dataType: "number", alignment: "right",
+                                format: { type: "currency", currency: "VND" },
+                                caption: "Còn lại",
+                                calculateCellValue: function (data) {
+                                    return (data.giaTriCon != null) ? data.giaTriCon : 0;
+                                }
+                            },
+                        ]
+                    },
+                    {
+                        dataField: "chilCount", dataType: "number", alignment: "center",
+                        width: 110, caption: "Số đợt đã thu hồi",
+                        headerCellTemplate: (c, o) => c.append("Số đợt<br/>đã thu hồi"),
+                        customizeText: function (cellInfo) {
+                            return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
+                        }
+                    },
+                    {
+                        caption: "Tương tác",
+                        alignment: "center", width: 220,
+                        cellTemplate: (c, o) => {
+                            if (o.data.createBy_Name != null) {
+                                $("<div />").attr("id", "popover-target-" + o.key).addClass("d-flex").append(
+                                    $("<img />")
+                                        .addClass("img-circle elevation-2 img-size-30")
+                                        .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
+                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("alt", o.data.createBy_Name),
+                                    $("<div />").addClass("ml-2 text-left").append(
+                                        $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
+                                        $("<em />").addClass("small").append("Tạo cách đây " + moment(o.data.createDate).locale('vi').fromNow())
+                                    )
+                                ).appendTo(c);
+                                $("<div/>").attr("id", "popover-detail-" + o.key).append(
+                                    $("<div />").addClass("font-weight-bold mt-1").append(o.data.createBy_Name),
+                                    $("<div />").addClass("small mb-2 mt-1").append(o.data.createBy_Title + " - " + o.data.createBy_Department),
+                                ).appendTo(c);
+                                $("#popover-detail-" + o.key).dxTooltip({
+                                    target: "#popover-target-" + o.key,
+                                    hideEvent: "mouseleave",
+                                    position: "top",
+                                    showEvent: {
+                                        name: "mouseenter",
+                                        delay: 200
+                                    },
+                                });
+                            }
+                        }
+                    },
+                ];
+                var editForm = {
+                    labelLocation: "top", itemType: "group", colCount: 6,
+                    showRequiredMark: true, requiredMark: "(*)",
+                    items: [
+                        {
+                            colSpan: 6, dataField: "noiDung", label: { text: "Nội dung phạt" },
+                        },
+                        {
+                            colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
+                        },
+                        {
+                            colSpan: 6, dataField: "giaTri", label: { text: "Số tiền phạt" },
+                        },
+                    ]
+                };
+                var summary = {
+                    totalItems: [
+                        {
+                            column: "giaTri", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriThuHoi", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            column: "giaTriCon", summaryType: "sum", displayFormat: "{0}",
+                            valueFormat: { type: "currency", currency: "VND" },
+                        },
+                    ],
+                };
+            }
+            return $("<div />").dxDataGrid({
+                    dataSource: ds_sub,
+                    remoteOperations: { paging: true, sorting: true },
                     paging: { enabled: true, pageSize: 10 },
                     pager: {
                         showPageSizeSelector: true, showInfo: true,
@@ -416,121 +898,7 @@
                     },
                     showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                     showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
-                    columns: [
-                        {
-                            dataField: "noiDung", alignment: "left",
-                            caption: "Nội dung / Thông tin phạt", width: ($("#container-main").width()<=990?250: null),
-                            cellTemplate: (c, o) => { 
-                                $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
-                                if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
-                                    $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
-                            },
-                            editorOptions: { placeholder: "Vui lòng nhập..." },
-                            validationRules: [{ type: "required" }]
-                        }, 
-                        {
-                            dataField: "nhomPhatId", caption: "Nhóm", width: 200,
-                            lookup: {
-                                dataSource: customStore_Phat_Nhom,
-                                valueExpr: "id", displayExpr: "tenNhomPhat",
-                            },
-                            editorType: "dxSelectBox",
-                            editorOptions: {
-                                dataSource: customStore_Phat_Nhom,
-                                valueExpr: "id", displayExpr: "tenNhomPhat",
-                                placeholder: "Vui lòng chọn...",
-                                searchEnabled: true,
-                                itemTemplate: function (data) {
-                                    return $("<div>").append(
-                                        $("<b>").append(data.tenNhomPhat).addClass("mr-1"),
-                                        $("<em>").append(data.dienGiai));
-                                },
-                            },
-                            groupIndex: 0, autoExpandGroup: true,
-                            validationRules: [{ type: "required" }]
-                        },
-                        {
-                            dataField: "dienGiai", alignment: "left", visible: false,
-                            editorOptions: { placeholder: "Vui lòng nhập..." }
-                        },
-                        {
-                            dataField: "chilCount", dataType: "number", alignment: "center",
-                            width: 110, caption: "Số đợt thu hồi",
-                            customizeText: function (cellInfo) {
-                                return cellInfo.value > 0 ? cellInfo.value + " đợt" : 'Chưa có';
-                            }
-                        },
-                        {
-                            caption: "Giá trị", alignment: "center",
-                            columns: [
-                                {
-                                    dataField: "giaTri", width: 120, dataType: "number", alignment: "right",
-                                    format: { type: "currency", currency: "VND" },
-                                    caption: "Phạt",
-                                    editorType: "dxNumberBox",
-                                    editorOptions: {
-                                        placeholder: "Vui lòng nhập giá trị...",
-                                        showClearButton: true,
-                                        format: "#,##0 đ",
-                                        min: 1000000, step: 1000000, showSpinButtons: true,
-                                    },
-                                    validationRules: [{ type: "required" }]
-                                },
-                                {
-                                    dataField:"giaTriThuHoi", width: 120, dataType: "number", alignment: "right",
-                                    format: { type: "currency", currency: "VND" },
-                                    caption: "Đã thu hồi",
-                                    calculateCellValue: function (data) {
-                                        var value = (data.giaTriCon == null) ? 0 : (data.giaTri - data.giaTriCon);
-                                        return (value != null) ? value : 0;
-                                    }
-                                },
-                                {
-                                    dataField: "giaTriCon", width: 120, dataType: "number", alignment: "right",
-                                    format: { type: "currency", currency: "VND" },
-                                    caption: "Còn lại",
-                                    calculateCellValue: function (data) {
-                                        return (data.giaTriCon != null) ? data.giaTriCon : 0;
-                                    }
-                                }, 
-                            ]
-                        },
-                        {
-                            caption: "Tương tác",
-                            alignment: "center", width: 100,
-                            cellTemplate: (c, o) => {
-                                if (o.data.createBy_Name != null) {
-                                    $("<div />").attr('id', "popover-target-main-" + o.key).append(
-                                        $("<img />").attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30"),
-                                        (o.data.modifyBy_Name != null && o.data.modifyBy_Name != o.data.createBy_Name) ? $("<img />").attr("src", "data:image/png;base64," + o.data.modifyBy_Avartar).addClass("img-circle elevation-2 img-size-30").attr("style", "margin-left: -15px !important") : null
-                                    ).appendTo(c);
-                                    $("<div />").attr('id', "popover-detail-main-" + o.key).append(
-                                        "<div><b>" + o.data.createBy_Name + "</b></div><em>" + o.data.createBy_Title + ' - ' + o.data.createBy_Department + "</em><div>" + "(Đã tạo cách đây " + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>",
-                                        (o.data.modifyBy_Name != null) ? "<br/><div><b>" + o.data.modifyBy_Name + "</b></div><em>" + o.data.modifyBy_Title + ' - ' + o.data.modifyBy_Department + "</em><div>" + "(Đã cập nhật cách đây " + moment(o.data.updateDate).locale("vi").fromNow() + ")" + "</div>" : null
-                                    ).appendTo(c);
-                                    $("#popover-detail-main-" + o.key).dxPopover({
-                                        target: "#popover-target-main-" + o.key,
-                                        showEvent: "mouseenter", hideEvent: "mouseleave",
-                                        position: "bottom",
-                                        animation: {
-                                            show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
-                                            hide: { type: "fade", from: 1, to: 0 }
-                                        }
-                                    });
-                                }
-                            }
-                        },
-                        {
-                            dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                            caption: "Thời gian tạo",
-                            cellTemplate: (c, o) => {
-                                $("<div />").append(
-                                    $("<em />").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
-                                    $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
-                                ).appendTo(c);
-                            }
-                        }, 
-                    ],
+                    columns: config,
                     editing: {
                         mode: "popup", useIcons: true, confirmDelete: true,
                         popup: {
@@ -538,51 +906,16 @@
                             showTitle: false, fullScreen: $(document).width() <= 600,
                             position: { of: "document" },
                         },
-                        form: {
-                            labelLocation: "top", itemType: "group", colCount: 6,
-                            showRequiredMark: true, requiredMark: "(*)",
-                            items: [ 
-                                {
-                                    colSpan: 6, dataField: "nhomPhatId", label: { text: "Nhóm phạt" },
-                                },
-                                {
-                                    colSpan: 6, dataField: "noiDung", label: { text: "Nội dung phạt" },
-                                },
-                                {
-                                    colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
-                                },
-                                {
-                                    colSpan: 6, dataField: "giaTri", label: { text: "Số tiền phạt" },
-                                },
-                            ]
-                        }
+                        form: editForm
                     },
-                    summary: {
-                        totalItems: [
-                            {
-                                column: "giaTri",
-                                summaryType: "sum",
-                                valueFormat: { type: "currency", currency: "VND" },
-                            },
-                            {
-                                column: "giaTriThuHoi",
-                                summaryType: "sum",
-                                valueFormat: { type: "currency", currency: "VND" },
-                            },
-                            {
-                                column: "giaTriCon",
-                                summaryType: "sum",
-                                valueFormat: { type: "currency", currency: "VND" },
-                            },
-                        ],
-                    },
+                    summary: summary,
                     onInitNewRow: (e) => {
                         e.data.projectId = PROJECTID;
                         e.data.goiThauId = filter.goiThauId;
                         e.data.isActive = true;
                         e.data.giaTri = 1000000;
                         e.data.giaTriCon = 1000000;
-                    }, 
+                    },
                     onRowInserting: (e) => {
                         e.data.giaTriCon = e.data.giaTri;
                     },
@@ -615,8 +948,8 @@
                             },
                         );
                     },
-                    onContextMenuPreparing: (e) => { 
-                        if (e.row !== "undefined" && e.target == "content" && e.row != null && e.row.rowType == 'data') {                             
+                    onContextMenuPreparing: (e) => {
+                        if (e.row !== "undefined" && e.target == "content" && e.row != null && e.row.rowType == 'data') {
                             if (!e.items) e.items = [];
                             e.items.push({
                                 visible: PermitInAction.update,
@@ -631,158 +964,406 @@
                                 onItemClick: () => e.component.deleteRow(e.row.rowIndex)
                             });
                         }
-                    },
+                    },                    
                     masterDetail: {
                         enabled: true,
-                        template: function (container, options) {
-                            container.attr("style", "background-color: rgb(248,141,43) !important; padding: 10px !important;") 
-                            var data = options.data; 
-                            $("<div />").addClass("elevation-2").dxDataGrid({
-                                dataSource: ds_phat_theodoi(data.id),
-                                remoteOperations: { paging: true, sorting: true },
-                                showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-                                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
-                                columns: [
-                                    {
-                                        dataField: "dot", alignment: "center", width: 150,
-                                        caption: "Đợt thu hồi", sortOrder: "desc", dataType: "number", 
+                        template: (container, options) => loadDataSubDetail(container, options, filter, type) 
+                    }
+                });            
+        };
+        var loadDataSubDetail = (container, options,filter, type) => {
+            container.attr("style", "background-color: rgb(248,141,43) !important; padding: 10px !important;");
+            var data = options.data;
+            var ds_subdetail = new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => {
+                    let deferred = $.Deferred();
+                    var params = {
+                        'FindId': (type == "PHAT") ? ('phatId,' + data.id) : ((type == "TAMUNG") ? ('tamUngId,' + data.id) : ('khauTruId,' + data.id)),
+                        'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                        'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                    };
+                    if (values.sort) {
+                        params['SortCol'] = values.sort[0].selector;
+                        params['SortADSC'] = values.sort[0].desc;
+                    }
+                    var url = (type == "PHAT") ? ACTION_PHAT_THEODOI : ((type == "TAMUNG") ? ACTION_TAMUNG_THEODOI : ACTION_KHAUTRU_THEODOI);
+                    $.ajax({
+                        headers: header,
+                        url: URL_API_PM_READ + url,
+                        dataType: "json", async: false,
+                        data: params,
+                        success: function (data) {
+                            var list = data.result.items;
+                            deferred.resolve(list, {
+                                totalCount: data.result.pagingInfo.totalItems
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log(xhr.responseJSON);
+                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        },
+                    });
+                    return deferred.promise();
+                },
+                insert: (values) => ajax_insert(URL_API_PM_CMD + url, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + url, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + url, key),
+                //onInserted: (key, values) => ajax_log_insert("Insert", url, values, key),
+                //onUpdated: (key, values) => ajax_log_insert("Update", url, key, values),
+                //onRemoved: (key) => ajax_log_insert("Delete", url, key, null),
+            }); 
+            $("<div />").addClass("elevation-2").dxDataGrid({
+                dataSource: ds_subdetail,
+                remoteOperations: { paging: true, sorting: true },
+                showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                columns: [
+                    {
+                        caption: "STT", alignment: "center", width: 80, allowEditing: false,
+                        cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
+                    },
+                    {
+                        dataField: "noiDung", alignment: "left",
+                        caption: "Nội dung / Thông tin thu hồi",
+                        cellTemplate: (c, o) => {
+                            $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
+                            if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
+                                $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
+                        },
+                        editorOptions: { placeholder: "Vui lòng nhập..." },
+                        validationRules: [{ type: "required" }]
+                    },
+                    {
+                        dataField: "dienGiai", alignment: "left", caption: "Diễn giải", visible: false,
+                        editorOptions: { placeholder: "Vui lòng nhập..." },
+                    },
+                    {
+                        dataField: "giaTri", width: 200, dataType: "number", alignment: "right",
+                        format: { type: "currency", currency: "VND" },
+                        caption: "Giá trị",
+                        editorType: "dxNumberBox",
+                        editorOptions: {
+                            placeholder: "Vui lòng nhập giá trị...",
+                            showClearButton: true,
+                            format: "#,##0 đ",
+                            min: 1000000, step: 1000000, showSpinButtons: true,
+                        },
+                        validationRules: [
+                            { type: "required" },
+                            {
+                                type: "async",
+                                message: "Số tiền thanh toán không lớn hơn giá trị còn lại",
+                                validationCallback: function (params) {
+                                    var d = $.Deferred();
+                                    ds_phat.load().done((rs) => {
+                                        var item = rs.filter(x => x.id == params.data.phatId);
+                                        d.resolve(params.value <= item[0].giaTriCon);
+                                    });
+                                    return d.promise();
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        dataField: "dot", alignment: "center", width: 150,
+                        caption: "Đợt thu hồi", sortOrder: "desc", dataType: "number",
+                        cellTemplate: (c, o) => c.append("Đợt " + o.value)
+                    },
+                    {
+                        caption: "Tương tác",
+                        alignment: "center", width: 220,
+                        cellTemplate: (c, o) => {
+                            if (o.data.createBy_Name != null) {
+                                $("<div />").attr("id", "popover-target-" + type+'-' + o.key).addClass("d-flex").append(
+                                    $("<img />")
+                                        .addClass("img-circle elevation-2 img-size-30")
+                                        .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
+                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("alt", o.data.createBy_Name),
+                                    $("<div />").addClass("ml-2 text-left").append(
+                                        $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
+                                        $("<em />").addClass("small").append("Tạo cách đây " + moment(o.data.createDate).locale('vi').fromNow())
+                                    )
+                                ).appendTo(c);
+                                $("<div/>").attr("id", "popover-detail-" + type + '-' + o.key).append(
+                                    $("<div />").addClass("font-weight-bold mt-1").append(o.data.createBy_Name),
+                                    $("<div />").addClass("small mb-2 mt-1").append(o.data.createBy_Title + " - " + o.data.createBy_Department),
+                                ).appendTo(c);
+                                $("#popover-detail-" + type + '-' + o.key).dxTooltip({
+                                    target: "#popover-target-" + type + '-'+ o.key,
+                                    hideEvent: "mouseleave",
+                                    position: "top",
+                                    showEvent: {
+                                        name: "mouseenter",
+                                        delay: 200
                                     },
-                                    {
-                                        dataField: "noiDung", alignment: "left",
-                                        caption: "Nội dung / Thông tin Phạt",
-                                        cellTemplate: (c, o) => {
-                                            $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
-                                            if (o.data.dienGiai != null && o.data.dienGiai.length > 0)
-                                                $("<em />").addClass("text-muted").append("Diễn giải: " + o.data.dienGiai).appendTo(c);
-                                        },
-                                        editorOptions: { placeholder: "Vui lòng nhập..." },
-                                        validationRules: [{ type: "required" }]
-                                    },
-                                    {
-                                        dataField: "dienGiai", alignment: "left", caption: "Diễn giải", visible: false,
-                                        editorOptions: { placeholder: "Vui lòng nhập..." },
-                                    },
-                                    {
-                                        dataField: "giaTri", width: 200, dataType: "number", alignment: "right",
-                                        format: { type: "currency", currency: "VND" },
-                                        caption: "Giá trị thu hồi",
-                                        editorType: "dxNumberBox",
-                                        editorOptions: {
-                                            placeholder: "Vui lòng nhập giá trị...",
-                                            showClearButton: true,
-                                            format: "#,##0 đ",
-                                            min: 1000000, step: 1000000, showSpinButtons: true,
-                                        },
-                                        //validationRules: [
-                                        //    { type: "required" },
-                                        //    {
-                                        //        type: "async",
-                                        //        message: "Số tiền thanh toán không lớn hơn giá trị còn lại",
-                                        //        validationCallback: function (params) {
-                                        //            return checkGiaTriConLai(params);
-                                        //        }
-                                        //    }
-                                        //]
-                                    },
-                                    {
-                                        caption: "Tương tác",
-                                        alignment: "center", width: 100,
-                                        cellTemplate: (c, o) => {
-                                            if (o.data.createBy_Name != null) {
-                                                $("<div />").attr('id', "popover-target-" + o.key).append(
-                                                    $("<img />").attr("src", "data:image/png;base64," + o.data.createBy_Avartar).addClass("img-circle elevation-2 img-size-30"),
-                                                    (o.data.modifyBy_Name != null && o.data.modifyBy_Name != o.data.createBy_Name) ? $("<img />").attr("src", "data:image/png;base64," + o.data.modifyBy_Avartar).addClass("img-circle elevation-2 img-size-30").attr("style", "margin-left: -15px !important") : null
-                                                ).appendTo(c);
-                                                $("<div />").attr('id', "popover-detail-" + o.key).append(
-                                                    "<div><b>" + o.data.createBy_Name + "</b></div><em>" + o.data.createBy_Title + ' - ' + o.data.createBy_Department + "</em><div>" + "(Đã tạo cách đây " + moment(o.data.createDate).locale("vi").fromNow() + ")" + "</div>",
-                                                    (o.data.modifyBy_Name != null) ? "<br/><div><b>" + o.data.modifyBy_Name + "</b></div><em>" + o.data.modifyBy_Title + ' - ' + o.data.modifyBy_Department + "</em><div>" + "(Đã cập nhật cách đây " + moment(o.data.updateDate).locale("vi").fromNow() + ")" + "</div>" : null
-                                                ).appendTo(c);
-                                                $("#popover-detail-" + o.key).dxPopover({
-                                                    target: "#popover-target-" + o.key,
-                                                    showEvent: "mouseenter", hideEvent: "mouseleave",
-                                                    position: "bottom",
-                                                    animation: {
-                                                        show: { type: "pop", from: { scale: 0 }, to: { scale: 1 } },
-                                                        hide: { type: "fade", from: 1, to: 0 }
+                                });
+                            }
+                        }
+                    }
+                ],
+                editing: {
+                    mode: "popup", useIcons: true, confirmDelete: true,
+                    popup: {
+                        width: 600, height: "auto", closeOnOutsideClick: true,
+                        showTitle: false, fullScreen: $(document).width() <= 600,
+                    },
+                    form: {
+                        labelLocation: "top", itemType: "group", colCount: 6,
+                        showRequiredMark: true, requiredMark: "(*)",
+                        items: [
+                            {
+                                colSpan: 2, dataField: "dot", label: { text: "Đợt" },
+                                editorOptions: {
+                                    disabled: true
+                                }
+                            },
+                            {
+                                colSpan: 4, dataField: "giaTri", label: { text: "Số tiền thu hồi" },
+                            },
+                            {
+                                colSpan: 6, dataField: "noiDung", label: { text: "Nội dung thu hồi" },
+                            },
+                            {
+                                colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
+                            },
+                        ]
+                    }
+                },
+                onInitNewRow: (e) => {
+                    if (type == "PHAT") e.data.phatId = data.id;
+                    else if (type == "TAMUNG") e.data.tamUngUd = data.id;
+                    else e.data.khauTruId = data.id;                    
+                    e.data.giaTri = 1000000;
+                    e.data.dot = filter.dot;
+                }, 
+                onContextMenuPreparing: (e) => {
+                    console.log(e);
+                    console.log(e.component.getDataSource().items().length);
+                    if (!e.items) e.items = [];
+                    e.items.push({
+                        visible: PermitInAction.insert && (e.component.getDataSource().items().length < filter.dot),
+                        icon: "add",
+                        text: "Thêm đợt thu hồi",
+                        onItemClick: () => e.component.addRow()
+                    });
+                    if (e.row !== "undefined" && e.row != null && e.target == "content" && e.row.rowType == 'data' && MAX_DOT == e.row.data.dot) {
+                        e.items.push({
+                            visible: PermitInAction.update,
+                            icon: "edit",
+                            text: "Cập nhật thông tin",
+                            onItemClick: () => e.component.editRow(e.row.rowIndex)
+                        });
+                        e.items.push({
+                            visible: PermitInAction.delete,
+                            icon: "remove",
+                            text: "Xóa bỏ thông tin",
+                            onItemClick: () => e.component.deleteRow(e.row.rowIndex)
+                        });
+                    }
+                },
+            }).appendTo(container);
+        }
+        var loadCreate = (filter) => $("#popup-main").dxPopup({
+            fullScreen: true, showTitle: true, title: "Tạo nghiệm thu đợt " + (filter.dot + 1),
+            showCloseButton: true, visible: true,
+            contentTemplate: (c) => {
+                var scrollView = $("<div id='scrollView'></div>");
+                var content = $("<div />");
+                content.dxDataGrid({
+                    dataSource: ds_congviec_detail(filter.goiThauId, filter.giaiDoanId),
+                    showBorders: true, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
+                    showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+                    columns: [
+                        {
+                            caption: "STT", alignment: "center", width: 80,
+                            cellTemplate: (c, o) => c.append(o.row.dataIndex + 1)
+                        },
+                        {
+                            dataField: "tenNhomCongViec", caption: "Nhóm công việc", dataType: "string",
+                            groupIndex: 0,
+                        },
+                        {
+                            dataField: "tenCongViec", caption: "Thông tin công việc", dataType: "string",
+                            width: $("#popup-main").width() > 1540 ? null : 300,
+                            cellTemplate: (c, o) => {
+                                $("<div/>").addClass("font-weight-bold").append(o.value).appendTo(c);
+                                $("<em/>").append(o.data.diemGiai).appendTo(c);
+                            }
+                        },
+                        {
+                            dataField: "donViTinh", caption: "ĐVT", dataType: "string",
+                            width: 100, alignment: "center"
+                        },
+                        {
+                            dataField: "donGia", caption: "Đơn giá", dataType: "number",
+                            width: 150, alignment: "right",
+                            format: { type: "currency", currency: "VND" },
+                        },
+                        {
+                            dataField: "khoiLuong", dataType: "number",
+                            width: 200, alignment: "right",
+                            headerCellTemplate: (c, o) => c.append("Khối lượng<br/>giao thầu"),
+                            format: { type: "fixedPoint", precision: 1 },
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass("font-weight-bold").appendTo(c);
+                                $("<em />").addClass("text-muted").append((o.value != null || o.data.donGia != null) ? (o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' }) : 0).appendTo(c);
+                            },
+                        },
+                        {
+                            dataField: "luyKe", dataType: "number",
+                            width: 200, alignment: "right",
+                            headerCellTemplate: (c, o) => c.append("Lũy kế<br/>đến đợt này"),
+                            format: { type: "fixedPoint", precision: 1 },
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass("font-weight-bold").appendTo(c);
+                                $("<em />").addClass("text-muted").append((o.value != null || o.data.donGia != null) ? (o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' }) : 0).appendTo(c);
+                            },
+                        },
+                        {
+                            dataField: "conLai", dataType: "number",
+                            width: 200, alignment: "right",
+                            headerCellTemplate: (c, o) => c.append("Khối lượng<br/>còn lại"),
+                            calculateCellValue: (rowData) => {
+                                return (rowData.khoiLuong - rowData.luyKe);
+                            },
+                            format: { type: "fixedPoint", precision: 1 },
+                            cellTemplate: (c, o) => {
+                                $("<div />").append(o.text).addClass("font-weight-bold").appendTo(c);
+                                $("<em />").append((o.value != null || o.data.donGia != null) ? (o.value * o.data.donGia).toLocaleString('vi', { style: 'currency', currency: 'VND' }) : 0).appendTo(c);
+                            },
+                        },
+                        {
+                            caption: "Đợt này", alignment: "center",
+                            columns: [
+                                {
+                                    dataField: "khoiLuongDotNay", dataType: "number",
+                                    width: 200, alignment: "center",
+                                    caption: "Khối lượng",
+                                    cellTemplate: (c, o) => {
+                                        return $("<div>").dxNumberBox({
+                                            elementAttr: { id: "khoiLuongDotNay_" + o.key },
+                                            value: o.value,
+                                            showSpinButtons: true,
+                                            placeholder: "Vui lòng nhập ...",
+                                            stylingMode: "filled",
+                                        }).dxValidator({
+                                            validationRules: [{
+                                                type: "async",
+                                                validationCallback: function (params) {
+                                                    return sendRequest(params, o);
+                                                }
+                                            }]
+                                        });
+                                    }
+                                },
+                                {
+                                    dataField: "TyLeDotNay", dataType: "number", caption: "Tỷ lệ",
+                                    width: 200, alignment: "center",
+                                    cellTemplate: (c, o) => {
+                                        return $("<div>").dxNumberBox({
+                                            elementAttr: {
+                                                id: "phanTramDotNay_" + o.key
+                                            },
+                                            value: o.value,
+                                            showSpinButtons: true, showClearButton: false,
+                                            stylingMode: "filled",
+                                            placeholder: "Vui lòng nhập ...",
+                                            format: "#0%",
+                                            min: 0, max: 1, step: 0.1,
+                                            onValueChanged: function (e) {
+                                                var value = e.value;
+                                                var data = ((o.data.khoiLuong * value));
+                                                $("#khoiLuongDotNay_" + o.key).dxNumberBox('instance').option("value", data);
+                                            },
+                                        });
+                                    }
+                                },
+                            ]
+                        },
+                    ],
+                    onToolbarPreparing: function (e) {
+                        e.toolbarOptions.items.unshift(
+                            {
+                                location: "before",
+                                widget: "dxButton",
+                                options: {
+                                    stylingMode: "filled", type: "default",
+                                    text: "TẠO ĐỢT " + (filter.dot + 1), icon: "add",
+                                    onClick: function () {
+                                        var counter = 0;
+                                        $.each(e.component.getDataSource().items(), function (index, value) {
+                                            if (value.items.length > 0) {
+                                                $.each(value.items, function (indexSub, valueSub) {
+                                                    var item = $("#khoiLuongDotNay_" + valueSub.id).dxNumberBox('instance');
+                                                    if ((item.option('value') != null || item.option('value') > 0)) {
+                                                        counter++;
                                                     }
                                                 });
                                             }
+                                        });
+                                        if (counter==0) DevExpress.ui.notify("Vui lòng nhập đầy khối lượng đợt này cho ít nhất 1 công việc cần nghiệm thu", "error", 3000);
+                                        else {
+                                            let d = $.Deferred();
+                                            $.each(e.component.getDataSource().items(), function (index, value) {
+                                                if (value.items.length > 0) {
+                                                    $.each(value.items, function (indexSub, valueSub) {
+                                                        var item = $("#khoiLuongDotNay_" + valueSub.id).dxNumberBox('instance');
+                                                        ds_nghiemthu(filter.goiThauId, filter.giaiDoanId, filter.dot).insert(
+                                                            {
+                                                                congViecDetailId: valueSub.id,
+                                                                goiThauId: filter.goiThauId,
+                                                                giaiDoanId: filter.giaiDoanId,
+                                                                dot: (filter.dot + 1),
+                                                                khoiLuong: ((item.option('value') != null || item.option('value') > 0)) ? item.option('value') : 0,
+                                                                isActive: true,
+                                                                isVisible: true,
+                                                                status: 0
+                                                            }
+                                                        ).then(() => {
+                                                            listDot(
+                                                                filter.goiThauId, filter.giaiDoanId, 0
+                                                            ).done((rs) => {
+                                                                $("#dotFilter").dxSelectBox("instance").option("dataSource", rs);
+                                                                MAX_DOT = rs.length > 0 ? Math.max.apply(Math, rs.map(function (o) { return o; })) : 0;
+                                                                $("#dotFilter").dxSelectBox("instance").option("value", MAX_DOT);
+
+                                                                $("#popup-main").dxPopup('instance').hide();
+                                                            });
+                                                        }, d.reject);
+                                                    });
+                                                }
+                                            });
+                                            return d.promise();
                                         }
-                                    },
-                                    {
-                                        dataField: "createDate", width: 150, dataType: "date", alignment: "center",
-                                        caption: "Thời gian tạo",
-                                        cellTemplate: (c, o) => {
-                                            $("<div>").append(
-                                                $("<em/>").addClass("small").append("Cách đây " + moment(o.value).locale("vi").fromNow()),
-                                                $("<div/>").addClass("font-weight-bold").append(moment(o.value).format("HH:mm DD/MM/YY"))
-                                            ).appendTo(c);
-                                        }
                                     }
-                                ],
-                                editing: {
-                                    //    allowUpdating: (e) => {
-                                    //        return PermitInAction.update;
-                                    //    },
-                                    //    allowDeleting: (e) => {
-                                    //        return PermitInAction.delete && e.row.data.dot == MAXDOT;
-                                    //    },
-                                    mode: "popup", useIcons: true, confirmDelete: true,
-                                    popup: {
-                                        width: 600, height: "auto", closeOnOutsideClick: true,
-                                        showTitle: false, fullScreen: $(document).width() <= 600,
-                                    },
-                                    form: {
-                                        labelLocation: "top", itemType: "group", colCount: 6,
-                                        showRequiredMark: true, requiredMark: "(*)",
-                                        items: [
-                                            {
-                                                colSpan: 6, dataField: "giaTri", label: { text: "Số tiền thu hồi" },
-                                            },
-                                            {
-                                                colSpan: 6, dataField: "noiDung", label: { text: "Nội dung thu hồi" },
-                                            },
-                                            {
-                                                colSpan: 6, dataField: "dienGiai", label: { text: "Diễn giải (nếu có)" },
-                                            },
-                                        ]
-                                    }
-                                },
-                                onInitNewRow: (e) => {
-                                    e.data.phatId = data.id;
-                                    e.data.giaTri = 1000000;
-                                    e.data.dot = filter.dot;
-                                },
-                                onContextMenuPreparing: (e) => {
-                                    console.log(e);
-                                    if (!e.items) e.items = [];
-                                    e.items.push({
-                                        visible: PermitInAction.insert,
-                                        icon: "add",
-                                        text: "Thêm đợt thu hồi",
-                                        onItemClick: () => e.component.addRow()
-                                    });
-                                    if (e.row !== "undefined" && e.row != null && e.target == "content" && e.row.rowType == 'data' ) {
-                                         
-                                        //e.items.push({
-                                        //    visible: PermitInAction.update,
-                                        //    icon: "edit",
-                                        //    text: "Cập nhật thông tin",
-                                        //    onItemClick: () => e.component.editRow(e.row.rowIndex)
-                                        //});
-                                        //e.items.push({
-                                        //    visible: PermitInAction.delete,
-                                        //    icon: "remove",
-                                        //    text: "Xóa bỏ thông tin",
-                                        //    onItemClick: () => e.component.deleteRow(e.row.rowIndex)
-                                        //}); 
-                                    }
-                                },
-                            }).appendTo(container);
-                        }
-                    }
+                                }
+                            },
+                            {
+                                location: "after", widget: "dxButton",
+                                options: {
+                                    icon: "refresh", type: "default",
+                                    onClick: () => e.component.refresh()
+                                }
+                            }
+                        );
+                    },
+                    onSelectionChanged: function (selectedItems) {
+                        var data = selectedItems.selectedRowsData;
+                        $("#btnChooseItems").dxButton('instance').option("disabled", !data.length);
+                        $("#btnChooseItems").dxButton('instance').option("text", data.length > 0 ? "Lựa chọn (" + data.length + ")" : "Lựa chọn");
+                    },
                 });
-            }
-        } 
+                scrollView.append(content);
+                scrollView.dxScrollView({ width: '100%', height: '100%' });
+                return c.append(scrollView);
+            },
+        });
+        var sendRequest = function (param, cellInfo) {
+            var d = $.Deferred();
+            d.resolve(param.value <= (cellInfo.data.khoiLuong - cellInfo.data.luyKe));
+            return d.promise();
+        }
     </script>
 }
