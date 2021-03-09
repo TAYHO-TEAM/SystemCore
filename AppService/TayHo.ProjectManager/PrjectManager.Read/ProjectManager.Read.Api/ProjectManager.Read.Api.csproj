@@ -12,9 +12,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common.APIs\Services.Common.APIs.csproj" />
+    <ProjectReference Include="..\..\PrjectManager.CMD\ProjectManager.CMD.Infrastructure\ProjectManager.CMD.Infrastructure.csproj" />
     <ProjectReference Include="..\..\ProjectManager.Shared\ProjectManager.Common\ProjectManager.Common.csproj" />
     <ProjectReference Include="..\ProjectManager.Read.Sql\ProjectManager.Read.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExtreme.AspNet.Mvc">
+      <HintPath>..\..\..\Web\lib\DevExtreme\DevExtreme.AspNet.Mvc.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 

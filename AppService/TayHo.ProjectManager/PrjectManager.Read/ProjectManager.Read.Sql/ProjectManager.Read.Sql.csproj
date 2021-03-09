@@ -5,9 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common.DomainObjects\Services.Common.DomainObjects.csproj" />
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\..\..\..\CoreService\05.Database.Common\Dapper.Common\Dapper.Common.csproj" />
+    <ProjectReference Include="..\..\PrjectManager.CMD\ProjectManager.CMD.Infrastructure\ProjectManager.CMD.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExtreme.AspNet.Mvc">
+      <HintPath>..\..\..\Web\lib\DevExtreme\DevExtreme.AspNet.Mvc.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
