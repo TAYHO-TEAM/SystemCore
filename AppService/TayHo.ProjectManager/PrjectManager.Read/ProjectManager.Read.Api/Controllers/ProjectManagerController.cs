@@ -32,8 +32,8 @@ namespace ProjectManager.Read.Api.Controllers.v1
         public async Task<IActionResult> GetProjectManager([FromBody]DevRequestLoadOptionsViewModel loadOptions)
         {
             DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions);
-            //return Ok(await _projectManagerRepository.GetAccount(requestFilter));
-            return Ok("abc");
+            return Ok(await _projectManagerRepository.GetAccount(requestFilter));
+            //return Ok("abc");
         }
         //public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
         //{

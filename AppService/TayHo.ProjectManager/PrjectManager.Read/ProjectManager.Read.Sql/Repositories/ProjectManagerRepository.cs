@@ -18,22 +18,21 @@ namespace ProjectManager.Read.Sql.Repositories
 {
     public class ProjectManagerRepository: IProjectManagerRepository
     {
-        //protected readonly ProjectManagerBaseContext _dbContext;
+        protected readonly ProjectManagerBaseContext _dbContext;
         //protected readonly ISqlConnectionFactory _connectionFactory;
-        public ProjectManagerRepository( )//ProjectManagerBaseContext dbContext)
+        public ProjectManagerRepository( ProjectManagerBaseContext dbContext)
         {
-            //_dbContext = dbContext;
+            _dbContext = dbContext;
             //_connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
         public async Task<LoadResult> GetAccount(DevLoadOptionsBase dataSourceLoadOptions)
         {
-            //var orders = _dbContext.AccountInfo.Select(i => new
-            //{
-            //    i.AccountId,
-            //    i.AccountName,
-            //    i.CreateBy
-            //});
-            return new LoadResult();// await DataSourceLoader.LoadAsync(orders, dataSourceLoadOptions);
+            var orders = _dbContext.AccountInfo.Select(i => new
+            {
+                i.AccountId,
+                i.AccountName
+            });
+            return await DataSourceLoader.LoadAsync(orders, dataSourceLoadOptions);
         }
 
     }
