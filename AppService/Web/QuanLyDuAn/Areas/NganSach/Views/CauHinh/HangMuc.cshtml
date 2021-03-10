@@ -25,7 +25,6 @@
                     params['SortCol'] = values.sort[0].selector;
                     params['SortADSC'] = values.sort[0].desc;
                 }
-
                 $.ajax({
                     headers: header,
                     url: URL_API_PM_READ + ACTION_HANGMUC,
@@ -34,13 +33,11 @@
                     success: function (data) {
                         deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 10000//10 giây
                 });
-
                 return deferred.promise();
             },
             insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_HANGMUC, values),
@@ -49,13 +46,13 @@
         }); 
 
         $(function () {
-            loadData(customStore);
+            loadData();
         });
 
         let loadData = (dataSource) => {
             $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: customStore,
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
@@ -126,9 +123,10 @@
                                             DevExpress.ui.notify("Không thể thêm hạng mục con vì hạng mục này đã được cập nhật giá trị", "error", 3000);
                                         } else e.component.addRow(e.row.data.id);
                                     },
-                                    error: function (xhr, textStatus, errorThrown) {
-                                        console.log(xhr.responseJSON);
-                                    },
+                                    error: function (xhr) {
+                                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                                    }
                                 });
                             }
                         }, "edit", "delete"]

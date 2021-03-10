@@ -146,7 +146,7 @@
           scroll: $(document).height(),
           window: $(window).height(),
           header: $(Selector.HEADER).outerHeight(),
-          footer: $(Selector.FOOTER).outerHeight()
+          footer: 100
         };
         var positions = {
           bottom: Math.abs(heights.window + $(window).scrollTop() - heights.scroll),

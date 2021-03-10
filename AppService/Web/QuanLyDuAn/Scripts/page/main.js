@@ -113,7 +113,7 @@ let menuItem = (item, list) => {
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
         </a>";
     if (listChild != null && listChild.length > 0) {
-        rs += "<ul class='nav nav-treeview ml-2'>";
+        rs += "<ul class='nav nav-treeview'>";
         listChild.forEach(x => rs += menuItem(x, list));
         rs += "</ul>";
     }

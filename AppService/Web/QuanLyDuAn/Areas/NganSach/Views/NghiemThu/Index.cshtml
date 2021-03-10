@@ -14,7 +14,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <div id="container-main" class="elevation-2"></div>
+        <div id="container-main" class="elevation-2"> </div>
     </div>
 </div>
 
@@ -39,9 +39,9 @@
                             totalCount: data.result.pagingInfo.totalItems
                         });
                     },
-                    error: function (e) {
-                        console.log(e);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
                 });
                 return deferred.promise();
@@ -59,11 +59,10 @@
                     success: function (data) {
                         deferred.resolve(data.result.items);
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 10000
                 });
                 return deferred.promise();
             }
@@ -81,11 +80,11 @@
         			headers: header, dataType: "json",
         			data: params,
         			url: URL_API_PM_READ + ACTION_GIAIDOAN,
-                    success: (rs)=> deferred.resolve(rs.result.items),
-        			error: function (xhr) {
+                    success: (rs) => deferred.resolve(rs.result.items),
+                    error: function (xhr) {
                         console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
-        				deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
-        			}
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                    },
         		});
         		return deferred.promise();
         	},
@@ -106,9 +105,9 @@
                         var data = rs.result.items;
                         deferred.resolve(data);
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách 'Giai đoạn'. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
                     timeout: 10000
                 });
@@ -137,9 +136,9 @@
                             totalCount: data.result.pagingInfo.totalItems
                         });
                     },
-                    error: function (e) {
-                        console.log(e);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
                 });
                 return deferred.promise();
@@ -175,7 +174,7 @@
         });
 
         var loadFilter = () => $("#container-filter").dxForm({
-            labelLocation: "top", requiredMark: "(*)",
+            labelLocation: ($(document).width() >= 768 ? "top" : "left"), requiredMark: "(*)",
             items: [
                 {
                     itemType: "group",
@@ -461,10 +460,10 @@
                                 totalCount: data.result.pagingInfo.totalItems
                             });
                         },
-                        error: function (xhr, textStatus, errorThrown) {
-                            console.log(xhr.responseJSON);
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                        }
+                        error: function (xhr) {
+                            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                        },
                     });
                     return deferred.promise();
                 },
@@ -999,9 +998,9 @@
                                 totalCount: data.result.pagingInfo.totalItems
                             });
                         },
-                        error: function (xhr, textStatus, errorThrown) {
-                            console.log(xhr.responseJSON);
-                            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                        error: function (xhr) {
+                            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                         },
                     });
                     return deferred.promise();
