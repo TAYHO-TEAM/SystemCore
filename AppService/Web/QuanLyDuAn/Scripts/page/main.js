@@ -8,7 +8,7 @@ var PermitInAction = { id: 0, view: false, insert: false, update: false, delete:
 
 DevExpress.localization.locale('vi');
 
-$(function () {
+$(function () { 
     if (checkLogin()) loadMenu();
     else logout(window.location.pathname);
 });
@@ -63,7 +63,7 @@ function loadMenu() {
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active', true);
 
-                    $('.title-page').html(aTarget.data('descriptions'));
+                    $('.title-page').html(aTarget.data('descriptions').toUpperCase());
                     document.title = aTarget.data('descriptions') + ' - ' + document.title;
                 } else if (window.location.pathname == "/" && aTarget.attr('href') == "/Home") {
                     checkPermitInAction(aTarget.data('id'), url);
@@ -113,7 +113,7 @@ let menuItem = (item, list) => {
         <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
         </a>";
     if (listChild != null && listChild.length > 0) {
-        rs += "<ul class='nav nav-treeview ml-2'>";
+        rs += "<ul class='nav nav-treeview'>";
         listChild.forEach(x => rs += menuItem(x, list));
         rs += "</ul>";
     }

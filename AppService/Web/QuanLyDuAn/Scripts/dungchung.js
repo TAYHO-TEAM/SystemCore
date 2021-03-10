@@ -1,5 +1,5 @@
 ﻿//Tinh chiều cao - chiều cao header
-var heightScreen = $(document).height() - $('.main-header').height() - 90;
+var heightScreen = $(document).height() - $('.main-header').height()-50;
 var widthScreen = $(document).width();
 //Thông số api
 const api_version = 1; 

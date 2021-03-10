@@ -45,11 +45,10 @@
                             totalCount: data.result.pagingInfo.totalItems
                         });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 5000
                 });
                 return deferred.promise();
             },
@@ -91,11 +90,10 @@
                             totalCount: data.result.pagingInfo.totalItems
                         });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 5000
                 });
                 return deferred.promise();
             },
@@ -116,11 +114,10 @@
                     success: function (data) {
                         deferred.resolve(data.result.items);
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 10000
                 });
                 return deferred.promise();
             },
@@ -166,11 +163,10 @@
                         d.reject();
                     }
                 },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.log(xhr.responseJSON);
-                    deferred.reject("Có lỗi xảy ra trong quá trình checkGiaTriConLai. Mở Console để xem chi tiết.");
+                error: function (xhr) {
+                    console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                    deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                 },
-                timeout: 5000
             });
             return d.promise();
         }

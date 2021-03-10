@@ -3,226 +3,94 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Index</h2>
-
-<div id="container" class="elevation-2"></div>
+<div class="row">
+    <div class="col-12">
+        <div id="container" class="elevation-2"></div>
+    </div> 
+</div>
 
 @section script{
     <script>
-        var keyword = '';
-        let ajax_load2 = (url, values,keyword) => { 
-            var deferred = $.Deferred(),
-                params = {
-                    'PageSize': values["take"],
-                    'PageNumber': values["skip"] + 1,
-                    'Keyword': keyword
+        var ACTION = "/Accounts";
+        var ds_main = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred();
+                var params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
                 };
-            $.ajax({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                url: url, dataType: "json", data: params,
-                success: function (data) {
-                    deferred.resolve(
-                        data.result.items,
-                        {
-                            totalCount: data.result.pagingInfo.totalItems,
-                        }
-                    );
-                },
-                error: function (xhr, textStatus, errorThrown) { 
-                    deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                },
-                timeout: 5000
-            });
-            return deferred.promise();
-        }
-        //var customStore_User = new DevExpress.data.CustomStore({
-        //    key: "id",
-        //    load: () => {
-        //        var deferred = $.Deferred(),
-        //            params = {
-        //                'PageSize': 0,
-        //                'PageNumber': 0
-        //            };
-        //        $.ajax({
-        //            headers: {
-        //                'Accept': 'application/json',
-        //                'Content-Type': 'application/json',
-        //                'Access-Control-Allow-Origin': '*'
-        //            },
-        //            url: URL_API_ACC_READ + "/UserInfo", dataType: "json", data: params,
-        //            success: function (data) {
-        //                console.log(data.result.items)
-        //                deferred.resolve(data.result.items);
-        //            },
-        //            error: function (xhr, textStatus, errorThrown) {
-        //                console.log(xhr.responseJSON);
-        //                deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-        //            },
-        //            timeout: 5000
-        //        });
-        //        return deferred.promise();
-        //    }
-        //});
-        var getName = (id) => {
-            var params = {
-                    'PageSize': 0,
-                    'PageNumber': 0,
-                    'FindId': id
-                };
-            $.ajax({
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                url: URL_API_ACC_READ + "/UserInfo", dataType: "json", data: params,
-                success: function (data) { 
-                    return data;
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.log(xhr.responseJSON); 
-                },
-                timeout: 5000
-            }); 
-        }
-        $(function () {
-            
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
 
-            var customStore = new DevExpress.data.CustomStore({
-                key: "id",
-                load: (loadOptions) => ajax_load2(URL_API_ACC_READ + "/Accounts", loadOptions,""),
-                insert: function (values) {
-                    var header = {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    };
-                    var deferred = $.Deferred();
-                    $.ajax({
-                        headers: header,
-                        url: URL_API_ACC_CMD+'/UserInfo',
-                        dataType: "json", type: "POST",
-                        data: JSON.stringify(values),
-                        success: function (data) {
-                            deferred.resolve();
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                        },
-                        timeout: 5000
-                    });
-                    return deferred.promise();
-                },
-                //update: function (key, values) {
-                //    var keyObj = JSON.parse('{"id":'+key+'}');
-                //    var header = {
-                //        'Accept': 'application/json',
-                //        'Content-Type': 'application/json',
-                //        'Access-Control-Allow-Origin': '*'
-                //    };
-                //    var deferred = $.Deferred();
-                //    $.ajax({
-                //        headers: header,
-                //        url: URL_API_ACC_CMD + '/UserInfo',
-                //        dataType: "json",
-                //        type: "PUT",
-                //        data: JSON.stringify($.extend(keyObj, values)),
-                //        success: function (data) {
-                //            deferred.resolve();
-                //        },
-                //        error: function (xhr, textStatus, errorThrown) {
-                //            deferred.reject("Có lỗi xảy ra trong quá trình này. Error: " + errorThrown);
-                //        },
-                //        timeout: 5000
-                //    });
-                //    return deferred.promise();
-                //},
-                //remove: function (key) {
-                //    var deferred = $.Deferred();
-                //    var header = {
-                //        'Accept': 'application/json',
-                //        'Content-Type': 'application/json',
-                //        'Access-Control-Allow-Origin': '*'
-                //    };
-                //    $.ajax({
-                //        headers: header,
-                //        url: URL_API_ACC_CMD + "/UserInfo",
-                //        dataType: "json",
-                //        type: "DELETE",
-                //        data: JSON.stringify({
-                //            "ids": [key]
-                //        }),
-                //        success: function (data) {
-                //            deferred.resolve();
-                //        },
-                //        error: function (xhr, textStatus, errorThrown) {
-                //            deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách tài khoản. Error: " + errorThrown);
-                //        },
-                //        timeout: 5000
-                //    });
-                //    return deferred.promise();
-                //}
-            });
-            loadData(customStore);
+                $.ajax({
+                    headers: header,
+                    url: URL_API_ACC_READ + ACTION,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                    },
+                });
+                return deferred.promise();
+            },
         });
 
-        function loadData(dataSource) {
-            $("#container").dxDataGrid({
-                height: heightScreen,
-                dataSource: dataSource,
-                showBorders: false, showColumnHeaders: true, showColumnLines: true, hoverStateEnabled: true,
-                showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
-                remoteOperations: true,
-                columns: [
-                    {
-                        dataField: "accountName", caption:"Tên đăng nhập",
-                        dataType: "string",
-                        validationRules: [
-                            {
-                                type: "required",
-                                message: "Bắt buộc nhập thông tin"
-                            }
-                        ]
-                    },
-                    {
-                        dataField: "salt", caption:"salt",
-                        dataType: "string",
-                    },
-                    {
-                        dataField: "refreshToken", caption:"Refreshtoken",
-                        dataType: "number",
-                        lookup: {
-                            dataSource: listSexs,
-                            valueExpr: "value",
-                            displayExpr: "text"
-                        },
-                    },
-                    {
-                        dataField: "userId", caption: "Tên khách hàng",
-                        cellTemplate: (container, options) => {
-                            console.log(getName(options.value != null ? options.value:''))
-                        }
-                        //lookup: {
-                        //    dataSource: customStore_User,
-                        //    valueExpr: "id",
-                        //    displayExpr: "lastName"
-                        //},
-                    }
-                ],
+        $(function () {
+            loadData();
+        });  
 
-                editing: {
-                    allowAdding: true,
-                    allowUpdating: true,
-                    allowDeleting: true,
-                    mode: "popup"
+        var loadData = () => $("#container").dxDataGrid({
+            dataSource: ds_main,
+            height: heightScreen,
+            showBorders: true, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: false,
+            remoteOperations: true,
+            columns: [
+                {
+                    dataField: "accountName", caption: "Tên đăng nhập",
+                    dataType: "string",
+                    validationRules: [
+                        {
+                            type: "required",
+                            message: "Bắt buộc nhập thông tin"
+                        }
+                    ]
+                },
+                {
+                    dataField: "salt", caption: "salt",
+                    dataType: "string",
+                },
+                {
+                    dataField: "refreshToken", caption: "Refreshtoken",
+                    dataType: "number",
+                    lookup: {
+                        dataSource: listSexs,
+                        valueExpr: "value",
+                        displayExpr: "text"
+                    },
+                },
+                {
+                    dataField: "userId", caption: "Tên khách hàng",
+                    cellTemplate: (container, options) => {
+                        console.log(getName(options.value != null ? options.value : ''))
+                    }
                 }
-            });
-        }
+            ],
+
+            editing: {
+                allowAdding: true,
+                allowUpdating: true,
+                allowDeleting: true,
+                mode: "popup"
+            }
+        });
     </script>
 }
 

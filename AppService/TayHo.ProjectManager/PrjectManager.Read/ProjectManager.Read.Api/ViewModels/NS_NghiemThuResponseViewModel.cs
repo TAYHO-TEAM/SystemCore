@@ -14,6 +14,8 @@ namespace ProjectManager.Read.Api.ViewModels
 
     public class NS_NghiemThuDetailViewModel : NS_NghiemThuResponseViewModel
     {
+        public double? KhoiLuongLuyKe { get; set; }
+        public double? KhoiLuongGiaoThau { get; set; }
         public int? NhomCongViecId { get; set; }
         public string TenNhomCongViec { get; set; }
         public int? HangMucId { get; set; }
