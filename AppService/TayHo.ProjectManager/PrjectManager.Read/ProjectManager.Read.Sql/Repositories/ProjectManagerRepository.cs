@@ -4,6 +4,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using ProjectManager.CMD.Infrastructure;
+using ProjectManager.Read.Sql.DTOs.BaseClasses;
 using ProjectManager.Read.Sql.Interfaces;
 using ProjectManager.Read.Sql.Parameters;
 using Services.Common.DomainObjects;
@@ -24,16 +25,16 @@ namespace ProjectManager.Read.Sql.Repositories
             //_dbContext = dbContext;
             //_connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
-        //public async Task<LoadResult> GetAccount (DataSourceLoadOptions dataSourceLoadOptions )
-        //{
-        //    //var orders = _dbContext.AccountInfo.Select(i => new
-        //    //{
-        //    //    i.AccountId,
-        //    //    i.AccountName,
-        //    //    i.CreateBy
-        //    //});
-        //    return new LoadResult();// await DataSourceLoader.LoadAsync(orders, dataSourceLoadOptions);
-        //}
+        public async Task<LoadResult> GetAccount(DevLoadOptionsBase dataSourceLoadOptions)
+        {
+            //var orders = _dbContext.AccountInfo.Select(i => new
+            //{
+            //    i.AccountId,
+            //    i.AccountName,
+            //    i.CreateBy
+            //});
+            return new LoadResult();// await DataSourceLoader.LoadAsync(orders, dataSourceLoadOptions);
+        }
 
     }
 }

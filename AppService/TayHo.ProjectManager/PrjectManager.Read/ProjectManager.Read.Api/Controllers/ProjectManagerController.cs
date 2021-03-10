@@ -7,7 +7,8 @@ using Services.Common.DomainObjects;
 using System.Net;
 using System.Threading.Tasks;
 using ProjectManager.Read.Api.ViewModels.DevExpressClasses;
-
+using ProjectManager.Read.Sql.Interfaces;
+using ProjectManager.Read.Sql.DTOs.BaseClasses;
 
 namespace ProjectManager.Read.Api.Controllers.v1
 {
@@ -15,10 +16,10 @@ namespace ProjectManager.Read.Api.Controllers.v1
     {
         
         private const string getAll = nameof(getAll);
-        //private readonly IProjectManagerRepository _projectManagerRepository;
-        public ProjectManagerController(IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(mapper,httpContextAccessor)
+        private readonly IProjectManagerRepository _projectManagerRepository;
+        public ProjectManagerController(IMapper mapper, IHttpContextAccessor httpContextAccessor, IProjectManagerRepository projectManagerRepository) : base(mapper,httpContextAccessor)
         {
-            //_projectManagerRepository = projectManagerRepository;
+            _projectManagerRepository = projectManagerRepository;
         }
         /// <summary>
         /// Get List of ProjectManager get.
@@ -30,7 +31,8 @@ namespace ProjectManager.Read.Api.Controllers.v1
         //[Route(getAll)]
         public async Task<IActionResult> GetProjectManager([FromBody]DevRequestLoadOptionsViewModel loadOptions)
         {
-            //return Ok(_projectManagerRepository.GetAccount(loadOptions.dataSourceLoadOptions));
+            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions);
+            //return Ok(await _projectManagerRepository.GetAccount(requestFilter));
             return Ok("abc");
         }
         //public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)

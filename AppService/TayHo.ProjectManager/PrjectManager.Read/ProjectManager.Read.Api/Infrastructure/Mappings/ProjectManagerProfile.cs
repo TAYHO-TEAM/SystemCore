@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DevExtreme.AspNet.Mvc;
 using ProjectManager.Read.Api.ViewModels.DevExpressClasses;
-
+using ProjectManager.Read.Sql.DTOs.BaseClasses;
 
 namespace ProjectManager.Read.Api.Infrastructure.Mappings
 {
@@ -9,7 +9,7 @@ namespace ProjectManager.Read.Api.Infrastructure.Mappings
     {
         public ProjectManagerProfile()
         {
-            CreateMap<DevRequestLoadOptionsViewModel, DataSourceLoadOptions>();
+            CreateMap<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>();
         }
     }
 }
