@@ -7,17 +7,17 @@ namespace ProjectManager.Read.Api.ViewModels.DevExpressClasses
 
     public class DevRequestViewModel //: DataSourceLoadOptions
     {
+        public string nameEF { get; set; }
 
-        public DataSourceLoadOptions dataSourceLoadOptions { get; set; }
-
+        public DevRequestLoadOptionsViewModel devRequestLoadOptionsViewModel { get; set; }
         public DevRequestViewModel()
         {
-            dataSourceLoadOptions = new DataSourceLoadOptions();
+            devRequestLoadOptionsViewModel = new DevRequestLoadOptionsViewModel();
         }
-
     }
     public class DevRequestLoadOptionsViewModel : DataSourceLoadOptionsBase
     {
+     
     }
     //DataSourceLoadOptionsBase
     //"sort": [

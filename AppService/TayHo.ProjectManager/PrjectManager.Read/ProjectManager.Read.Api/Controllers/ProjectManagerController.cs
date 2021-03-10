@@ -29,10 +29,10 @@ namespace ProjectManager.Read.Api.Controllers.v1
         [HttpGet]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         //[Route(getAll)]
-        public async Task<IActionResult> GetProjectManager([FromBody]DevRequestLoadOptionsViewModel loadOptions)
+        public async Task<IActionResult> GetProjectManager([FromBody]DevRequestViewModel loadOptions)
         {
-            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions);
-            return Ok(await _projectManagerRepository.GetAccount(requestFilter));
+            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
+            return Ok(await _projectManagerRepository.GetAccount(loadOptions.nameEF, requestFilter));
             //return Ok("abc");
         }
         //public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
