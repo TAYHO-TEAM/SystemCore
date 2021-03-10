@@ -43,10 +43,11 @@ namespace ProjectManager.Read.Api.Controllers.v1
         [HttpPost]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         //[Route(getAll)]
-        public async Task<IActionResult> PostProjectManager([FromBody] DevRequestViewModel loadOptions)
+        public async Task<IActionResult> PostProjectManager([FromBody]DevLoadOptionsBase loadOptions)
         {
-            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
-            return Ok(await _projectManagerRepository.GetAccount(loadOptions.nameEF, requestFilter));
+
+            //DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
+            return Ok(await _projectManagerRepository.GetAccount2(loadOptions));
             //return Ok("abc");
         }
 

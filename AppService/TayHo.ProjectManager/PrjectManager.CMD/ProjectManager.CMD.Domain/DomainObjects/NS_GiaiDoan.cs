@@ -20,10 +20,10 @@ namespace ProjectManager.CMD.Domain.DomainObjects
         }
 
         public NS_GiaiDoan(string TenGiaiDoan,
-string DienGiai,
-int? ProjectId,
-int? GroupId,
-string CapDo) : this()
+                            string DienGiai,
+                            int? ProjectId,
+                            int? GroupId,
+                            string CapDo) : this()
         {
             _tenGiaiDoan = TenGiaiDoan;
             _dienGiai = DienGiai;
