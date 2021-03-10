@@ -9,12 +9,9 @@
 </div>
 
 @section script{
+    <script src="~/Scripts/page/hethong.js"></script>
     <script>
-        const ACTION = "/Accounts";
-        const ACTION_CMD = "/Account";
-        var WIDTH_CONTAINER = $("#container").width();
-
-        var customStore = new DevExpress.data.CustomStore({
+        var ds_account = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
                 let deferred = $.Deferred(), params = {};
@@ -30,7 +27,7 @@
 
                 $.ajax({
                     headers: header,
-                    url: URL_API_ACC_READ + ACTION,
+                    url: URL_API_ACC_READ + ACTION_ACCOUNT,
                     dataType: "json",
                     data: params,
                     success: function (data) {
@@ -41,18 +38,55 @@
                             }
                         );
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
                     },
-                    timeout: 5000
                 });
                 return deferred.promise();
             },
-            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION_CMD, values),
-            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION_CMD, key, values),
-            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION_CMD, key),
+            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
         });
+        var ds_account_info = new DevExpress.data.CustomStore({
+            key: "id",
+            load: (values) => {
+                let deferred = $.Deferred(), params = {};
+
+                params = {
+                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
+                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
+                };
+                if (values.sort) {
+                    params['SortCol'] = values.sort[0].selector;
+                    params['SortADSC'] = values.sort[0].desc;
+                }
+
+                $.ajax({
+                    headers: header,
+                    url: URL_API_PM_READ + ACTION_ACCOUNT_INFO,
+                    dataType: "json",
+                    data: params,
+                    success: function (data) {
+                        deferred.resolve(
+                            data.result.items,
+                            {
+                                totalCount: data.result.pagingInfo.totalItems,
+                            }
+                        );
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                    },
+                });
+                return deferred.promise();
+            },
+            insert: (values) => ajax_insert(URL_API_ACC_CMD + ACTION, values),
+            update: (key, values) => ajax_update(URL_API_ACC_CMD + ACTION, key, values),
+            remove: (key) => ajax_delete(URL_API_ACC_CMD + ACTION, key),
+        }); 
 
         $(function () {
             loadData();
@@ -60,78 +94,70 @@
 
         var loadData = () => $("#container").dxDataGrid({
             height: heightScreen,
-            dataSource: customStore,
-            remoteOperations: {
-                paging: true,
-                sorting: true,
-            },
+            dataSource: ds_account,
+            remoteOperations: true,
             repaintChangesOnly: true,
             showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
-            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+            showRowLines: true, columnAutoWidth: true, wordWrapEnabled: false, rowAlternationEnabled: true,
             columns: [
                 {
-                    caption: "STT",
-                    width: 80, alignment: "center",
+                    caption: "STT", width: 80, alignment: "center",
                     allowEditting: false,
-                    cellTemplate: (container, options) => {
-                        console.log(options)
-                        container.append(options.rowIndex + 1);
-                    },
+                    cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                 },
                 {
-                    dataField: "accountName",
-                    caption: "Tên tài khoản",
-                    dataType: "string",
-                    width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
+                    dataField: "accountName", caption: "Tài khoản",
+                    dataType: "string", width: 200,
                     editorOptions: {
                         placeholder: "Vui lòng nhập...",
                         showClearButton: true
                     },
                     validationRules: [{ type: "required" }]
-                },
+                },  
                 {
-                    dataField: "password",
-                    caption: "Mật khẩu",
-                    dataType: "string",
-                    width: (WIDTH_CONTAINER < 700) ? 200 : "100%",
-                    editorOptions: {
-                        placeholder: "Vui lòng nhập...",
-                        showClearButton: true
+                    dataField: "id", caption: "Thông tin người dùng",
+                    dataType: "string", width: 300,
+                    lookup: {
+                        dataSource: ds_account_info,
+                        valueExpr: "accountId",
+                        displayExpr: (e) => {
+                            var rs = "<div class='d-flex'>\
+                                <img class='img-circle elevation-2 img-size-30' \
+                                src='data:image/png;base64,"+ e.avatarImg + "' onerror='ImgError(this);'></img >\
+                                <div class='ml-2 text-left'>\
+                                <div class='font-weight-bold'>"+ (e.userName??"Chưa xác định") +"</div>\
+                                <em class='small'>"+ (e.title ?? "Chưa xác định") + " - Phòng " + (e.department ?? "Chưa xác định")+"</em>\
+                                </div><div>"; 
+                            return rs;
+                        }
                     },
-                },
+                    cellTemplate: (c, o) => { 
+                        c.append((o.value != null) ? o.text: null)
+                    }
+                }, 
                 {
-                    dataField: "isActive", width: 100,
+                    dataField: "isActive", caption: "Tình trạng",
+                    width: 130, alignment: "center",
+                    lookup: {
+                        dataSource: listActiveStatus,
+                        valueExpr: "value", displayExpr: "text",
+                    },
                     editorType: "dxSwitch",
-                },
-
-                {
-                    dataField: "isVisible", width: 100,
-                    editorType: "dxSwitch",
+                    cellTemplate: (c, o) => $("<span />").addClass("badge badge-" + listActiveStatus.find(x => x.value == o.value).color).append($("<i />").addClass("mr-1 " + listActiveStatus.find(x => x.value == o.value).icon), o.text).appendTo(c)
                 },
             ],
-            paging: {
-                enabled: true,
-                pageSize: 20
-            },
-            pager: {
-                showPageSizeSelector: true,
-                allowedPageSizes: [10, 20, 40],
-                showInfo: true,
-            },
+            paging: { enabled: true, pageSize: 10 },
+            pager: {  showInfo: true },
             searchPanel: {
-                highlightCaseSensitive: true,
-                highlightSearchText: true,
-                searchVisibleColumnsOnly: true,
-                visible: WIDTH_CONTAINER > 350
+                highlightCaseSensitive: true, highlightSearchText: true,
+                visible: true, searchVisibleColumnsOnly: true
             },
-            editing: {
-                allowAdding: true,
-                allowUpdating: true,
-                allowDeleting: true,
-                mode: "cell",
-                useIcons: false,
-                confirmDelete: true, refreshMode: "full"
-            },
+            //editing: {
+            //    allowAdding: true,
+            //    allowUpdating: true,
+            //    allowDeleting: true,
+            //    mode: "cell", useIcons: false, confirmDelete: true
+            //},
             onToolbarPreparing: function (e) {
                 var container = e.component;
                 e.toolbarOptions.items.unshift(
@@ -141,7 +167,7 @@
                             icon: "refresh",
                             onClick: () => container.refresh()
                         }
-                    })
+                    });
             },
             onInitNewRow: (e) => {
                 e.data.isActive = true;

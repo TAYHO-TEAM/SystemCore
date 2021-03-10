@@ -13,12 +13,18 @@ $(function () {
     else logout(window.location.pathname);
 });
 
+
+function ImgError(image) {
+    image.onerror = "";
+    image.src = "https://duan.tayho.com.vn/Content/img/avatar.png";
+    return true;
+}
+
 function logout(url) {
     if (url == null || url.length == 0 || url == "/") url = "/Home";
     localStorage.clear();
     window.location = "/Account/Login?url=" + url;
-}
-
+} 
 function loadMenu() {
     //loadHeader
     header = {
@@ -31,7 +37,7 @@ function loadMenu() {
     $('.user-panel div.image img')
         .attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg)
         .attr("alt", UserCurrentInfo.UserCurrent)
-        .attr("onerror","this.onerror=null;this.src='https://duan.tayho.com.vn/Content/img/avatar.png';");
+        .attr("onerror","ImgError(this);");
     $('.user-panel div.info a').html(UserCurrentInfo.userName != null ? UserCurrentInfo.userName : UserCurrent);
     $('.user-panel div.info span').html(UserCurrentInfo.title != null ? UserCurrentInfo.title:"Không xác định");
     //LoadMenu
@@ -110,7 +116,7 @@ let menuItem = (item, list) => {
     var rs = "<li class='nav-item has-treeview'>\
         <a class='nav-link' data-id='"+ item.id + "' data-descriptions='" + item.descriptions + "' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
-        <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
+        <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='fas fa-caret-left text-muted right'></i>" : "") + "</p>\
         </a>";
     if (listChild != null && listChild.length > 0) {
         rs += "<ul class='nav nav-treeview'>";
