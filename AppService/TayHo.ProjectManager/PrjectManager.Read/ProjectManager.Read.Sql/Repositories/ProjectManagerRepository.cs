@@ -5,6 +5,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Newtonsoft.Json;
+using ProjectManager.CMD.Domain.DTOs;
 using ProjectManager.CMD.Infrastructure;
 using ProjectManager.Read.Sql.DTOs.BaseClasses;
 using ProjectManager.Read.Sql.Interfaces;
@@ -84,7 +85,8 @@ namespace ProjectManager.Read.Sql.Repositories
             var mapper = new Mapper(config);
             DataSourceLoadOptions dataSourceLoadOptions = mapper.Map<DataSourceLoadOptions>(dataSourceLoadOptionsBase);
             var objEF = _dbContext.NS_GiaiDoan;
-            return DataSourceLoader.Load(objEF, dataSourceLoadOptions);
+            var ef = DataSourceLoader.Load(objEF, dataSourceLoadOptions);
+            return ef;
         }
         private dynamic ConvertEF(string nameEntity)
         {
