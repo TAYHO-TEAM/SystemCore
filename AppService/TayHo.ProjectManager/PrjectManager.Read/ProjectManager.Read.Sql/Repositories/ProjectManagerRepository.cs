@@ -39,7 +39,7 @@ namespace ProjectManager.Read.Sql.Repositories
               );
             var mapper = new Mapper(config);
             DataSourceLoadOptions dataSourceLoadOptions = mapper.Map<DataSourceLoadOptions>(dataSourceLoadOptionsBase);
-
+            
             dynamic objEF = null;
             objEF = ConvertEF(nameEF);
             if (objEF != null)
@@ -76,7 +76,7 @@ namespace ProjectManager.Read.Sql.Repositories
             }
 
         }
-        public async Task<LoadResult> GetAccount2(DevLoadOptionsBase dataSourceLoadOptionsBase)
+        public async Task<string> GetAccount2(DevLoadOptionsBase dataSourceLoadOptionsBase)
         {
 
             var config = new MapperConfiguration(cfg =>
@@ -84,9 +84,21 @@ namespace ProjectManager.Read.Sql.Repositories
               );
             var mapper = new Mapper(config);
             DataSourceLoadOptions dataSourceLoadOptions = mapper.Map<DataSourceLoadOptions>(dataSourceLoadOptionsBase);
+            
             var objEF = _dbContext.NS_GiaiDoan;
+            //dataSourceLoadOptions.Filter= JsonConvert.SerializeObject(dataSourceLoadOptions.Filter).ToList();
+            if (dataSourceLoadOptions.Filter.Count >1)
+            {
+                IList newList = null;
+                foreach(var item in dataSourceLoadOptions.Filter)
+                {
+                    var abc = item.GetType();
+                    //newList.Add(item);
+                }    
+            }    
             var ef = DataSourceLoader.Load(objEF, dataSourceLoadOptions);
-            return ef;
+
+            return JsonConvert.SerializeObject(ef);
         }
         private dynamic ConvertEF(string nameEntity)
         {
