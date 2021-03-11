@@ -143,7 +143,11 @@
                         valueExpr: "value", displayExpr: "text",
                     },
                     editorType: "dxSwitch",
-                    cellTemplate: (c, o) => $("<span />").addClass("badge badge-" + listActiveStatus.find(x => x.value == o.value).color).append($("<i />").addClass("mr-1 " + listActiveStatus.find(x => x.value == o.value).icon), o.text).appendTo(c)
+                    cellTemplate: (c, o) => {
+                        $("<span />").addClass("badge badge-" + listActiveStatus.find(x => x.value == o.value).color).append(
+                            $("<i />").addClass("mr-1 " + listActiveStatus.find(x => x.value == o.value).icon), o.text
+                        ).appendTo(c);
+                    }
                 },
             ],
             paging: { enabled: true, pageSize: 10 },

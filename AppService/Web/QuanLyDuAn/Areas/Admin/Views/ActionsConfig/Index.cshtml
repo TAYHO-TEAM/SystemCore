@@ -31,8 +31,7 @@
                     error: function (xhr, textStatus, errorThrown) {
                         console.log(xhr.responseJSON);
                         deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000//10 giây
+                    }
                 });
 
                 return deferred.promise();
