@@ -7,6 +7,8 @@ using Services.Common.APIs;
 using Services.Common.APIs.Infrastructure.Configuration;
 using Services.Common.APIs.Infrastructure.DIServiceConfigurations;
 using System.Collections.Generic;
+using ProjectManager.CMD.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManager.Read.Api
 {
@@ -19,7 +21,7 @@ namespace ProjectManager.Read.Api
         public override void ConfigureServices(IServiceCollection services)
         {
             #region Register repositories
-
+            services.AddDbContext<ProjectManagerBaseContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("TayHoConnection")));
             services.AddQuanLyDuAnServices(Configuration);
 
             #endregion Register repositories

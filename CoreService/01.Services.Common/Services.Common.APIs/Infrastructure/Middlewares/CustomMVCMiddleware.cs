@@ -20,6 +20,7 @@ namespace Services.Common.APIs.Infrastructure
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
             //app.UseConsul();
             return app;
