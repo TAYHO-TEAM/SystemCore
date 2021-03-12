@@ -32,7 +32,7 @@ namespace ProjectManager.Read.Api.Controllers.v1
         public async Task<IActionResult> GetProjectManager([FromBody]DevRequestViewModel loadOptions)
         {
             DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
-            var abc = await _projectManagerRepository.GetAccount(loadOptions.nameEF, requestFilter);
+            var abc = await _projectManagerRepository.GetAll(loadOptions.nameEF, requestFilter);
             return Ok(abc);
             //return Ok("abc");
         }
@@ -44,11 +44,11 @@ namespace ProjectManager.Read.Api.Controllers.v1
         [HttpPost]
         [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
         //[Route(getAll)]
-        public async Task<IActionResult> PostProjectManager([FromBody]DevLoadOptionsBase loadOptions)
+        public async Task<IActionResult> PostProjectManager([FromBody] DevRequestViewModel loadOptions)
         {
 
-            //DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
-            var abc = await _projectManagerRepository.GetAccount2(loadOptions);
+            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
+            var abc = await _projectManagerRepository.GetAll(loadOptions.nameEF, requestFilter);
             return Ok(abc);
             //return Ok("abc");
         }
