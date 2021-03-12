@@ -3,6 +3,8 @@ using Dapper.Common;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
+using Newtonsoft.Json;
+using ProjectManager.CMD.Domain.DomainObjects;
 using ProjectManager.CMD.Infrastructure;
 using ProjectManager.Read.Sql.DTOs.BaseClasses;
 using ProjectManager.Read.Sql.Interfaces;
@@ -10,53 +12,107 @@ using ProjectManager.Read.Sql.Parameters;
 using Services.Common.DomainObjects;
 using Services.Common.Paging;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace ProjectManager.Read.Sql.Repositories
 {
-    public class ProjectManagerRepository: IProjectManagerRepository
+    public class ProjectManagerRepository : IProjectManagerRepository
     {
         protected readonly ProjectManagerBaseContext _dbContext;
         //protected readonly ISqlConnectionFactory _connectionFactory;
-        public ProjectManagerRepository( ProjectManagerBaseContext dbContext)
+        public ProjectManagerRepository(ProjectManagerBaseContext dbContext)
         {
             _dbContext = dbContext;
+            _dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
             //_connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
-        public async Task<LoadResult> GetAccount(string nameEF,DevLoadOptionsBase dataSourceLoadOptions)
+        public async Task<LoadResult> GetAll(int user, string nameEF, DevLoadOptionsBase dataSourceLoadOptionsBase)
         {
-            dynamic objEF = null;
-            objEF = ConvertEF(nameEF);
+            List<int?> getActionId = _dbContext.Functions
+                                                .Where(c => c.TableName == nameEF
+                                                        && c.ActionId != null && (c.IsDelete == false || !c.IsDelete.HasValue)).Select(x => x.ActionId).ToList();
+
+            bool checkPermit = _dbContext.GroupAccount
+                                        .Join(_dbContext.GroupActionPermistion, x => x.GroupId, y => y.GroupId, (y, x) => new { y, x })
+                                        .Any(c => c.y.AccountId == user
+                                            && c.x.PermistionId == 6
+                                            && getActionId.Contains(c.x.ActionId)
+                                            && (c.x.IsDelete == false || !c.x.IsDelete.HasValue)
+                                            && (c.y.IsDelete == false || !c.y.IsDelete.HasValue));
+            dynamic objEF = ConvertEF(nameEF);
             if (objEF != null)
             {
-                dataSourceLoadOptions.PrimaryKey = new[] { "ID" };
-                dataSourceLoadOptions.PaginateViaPrimaryKey = true;
-                return await DataSourceLoader.LoadAsync(objEF, dataSourceLoadOptions);
+                if (dataSourceLoadOptionsBase.Filter.Count > 1)
+                {
+                    dataSourceLoadOptionsBase.Filter = ConvertFilter(dataSourceLoadOptionsBase.Filter);
+                }
+                if (!checkPermit)
+                {
+                    IList filterOwnerBy = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""createBy"",""=""," + user.ToString() + @"]"));
+                    IList filterDeleteNull = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""isDelete"",""IS NULL""]"));
+                    IList filterDeleteFalse = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""isDelete"",""=""," + 0 + @"]"));
+                    IList filterIsDelete = new List<object>();
+                    filterIsDelete.Add(filterDeleteNull);
+                    filterIsDelete.Add("or");
+                    filterIsDelete.Add(filterDeleteFalse);
+                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    {
+                        dataSourceLoadOptionsBase.Filter.Add("and");
+                    }
+                    dataSourceLoadOptionsBase.Filter.Add(filterOwnerBy);
+                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    {
+                        dataSourceLoadOptionsBase.Filter.Add("and");
+                    }
+                    dataSourceLoadOptionsBase.Filter.Add(filterDeleteFalse);
+                }
+                else
+                {
+                   
+                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    {
+                        dataSourceLoadOptionsBase.Filter.Add("and");
+                    }
+                }    
+                return DataSourceLoader.Load(objEF, dataSourceLoadOptionsBase);
             }
             else
             {
                 return new LoadResult();
             }
+
+        }
+        public async Task<string> GetAccount2(DevLoadOptionsBase dataSourceLoadOptionsBase)
+        {
+            var objEF = _dbContext.NS_GiaiDoan;
+            if (dataSourceLoadOptionsBase.Filter.Count > 1)
+            {
+                dataSourceLoadOptionsBase.Filter = ConvertFilter(dataSourceLoadOptionsBase.Filter);
+            }
+            return JsonConvert.SerializeObject(DataSourceLoader.Load(objEF, dataSourceLoadOptionsBase));
         }
         private dynamic ConvertEF(string nameEntity)
         {
             dynamic orders = null;
             switch (nameEntity)
             {
-                case nameof(_dbContext.AccountInfo):
-                    orders = _dbContext.AccountInfo;
-                    break;
+                //case nameof(_dbContext.AccountInfo):
+                //    orders = _dbContext.AccountInfo;
+                //    break;
                 //case nameof(_dbContext.Accounts):
                 //    orders = _dbContext.Accounts;
                 //    break;
                 //case nameof(_dbContext.Actions):
                 //    orders = _dbContext.Actions;
                 //    break;
-                case nameof(_dbContext.Assignments):
-                    orders = _dbContext.Assignments;
-                    break;
+                //case nameof(_dbContext.Assignments):
+                //    orders = _dbContext.Assignments;
+                //    break;
                 //case nameof(_dbContext.Categorys):
                 //    orders = _dbContext.Categorys;
                 //    break;
@@ -108,18 +164,18 @@ namespace ProjectManager.Read.Sql.Repositories
                 case nameof(_dbContext.FilesAttachment):
                     orders = _dbContext.FilesAttachment;
                     break;
-                //case nameof(_dbContext.Functions):
-                //    orders = _dbContext.Functions;
-                //    break;
+                case nameof(_dbContext.Functions):
+                    orders = _dbContext.Functions;
+                    break;
                 case nameof(_dbContext.GroupAccount):
                     orders = _dbContext.GroupAccount;
                     break;
                 //case nameof(_dbContext.GroupAction):
                 //    orders = _dbContext.GroupAction;
                 //    break;
-                //case nameof(_dbContext.GroupActionPermistion):
-                //    orders = _dbContext.GroupActionPermistion;
-                //    break;
+                case nameof(_dbContext.GroupActionPermistion):
+                    orders = _dbContext.GroupActionPermistion;
+                    break;
                 //case nameof(_dbContext.GroupFunctionPermistion):
                 //    orders = _dbContext.GroupFunctionPermistion;
                 //    break;
@@ -282,6 +338,29 @@ namespace ProjectManager.Read.Sql.Repositories
                     break;
             }
             return orders;
+        }
+        private IList ConvertFilter(IList filter)
+        {
+            IList newList = new List<object>();
+            foreach (var item in filter)
+            {
+                if (item.ToString().Length > 0)
+                {
+
+                    if (item.ToString().Substring(0, 1) == "[")
+                    {
+                        IList lString = ConvertFilter(JsonConvert.DeserializeObject<IList>(item.ToString()));
+                        newList.Add(lString);
+                    }
+                    else
+                    {
+                        newList.Add(item);
+                    }
+                }
+                var abc = item.GetType();
+                //newList.Add(item);
+            }
+            return newList;
         }
     }
 }

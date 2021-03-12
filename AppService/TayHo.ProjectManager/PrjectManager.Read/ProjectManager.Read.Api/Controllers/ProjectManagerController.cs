@@ -32,19 +32,26 @@ namespace ProjectManager.Read.Api.Controllers.v1
         public async Task<IActionResult> GetProjectManager([FromBody]DevRequestViewModel loadOptions)
         {
             DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
-            return Ok(await _projectManagerRepository.GetAccount(loadOptions.nameEF, requestFilter));
+            var abc = await _projectManagerRepository.GetAll(_user,loadOptions.nameEF, requestFilter);
+            return Ok(abc);
             //return Ok("abc");
         }
-        //public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
-        //{
-        ////    var orders = _dbContext.AccountInfo.Select(i => new
-        ////    {
-        ////        i.AccountId,
-        ////        i.AccountName,
-        ////        i.CreateBy
-        ////    });
-        //    return Ok(await DataSourceLoader.LoadAsync(orders, loadOptions));
-        //}
+        /// <summary>
+        /// Post List of ProjectManager get.
+        /// </summary>
+        /// <param name=" post request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(VoidMethodResult), (int)HttpStatusCode.BadRequest)]
+        //[Route(getAll)]
+        public async Task<IActionResult> PostProjectManager([FromBody] DevRequestViewModel loadOptions)
+        {
+
+            DevLoadOptionsBase requestFilter = _mapper.Map<DevRequestLoadOptionsViewModel, DevLoadOptionsBase>(loadOptions.devRequestLoadOptionsViewModel);
+            var abc = await _projectManagerRepository.GetAll(_user,loadOptions.nameEF, requestFilter);
+            return Ok(abc);
+            //return Ok("abc");
+        }
 
     }
 }

@@ -19,7 +19,9 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<DocumentReleasedLog> DocumentReleasedLog { get; set; }
         public DbSet<DocumentType> DocumentType { get; set; }
         public DbSet<FilesAttachment> FilesAttachment { get; set; }
+        public DbSet<Functions> Functions { get; set; }
         public DbSet<GroupAccount> GroupAccount { get; set; }
+        public DbSet<GroupActionPermistion> GroupActionPermistion { get; set; }
         public DbSet<Groups> Groups { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
         #region Ngân sách
@@ -77,6 +79,7 @@ namespace ProjectManager.CMD.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            //modelBuilder.Entity<NS_GiaiDoan>();
         }
     }
 }

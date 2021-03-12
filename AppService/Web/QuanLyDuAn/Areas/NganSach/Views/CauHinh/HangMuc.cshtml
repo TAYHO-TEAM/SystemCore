@@ -32,53 +32,42 @@
         //        }
         //    }),
         //});
-        //var customStore2 = new DevExpress.data.DataSource({
-        //    key: "id",
-        //    load: (loadOptions) => {
-
-        //        var args = {};
-        //        [
-        //            "skip",
-        //            "take",
-        //            "requireTotalCount",
-        //            "requireGroupCount",
-        //            "sort",
-        //            "filter",
-        //            "totalSummary",
-        //            "group",
-        //            "groupSummary"
-        //        ].forEach(function (i) {
-        //            if (i in loadOptions && isNullOrEmpty(loadOptions[i]))
-        //                args[i] = loadOptions[i];
-        //        });
-
-        //        let deferred = $.Deferred();  
-        //        var data = {
-        //            'nameEF': 'NS_GiaiDoan',
-        //            'devRequestLoadOptionsViewModel': args
-        //        };
-        //        console.log(data);
-        //        $.ajax({
-        //            headers: header,
-        //            url: "https://api-pm-read.tayho.com.vn/api/read/v1/ProjectManager",
-        //            dataType: "json",
-        //            method: "POST",
-        //            data: JSON.stringify(args),
-        //            success: function (result) {
-        //                deferred.resolve(result.data, {
-        //                    totalCount: result.totalCount,
-        //                    summary: result.summary,
-        //                    groupCount: result.groupCount
-        //                });
-        //            },
-        //            error: function (xhr) {
-        //                console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
-        //                deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
-        //            },
-        //        });
-        //        return deferred.promise();
-        //    },
-        //});
+        var customStore2 = new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (loadOptions) => {
+                    let deferred = $.Deferred();
+                    console.log(loadOptions);
+                    var data = {
+                        'nameEF': 'NS_GiaiDoan',
+                        'devRequestLoadOptionsViewModel': loadOptions
+                    };
+                    console.log(data);
+                    $.ajax({
+                        headers: header,
+                        url: "https://api-pm-read.tayho.com.vn/api/read/v1/ProjectManager",
+                        dataType: "json",
+                        method: "POST",
+                        data: JSON.stringify(data),
+                        success: function (result) {
+                            deferred.resolve(result.data, {
+                                totalCount: result.totalCount,
+                                summary: result.summary,
+                                groupCount: result.groupCount
+                            });
+                        },
+                        error: function (xhr) {
+                            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+                            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+                        },
+                    });
+                    return deferred.promise();
+                },
+            }),
+            filter: ["projectId", "=", PROJECTID],
+            sort: [{ selector: "caoDo", desc: true }]
+        });
+        
         var ds_main = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
@@ -109,25 +98,34 @@
         }); 
 
         $(function () {
-            loadData();
+            loadData2(); /*\\ new DevExpress.data.DataSource({*/
         });
-        //var loadData2 = () => $("#container").dxDataGrid({
-        //    height: heightScreen,
-        //    dataSource: customStore2,
-        //    remoteOperations: true,
-        //    paging: {
-        //        pageSize: 10
-        //    }, 
-
-        //    columns: [
-        //        {
-        //            dataField: "tenGiaiDoan", allowFiltering:false
-        //        },
-        //        {
-        //            dataField: "capDo", allowFiltering: false, //groupIndex: 0
-        //        }
-        //    ] 
-        //});
+        var loadData2 = () => $("#container").dxDataGrid({
+            height: heightScreen,
+            dataSource: customStore2,
+            remoteOperations: true,
+            filterRow: { visible: true },
+            filterPanel: { visible: true },
+            headerFilter: { visible: true },
+            grouping: {
+                autoExpandAll: true
+            },
+            searchPanel: {
+                visible: true,
+                highlightCaseSensitive: true
+            },
+            paging: {
+                pageSize: 10
+            }, 
+            columns: [
+                {
+                    dataField: "tenGiaiDoan", allowFiltering:true
+                },
+                {
+                    dataField: "capDo", allowFiltering: true, groupIndex: 0
+                }
+            ] 
+        });
 
         var loadData = () => $("#container").dxTreeList({
                 height: heightScreen,

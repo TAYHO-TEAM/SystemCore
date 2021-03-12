@@ -7,6 +7,7 @@ const URL_API_ACC_CMD = "https://api-acc-cmd.tayho.com.vn/api/cmd/v" + api_versi
 const URL_API_ACC_READ = "https://api-acc-read.tayho.com.vn/api/read/v" + api_version; 
 const URL_API_PM_CMD = "https://api-pm-cmd.tayho.com.vn/api/cmd/v" + api_version;
 const URL_API_PM_READ = "https://api-pm-read.tayho.com.vn/api/read/v" + api_version; 
+const URL_API_PM_READ_All = "https://api-pm-read.tayho.com.vn/api/read/v" + api_version +"/ProjectManager"; 
 
 const listSexs = [
     {value: 0, text:"Nữ"},

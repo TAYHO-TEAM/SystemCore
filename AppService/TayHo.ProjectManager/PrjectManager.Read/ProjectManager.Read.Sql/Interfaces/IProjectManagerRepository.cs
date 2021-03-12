@@ -6,7 +6,8 @@ namespace ProjectManager.Read.Sql.Interfaces
 {
     public interface IProjectManagerRepository
     {
-        Task<LoadResult> GetAccount(string nameEF,DevLoadOptionsBase dataSourceLoadOptions);
+        Task<LoadResult> GetAll(int user,string nameEF,DevLoadOptionsBase dataSourceLoadOptions);
+        Task<string> GetAccount2( DevLoadOptionsBase dataSourceLoadOptions);
     }
 
 }

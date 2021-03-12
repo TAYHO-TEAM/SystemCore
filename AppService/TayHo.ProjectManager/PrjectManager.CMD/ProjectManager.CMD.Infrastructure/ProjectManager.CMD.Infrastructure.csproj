@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EFCoreConfig\NS_GiaiDoanConfiguration.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
@@ -14,6 +19,10 @@
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common.APIs.Cmd.EF\Services.Common.APIs.Cmd.EF.csproj" />
     <ProjectReference Include="..\..\ProjectManager.Shared\ProjectManager.Common\ProjectManager.Common.csproj" />
     <ProjectReference Include="..\ProjectManager.CMD.Domain\ProjectManager.CMD.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EFCoreConfig\" />
   </ItemGroup>
 
 </Project>
