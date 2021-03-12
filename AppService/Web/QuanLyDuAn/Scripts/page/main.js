@@ -162,14 +162,11 @@ var ajax_insert = (url, values) => {
             else
                 deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu.");
         },
-        error: function (xhr, textStatus, errorThrown) {
+        error: function (xhr) {
             loadingPanel.hide();
-            console.log(textStatus);
-            console.log(errorThrown);
-            console.log(xhr);
-            deferred.reject("Có lỗi xảy ra trong quá trình thêm dữ liệu. Mở Console để xem chi tiết.");
+            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
         },
-        timeout: 10000
     });
     return deferred.promise();
 }
@@ -184,14 +181,11 @@ var ajax_update = (url, key, values) => {
             loadingPanel.hide();
             deferred.resolve();
         },
-        error: function (xhr, textStatus, errorThrown) {
+        error: function (xhr) {
             loadingPanel.hide();
-            console.log(textStatus);
-            console.log(errorThrown);
-            console.log(xhr);
-            deferred.reject("Có lỗi xảy ra trong quá trình cập nhật dữ liệu. Mở Console để xem chi tiết.");
+            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
         },
-        timeout: 5000
     });
     return deferred.promise();
 }
@@ -206,14 +200,11 @@ var ajax_delete = (url, key) => {
             loadingPanel.hide();
             deferred.resolve();
         },
-        error: function (xhr, textStatus, errorThrown) {
+        error: function (xhr) {
             loadingPanel.hide();
-            console.log(textStatus);
-            console.log(errorThrown);
-            console.log(xhr);
-            deferred.reject("Có lỗi xảy ra trong quá trình xóa dữ liệu. Mở Console để xem chi tiết.");
+            console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+            deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
         },
-        timeout: 5000
     });
     return deferred.promise();
 }

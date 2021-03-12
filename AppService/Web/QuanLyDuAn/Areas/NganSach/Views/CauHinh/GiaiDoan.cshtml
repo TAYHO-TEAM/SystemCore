@@ -1,6 +1,6 @@
 ﻿
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section style{   }
@@ -12,19 +12,17 @@
 </div>
 
 @section script{
-    <script>
-        const ACTION = "/NS_GiaiDoan";
-        const ACTION_GROUP = "/Groups";
-        const ACTION_PROJECT = "/Projects"; 
+    <script src="~/Scripts/page/ngansach.js"></script>
+    <script> 
         var capDoList = [
             { value: "HM", text: "Hạng mục" },
             { value: "NCV", text: "Nhóm công việc" },
-            { value: "CV", text: "Công việc" }] 
+            { value: "CV", text: "Công việc" }]
 
         var customStore = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
-                let deferred = $.Deferred(); 
+                let deferred = $.Deferred();
                 var params = {
                     'FindId': 'projectId,' + PROJECTID,
                     'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
@@ -37,11 +35,11 @@
 
                 $.ajax({
                     headers: header,
-                    url: URL_API_PM_READ + ACTION,
+                    url: URL_API_PM_READ + ACTION_GIAIDOAN,
                     dataType: "json",
                     data: params,
                     success: function (data) {
-                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems});
+                        deferred.resolve(data.result.items, { totalCount: data.result.pagingInfo.totalItems });
                     },
                     error: function (xhr) {
                         console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
@@ -50,9 +48,9 @@
                 });
                 return deferred.promise();
             },
-            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
-            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
-            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_GIAIDOAN, values),
+            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_GIAIDOAN, key, values),
+            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_GIAIDOAN, key),
         });
         var customStore_Groups = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -72,35 +70,12 @@
                 });
                 return deferred.promise();
             },
-        });
-        var customStore_Projects = new DevExpress.data.CustomStore({
-            key: "id", loadMode: "raw",
-            load: (values) => {
-                var deferred = $.Deferred();
-                $.ajax({
-                    headers: header, dataType: "json",
-                    url: URL_API_PM_READ + ACTION_PROJECT,
-                    success: function (data) {
-                        var list = data.result.items.filter(x => x.isActive == true && x.isVisible == true);
-                        if (PROJECTID == 0) {
-                            localStorage.setItem("projectIdCurrent", parseInt(list[0].id));
-                            PROJECTID = parseInt(list[0].id)
-                        }
-                        deferred.resolve(list);
-                    },
-                    error: function (xhr) {
-                        console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
-                        deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
-                    },
-                });
-                return deferred.promise();
-            },
-        });
+        }); 
 
         $(function () {
             loadData(customStore);
         });
-        let loadData = (dataSource) => {
+        var loadData = (dataSource) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: dataSource,
@@ -114,17 +89,17 @@
                 columns: [
                     {
                         caption: "STT", dataField: "status", sortOrder: "desc",
-                        dataType: "number", width: 100, alignment: "center", 
-                        cellTemplate:(c,o)=>c.append(o.rowIndex+1)
+                        dataType: "number", width: 100, alignment: "center",
+                        cellTemplate: (c, o) => c.append(o.rowIndex + 1)
                     },
                     {
                         dataField: "tenGiaiDoan", caption: "Tên giai đoạn",
-                        dataType: "string", cssClass:"font-weight-bold",
+                        dataType: "string", cssClass: "font-weight-bold",
                         editorOptions: {
                             placeholder: "Vui lòng nhập...",
                             showClearButton: true
                         },
-                        validationRules: [ { type: "required"}]
+                        validationRules: [{ type: "required" }]
                     },
                     {
                         dataField: "dienGiai", caption: "Diễn giải",
@@ -135,7 +110,7 @@
                         },
                     },
                     {
-                        dataField: "capDo", caption: "Cấp tương tác", dataType: "string", 
+                        dataField: "capDo", caption: "Cấp tương tác", dataType: "string",
                         editorType: "dxSelectBox",
                         lookup: {
                             dataSource: capDoList,
@@ -143,8 +118,8 @@
                         },
                         editorOptions: {
                             dataSource: capDoList,
-                            valueExpr: "value", displayExpr: "text", 
-                            placeholder: "Vui lòng chọn...",  
+                            valueExpr: "value", displayExpr: "text",
+                            placeholder: "Vui lòng chọn...",
                         },
                         validationRules: [{ type: "required" }]
                     },
@@ -154,22 +129,32 @@
                             dataSource: customStore_Groups,
                             valueExpr: "id", displayExpr: "title",
                         },
-                        editorType: "dxSelectBox", 
+                        editorType: "dxSelectBox",
                         editorOptions: {
                             dataSource: customStore_Groups,
-                            valueExpr: "id", displayExpr: "title", 
-                            placeholder: "Vui lòng chọn...",  
+                            valueExpr: "id", displayExpr: "title",
+                            placeholder: "Vui lòng chọn...",
                         },
                         validationRules: [{ type: "required" }]
                     },
                     {
-                        dataField: "isActive", width: 100,
+                        dataField: "isActive", caption: "Tình trạng",
+                        width: 130, alignment: "center",
+                        lookup: {
+                            dataSource: listActiveStatus,
+                            valueExpr: "value", displayExpr: "text",
+                        },
                         editorType: "dxSwitch",
-                    }, 
+                        cellTemplate: (c, o) => {
+                            $("<span />").addClass("badge badge-" + listActiveStatus.find(x => x.value == o.value).color).append(
+                                $("<i />").addClass("mr-1 " + listActiveStatus.find(x => x.value == o.value).icon), o.text
+                            ).appendTo(c);
+                        }
+                    },
                     {
                         dataField: "isVisible", width: 100,
-                        editorType: "dxSwitch",
-                    }, 
+                        editorType: "dxSwitch", visible: false
+                    },
                 ],
                 paging: {
                     enabled: true,
@@ -178,7 +163,7 @@
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [10, 20, 40],
-                    showInfo: true, 
+                    showInfo: true,
                 },
                 searchPanel: {
                     highlightCaseSensitive: true,
@@ -186,11 +171,12 @@
                     searchVisibleColumnsOnly: true,
                     visible: true
                 },
-                editing: { 
-                    allowUpdating: PermitInAction["update"] ? true : null,
-                    allowDeleting: PermitInAction["delete"] ? true : null,
-                    mode: "cell", useIcons: false, confirmDelete: true, 
-                }, 
+                editing: {
+                    allowAdding: PermitInAction.insert,
+                    allowUpdating: PermitInAction.update,
+                    allowDeleting: PermitInAction.delete,
+                    mode: "cell", useIcons: false, confirmDelete: true,
+                },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
@@ -198,27 +184,20 @@
                             location: "before", widget: "dxSelectBox",
                             options: {
                                 dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: "title",
-                                searchEnabled: true,
-                                searchMode: "contains",
-                                width: "100%",
-                                showClearButton: false,
-                                value: PROJECTID,
+                                valueExpr: "id", displayExpr: (item) => { return item && item.title + ' - ' + item.code },
+                                searchEnabled: true, searchMode: "contains",
+                                placeholder: "Vui lòng chọn...",
+                                itemTemplate: (data, index) => {
+                                    return $("<div>").html("<b>" + data.title + "</b> - " + data.code + ' - <em>' + data.descriptions + "</em>");
+                                },
+                                value: PROJECTID, 
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
                                     loadData(customStore);
                                 },
                             },
-                        },
-                        {
-                            location: "after", widget: "dxButton",
-                            options: {
-                                visible: PermitInAction["insert"],
-                                text:"Giai đoạn", icon: "add", stylingMode: "filled", type: "default",
-                                onClick: () => container.addRow()
-                            }
-                        },
+                        }, 
                         {
                             location: "after", widget: "dxButton",
                             options: {
@@ -231,7 +210,7 @@
                     e.data.isActive = true;
                     e.data.isVisible = true;
                     e.data.status = 0;
-                    e.data.projectId = PROJECTID; 
+                    e.data.projectId = PROJECTID;
                 },
                 rowDragging: {
                     allowReordering: PermitInAction["update"],
@@ -242,7 +221,7 @@
                         var source = e.itemData,
                             target = e.component.getVisibleRows()[e.toIndex].data,
                             d = $.Deferred();
-                        if (source.id != target.id) { 
+                        if (source.id != target.id) {
                             customStore.update(source.id, { status: target.status }).then(() => {
                                 e.component.refresh().then(d.resolve, d.reject);
                             }, d.reject);
