@@ -5,6 +5,9 @@
 @section style{
 
     <style>
+        .dx-placeholder {
+            color: white !important;
+        }
         .long-title h3 {
             font-family: 'Segoe UI Light', 'Helvetica Neue Light', 'Segoe UI', 'Helvetica Neue', 'Trebuchet MS', Verdana;
             font-weight: 200;
@@ -69,13 +72,23 @@
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_REPLY = "/ResponseRegistReply";
         const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
+        var NAMEREGIST = "RequestRegist";
         var code = "";
         var typeRes = 0;
         var noteRes = '';
 
         var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
         var WIDTH_CONTAINER = $("#container").width();
-        let customStore = customStore_CMD_READ_WITHPROJECTID_PAGGING(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
+        let customStore = (PROJECT) => new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => ajax_read(NAMEREGIST, values),
+                insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD_REQUESTREGIST, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD_REQUESTREGIST, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD_REQUESTREGIST, key),
+            }),
+            filter: ["projectId", "=", PROJECT],
+        });///customStore_CMD_READ_WITHPROJECTID_PAGGING(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
         let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
@@ -147,21 +160,16 @@
         //------------------------- Load dữ liệu --------------------------------------------
 
         $(function () {
-            loadData();
+            loadData(PROJECTID);
         });
 
-        let loadData = () => {
+        let loadData = (ID) => {
             $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: customStore,
+                dataSource: customStore(ID),
                 repaintChangesOnly: true,
-                remoteOperations: {
-                    filtering: true,
-                    sorting: true,
-                    pagging: true,
-                    grouping: false
-                },
-                scrolling: { mode: "standard" },
+                autoExpandAll: false,
+                remoteOperations: true, 
                 rootValue: 0,
                 parentIdExpr: "parentId",
                 keyExpr: "id",
@@ -169,6 +177,7 @@
                 showColumnHeaders: true,
                 showColumnLines: false,
                 hoverStateEnabled: true,
+                filterRow: { visible: true },
                 showRowLines: true,
                 columnAutoWidth: true,
                 wordWrapEnabled: true,
@@ -189,6 +198,7 @@
                         caption: "Mã",
                         dataType: "string",
                         alignment: "left",
+                        allowFiltering: false,
                         editorOptions: {
                             readOnly: true,
                             placeholder: "auto gen",
@@ -199,6 +209,7 @@
                         caption: "REV",
                         dataType: "string",
                         allowEditing: false,
+                        allowFiltering: false,
                         alignment: "left",
                         editorOptions: {
                             readOnly: true,
@@ -208,6 +219,7 @@
                     },//rev
                     {
                         dataField: "workItemId", caption: "Hạng mục",
+                        allowFiltering: true,
                         lookup: {
                             dataSource: customStore_HangMuc,
                             valueExpr: "id", displayExpr: "title",
@@ -265,7 +277,6 @@
 
                         },
                     },//account
-
                     {
                         dataField: "documentTypeId",
                         caption: "Loại tài liệu",
@@ -296,32 +307,35 @@
                     {
                         dataField: "planRegisterId",
                         caption: "Kế hoạch",
+                        allowFiltering: true,
                         visible: false,
                         alignment: "left",
                     },//hangMucId
-
                     {
                         dataField: "createDate",
                         caption: "Ngày đệ trình",
+                        allowFiltering: true,
                         dataType: "date",
                         format: "dd/MM/yyyy",
                         alignment: "left",
                     },//date
                     {
                         dataField: "descriptions",
+                        allowFiltering: true,
                         caption: "Mô tả",
                         dataType: "string",
                         alignment: "left",
                     },// descriptions
                     {
                         dataField: "note",
+                        allowFiltering: true,
                         caption: "Ghi Chú",
                         dataType: "string",
                         alignment: "left",
                     },// note
-
                     {
                         dataField: "status",
+                        allowFiltering: true,
                         caption: "Trạng thái",
                         dataType: "number",
                         alignment: "left",
@@ -342,6 +356,7 @@
                         caption: "File đính kèm",
                         dataType: "number",
                         alignment: "left",
+                        allowFiltering: false,
                         cellTemplate: (container, options) => {
                             container.append($('<a>').attr("href", "javaScript:void(0)").text(options.displayValue !== null ? options.displayValue + " file(s)" : "chưa có file"));
                         },
@@ -353,12 +368,11 @@
                         buttons: ["edit", "delete", {
                             icon: "add",
                             visible: function (e) {
-
-                                return (e.row.data.parentId === 0 && e.row.data.insert && e.row.data.isVisible === true);
+                                console.log(e);
+                                return (e.row.data.parentId === 0 && e.row.data.createBy === UserCurrentInfo.accountId && e.row.data.isVisible === true);
                             },
                             onClick: function (e) {
                                 var containerE = e.component;
-                                //var myJSON = JSON.stringify(e.row.data);
                                 callPopup(
                                     "THÊM MỚI Revision",
                                     "/ThongTin/DangKy/_FormRev/" + e.row.data.id,
@@ -470,6 +484,12 @@
 
                     },
                 },
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: WIDTH_CONTAINER > 350
+                },
                 onToolbarPreparing: function (e) {
                     var container = e.component;
                     e.toolbarOptions.items.unshift(
@@ -489,7 +509,7 @@
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
+                                    loadData(PROJECTID);
                                 },
                             },
                         },
@@ -534,21 +554,21 @@
                 },
                 onContextMenuPreparing: function (e) {
 
-                    if (!e.items) e.items = [];
-                    if (e.target == "content" && e.rowIndex >= 0) {
-                        e.items.push({
-                            icon: "far fa-eye",
-                            text: "Xem chi tiết",
-                            onItemClick: () => loadDetail(e.row.data)
-                        });
+                    //if (!e.items) e.items = [];
+                    //if (e.target == "content" && e.rowIndex >= 0) {
+                    //    e.items.push({
+                    //        icon: "far fa-eye",
+                    //        text: "Xem chi tiết",
+                    //        onItemClick: () => loadDetail(e.row.data)
+                    //    });
 
-                    };
+                    //};
                 },
-                onCellPrepared: (e) => {
-                    if (e.rowType == "data" && e.column.dataField == "barCode") {
-                        e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
-                    }
-                },
+                //onCellPrepared: (e) => {
+                //    //if (e.rowType == "data" && e.column.dataField == "barCode") {
+                //    //    e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
+                //    //}
+                //},
                 //onRowPrepared: (e) => {
                 //    if (e.rowType == "data" && e.data.rev == 0) {
 
@@ -784,12 +804,12 @@
                                                             if (value.noAttachment === null || value.noAttachment === 0) {
                                                                 DevExpress.ui.dialog.confirm("Bạn có chắc muốn đánh giá khi chưa có file(s) đính kèm?", "XÁC NHẬN THÔNG TIN").done(function (dialogResult) {
                                                                     if (dialogResult) {
-                                                                        ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
+                                                                        ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(PROJECTID); }); });
                                                                     }
                                                                 });
                                                             }
                                                             else {
-                                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(); }); });
+                                                                ajax_update(URL_API_PM_CMD + ACTION_RESPONSE, value.id, request).then(() => { $("#popup-main").dxPopup("instance").hide().then(() => { loadData(PROJECTID); }); });
 
 
                                                             }
@@ -1317,7 +1337,7 @@
                     container.refresh();
                 },
                 onHidden: function () {
-                    loadData();
+                    loadData(PROJECTID);
                 }
             });
         }

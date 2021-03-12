@@ -135,8 +135,9 @@
             $("#container").dxDataGrid({
                 height: heightScreen,
                 dataSource: customStore(ID),
-                headerFilter: { visible: true },
+                //headerFilter: { visible: true },
                 filterRow: { visible: true },
+                //filterPanel: { visible: true },
                 repaintChangesOnly: true,
                 remoteOperations: true,
                 searchPanel: {
@@ -221,27 +222,27 @@
                         },
                         validationRules: [{ type: "required" }],
                     },//loại tài liệu Id
-                    {
-                        dataField: "projectId",
-                        caption: "Dự án",
-                        width: '10%',
-                        lookup: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id",
-                            displayExpr: "title",
-                        },
-                        editorType: "dxLookup",
-                        editorOptions: {
-                            dataSource: customStore_Projects,
-                            valueExpr: "id", displayExpr: "title",
-                            placeholder: "Vui lòng chọn...",
-                            searchEnabled: true, showClearButton: true,
-                            itemTemplate: function (data) {
-                                return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
-                            },
-                        },
-                        validationRules: [{ type: "required" }],
-                    },
+                    //{
+                    //    dataField: "projectId",
+                    //    caption: "Dự án",
+                    //    width: '10%',
+                    //    lookup: {
+                    //        dataSource: customStore_Projects,
+                    //        valueExpr: "id",
+                    //        displayExpr: "title",
+                    //    },
+                    //    editorType: "dxLookup",
+                    //    editorOptions: {
+                    //        dataSource: customStore_Projects,
+                    //        valueExpr: "id", displayExpr: "title",
+                    //        placeholder: "Vui lòng chọn...",
+                    //        searchEnabled: true, showClearButton: true,
+                    //        itemTemplate: function (data) {
+                    //            return $("<div>").append($("<b>").append(data.code).addClass("mr-1"), $("<em>").append(data.title));
+                    //        },
+                    //    },
+                    //    validationRules: [{ type: "required" }],
+                    //},
                     {
                         dataField: "title",
                         caption: "Tiêu đề",

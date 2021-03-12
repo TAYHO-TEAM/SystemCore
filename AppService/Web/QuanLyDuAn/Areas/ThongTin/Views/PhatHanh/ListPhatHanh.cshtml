@@ -20,6 +20,7 @@
         var id = 1;
         ///-----------------------------READ ------------------------
         const ACTION = "/DocumentReleasedLog/GetListDetail";
+        var NAMEDOCUMENT = "DocumentReleasedLog";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_DOCUMENTACC = "/DocumentReleasedAccount";
         const ACTION_DOCUMENTLOG = "/DocumentReleasedLog";
@@ -40,7 +41,17 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         //..........................Get data -------------------------------------------------------------
-        let customStore = customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
+        let customStore = (PROJECT) => new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => ajax_read(NAMEDOCUMENT, values),
+                insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
+            }),
+            filter:  ["accountId", "=", UserCurrentInfo.accountId],
+        });
+            //customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
 
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_DOCUMENTTYPE);
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
@@ -184,12 +195,12 @@
         });
         //..........................  Load View -------------------------------------------------------------
         $(function () {
-            loadData();
+            loadData(PROJECTID);
         });
-        let loadData = () => {
+        let loadData = (ID) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: customStore,
+                dataSource: customStore(ID),
                 remoteOperations: {
                     filtering: true,
                     sorting: true,
@@ -310,7 +321,7 @@
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
+                                    loadData(PROJECTID);
                                 },
                             },
                         },
@@ -542,7 +553,7 @@
                 return c;
             },
             onHidden: function () {
-                loadData();
+                loadData(PROJECTID);
             }
         }).addClass("popup-priority-1");
 
@@ -578,7 +589,7 @@
                     container.refresh();
                 },
                 onHidden: function () {
-                    loadData();
+                    loadData(PROJECTID);
                 }
             });
         };
