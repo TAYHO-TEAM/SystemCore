@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Text.Json;
 
 namespace ProjectManager.Read.Sql.Repositories
 {
@@ -51,6 +51,10 @@ namespace ProjectManager.Read.Sql.Repositories
                 {
                     dataSourceLoadOptionsBase.Filter = ConvertFilter(dataSourceLoadOptionsBase.Filter);
                 }
+                //else
+                //{
+                //    dataSourceLoadOptionsBase.Filter = JsonConvert.DeserializeObject<IList>(dataSourceLoadOptionsBase.Filter[0].ToString());
+                //}
                 if (!checkPermit)
                 {
                     IList filterOwnerBy = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""createBy"",""=""," + user.ToString() + @"]"));
@@ -71,14 +75,7 @@ namespace ProjectManager.Read.Sql.Repositories
                     }
                     dataSourceLoadOptionsBase.Filter.Add(filterDeleteFalse);
                 }
-                else
-                {
-                   
-                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
-                    {
-                        dataSourceLoadOptionsBase.Filter.Add("and");
-                    }
-                }    
+
                 return DataSourceLoader.Load(objEF, dataSourceLoadOptionsBase);
             }
             else
@@ -344,20 +341,55 @@ namespace ProjectManager.Read.Sql.Repositories
             IList newList = new List<object>();
             foreach (var item in filter)
             {
-                if (item.ToString().Length > 0)
+                if(item != null)
                 {
-
-                    if (item.ToString().Substring(0, 1) == "[")
+                    if (item.ToString().Length > 0)
                     {
-                        IList lString = ConvertFilter(JsonConvert.DeserializeObject<IList>(item.ToString()));
-                        newList.Add(lString);
+
+                        if (item.ToString().Substring(0, 1) == "[")
+                        {
+                            IList lString = ConvertFilter(JsonConvert.DeserializeObject<IList>(item.ToString()));
+                            newList.Add(lString);
+                        }
+                        else
+                        {
+                            //newList.Add(JsonConvert.DeserializeObject < ((JsonElement)item).ValueKind > (item.ToString()))
+
+                            //newList.Add(((JsonElement)item));///JsonConvert.DeserializeObject<IList>(item.ToString()));
+                            string valueKid = "";
+                            try
+                            {
+                                valueKid = ((JsonElement)item).ValueKind.ToString();
+                            }
+                            catch
+                            {
+
+                            }
+                            if (valueKid == "String")
+                            {
+                                newList.Add(item.ToString());
+                            }
+                            else if (valueKid == "Number")
+                            {
+
+                                newList.Add(Convert.ToInt32(item.ToString()));
+                            }
+                            else
+                            {
+                                newList.Add(item.ToString());
+                            }
+
+                        }
                     }
                     else
                     {
                         newList.Add(item);
                     }
+                }    
+                else
+                {
+                    newList.Add(item);
                 }
-                var abc = item.GetType();
                 //newList.Add(item);
             }
             return newList;
