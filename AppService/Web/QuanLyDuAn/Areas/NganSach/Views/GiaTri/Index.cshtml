@@ -351,14 +351,14 @@
                             editorType: "dxLookup",
                             editorOptions: {
                                 dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: (item) => { return item && item.title + " - " + item.code; },
+                                valueExpr: "id", displayExpr: (item) => { return item && item.title + ' - ' + item.code },
                                 searchEnabled: true, searchMode: "contains",
                                 placeholder: "Vui lòng chọn...",
                                 itemTemplate: (data, index) => {
-                                    return $("<div>").html("<b>" + data.title + "</b> - <em>" + data.code + "</em>");
+                                    return $("<div>").html("<b>" + data.title + "</b> - " + data.code + ' - <em>' + data.descriptions + "</em>");
                                 },
                                 value: PROJECTID,
-                                onValueChanged: (data) => { 
+                                onValueChanged: (data) => {
                                     localStorage.setItem('projectIdCurrent', data.value);
                                     location.reload();
                                 },

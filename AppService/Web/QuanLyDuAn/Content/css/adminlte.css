@@ -12181,7 +12181,7 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
 
 .sidebar-dark-warning .nav-sidebar.nav-legacy > .nav-item > .nav-link.active,
 .sidebar-light-warning .nav-sidebar.nav-legacy > .nav-item > .nav-link.active {
-  border-color: #ffc107;
+    border-color: rgb(248,141,43,1);
 }
 
 .sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link.active,
@@ -12590,7 +12590,7 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
 
 .nav-legacy.nav-sidebar > .nav-item > .nav-link.active {
   background: inherit;
-  border-left: 3px solid transparent;
+  border-left: 5px solid transparent;
   box-shadow: none;
 }
 
@@ -12699,8 +12699,8 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .main-header::bef
 }
 
 [class*='sidebar-light'] .nav-legacy .nav-treeview > .nav-item > .nav-link.active, [class*='sidebar-light'] .nav-legacy .nav-treeview > .nav-item > .nav-link:focus, [class*='sidebar-light'] .nav-legacy .nav-treeview > .nav-item > .nav-link:hover {
-  background: none;
-  color: #000;
+    background: none;
+    color: rgba(248, 141, 43, 1);
 }
 
 .nav-collapse-hide-child .menu-open > .nav-treeview {
@@ -27293,8 +27293,17 @@ select.form-control-sm ~ .select2-container--default .select2-selection--multipl
 .img-size-30 {
     width: 30px;
     height: 30px;
+    margin: auto 0;
     object-fit: cover;
-    border: 2px solid #ffffff
+    border: 1px solid #ffffff
+}
+
+.img-size-40 {
+    width: 45px;
+    height: 45px;
+    margin: auto 0;
+    object-fit: cover;
+    border: 1px solid #ffffff
 }
 
 .size-32,

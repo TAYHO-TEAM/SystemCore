@@ -2312,6 +2312,7 @@
     <Content Include="Scripts\localization\dx.messages.tr.js" />
     <Content Include="Scripts\localization\dx.messages.vi.js" />
     <Content Include="Scripts\localization\dx.messages.zh.js" />
+    <Content Include="Scripts\page\hethong.js" />
     <Content Include="Scripts\page\thongtin.js" />
     <Content Include="Scripts\page\ngansach.js" />
     <Content Include="Scripts\page\main.js" />
@@ -2338,9 +2339,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Areas\ThongTin\Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Content\plugins\.npmignore" />
     <Content Include="Content\plugins\bootstrap-colorpicker\css\bootstrap-colorpicker.css.map" />
@@ -2505,7 +2504,6 @@
     <Content Include="Areas\ThongTin\Views\VanBanMau\_DuyetVanBan.cshtml" />
     <Content Include="Areas\NganSach\Views\GiaTri\Index.cshtml" />
     <Content Include="Areas\NganSach\Views\NghiemThu\Index - Copy.cshtml" />
-    <Content Include="Areas\Admin\Views\AccountConfig\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Home\About.cshtml" />

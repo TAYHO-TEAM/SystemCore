@@ -4,7 +4,7 @@ var UserCurrentInfo = JSON.parse(localStorage.getItem("userCurrentInfo"));
 var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
 var GIAIDOANID = isNullOrEmpty(localStorage.getItem("giaiDoanIdCurrent")) ? parseInt(localStorage.getItem("giaiDoanIdCurrent")) : 0;
 var header = {};
-var PermitInAction = { id: 0, view: false, insert: false, update: false, delete: false, readonly: false };
+var PermitInAction = { id: 0, view: false, insert: false, update: false, delete: false, readonly: false, assign: false, approve:false };
 
 DevExpress.localization.locale('vi');
 
@@ -13,13 +13,18 @@ $(function () {
     else logout(window.location.pathname);
 });
 
+function ImgError(image) {
+    image.onerror = "";
+    image.src = "https://duan.tayho.com.vn/Content/img/avatar.png";
+    return true;
+}
+
 function logout(url) {
     if (url == null || url.length == 0 || url == "/") url = "/Home";
     localStorage.clear();
     window.location = "/Account/Login?url=" + url;
-}
-
-function loadMenu() {
+} 
+function loadMenu() {    
     //loadHeader
     header = {
         'Accept': 'application/json',
@@ -31,7 +36,7 @@ function loadMenu() {
     $('.user-panel div.image img')
         .attr("src", "data:image/png;base64," + UserCurrentInfo.avatarImg)
         .attr("alt", UserCurrentInfo.UserCurrent)
-        .attr("onerror","this.onerror=null;this.src='https://duan.tayho.com.vn/Content/img/avatar.png';");
+        .attr("onerror","ImgError(this);");
     $('.user-panel div.info a').html(UserCurrentInfo.userName != null ? UserCurrentInfo.userName : UserCurrent);
     $('.user-panel div.info span').html(UserCurrentInfo.title != null ? UserCurrentInfo.title:"Không xác định");
     //LoadMenu
@@ -41,7 +46,7 @@ function loadMenu() {
     $.ajax({
         headers: header, url: url, dataType: "json", data: { FindParentId: 5 }, async: false,
         success: function (data) {
-            if (data.isOk) {
+            if (data.isOk) { 
                 container.html(null);
                 var listMenu = data.result.items;
                 listMenu.filter(e => e.parentId === 0).forEach(x => rs += menuItem(x, listMenu));
@@ -62,14 +67,16 @@ function loadMenu() {
                 if (window.location.pathname == aTarget.attr('href')) {
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active', true);
-
-                    $('.title-page').html(aTarget.data('descriptions').toUpperCase());
+                     
+                    var title = aTarget.data('descriptions').toUpperCase()
+                    $('.title-page').append(title);
                     document.title = aTarget.data('descriptions') + ' - ' + document.title;
                 } else if (window.location.pathname == "/" && aTarget.attr('href') == "/Home") {
                     checkPermitInAction(aTarget.data('id'), url);
                     $(this).children(".nav-link").addClass('active');
                 }
             });
+            if (!PermitInAction.view) window.location = "/Account/NoAuthentication";
         },
     });
 }
@@ -87,7 +94,9 @@ var checkPermitInAction = (id, url) => {
                     update: list.filter(x => x.permistionId == 3).length > 0,
                     delete: list.filter(x => x.permistionId == 4).length > 0,
                     view: list.filter(x => x.permistionId == 5).length > 0,
-                };
+                    assign: list.filter(x => x.permistionId == 7).length > 0,
+                    approve: list.filter(x => x.permistionId == 8).length > 0,
+                };                
             } else {
                 DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
                 console.log(data);
@@ -96,13 +105,8 @@ var checkPermitInAction = (id, url) => {
         error: (xhr, textStatus, errorThrown) => {
             DevExpress.ui.notify("Xảy ra lỗi trong quá trình lấy quyền theo menu", "error", 3000);
             console.log(xhr);
-        },
-        complete: () => {
-            console.log(PermitInAction);
-            if (!PermitInAction['view'])
-                window.location = "/Account/NoAuthentication";
-        }
-    });
+        }, 
+    });    
 }
 
 let menuItem = (item, list) => {
@@ -110,7 +114,7 @@ let menuItem = (item, list) => {
     var rs = "<li class='nav-item has-treeview'>\
         <a class='nav-link' data-id='"+ item.id + "' data-descriptions='" + item.descriptions + "' href='" + item.url + "'>\
         <i class='nav-icon mr-2 " + item.icon + "'></i>\
-        <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='ti-angle-double-left right'></i>" : "") + "</p>\
+        <p>" + item.title + ((listChild != null && listChild.length > 0) ? "<i class='fas fa-caret-left text-muted right'></i>" : "") + "</p>\
         </a>";
     if (listChild != null && listChild.length > 0) {
         rs += "<ul class='nav nav-treeview'>";

@@ -181,15 +181,16 @@
                     colCount: 10,
                     items: [
                         {
-                            colSpan: 2, dataField: "projectId", label: { text: "Dự án" },
+                            colSpan: 3,
+                            dataField: "projectId", label: { text: "Dự án" },
                             editorType: "dxLookup",
                             editorOptions: {
                                 dataSource: customStore_Projects,
-                                valueExpr: "id", displayExpr: (item) => { return item && item.title + " - " + item.code; },
+                                valueExpr: "id", displayExpr: (item) => { return item && item.title + ' - ' + item.code },
                                 searchEnabled: true, searchMode: "contains",
                                 placeholder: "Vui lòng chọn...",
                                 itemTemplate: (data, index) => {
-                                    return $("<div>").html("<b>" + data.title + "</b> - <em>" + data.code + "</em>");
+                                    return $("<div>").html("<b>" + data.title + "</b> - " + data.code + ' - <em>' + data.descriptions + "</em>");
                                 },
                                 value: PROJECTID,
                                 onValueChanged: (data) => {
@@ -568,7 +569,7 @@
                                     $("<img />")
                                         .addClass("img-circle elevation-2 img-size-30")
                                         .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
-                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("onerror", "ImgError(this);")
                                         .attr("alt", o.data.createBy_Name),
                                     $("<div />").addClass("ml-2 text-left").append(
                                         $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
@@ -699,7 +700,7 @@
                                     $("<img />")
                                         .addClass("img-circle elevation-2 img-size-30")
                                         .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
-                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("onerror", "ImgError(this);")
                                         .attr("alt", o.data.createBy_Name),
                                     $("<div />").addClass("ml-2 text-left").append(
                                         $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
@@ -827,7 +828,7 @@
                                     $("<img />")
                                         .addClass("img-circle elevation-2 img-size-30")
                                         .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
-                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("onerror", "ImgError(this);")
                                         .attr("alt", o.data.createBy_Name),
                                     $("<div />").addClass("ml-2 text-left").append(
                                         $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),
@@ -1078,7 +1079,7 @@
                                     $("<img />")
                                         .addClass("img-circle elevation-2 img-size-30")
                                         .attr("src", "data:image/png;base64," + o.data.createBy_Avartar)
-                                        .attr("onerror", "this.onerror=null; this.src='/Content/img/AnhDaiDien/avartar.jpg';")
+                                        .attr("onerror", "ImgError(this);")
                                         .attr("alt", o.data.createBy_Name),
                                     $("<div />").addClass("ml-2 text-left").append(
                                         $("<div />").addClass("font-weight-bold").append(moment(o.data.createDate).format("HH:mm DD/MM/YYYY")),

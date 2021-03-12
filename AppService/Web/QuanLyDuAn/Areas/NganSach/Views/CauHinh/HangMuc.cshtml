@@ -16,7 +16,70 @@
 @section script{
     <script src="~/Scripts/page/ngansach.js"></script>
     <script>
-        var customStore = new DevExpress.data.CustomStore({
+        //var customStore2 =  new DevExpress.data.DataSource({
+        //    store: DevExpress.data.AspNet.createStore({
+        //        key: "id",
+        //        loadUrl: "https://api-pm-read.tayho.com.vn/api/read/v1/ProjectManager", 
+        //        onBeforeSend: function (method, ajaxOptions) {
+        //            console.log(method);
+        //            console.log(ajaxOptions);
+        //            ajaxOptions.method = 'post';
+        //            ajaxOptions.contentType = 'application/json'; 
+        //            ajaxOptions.data = JSON.stringify({
+        //                "nameEF": "NS_HangMuc",
+        //                "devRequestLoadOptionsViewModel": { }
+        //            });
+        //        }
+        //    }),
+        //});
+        //var customStore2 = new DevExpress.data.DataSource({
+        //    key: "id",
+        //    load: (loadOptions) => {
+
+        //        var args = {};
+        //        [
+        //            "skip",
+        //            "take",
+        //            "requireTotalCount",
+        //            "requireGroupCount",
+        //            "sort",
+        //            "filter",
+        //            "totalSummary",
+        //            "group",
+        //            "groupSummary"
+        //        ].forEach(function (i) {
+        //            if (i in loadOptions && isNullOrEmpty(loadOptions[i]))
+        //                args[i] = loadOptions[i];
+        //        });
+
+        //        let deferred = $.Deferred();  
+        //        var data = {
+        //            'nameEF': 'NS_GiaiDoan',
+        //            'devRequestLoadOptionsViewModel': args
+        //        };
+        //        console.log(data);
+        //        $.ajax({
+        //            headers: header,
+        //            url: "https://api-pm-read.tayho.com.vn/api/read/v1/ProjectManager",
+        //            dataType: "json",
+        //            method: "POST",
+        //            data: JSON.stringify(args),
+        //            success: function (result) {
+        //                deferred.resolve(result.data, {
+        //                    totalCount: result.totalCount,
+        //                    summary: result.summary,
+        //                    groupCount: result.groupCount
+        //                });
+        //            },
+        //            error: function (xhr) {
+        //                console.log(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);
+        //                deferred.reject("Đã có lỗi xảy ra trong quá trình này. Mở Console để xem chi tiết hoặc liên hệ Quản trị viên.");
+        //            },
+        //        });
+        //        return deferred.promise();
+        //    },
+        //});
+        var ds_main = new DevExpress.data.CustomStore({
             key: "id",
             load: (values) => {
                 let deferred = $.Deferred(), params = { 'FindId': 'projectId,' + PROJECTID };
@@ -48,11 +111,27 @@
         $(function () {
             loadData();
         });
+        //var loadData2 = () => $("#container").dxDataGrid({
+        //    height: heightScreen,
+        //    dataSource: customStore2,
+        //    remoteOperations: true,
+        //    paging: {
+        //        pageSize: 10
+        //    }, 
 
-        let loadData = (dataSource) => {
-            $("#container").dxTreeList({
+        //    columns: [
+        //        {
+        //            dataField: "tenGiaiDoan", allowFiltering:false
+        //        },
+        //        {
+        //            dataField: "capDo", allowFiltering: false, //groupIndex: 0
+        //        }
+        //    ] 
+        //});
+
+        var loadData = () => $("#container").dxTreeList({
                 height: heightScreen,
-                dataSource: customStore,
+                dataSource: ds_main,
                 repaintChangesOnly: true,
                 remoteOperations: {
                     filtering: true,
@@ -66,15 +145,16 @@
                 columns: [
                     {
                         dataField: "tenHangMuc", caption: "Thông tin / Tiêu đề",
-                        dataType: "string",
+                        dataType: "string", width: ($("#container").width() <= 1000 ? 300 : null),
+                        cellTemplate: (c, o) => c.addClass(o.data.chilCount > 0 ? "font-weight-bold" : "").append(o.value),
                         editorOptions: {
                             placeholder: "Vui lòng nhập..."
                         },
                         validationRules: [{ type: "required" }]
                     },
                     {
-                        dataField: "kyHieu", caption: "Ký Hiệu",
-                        dataType: "string",
+                        dataField: "kyHieu", caption: "Ký Hiệu", width: 100,
+                        dataType: "string", alignment: "center",
                         editorOptions: {
                             placeholder: "Vui lòng nhập..."
                         }
@@ -131,19 +211,7 @@
                             }
                         }, "edit", "delete"]
                     }
-                ],
-                //rowDragging: {
-                //    allowDropInsideItem: true,
-                //    dropFeedbackMode: "push",
-                //    onDragEnd: function (e) {
-                //        var source = e.itemData,
-                //            target = e.component.getVisibleRows()[e.toIndex].data,
-                //            d = $.Deferred();
-                //        customStore.update(source.id, { parentId: (source.id != target.id) ? target.id : 0 }).then(() => {
-                //            e.component.refresh().then(d.resolve, d.reject);
-                //        }, d.reject);
-                //    },
-                //},
+                ], 
                 paging: { enabled: false }, 
                 searchPanel: {
                     highlightCaseSensitive: true, highlightSearchText: true,
@@ -192,7 +260,6 @@
                     if (e.rowType == "data" && e.column.dataField == "tenHangMuc")
                         e.cellElement.find('.dx-treelist-empty-space').toggleClass("dx-treelist-collapsed", e.data.chilCount > 0);
                 }
-            });
-        }
+            }); 
     </script>
 }
