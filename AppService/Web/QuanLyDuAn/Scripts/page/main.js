@@ -148,7 +148,35 @@ function getParamInUrl(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
+var ajax_read = (name, loadOptions) => {
+    loadingPanel.show();
+    var data = {
+        'nameEF': name,
+        'devRequestLoadOptionsViewModel': loadOptions
+    };
+    var deferred = $.Deferred();
+    $.ajax({
+        headers: header, url: URL_API_PM_READ_All, dataType: "json", type: "POST",
+        data: JSON.stringify(data),
+        success: function (result) {
+            loadingPanel.hide();
+            deferred.resolve(result.data, {
+                totalCount: result.totalCount,
+                summary: result.summary,
+                groupCount: result.groupCount
+            });
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            loadingPanel.hide();
+            console.log(textStatus);
+            console.log(errorThrown);
+            console.log(xhr);
+            deferred.reject("Có lỗi xảy ra trong quá trình lấy dữ liệu. Mở Console để xem chi tiết.");
+        },
+        timeout: 10000
+    });
+    return deferred.promise();
+}
 var ajax_insert = (url, values) => {
     loadingPanel.show();
     var deferred = $.Deferred();

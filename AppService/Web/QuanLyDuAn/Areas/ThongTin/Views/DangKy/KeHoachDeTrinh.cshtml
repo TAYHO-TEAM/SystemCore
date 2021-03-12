@@ -5,7 +5,14 @@
 }
 
 
-@section style{   }
+@section style{
+    <style>
+        .dx-placeholder {
+            color:white !important;
+        }
+    </style>
+    
+}
 <div id="popup-register"></div>
 <div class="row">
     <div class="col-12">
@@ -16,55 +23,24 @@
 @section script{
     <script>
         const ACTION = "/PlanRegister";
+        const NAMEACTION = "PlanRegister";
         const ACTION_PROJECT = "/Projects";
         const ACTION_CONTRACTORINFO = "/ContractorInfo";
         const ACTION_HANGMUC = "/WorkItems";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
-        var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
+        //var PROJECTID = isNullOrEmpty(localStorage.getItem("projectIdCurrent")) ? parseInt(localStorage.getItem("projectIdCurrent")) : 1;
 
         var WIDTH_CONTAINER = $("#container").width();
 
-        let customStore = new DevExpress.data.CustomStore({
-            key: "id",
-            load: (values) => {
-                console.log(values);
-                let deferred = $.Deferred();
-                //if (values.filter && values.filter[0] == "parentId") params['FindParentId'] = values.filter[2];
-                if (values.sort) {
-                    params['SortCol'] = values.sort[0].selector;
-                    params['SortADSC'] = values.sort[0].desc;
-                }
-                let params = {
-                    'FindId': 'projectId,' + PROJECTID,
-                    'PageSize': isNullOrEmpty(values.take) ? values.take : 0,
-                    'PageNumber': (isNullOrEmpty(values.take) && isNullOrEmpty(values.skip)) ? ((values.skip / values.take) + 1) : 0,
-                };
-                if (typeof (values.filter) !== "undefined") {
-                    if (typeof (values.filter.filterValue) == 'string') {
-                        params['KeyWord'] = values.filter.filterValue;
-                    };
-                };
-                $.ajax({
-                    headers: header,
-                    url: URL_API_PM_READ + ACTION,
-                    dataType: "json",
-                    data: params,
-                    success: function (data) {
-                        let list = data.result.items;
-                        deferred.resolve(list);
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        console.log(xhr.responseJSON);
-                        deferred.reject("Có lỗi xảy ra trong quá trình lấy danh sách. Mở Console để xem chi tiết.");
-                    },
-                    timeout: 10000//10 giây
-                });
-
-                return deferred.promise();
-            },
-            insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, { 'planRegisters':[values]}),
-            update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
-            remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+        var customStore = (PROJECT) => new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => ajax_read(NAMEACTION, values),
+                insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, { 'planRegisters': [values] }),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+            }),
+            filter: ["projectId", "=", PROJECT],
         });
         let customStore_HangMuc = new DevExpress.data.CustomStore({
             key: "id", loadMode: "raw",
@@ -152,19 +128,17 @@
 
 
         $(function () {
-            loadData(customStore);
+            loadData(PROJECTID);
         });
 
-        let loadData = (dataSource) => {
+        let loadData = (ID) => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: dataSource,
+                dataSource: customStore(ID),
+                headerFilter: { visible: true },
+                filterRow: { visible: true },
                 repaintChangesOnly: true,
-                remoteOperations: {
-                    filtering: true,
-                    sorting: true,
-                    grouping: false
-                },
+                remoteOperations: true,
                 searchPanel: {
                     highlightCaseSensitive: true, highlightSearchText: true,
                     searchVisibleColumnsOnly: true, visible: true
@@ -182,7 +156,6 @@
                     {
                         dataField: "workItemId",
                         caption: "Hạng mục",
-                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_HangMuc,
                             valueExpr: "id",
@@ -205,7 +178,6 @@
                     {
                         dataField: "contractorInfoId",
                         caption: "Nhà thầu", width: 250,
-                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_ContractorInfo,
                             valueExpr: "id",
@@ -232,7 +204,6 @@
                     {
                         dataField: "documentTypeId",
                         caption: "Loại tài liệu",
-                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_DocumetnType,
                             valueExpr: "id",
@@ -254,7 +225,6 @@
                         dataField: "projectId",
                         caption: "Dự án",
                         width: '10%',
-                        allowFiltering: false,
                         lookup: {
                             dataSource: customStore_Projects,
                             valueExpr: "id",
@@ -324,7 +294,7 @@
                         type: "buttons", caption: "Tác vụ",
                         allowFiltering: false,
                         width: 120, alignment: "center",
-                        buttons: [ "edit", "delete"]
+                        buttons: ["edit", "delete"]
                     }
                 ],
                 rowDragging: {
@@ -380,7 +350,7 @@
                                 onValueChanged: function (data) {
                                     PROJECTID = data.value;
                                     localStorage.setItem('projectIdCurrent', PROJECTID);
-                                    loadData(customStore);
+                                    loadData(PROJECTID);
                                 },
                             },
                         },
