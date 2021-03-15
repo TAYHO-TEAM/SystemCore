@@ -21,8 +21,4 @@
     <ProjectReference Include="..\ProjectManager.CMD.Domain\ProjectManager.CMD.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EFCoreConfig\" />
-  </ItemGroup>
-
 </Project>

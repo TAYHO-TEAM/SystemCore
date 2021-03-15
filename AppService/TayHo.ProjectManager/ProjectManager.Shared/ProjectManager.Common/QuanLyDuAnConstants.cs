@@ -79,5 +79,10 @@ namespace ProjectManager.Common
         public const string PlanProject_TABLENAME = "PlanProject";
         public const string PlanReport_TABLENAME = "PlanReport";
         public const string PlanSchedule_TABLENAME = "PlanSchedule";
+
+
+        #region ViewTable
+        public const string DocumentReleasedLogDetail_TABLENAME = "DocumentReleasedLogDetail";
+        #endregion ViewTable
     }
 }

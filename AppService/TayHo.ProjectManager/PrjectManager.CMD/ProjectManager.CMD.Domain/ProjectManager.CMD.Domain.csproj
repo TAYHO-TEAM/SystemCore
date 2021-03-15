@@ -22,8 +22,4 @@
     <ProjectReference Include="..\..\..\..\CoreService\01.Services.Common\Services.Common.DomainObjects\Services.Common.DomainObjects.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-  </ItemGroup>
-
 </Project>
