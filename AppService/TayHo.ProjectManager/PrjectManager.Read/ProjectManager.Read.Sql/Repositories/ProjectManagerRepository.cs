@@ -329,7 +329,9 @@ namespace ProjectManager.Read.Sql.Repositories
                 case nameof(_dbContext.StepsProcess):
                     orders = _dbContext.StepsProcess;
                     break;
-
+                case nameof(_dbContext.DocumentReleasedLogDetail):
+                    orders = _dbContext.DocumentReleasedLogDetail;
+                    break;
                 default:
                     orders = null;
                     break;

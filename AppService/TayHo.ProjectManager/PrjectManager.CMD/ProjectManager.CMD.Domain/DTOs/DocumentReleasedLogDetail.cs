@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectManager.CMD.Domain.DTOs
 {
     public class DocumentReleasedLogDetail 
     {
+    
         public int? DRId { get; set; }
         public string DRCode { get; set; }
         public string DRTitle { get; set; }
@@ -26,6 +28,7 @@ namespace ProjectManager.CMD.Domain.DTOs
         public DateTime? DRUpdateDateUTC { get; set; }
         public DateTime? DRUpdateDate { get; set; }
         public byte? DRStatus { get; set; }
+        [Key]
         public int? DRLId { get; set; }
         public int? DRLAccountId { get; set; }
         public int? DRLDocumentReleasedId { get; set; }
