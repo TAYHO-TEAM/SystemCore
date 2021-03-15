@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.CMD.Domain.DomainObjects;
+using ProjectManager.CMD.Domain.DTOs;
 using Services.Common.APIs.Cmd.EF;
 using System.Reflection;
 
@@ -74,6 +75,9 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<Notify> Notify { get; set; }
         public DbSet<NotifyAccount> NotifyAccount { get; set; }
         public DbSet<NotifyTemplate> NotifyTemplate { get; set; }
+        #region Bilder View Table
+        public DbSet<DocumentReleasedLogDetail> DocumentReleasedLogDetail { get; set; }
+        #endregion Bilder View Table
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
