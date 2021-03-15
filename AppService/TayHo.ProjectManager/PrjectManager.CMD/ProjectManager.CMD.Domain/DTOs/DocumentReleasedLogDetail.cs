@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectManager.CMD.Domain.DTOs
 {
-    public class DocumentReleasedLogDetail 
+    public class DocumentReleasedLogDetail
     {
-    
+
         public int? DRId { get; set; }
         public string DRCode { get; set; }
         public string DRTitle { get; set; }
@@ -44,5 +44,6 @@ namespace ProjectManager.CMD.Domain.DTOs
         public DateTime? DRLUpdateDateUTC { get; set; }
         public DateTime? DRLUpdateDate { get; set; }
         public byte? DRLStatus { get; set; }
+        public int? CreateBy{get; set;}
     }
 }

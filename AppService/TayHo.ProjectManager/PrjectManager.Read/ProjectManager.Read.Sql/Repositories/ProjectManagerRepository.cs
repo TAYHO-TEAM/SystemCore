@@ -55,7 +55,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 //{
                 //    dataSourceLoadOptionsBase.Filter = JsonConvert.DeserializeObject<IList>(dataSourceLoadOptionsBase.Filter[0].ToString());
                 //}
-                if (!checkPermit)
+                if (!checkPermit && getActionId.Count>0)
                 {
                     IList filterOwnerBy = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""createBy"",""=""," + user.ToString() + @"]"));
                     IList filterDeleteNull = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""isDelete"",""IS NULL""]"));

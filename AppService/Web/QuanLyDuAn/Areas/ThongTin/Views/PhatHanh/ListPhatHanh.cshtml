@@ -20,7 +20,7 @@
         var id = 1;
         ///-----------------------------READ ------------------------
         const ACTION = "/DocumentReleasedLog/GetListDetail";
-        var NAMEDOCUMENT = "DocumentReleasedLog";
+        var NAMEDOCUMENT = "DocumentReleasedLogDetail";
         const ACTION_DOCUMENTTYPE = "/DocumentType";
         const ACTION_DOCUMENTACC = "/DocumentReleasedAccount";
         const ACTION_DOCUMENTLOG = "/DocumentReleasedLog";
@@ -41,15 +41,15 @@
         var WIDTH_CONTAINER = $("#container").width();
 
         //..........................Get data -------------------------------------------------------------
-        let customStore = (PROJECT) => new DevExpress.data.DataSource({
+        let customStore = () => new DevExpress.data.DataSource({
             store: new DevExpress.data.CustomStore({
-                key: "id",
+                key: "drlId",
                 load: (values) => ajax_read(NAMEDOCUMENT, values),
                 insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
                 update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD, key, values),
                 remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
             }),
-            filter:  ["accountId", "=", UserCurrentInfo.accountId],
+            filter:  ["createBy", "=", UserCurrentInfo.accountId],
         });
             //customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
 
@@ -195,27 +195,24 @@
         });
         //..........................  Load View -------------------------------------------------------------
         $(function () {
-            loadData(PROJECTID);
+            loadData();
         });
-        let loadData = (ID) => {
+        let loadData = () => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: customStore(ID),
-                remoteOperations: {
-                    filtering: true,
-                    sorting: true,
-                    grouping: false
-                },
+                dataSource: customStore(),
                 showBorders: false, showColumnHeaders: true, showColumnLines: false, hoverStateEnabled: true,
                 showRowLines: true, columnAutoWidth: true, wordWrapEnabled: true, rowAlternationEnabled: true,
+                repaintChangesOnly: true,
+                remoteOperations: true,
                 columns: [
                     {
-                        dataField: "title",
+                        dataField: "drTitle",
                         caption: "Tên tài liệu",
                         dataType: "string",
                     },
                     {
-                        dataField: "documentTypeId",
+                        dataField: "drDocumentTypeId",
                         caption: "Loại tài liệu",
                         dataType: "number",
                         lookup: {
@@ -236,29 +233,30 @@
                         validationRules: [{ type: "required" }],
                     },
                     {
-                        dataField: "tagWorkItem",
+                        dataField: "drTagWorkItem",
                         caption: "Nhóm hạng mục",
                         dataType: "string",
 
                     },
                     {
-                        dataField: "note",
+                        dataField: "drlNote",
                         caption: "Ý kiến phản hồi",
                         dataType: "string",
                     },
                     {
-                        dataField: "status",
+                        dataField: "drlStatus",
                         caption: "Trạng thái",
                         alignment: "center",
                         dataType: "number",
                         cellTemplate: (container, options) => {
+
                             container
                                 .attr('id', "popover-target-" + options.key)
                                 .append(options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Chưa xem' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '')
                                 .addClass(options.value == 0 ? 'text-danger font-weight-bold' : options.value == 1 ? 'text-danger font-weight-bold' : options.value == 2 ? 'text-primary font-weight-bold' : options.value == 3 ? 'text-info font-weight-bold' : '');
                             $("<div />")
                                 .attr('id', "popover-detail-" + options.key)
-                                .append("<div>( " + (options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '') + ' ' + moment(options.data.createDate).locale("vi").fromNow() + ")" + "</div>")
+                                .append("<div>( " + (options.value == 0 ? 'Chờ gửi' : options.value == 1 ? 'Đã gửi' : options.value == 2 ? 'Đã xem' : options.value == 3 ? 'Đã phản hồi' : '') + ' ' + moment(options.data.drlCreateDate).locale("vi").fromNow() + ")" + "</div>")
                                 .appendTo(container);
                             $("#popover-detail-" + options.key).dxPopover({
                                 target: "#popover-target-" + options.key,
@@ -272,7 +270,7 @@
                         },
                     },//status
                     {
-                        dataField: "noAttachment",
+                        dataField: "drNoAttachment",
                         caption: "File đính kèm",
                         dataType: "number",
                         alignment: "left",
@@ -281,18 +279,18 @@
                         },
                     },
                     {
-                        dataField: "createDate",
+                        dataField: "drCreateDate",
                         caption: "Ngày",
                         dataType: "date",
                         alignment: "left",
                     },
                 ],
                 paging: { enabled: true, pageSize: 20 },
-                pager: {
-                    showPageSizeSelector: true,
-                    allowedPageSizes: [10, 20, 40],
-                    showInfo: true,
-                },
+                //pager: {
+                //    showPageSizeSelector: true,
+                //    allowedPageSizes: [10, 20, 40],
+                //    showInfo: true,
+                //},
                 searchPanel: {
                     highlightCaseSensitive: true,
                     highlightSearchText: true,
@@ -390,7 +388,7 @@
                 var content_sub = $("<div  ><div id = 'div_dxForm_Sub'></div></div>");
                 var d = $.Deferred();
                 var table = "DocumentReleased";
-                customStore_Detail(item.id).load().then((items) => {
+                customStore_Detail(item.drlId).load().then((items) => {
                     var masterItiem = items[0];
                     var readonly = isNullOrEmpty(masterItiem.note);
                     $('#div_dxForm_Main').dxForm({

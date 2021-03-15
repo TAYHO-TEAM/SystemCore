@@ -12,6 +12,7 @@
 @section script{
     <script src="~/Scripts/page/thongtin.js"></script>
     <script>
+        var NAMEFORMCONTENT = "CustomFormContent";
         //--------------------READ------------------------------
         const ACTION = "/CustomFormContent";
         const ACTION_CUSTOMTABLE = "/CustomTable";
@@ -31,7 +32,17 @@
         var WORKITEMS = 1;
 
 
-        let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+        //let customStore = customStore_CMD_READ(ACTION_CMD, ACTION);
+
+        let customStore = () => new DevExpress.data.DataSource({
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => ajax_read(NAMEFORMCONTENT, values),
+                insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION_CMD, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
+            }),
+        });
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
         let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
@@ -68,14 +79,18 @@
         let loadData = () => {
             $("#container").dxDataGrid({
                 height: heightScreen,
-                dataSource: customStore,
+                dataSource: customStore(),
+                filterRow: { visible: true },
                 repaintChangesOnly: true,
-                remoteOperations: {
-                    filtering: true,
-                    sorting: true,
-                    grouping: false
+                remoteOperations: true,
+                searchPanel: {
+                    highlightCaseSensitive: true,
+                    highlightSearchText: true,
+                    searchVisibleColumnsOnly: true,
+                    visible: true
                 },
                 scrolling: { mode: "standard" },
+                rootValue: 0, parentIdExpr: "parentId", keyExpr: "id",
                 showBorders: false,
                 showColumnHeaders: true,
                 showColumnLines: false,
