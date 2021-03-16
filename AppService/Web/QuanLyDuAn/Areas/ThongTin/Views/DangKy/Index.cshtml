@@ -370,7 +370,6 @@
                         buttons: ["edit", "delete", {
                             icon: "add",
                             visible: function (e) {
-                                console.log(e);
                                 return (e.row.data.parentId === 0 && e.row.data.createBy === UserCurrentInfo.accountId && e.row.data.isVisible === true);
                             },
                             onClick: function (e) {
@@ -792,8 +791,7 @@
                                                     //useSubmitBehavior: true,
                                                     visible: ((value.modifyBy < 1 && !$checkNexStepDone) ? (value.update == true ? true : false) : false),
                                                     onClick: function () {
-                                                        console.log(value.typeOfResult);
-                                                        console.log(value);
+                                                        
                                                         var request = {
                                                             'id': value.id,
                                                             'description': value.description,
@@ -823,7 +821,6 @@
                                             }]
                                     }],
                                     onFieldDataChanged: function (e) {
-                                        console.log(e);
                                         if (e.dataField === 'typeOfResult') {
                                             typeRes = e.value;
                                         }
@@ -969,8 +966,6 @@
                     },
                     onCellClick: function (e) {
                         if (e.column.dataField === "noAttachment") {
-
-                            console.log(item);
                             loadUpload("RequestRegist", e.row.data, false);
                         }
                     },
@@ -1119,9 +1114,9 @@
                                         formData.append("Code", code);
                                     }
                                     formData.append('token', UserCurrentInfo.accessToken);
-                                    for (var pair of formData.entries()) {
-                                        console.log(pair[0] + ', ' + pair[1]);
-                                    }
+                                    //for (var pair of formData.entries()) {
+                                    //    console.log(pair[0] + ', ' + pair[1]);
+                                    //}
                                     var files = $("#file-uploader").dxFileUploader("instance").option("value");
                                     if (files.length > 0) {
                                         $.each(files, function (key, value) {

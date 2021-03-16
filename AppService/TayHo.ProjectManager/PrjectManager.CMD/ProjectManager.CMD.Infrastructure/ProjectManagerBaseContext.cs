@@ -25,6 +25,7 @@ namespace ProjectManager.CMD.Infrastructure
         public DbSet<GroupActionPermistion> GroupActionPermistion { get; set; }
         public DbSet<Groups> Groups { get; set; }
         public DbSet<GroupStages> GroupStages { get; set; }
+        public DbSet<Projects> Projects { get; set; }
         #region Ngân sách
         public DbSet<NS_CongViec> NS_CongViec { get; set; }
         public DbSet<NS_CongViecDetail> NS_CongViecDetail { get; set; }

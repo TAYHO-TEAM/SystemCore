@@ -55,7 +55,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 //{
                 //    dataSourceLoadOptionsBase.Filter = JsonConvert.DeserializeObject<IList>(dataSourceLoadOptionsBase.Filter[0].ToString());
                 //}
-                if (!checkPermit && getActionId.Count>0)
+                if (!checkPermit )
                 {
                     IList filterOwnerBy = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""createBy"",""=""," + user.ToString() + @"]"));
                     IList filterDeleteNull = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""isDelete"",""IS NULL""]"));
@@ -296,9 +296,9 @@ namespace ProjectManager.Read.Sql.Repositories
                 case nameof(_dbContext.ProblemCategory):
                     orders = _dbContext.ProblemCategory;
                     break;
-                //case nameof(_dbContext.Projects):
-                //    orders = _dbContext.Projects;
-                //    break;
+                case nameof(_dbContext.Projects):
+                    orders = _dbContext.Projects;
+                    break;
                 //case nameof(_dbContext.RelationTable):
                 //    orders = _dbContext.RelationTable;
                 //    break;
