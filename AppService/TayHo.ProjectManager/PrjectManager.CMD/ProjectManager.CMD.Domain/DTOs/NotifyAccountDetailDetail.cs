@@ -26,6 +26,7 @@ namespace ProjectManager.CMD.Domain.DTOs
         public DateTime? NUpdateDateUTC { get; set; }
         public DateTime? NUpdateDate { get; set; }
         public byte? NStatus { get; set; }
+        [Key]
         public int? NAId { get; set; }
         public int? NAAccountId { get; set; }
         public int? NAGroupId { get; set; }

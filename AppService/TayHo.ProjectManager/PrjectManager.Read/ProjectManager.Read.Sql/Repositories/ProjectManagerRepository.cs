@@ -341,6 +341,9 @@ namespace ProjectManager.Read.Sql.Repositories
                 case nameof(_dbContext.DocumentReleasedLogDetail):
                     orders = _dbContext.DocumentReleasedLogDetail;
                     break;
+                case nameof(_dbContext.NotifyAccountDetail):
+                    orders = _dbContext.NotifyAccountDetail;
+                    break;
                 default:
                     orders = null;
                     break;
