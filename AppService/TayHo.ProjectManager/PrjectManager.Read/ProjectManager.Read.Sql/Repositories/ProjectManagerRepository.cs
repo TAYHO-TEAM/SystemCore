@@ -64,16 +64,25 @@ namespace ProjectManager.Read.Sql.Repositories
                     filterIsDelete.Add(filterDeleteNull);
                     filterIsDelete.Add("or");
                     filterIsDelete.Add(filterDeleteFalse);
+                    IList filter = new List<object>();
+                    filter.Add(filterOwnerBy);
+                    filter.Add("and");
+                    filter.Add(filterDeleteFalse);
                     if (dataSourceLoadOptionsBase.Filter.Count > 0)
                     {
-                        dataSourceLoadOptionsBase.Filter.Add("and");
+                        filter.Add("and");
+                        filter.Add(dataSourceLoadOptionsBase.Filter);
                     }
-                    dataSourceLoadOptionsBase.Filter.Add(filterOwnerBy);
-                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
-                    {
-                        dataSourceLoadOptionsBase.Filter.Add("and");
-                    }
-                    dataSourceLoadOptionsBase.Filter.Add(filterDeleteFalse);
+                    //if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    //{
+                    //    dataSourceLoadOptionsBase.Filter.Add("and");
+                    //}
+                    //dataSourceLoadOptionsBase.Filter.Add(filterOwnerBy);
+                    //if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    //{
+                    //    dataSourceLoadOptionsBase.Filter.Add("and");
+                    //}
+                    dataSourceLoadOptionsBase.Filter = filter;
                 }
 
                 return DataSourceLoader.Load(objEF, dataSourceLoadOptionsBase);
@@ -296,9 +305,9 @@ namespace ProjectManager.Read.Sql.Repositories
                 case nameof(_dbContext.ProblemCategory):
                     orders = _dbContext.ProblemCategory;
                     break;
-                //case nameof(_dbContext.Projects):
-                //    orders = _dbContext.Projects;
-                //    break;
+                case nameof(_dbContext.Projects):
+                    orders = _dbContext.Projects;
+                    break;
                 //case nameof(_dbContext.RelationTable):
                 //    orders = _dbContext.RelationTable;
                 //    break;
@@ -331,6 +340,9 @@ namespace ProjectManager.Read.Sql.Repositories
                     break;
                 case nameof(_dbContext.DocumentReleasedLogDetail):
                     orders = _dbContext.DocumentReleasedLogDetail;
+                    break;
+                case nameof(_dbContext.NotifyAccountDetail):
+                    orders = _dbContext.NotifyAccountDetail;
                     break;
                 default:
                     orders = null;
@@ -378,7 +390,7 @@ namespace ProjectManager.Read.Sql.Repositories
                             }
                             else
                             {
-                                newList.Add(item.ToString());
+                                newList.Add(item);
                             }
 
                         }

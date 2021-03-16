@@ -13,5 +13,10 @@ namespace QuanLyDuAn.Areas.ThongTin.Controllers
         {
             return View();
         }
+        // GET: ThongTin/ThongBao
+        public ActionResult ViewNotify() 
+        {
+            return View();
+        }
     }
 }
