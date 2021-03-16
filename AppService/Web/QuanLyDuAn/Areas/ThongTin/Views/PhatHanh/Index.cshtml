@@ -4,7 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section style{   }
+@section style{
+    <style>
+        .dx-placeholder {
+            color: white !important;
+        }
+    </style>
+}
 <div id="popup-main-upload"></div>
 <div id="popup-register"></div>
 <div class="row">
@@ -37,15 +43,15 @@
 
         //..........................Get data -------------------------------------------------------------
         let customStore = (PROJECT) => new DevExpress.data.DataSource({
-                store: new DevExpress.data.CustomStore({
-                    key: "id",
-                    load: (values) => ajax_read(NAMEDOCUMENT, values),
-                    insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
-                    update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
-                    remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
-                }),
-                filter: [["projectId", "=", PROJECT], "and", ["createBy", "=", UserCurrentInfo.accountId]],
-            });
+            store: new DevExpress.data.CustomStore({
+                key: "id",
+                load: (values) => ajax_read(NAMEDOCUMENT, values),
+                insert: (values) => ajax_insert(URL_API_PM_CMD + ACTION, values),
+                update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION, key, values),
+                remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION, key),
+            }),
+            filter: [["projectId", "=", PROJECT], "and", ["createBy", "=", UserCurrentInfo.accountId]],
+        });
         //    new DevExpress.data.CustomStore({
         //    key: "id",
         //    load: (values) => {
@@ -1069,7 +1075,7 @@
                 c.append(scrollView);
                 return c;
             },
-            onHidden: () => { $("#container").dxDataGrid('instance').refresh();},
+            onHidden: () => { $("#container").dxDataGrid('instance').refresh(); },
         });
 
         function callPopup(title, url, width, container) {

@@ -3,7 +3,13 @@
     ViewBag.Title = "ListPhatHanh";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@section style{   }
+@section style{
+    <style>
+        .dx-placeholder {
+            color: white !important;
+        }
+    </style>
+}
 <div id="popup-main-upload"></div>
 <div id="popup-main-sub"></div>
 <div id="popup-register"></div>
@@ -49,9 +55,9 @@
                 update: (key, values) => ajax_update(URL_API_PM_CMD + ACTION_CMD, key, values),
                 remove: (key) => ajax_delete(URL_API_PM_CMD + ACTION_CMD, key),
             }),
-            filter:  ["createBy", "=", UserCurrentInfo.accountId],
+            filter: ["createBy", "=", UserCurrentInfo.accountId],
         });
-            //customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
+        //customStore_CMD_READ_WITHPROJECTID(ACTION_CMD, ACTION);
 
         let customStore_DocumetnType = customStore_READ_ALL(ACTION_DOCUMENTTYPE);
         let customStore_File = (table, item) => new DevExpress.data.CustomStore({
@@ -130,7 +136,7 @@
         });
         let customStore_Groups = new DevExpress.data.CustomStore({
             key: "id",
-            loadMode:"raw",
+            loadMode: "raw",
             load: (values) => {
                 var deferred = $.Deferred();
                 $.ajax({

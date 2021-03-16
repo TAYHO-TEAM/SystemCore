@@ -8,6 +8,7 @@
         .dx-placeholder {
             color: white !important;
         }
+
         .long-title h3 {
             font-family: 'Segoe UI Light', 'Helvetica Neue Light', 'Segoe UI', 'Helvetica Neue', 'Trebuchet MS', Verdana;
             font-weight: 200;
@@ -73,6 +74,7 @@
         const ACTION_REPLY = "/ResponseRegistReply";
         const ACTION_ACCOUNTINFO = "/ACCOUNTINFO";
         var NAMEREGIST = "RequestRegist";
+
         var code = "";
         var typeRes = 0;
         var noteRes = '';
@@ -90,7 +92,7 @@
             filter: ["projectId", "=", PROJECT],
         });///customStore_CMD_READ_WITHPROJECTID_PAGGING(ACTION_CMD_REQUESTREGIST, ACTION_READ_REQUESTREGISTBYACC);
         let customStore_Projects = customStore_READ_ALL_ACC(ACTION_READ_PROJECT);
-        let customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
+        var customStore_PLAN = (id) => customStore_READ_ID(ACTION_READ_PLAN, id);
         let customStore_HangMuc = customStore_READ_ALL_ACC(ACTION_READ_HANGMUC);
         let customStore_DocumetnType = customStore_READ_FILTER(ACTION_READ_DOCUMENTTYPE, 'status,1');
         let customStore_Detail = (id) => customStore_UPDATE_READ(id, ACTION_CMD_RESPONSEREGIST, ACTION_READ_REQUESTREGISTDETAIL);
@@ -169,7 +171,7 @@
                 dataSource: customStore(ID),
                 repaintChangesOnly: true,
                 autoExpandAll: false,
-                remoteOperations: true, 
+                remoteOperations: true,
                 rootValue: 0,
                 parentIdExpr: "parentId",
                 keyExpr: "id",

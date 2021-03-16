@@ -1,4 +1,4 @@
-/*!
+﻿/*!
 * DevExtreme (dx.messages.vi.js)
 * Version: 20.1.3
 * Build date: Fri Apr 24 2020
@@ -106,7 +106,8 @@
             "dxDataGrid-editingUndeleteRow": "Kh\xf4ng x\xf3a",
             "dxDataGrid-editingConfirmDeleteMessage": "B\u1ea1n c\xf3 th\u1eadt s\u1ef1 mu\u1ed1n x\xf3a b\u1ea3n ghi n\xe0y kh\xf4ng?",
             "dxDataGrid-validationCancelChanges": "H\u1ee7y b\u1ecf c\xe1c thay \u0111\u1ed5i",
-            "dxDataGrid-groupPanelEmptyText": "K\xe9o ti\xeau \u0111\u1ec1 m\u1ed9t c\u1ed9t v\xe0o \u0111\xe2y \u0111\u1ec3 \u0111\u1ec3 nh\xf3m c\u1ed9t \u0111\xf3",
+            "dxDataGrid-groupPanelEmptyText": "Kéo tiêu đề một cột vào đây để nhóm cột đó",
+            //"dxDataGrid-groupPanelEmptyText": "K\xe9o ti\xeau \u0111\u1ec1 m\u1ed9t c\u1ed9t v\xe0o \u0111\xe2y \u0111\u1ec3 \u0111\u1ec3 nh\xf3m c\u1ed9t \u0111\xf3", 
             "dxDataGrid-noDataText": "Kh\xf4ng c\xf3 d\u1eef li\u1ec7u",
             "dxDataGrid-searchPanelPlaceholder": "T\xecm ki\u1ebfm...",
             "dxDataGrid-filterRowShowAllText": "(T\u1ea5t c\u1ea3)",

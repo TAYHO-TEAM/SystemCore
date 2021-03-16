@@ -3,7 +3,15 @@
     ViewBag.Title = "DanhSachVanBan";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section style{
+    <style>
+        .dx-placeholder {
+            color: white !important;
+            
+        }
+     
+    </style>
+}
 <div id="popup-main"></div>
 <div id="popup-sub"></div>
 <div class="row">
@@ -30,7 +38,7 @@
         const ACTION_CMD = "/CustomFormContent";
         const ACTION_CMD_CUSTOMFORMCONTENT = "/CustomFormContent";
         var WIDTH_CONTAINER = $("#container").width();
-        var WORKITEMS =  1;
+        var WORKITEMS = 1;
 
 
         let customStore = () => new DevExpress.data.DataSource({
@@ -43,7 +51,7 @@
             }),
             filter: ["createBy", "=", UserCurrentInfo.accountId],
         });
-            //customStore_CMD_READ(ACTION_CMD, ACTION_LISTOWNER);
+        //customStore_CMD_READ(ACTION_CMD, ACTION_LISTOWNER);
         let customStore_CUSTOMTABLE = customStore_READ_ALL(ACTION_CUSTOMTABLE);
         let customStore_CUSTOMFORMCONTENTDETAIL = (id) => customStore_READ_ID(ACTION_CUSTOMFORMCONTENTDETAIL, id);
         let customStore_DETAIL = (id) => customStore_READ_ID(ACTION_DETAIL, id);
@@ -200,7 +208,7 @@
                     var container = document.getElementById("div_container");
                     var containerE = e.component;
                     container.classList.replace("col-lg-12", "col-lg-8");
-                    container.classList.replace("col-md-12", "col-md-8");    
+                    container.classList.replace("col-md-12", "col-md-8");
                     if (selectedRowData != null && selectedRowKey != null) {
                         var data = e.component.getRowIndexByKey(selectedRowKey);
                         $("#action-update").dxSpeedDialAction({

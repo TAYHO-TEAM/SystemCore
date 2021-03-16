@@ -20,6 +20,8 @@
     fdatatest.append('descriptions', '456');
     fdatatest.append('note', 'test');
     function acb() { alert('fuck') };
+    var docmentFilter = 0;
+    var workItemFilter = 0;
 
 
     $(document).ready(function () {
@@ -33,19 +35,88 @@
                     items: [
                         {
                             colSpan: 12,
+                            dataField: "documentTypeId",
+                            label: { text: "Loại tài liệu" },
+                            lookup: {
+                                dataSource: customStore_DocumetnType,
+                                valueExpr: "id",
+                                displayExpr: "title",
+                            },
+                            editorType: "dxSelectBox",
+                            editorOptions: {
+                                value: formData["documentTypeId"],
+                                dataSource: customStore_DocumetnType,
+                                valueExpr: "id",
+                                displayExpr: "title",
+                                elementAttr: {
+                                    id: "elementDocumentTypeId",
+                                },
+                                onValueChanged: function (e) {
+                                    var selTarget = $('#elementPlanRegisterId').dxSelectBox('instance');
+                                    docmentFilter = e.value;
+                                    if (workItemFilter > 0) {
+                                        selTarget.option("dataSource", customStore_PLAN("documentTypeId," + docmentFilter + ";workItemId," + workItemFilter));
+                                    }
+                                    else {
+                                        selTarget.option("dataSource", customStore_PLAN("documentTypeId," + docmentFilter ));
+                                    }
+                                   
+                                    //selTarget.option("dataSource", store);
+                                    //selTarget.option("dataSource", customStore_PLAN("").load().then((rs) => { console.log(rs.filter(x => x.documentTypeId === e.value)); return rs.filter(x => x.documentTypeId === e.value); }));
+                                    //$('#elementPlanRegisterId').dxSelectBox("getDataSource").reload();
+                                }
+                            },
+                            validationRules: [{ type: "required" }],
+                        },
+                        {
+                            colSpan: 12,
+                            dataField: "workItemId",
+                            label: { text: "Hạng mục" },
+                            lookup: {
+                                dataSource: customStore_HangMuc,
+                                valueExpr: "id",
+                                displayExpr: "title",
+                            },
+                            editorType: "dxSelectBox",
+                            editorOptions: {
+                                value: formData["workItemId"],
+                                dataSource: customStore_HangMuc,
+                                valueExpr: "id",
+                                displayExpr: "title",
+                                elementAttr: {
+                                    id: "elementHangMucId",
+                                },
+                                onValueChanged: function (e) {
+
+                                    var selTarget = $('#elementPlanRegisterId').dxSelectBox('instance');
+                                    workItemFilter = e.value;
+                                    if (docmentFilter > 0) {
+                                        selTarget.option("dataSource", customStore_PLAN("documentTypeId," + docmentFilter + ";workItemId," + workItemFilter));
+                                    }
+                                    else {
+                                        selTarget.option("dataSource", customStore_PLAN("workItemId," + workItemFilter));
+                                    }
+                                  
+                                }
+                            },
+                            validationRules: [{ type: "required" }],
+                        },
+                        {
+                            colSpan: 12,
                             dataField: "planRegisterId",
                             label: { text: "Kế hoạch" },
                             lookup: {
                                 dataSource: customStore_PLAN(""),
-                                valueExpr: "id", displayExpr: "title",
+                                valueExpr: "id",
+                                displayExpr: "title",
                             },
                             editorType: "dxSelectBox",
                             editorOptions: {
+                                dataSource: customStore_PLAN(""),
                                 value: formData["planRegisterId"],
                                 searchMode: "contains",
                                 searchExpr: ['code', 'title'],
                                 showClearButton: true,
-                                dataSource: customStore_PLAN(""),
                                 valueExpr: "id",
                                 displayExpr: "title",
                                 placeholder: "Vui lòng chọn...",
@@ -53,6 +124,9 @@
                                 showClearButton: true,
                                 itemTemplate: function (data) {
                                     return $("<div>").append($("<b>").append(data.title).addClass("mr-1"));
+                                },
+                                elementAttr: {
+                                    id: "elementPlanRegisterId",
                                 },
                                 onValueChanged: function (data) {
                                     /////// loại tài liệu
@@ -97,47 +171,7 @@
                                 },
                             },
                         },
-                        {
-                            colSpan: 12,
-                            dataField: "documentTypeId",
-                            label: { text: "Loại tài liệu" },
-                            lookup: {
-                                dataSource: customStore_DocumetnType,
-                                valueExpr: "id",
-                                displayExpr: "title",
-                            },
-                            editorType: "dxSelectBox",
-                            editorOptions: {
-                                value: formData["documentTypeId"],
-                                dataSource: customStore_DocumetnType,
-                                valueExpr: "id", displayExpr: "title",
-                                elementAttr: {
-                                    id: "elementDocumentTypeId",
-                                }
-                            },
-                            validationRules: [{ type: "required" }],
-                        },
-                        {
-                            colSpan: 12,
-                            dataField: "workItemId",
-                            label: { text: "Hạng mục" },
-                            lookup: {
-                                dataSource: customStore_HangMuc,
-                                valueExpr: "id",
-                                displayExpr: "title",
-                            },
-                            editorType: "dxSelectBox",
-                            editorOptions: {
-                                value: formData["workItemId"],
-                                dataSource: customStore_HangMuc,
-                                valueExpr: "id",
-                                displayExpr: "title",
-                                elementAttr: {
-                                    id: "elementHangMucId",
-                                }
-                            },
-                            validationRules: [{ type: "required" }],
-                        },
+                    
                         {
                             colSpan: 12,
                             dataField: "title",
