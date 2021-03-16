@@ -83,6 +83,7 @@ namespace ProjectManager.Common
 
         #region ViewTable
         public const string DocumentReleasedLogDetail_TABLENAME = "DocumentReleasedLogDetail";
+        public const string NotifyAccountDetail_TABLENAME = "NotifyAccountDetail";
         #endregion ViewTable
     }
 }
