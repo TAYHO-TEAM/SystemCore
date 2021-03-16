@@ -55,7 +55,7 @@ namespace ProjectManager.Read.Sql.Repositories
                 //{
                 //    dataSourceLoadOptionsBase.Filter = JsonConvert.DeserializeObject<IList>(dataSourceLoadOptionsBase.Filter[0].ToString());
                 //}
-                if (!checkPermit )
+                if (!checkPermit && getActionId.Count>0)
                 {
                     IList filterOwnerBy = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""createBy"",""=""," + user.ToString() + @"]"));
                     IList filterDeleteNull = ConvertFilter(JsonConvert.DeserializeObject<IList>(@"[""isDelete"",""IS NULL""]"));
@@ -64,16 +64,25 @@ namespace ProjectManager.Read.Sql.Repositories
                     filterIsDelete.Add(filterDeleteNull);
                     filterIsDelete.Add("or");
                     filterIsDelete.Add(filterDeleteFalse);
+                    IList filter = new List<object>();
+                    filter.Add(filterOwnerBy);
+                    filter.Add("and");
+                    filter.Add(filterDeleteFalse);
                     if (dataSourceLoadOptionsBase.Filter.Count > 0)
                     {
-                        dataSourceLoadOptionsBase.Filter.Add("and");
+                        filter.Add("and");
+                        filter.Add(dataSourceLoadOptionsBase.Filter);
                     }
-                    dataSourceLoadOptionsBase.Filter.Add(filterOwnerBy);
-                    if (dataSourceLoadOptionsBase.Filter.Count > 0)
-                    {
-                        dataSourceLoadOptionsBase.Filter.Add("and");
-                    }
-                    dataSourceLoadOptionsBase.Filter.Add(filterDeleteFalse);
+                    //if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    //{
+                    //    dataSourceLoadOptionsBase.Filter.Add("and");
+                    //}
+                    //dataSourceLoadOptionsBase.Filter.Add(filterOwnerBy);
+                    //if (dataSourceLoadOptionsBase.Filter.Count > 0)
+                    //{
+                    //    dataSourceLoadOptionsBase.Filter.Add("and");
+                    //}
+                    dataSourceLoadOptionsBase.Filter = filter;
                 }
 
                 return DataSourceLoader.Load(objEF, dataSourceLoadOptionsBase);
@@ -378,7 +387,7 @@ namespace ProjectManager.Read.Sql.Repositories
                             }
                             else
                             {
-                                newList.Add(item.ToString());
+                                newList.Add(item);
                             }
 
                         }
